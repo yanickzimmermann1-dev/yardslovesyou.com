@@ -1,63 +1,25 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YARDS LOVES YOU</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
-      color: #172554;
-      text-align: center;
-    }
-
-    header {
-      background: #172554;
-      color: white;
-      padding: 70px 20px;
-    }
-
-    h1 {
-      font-size: 42px;
-    }
-
-    main {
-      max-width: 650px;
-      margin: 40px auto;
-      padding: 30px;
-      background: white;
-      border-radius: 16px;
-    }
-
-    a {
-      display: inline-block;
-      background: #2563eb;
-      color: white;
-      padding: 14px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-
-    a:hover {
-      background: #1d4ed8;
-    }
-  </style>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Music Portfolio</title><link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <header>
-    <h1>Hi there!</h1>
-    <p>Enjoy my music...</p>
-  </header>
-
-  <main>
-    <h2>About</h2>
-    <p>Construction site</p>
-    <a href="mailto:yardsyurr@gmail.com">
-      Contact me
-    </a>
-  </main>
-</body>
-</html>
+<header class="topbar"><a class="brand" href="index.html">YOUR<span>SOUND</span></a><nav><a class="active" href="index.html">Portfolio</a><a href="shop.html">Shop</a></nav><button id="admin-toggle" class="outline">Admin</button></header>
+<main class="wrap">
+  <section class="hero"><p class="eyebrow">MUSIC · SOUND DESIGN · PRODUCTION</p><h1>Sounds that<br><span>stay with you.</span></h1><p class="muted">Meine Musik, Projekte und ausgewählte Sounds an einem Ort.</p><a class="button" href="shop.html">Zum Download-Shop ↗</a></section>
+  <section class="section-head"><div><p class="eyebrow">AUSGEWÄHLTE ARBEITEN</p><h2>Music portfolio</h2></div><p class="muted">Tracks anhören</p></section>
+  <div id="tracks" class="track-grid"><div class="empty">Lade Tracks …</div></div>
+  <section id="admin-panel" class="admin-panel hidden">
+    <h2>Admin-Bereich</h2><p class="muted">Melde dich an, um Audiodateien hochzuladen oder Tracks zu entfernen.</p>
+    <form id="login-form" class="login-form"><input id="email" type="email" placeholder="E-Mail" required><input id="password" type="password" placeholder="Passwort" required><button class="button">Anmelden</button></form>
+    <div id="admin-tools" class="hidden">
+      <div id="dropzone" class="dropzone"><strong>Audiodateien hier ablegen</strong><span>oder auswählen · MP3, WAV, OGG, M4A</span><input id="audio-files" type="file" accept="audio/*" multiple></div>
+      <button id="logout" class="outline">Abmelden</button>
+    </div><p id="status" class="status" role="status"></p>
+  </section>
+</main>
+<footer><span>© <span id="year"></span> YOUR SOUND</span><span>Made for listening.</span></footer>
+<script src="config.js"></script><script src="portfolio.js"></script>
+</body></html>
