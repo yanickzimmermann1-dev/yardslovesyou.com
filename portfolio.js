@@ -2,13 +2,16 @@
   const cfg = window.APP_CONFIG || {};
   const ready = cfg.SUPABASE_URL.startsWith("https://") && !cfg.SUPABASE_URL.includes("DEINE_") && cfg.SUPABASE_PUBLISHABLE_KEY && !cfg.SUPABASE_PUBLISHABLE_KEY.includes("DEIN_");
   const $ = id => document.getElementById(id);
-  $("year").textContent = new Date().getFullYear();
+  
+  const yearEl = $("year");
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
   
   const adminToggle = $("admin-toggle");
   if (adminToggle) adminToggle.onclick = () => $("admin-panel").classList.toggle("hidden");
 
   if (!ready) { 
-    $("tracks").innerHTML = '<div class="empty">Bitte zuerst deine Supabase-Zugangsdaten in <code>config.js</code> eintragen und das SQL aus <code>supabase/setup.sql</code> ausführen.</div>'; 
+    const tracksEl = $("tracks");
+    if (tracksEl) tracksEl.innerHTML = '<div class="empty">Bitte zuerst deine Supabase-Zugangsdaten in <code>config.js</code> eintragen und das SQL aus <code>supabase/setup.sql</code> ausführen.</div>'; 
     return; 
   }
   
@@ -18,10 +21,13 @@
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   
   async function loadTracks() {
+    const tracksContainer = $("tracks");
+    if (!tracksContainer) return;
+
     const {data,error} = await db.from("audio_tracks").select("*").order("created_at",{ascending:false});
-    if (error) { $("tracks").innerHTML = '<div class="empty">Tracks konnten nicht geladen werden. Prüfe die Supabase-Einrichtung.</div>'; return; }
+    if (error) { tracksContainer.innerHTML = '<div class="empty">Tracks konnten nicht geladen werden. Prüfe die Supabase-Einrichtung.</div>'; return; }
     
-    $("tracks").innerHTML = data.length ? data.map((t, index) => {
+    tracksContainer.innerHTML = data.length ? data.map(t => {
       const imageUrl = t.image_path ? db.storage.from("coverart-portolio").getPublicUrl(t.image_path).data.publicUrl : null;
       const audioUrl = db.storage.from("audio-files").getPublicUrl(t.storage_path).data.publicUrl;
 
@@ -37,10 +43,8 @@
           </div>
         </div>
 
-        <!-- Custom Player UI -->
         <div class="custom-player">
           <audio preload="none" src="${esc(audioUrl)}"></audio>
-          <!-- SVG-Icons statt Emojis für ein einheitliches Design -->
           <button class="play-btn" aria-label="Play/Pause">
             <svg class="play-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5,3 19,12 5,21"></polygon></svg>
             <svg class="pause-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
@@ -56,14 +60,13 @@
           </div>
         </div>
 
-        ${user ? `<button class="delete-track" data-delete="${esc(t.id)}" style="margin-top:10px;">Track löschen</button>` : ""}
+        ${user ? `<button class="delete-track" data-delete="${esc(t.id)}" style="margin-top:10px; background:rgba(255,0,0,0.2); border:none; color:#ff8b8b; padding:6px 12px; border-radius:4px; cursor:pointer;">Track löschen</button>` : ""}
       </article>
     `;
-    }).join("") : '<div class="empty">Noch keine Tracks. Melde dich als Admin an, um deine erste Audiodatei hochzuladen.</div>';
+    }).join("") : '<div class="empty">Noch keine Tracks. Melde dich unten rechts als Admin an, um deine erste Audiodatei hochzuladen.</div>';
     
     document.querySelectorAll("[data-delete]").forEach(b => b.onclick = () => deleteTrack(b.dataset.delete));
 
-    // Player Logik mit SVG-Umschaltung
     document.querySelectorAll(".track").forEach(article => {
       const audio = article.querySelector("audio");
       const playBtn = article.querySelector(".play-btn");
@@ -71,6 +74,8 @@
       const pauseIcon = article.querySelector(".pause-icon");
       const progressBar = article.querySelector(".progress-bar");
       const waveformContainer = article.querySelector(".waveform-container");
+
+      if (!audio || !playBtn) return;
 
       function setButtonState(isPlaying) {
         if (isPlaying) {
@@ -88,8 +93,10 @@
             other.pause();
             const parentArticle = other.closest(".track");
             if(parentArticle) {
-              parentArticle.querySelector(".play-icon").style.display = "block";
-              parentArticle.querySelector(".pause-icon").style.display = "none";
+              const pIcon = parentArticle.querySelector(".play-icon");
+              const psIcon = parentArticle.querySelector(".pause-icon");
+              if (pIcon) pIcon.style.display = "block";
+              if (psIcon) psIcon.style.display = "none";
             }
           }
         });
@@ -104,7 +111,7 @@
       };
 
       audio.ontimeupdate = () => {
-        if (audio.duration) {
+        if (audio.duration && progressBar) {
           const percent = (audio.currentTime / audio.duration) * 100;
           progressBar.style.width = percent + "%";
         }
@@ -112,17 +119,19 @@
 
       audio.onended = () => {
         setButtonState(false);
-        progressBar.style.width = "0%";
+        if (progressBar) progressBar.style.width = "0%";
       };
 
-      waveformContainer.onclick = (e) => {
-        const rect = waveformContainer.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const width = rect.width;
-        if (audio.duration) {
-          audio.currentTime = (clickX / width) * audio.duration;
-        }
-      };
+      if (waveformContainer) {
+        waveformContainer.onclick = (e) => {
+          const rect = waveformContainer.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const width = rect.width;
+          if (audio.duration) {
+            audio.currentTime = (clickX / width) * audio.duration;
+          }
+        };
+      }
     });
   }
 
