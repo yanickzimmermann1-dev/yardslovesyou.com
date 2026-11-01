@@ -10,3 +10,82 @@
 .tracks-container, main {
   padding-bottom: 80px;
 }
+.custom-player {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.play-btn {
+  background: #b185db;
+  color: #fff;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.play-btn:hover {
+  transform: scale(1.05);
+  background: #c9a0ff;
+}
+
+.waveform-container {
+  position: relative;
+  flex-grow: 1;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.waveform-bars {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 20px;
+}
+
+.waveform-bars span {
+  display: block;
+  width: 3px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  /* Zufällige Wellenhöhen für den Look */
+  height: var(--h, 60%); 
+}
+
+/* Stilisiert die Balken unterschiedlich hoch für den Waveform-Effekt */
+.waveform-bars span:nth-child(3n) { height: 40%; }
+.waveform-bars span:nth-child(3n+1) { height: 85%; }
+.waveform-bars span:nth-child(3n+2) { height: 55%; }
+.waveform-bars span:nth-child(5n) { height: 100%; }
+.waveform-bars span:nth-child(2n) { height: 30%; }
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: rgba(177, 133, 219, 0.25);
+  pointer-events: none;
+  border-right: 2px solid #b185db;
+}
+
+#tracks {
+  margin-bottom: 80px;
+}
