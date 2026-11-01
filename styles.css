@@ -172,3 +172,77 @@
   margin-bottom: 10px;
   cursor: pointer;
 }
+/* Play-Button: Umrandungen komplett entfernt, cleaner Look */
+.play-btn {
+  background: #b185db;
+  color: #fff;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.play-btn:hover {
+  transform: scale(1.05);
+  background: #c9a0ff;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Wellenform-Container ohne Rand/Hintergrund-Box */
+.waveform-container {
+  position: relative;
+  flex-grow: 1;
+  height: 36px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.waveform-bars {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 24px;
+}
+
+/* Einzelne Balken der Wellenform */
+.wave-bar {
+  display: block;
+  width: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  transition: background 0.15s ease;
+  height: 60%;
+}
+
+/* Unterschiedliche Höhen für den organischen Look */
+.wave-bar:nth-child(3n) { height: 40%; }
+.wave-bar:nth-child(3n+1) { height: 85%; }
+.wave-bar:nth-child(3n+2) { height: 55%; }
+.wave-bar:nth-child(5n) { height: 100%; }
+.wave-bar:nth-child(2n) { height: 30%; }
+
+/* Wenn der Track läuft, färben sich die bisher abgespielten Balken ein */
+.wave-bar.active {
+  background: #b185db;
+}
+
+/* Entfernt eventuelle alte Fortschritts-Overlay-Balken */
+.progress-bar {
+  display: none !important;
+}
