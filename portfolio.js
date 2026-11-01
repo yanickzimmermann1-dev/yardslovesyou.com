@@ -14,10 +14,16 @@
     const {data,error} = await db.from("audio_tracks").select("*").order("created_at",{ascending:false});
     if (error) { $("tracks").innerHTML = '<div class="empty">Tracks konnten nicht geladen werden. Prüfe die Supabase-Einrichtung.</div>'; return; }
     
-    $("tracks").innerHTML = data.length ? data.map(t => `
+    $("tracks").innerHTML = data.length ? data.map(t => {
+      // Hier wird das Bild aus deinem Bucket "coverart-portolio" geladen, falls ein image_path existiert
+      const imageUrl = t.image_path ? db.storage.from("coverart-portolio").getPublicUrl(t.image_path).data.publicUrl : null;
+
+      return `
       <article class="track">
         <div class="track-top">
-          <div class="cover">♫</div>
+          <div class="cover">
+            ${imageUrl ? `<img src="${esc(imageUrl)}" alt="Cover" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : "♫"}
+          </div>
           <div>
             <h3>${esc(t.title)}</h3>
             ${t.description ? `<p>${esc(t.description)}</p>` : ""}
@@ -26,7 +32,8 @@
         <audio controls preload="none" src="${esc(db.storage.from("audio-files").getPublicUrl(t.storage_path).data.publicUrl)}"></audio>
         ${user ? `<button class="delete-track" data-delete="${esc(t.id)}">Track löschen</button>` : ""}
       </article>
-    `).join("") : '<div class="empty">Noch keine Tracks. Melde dich als Admin an, um deine erste Audiodatei hochzuladen.</div>';
+    `;
+    }).join("") : '<div class="empty">Noch keine Tracks. Melde dich als Admin an, um deine erste Audiodatei hochzuladen.</div>';
     
     document.querySelectorAll("[data-delete]").forEach(b => b.onclick = () => deleteTrack(b.dataset.delete));
   }
