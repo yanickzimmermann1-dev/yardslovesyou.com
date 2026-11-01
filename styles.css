@@ -89,3 +89,86 @@
 #tracks {
   margin-bottom: 80px;
 }
+/* Container unten rechts fixieren */
+#admin-container-bottom {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  font-family: inherit;
+}
+
+/* Dezent gestalteter Admin-Button */
+#admin-toggle {
+  background: rgba(20, 20, 20, 0.8);
+  color: #888;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  backdrop-filter: blur(5px);
+  transition: all 0.2s ease;
+}
+
+#admin-toggle:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(30, 30, 30, 0.9);
+}
+
+/* Das ausklappbare Admin-Panel */
+#admin-panel {
+  position: absolute;
+  bottom: 45px;
+  right: 0;
+  width: 280px;
+  background: rgba(18, 18, 22, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+#admin-panel.hidden {
+  display: none;
+}
+
+#admin-panel input {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+#admin-panel button[type="submit"], 
+#admin-panel button:not(#admin-toggle) {
+  width: 100%;
+  padding: 8px;
+  background: #b185db;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+#admin-panel button:hover {
+  background: #c9a0ff;
+}
+
+#dropzone {
+  border: 2px dashed rgba(255,255,255,0.2);
+  padding: 15px;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
