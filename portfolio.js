@@ -31,6 +31,9 @@
       const imageUrl = t.image_path ? db.storage.from("coverart-portolio").getPublicUrl(t.image_path).data.publicUrl : null;
       const audioUrl = db.storage.from("audio-files").getPublicUrl(t.storage_path).data.publicUrl;
 
+      // Generiere 30 Balken für die Wellenform
+      const barsHtml = Array.from({length: 30}, () => '<span class="wave-bar"></span>').join('');
+
       return `
       <article class="track" data-id="${t.id}">
         <div class="track-top">
@@ -52,11 +55,8 @@
           
           <div class="waveform-container" title="Fortschritt">
             <div class="waveform-bars">
-              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              ${barsHtml}
             </div>
-            <div class="progress-bar"></div>
           </div>
         </div>
 
@@ -72,8 +72,8 @@
       const playBtn = article.querySelector(".play-btn");
       const playIcon = article.querySelector(".play-icon");
       const pauseIcon = article.querySelector(".pause-icon");
-      const progressBar = article.querySelector(".progress-bar");
       const waveformContainer = article.querySelector(".waveform-container");
+      const bars = article.querySelectorAll(".wave-bar");
 
       if (!audio || !playBtn) return;
 
@@ -111,15 +111,23 @@
       };
 
       audio.ontimeupdate = () => {
-        if (audio.duration && progressBar) {
-          const percent = (audio.currentTime / audio.duration) * 100;
-          progressBar.style.width = percent + "%";
+        if (audio.duration && bars.length) {
+          const progress = audio.currentTime / audio.duration;
+          const activeIndex = Math.floor(progress * bars.length);
+          
+          bars.forEach((bar, idx) => {
+            if (idx <= activeIndex) {
+              bar.classList.add("active");
+            } else {
+              bar.classList.remove("active");
+            }
+          });
         }
       };
 
       audio.onended = () => {
         setButtonState(false);
-        if (progressBar) progressBar.style.width = "0%";
+        bars.forEach(bar => bar.classList.remove("active"));
       };
 
       if (waveformContainer) {
