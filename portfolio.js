@@ -2,23 +2,12 @@
   const cfg = window.APP_CONFIG || {};
   const ready = cfg.SUPABASE_URL.startsWith("https://") && !cfg.SUPABASE_URL.includes("DEINE_") && cfg.SUPABASE_PUBLISHABLE_KEY && !cfg.SUPABASE_PUBLISHABLE_KEY.includes("DEIN_");
   const $ = id => document.getElementById(id);
-  
   $("year").textContent = new Date().getFullYear();
-  
-  // Admin-Toggle (jetzt für den Button unten rechts)
-  const adminToggle = $("admin-toggle");
-  if (adminToggle) {
-    adminToggle.onclick = () => $("admin-panel").classList.toggle("hidden");
-  }
-
-  if (!ready) { 
-    $("tracks").innerHTML = '<div class="empty">Bitte zuerst deine Supabase-Zugangsdaten in <code>config.js</code> eintragen und das SQL aus <code>supabase/setup.sql</code> ausführen.</div>'; 
-    return; 
-  }
-
+  $("admin-toggle").onclick = () => $("admin-panel").classList.toggle("hidden");
+  if (!ready) { $("tracks").innerHTML = '<div class="empty">Bitte zuerst deine Supabase-Zugangsdaten in <code>config.js</code> eintragen und das SQL aus <code>supabase/setup.sql</code> ausführen.</div>'; return; }
   const db = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
   let user = null;
-  const status = msg => { const el = $("status"); if(el) el.textContent = msg; };
+  const status = msg => $("status").textContent = msg;
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   
   async function loadTracks() {
@@ -46,43 +35,28 @@
     }).join("") : '<div class="empty">Noch keine Tracks. Melde dich als Admin an, um deine erste Audiodatei hochzuladen.</div>';
     
     document.querySelectorAll("[data-delete]").forEach(b => b.onclick = () => deleteTrack(b.dataset.delete));
+
+    // NEU: Dafür sorgen, dass immer nur ein Player gleichzeitig spielt
+    document.querySelectorAll("audio").forEach(audio => {
+      audio.onplay = () => {
+        document.querySelectorAll("audio").forEach(other => {
+          if (other !== audio) {
+            other.pause();
+          }
+        });
+      };
+    });
   }
 
   async function refreshUser() {
     const {data} = await db.auth.getSession(); user = data.session?.user || null;
-    const loginForm = $("login-form");
-    const adminTools = $("admin-tools");
-    if(loginForm) loginForm.classList.toggle("hidden", !!user); 
-    if(adminTools) adminTools.classList.toggle("hidden", !user);
-    
-    if(user) { 
-      const {data:admin} = await db.from("audio_admins").select("user_id").eq("user_id",user.id).maybeSingle(); 
-      if(!admin){
-        await db.auth.signOut();
-        user=null;
-        if(loginForm) loginForm.classList.remove("hidden");
-        if(adminTools) adminTools.classList.add("hidden");
-        status("Dieses Konto ist nicht als Admin freigeschaltet.");
-      } 
-    }
+    $("login-form").classList.toggle("hidden", !!user); $("admin-tools").classList.toggle("hidden", !user);
+    if(user) { const {data:admin} = await db.from("audio_admins").select("user_id").eq("user_id",user.id).maybeSingle(); if(!admin){await db.auth.signOut();user=null;$("login-form").classList.remove("hidden");$("admin-tools").classList.add("hidden");status("Dieses Konto ist nicht als Admin freigeschaltet.");} }
     await loadTracks();
   }
 
-  const loginFormEl = $("login-form");
-  if(loginFormEl) {
-    loginFormEl.onsubmit = async e => { 
-      e.preventDefault(); 
-      const {error} = await db.auth.signInWithPassword({email:$("email").value,password:$("password").value}); 
-      if(error){status(error.message);return;} 
-      status("Angemeldet."); 
-      await refreshUser(); 
-    };
-  }
-
-  const logoutBtn = $("logout");
-  if(logoutBtn) {
-    logoutBtn.onclick = async () => { await db.auth.signOut(); status("Abgemeldet."); await refreshUser(); };
-  }
+  $("login-form").onsubmit = async e => { e.preventDefault(); const {error} = await db.auth.signInWithPassword({email:$("email").value,password:$("password").value}); if(error){status(error.message);return;} status("Angemeldet."); await refreshUser(); };
+  $("logout").onclick = async () => { await db.auth.signOut(); status("Abgemeldet."); await refreshUser(); };
 
   async function upload(files) {
     if(!user) return status("Bitte zuerst anmelden.");
@@ -144,17 +118,10 @@
     status(error ? error.message : "Track gelöscht."); await loadTracks();
   }
 
-  const dz = $("dropzone");
-  if(dz) {
-    dz.addEventListener("dragover",e=>{e.preventDefault();dz.style.borderColor="#e5a5ff";});
-    dz.addEventListener("dragleave",()=>dz.style.borderColor="");
-    dz.addEventListener("drop",e=>{e.preventDefault();dz.style.borderColor="";upload([...e.dataTransfer.files]);});
-  }
-  
-  const audioFilesInput = $("audio-files");
-  if(audioFilesInput) {
-    audioFilesInput.onchange = e => upload([...e.target.files]);
-  }
-
+  const dz=$("dropzone");
+  dz.addEventListener("dragover",e=>{e.preventDefault();dz.style.borderColor="#e5a5ff";});
+  dz.addEventListener("dragleave",()=>dz.style.borderColor="");
+  dz.addEventListener("drop",e=>{e.preventDefault();dz.style.borderColor="";upload([...e.dataTransfer.files]);});
+  $("audio-files").onchange=e=>upload([...e.target.files]);
   refreshUser();
 })();
