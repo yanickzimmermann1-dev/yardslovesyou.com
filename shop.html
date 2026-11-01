@@ -4,18 +4,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0d0f17">
-
+  <meta name="theme-color" content="#0d0b12">
   <title>Shop · YARDSLOVESYOU</title>
 
   <link rel="stylesheet" href="styles.css">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
 
-  <!-- NAVIGATION -->
   <header class="topbar">
     <a class="brand" href="index.html">
       YARDS<span>LOVES<span>YOU</span></span>
@@ -26,113 +22,49 @@
       <a class="active" href="shop.html">Shop</a>
     </nav>
 
-    <a class="outline nav-admin" href="index.html#admin-panel">
-      Admin
-    </a>
+    <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
   </header>
-
 
   <main class="wrap">
 
-    <!-- HERO / GROSSE TITEL -->
     <section class="hero shop-hero">
-
-      <p class="eyebrow">YARDSLOVESYOU PRESENTS</p>
-
-      <h1>
-        Good sounds.<br>
-        <span>Ready to download.</span>
-      </h1>
-
+      <p class="eyebrow">DIGITAL PRODUCTS</p>
+      <h1>Good sounds.<br><span>Ready to download.</span></h1>
       <p class="muted">
-        Discover sounds, samples and exclusive digital products.
-        Made for artists, producers and creators.
+        ZIP-Pakete, Samples, Presets und weitere digitale Produkte.
       </p>
-
-      <a href="#downloads" class="button">
-        Explore the shop ↓
-      </a>
-
+      <a class="button" href="#downloads">Shop entdecken ↓</a>
     </section>
 
-
-    <!-- SHOP EINLEITUNG -->
     <section class="section-head" id="downloads">
-
       <div>
         <p class="eyebrow">THE DOWNLOADS</p>
-        <h2>Digital Store</h2>
-        <p class="muted">
-          Your next sound starts here.
-        </p>
+        <h2>Shop</h2>
       </div>
-
       <span class="muted" id="shop-count"></span>
-
     </section>
 
-
-    <!-- PRODUKTE WERDEN AUTOMATISCH GELADEN -->
-    <section
-      id="products"
-      class="product-grid"
-      aria-label="Digitale Produkte"
-    >
-      <div class="empty">
-        Lade Produkte …
-      </div>
+    <section id="products" class="product-grid" aria-label="Shop-Produkte">
+      <div class="empty">Lade Produkte …</div>
     </section>
 
-
-    <!-- WEITERE SHOP INFORMATIONEN -->
-    <section class="hero shop-hero">
-
-      <p class="eyebrow">MADE FOR CREATORS</p>
-
-      <h2>
-        Create something<br>
-        <span>that feels different.</span>
-      </h2>
-
-      <p class="muted">
-        Entdecke neue Sounds und lade deine gekauften Produkte
-        direkt als ZIP-Datei herunter.
-      </p>
-
-    </section>
-
-
-    <!-- ZAHLUNG UND DOWNLOAD -->
     <p class="fineprint">
-      Digitale Produkte werden nach erfolgreicher Zahlung
-      zum Download freigeschaltet. Die Verfügbarkeit hängt
-      von der Einrichtung des Shops und der Zahlungsabwicklung ab.
+      Digitale Produkte. Nach erfolgreicher Zahlung wird ein Download
+      freigeschaltet. Verfügbarkeit und Zahlungsabwicklung müssen
+      korrekt eingerichtet sein.
     </p>
 
-    <section
-      id="download-result"
-      class="admin-panel hidden"
-      aria-live="polite"
-    ></section>
+    <section id="download-result" class="admin-panel hidden"
+      aria-live="polite"></section>
 
   </main>
 
-
-  <!-- FOOTER -->
   <footer>
-    <span>
-      © <span id="year"></span> YARDSLOVESYOU
-    </span>
-
-    <span>
-      <a href="index.html">Back to portfolio ↗</a>
-    </span>
+    <span>© <span id="year"></span> YARDSLOVESYOU</span>
+    <span><a href="index.html">Zurück zum Portfolio ↗</a></span>
   </footer>
 
-
-  <!-- SCRIPTS -->
   <script src="config.js"></script>
   <script src="shop.js"></script>
-
 </body>
 </html>
