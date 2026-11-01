@@ -40,11 +40,14 @@
         <!-- Custom Player UI -->
         <div class="custom-player">
           <audio preload="none" src="${esc(audioUrl)}"></audio>
-          <button class="play-btn" aria-label="Play">▶</button>
+          <!-- SVG-Icons statt Emojis für ein einheitliches Design -->
+          <button class="play-btn" aria-label="Play/Pause">
+            <svg class="play-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5,3 19,12 5,21"></polygon></svg>
+            <svg class="pause-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+          </button>
           
           <div class="waveform-container" title="Fortschritt">
             <div class="waveform-bars">
-              <!-- Stilisierte Wellenform-Balken -->
               <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
               <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
               <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
@@ -58,34 +61,45 @@
     `;
     }).join("") : '<div class="empty">Noch keine Tracks. Melde dich als Admin an, um deine erste Audiodatei hochzuladen.</div>';
     
-    // Lösch-Funktion binden
     document.querySelectorAll("[data-delete]").forEach(b => b.onclick = () => deleteTrack(b.dataset.delete));
 
-    // Custom Player Logik (Play/Pause, Wellenform & Fortschritt)
+    // Player Logik mit SVG-Umschaltung
     document.querySelectorAll(".track").forEach(article => {
       const audio = article.querySelector("audio");
       const playBtn = article.querySelector(".play-btn");
+      const playIcon = article.querySelector(".play-icon");
+      const pauseIcon = article.querySelector(".pause-icon");
       const progressBar = article.querySelector(".progress-bar");
       const waveformContainer = article.querySelector(".waveform-container");
 
+      function setButtonState(isPlaying) {
+        if (isPlaying) {
+          playIcon.style.display = "none";
+          pauseIcon.style.display = "block";
+        } else {
+          playIcon.style.display = "block";
+          pauseIcon.style.display = "none";
+        }
+      }
+
       playBtn.onclick = () => {
-        // Alle anderen Player pausieren
         document.querySelectorAll("audio").forEach(other => {
           if (other !== audio) {
             other.pause();
             const parentArticle = other.closest(".track");
             if(parentArticle) {
-              parentArticle.querySelector(".play-btn").textContent = "▶";
+              parentArticle.querySelector(".play-icon").style.display = "block";
+              parentArticle.querySelector(".pause-icon").style.display = "none";
             }
           }
         });
 
         if (audio.paused) {
           audio.play();
-          playBtn.textContent = "⏸";
+          setButtonState(true);
         } else {
           audio.pause();
-          playBtn.textContent = "▶";
+          setButtonState(false);
         }
       };
 
@@ -97,7 +111,7 @@
       };
 
       audio.onended = () => {
-        playBtn.textContent = "▶";
+        setButtonState(false);
         progressBar.style.width = "0%";
       };
 
