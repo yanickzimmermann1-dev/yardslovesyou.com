@@ -1,17 +1,41 @@
+
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shop · YARDSLOVESYOU</title><link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop · YARDSLOVESYOU</title>
+  <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<header class="topbar"><a class="brand" href="index.html">YARDS<span>LOVES<span>YOU</span></a><nav><a href="index.html">Portfolio</a><a class="active" href="shop.html">Shop</a></nav><a class="outline nav-admin" href="index.html#admin-panel">Admin</a></header>
-<main class="wrap">
-  <div id="products" class="product-grid"><div class="empty">Load products...</div></div>
-  <p class="fineprint">Your products will be available as a zip-download.</p>
-  <section id="download-result" class="admin-panel hidden"></section>
-</main>
-<footer><span>© <span id="year"></span> YARDSLOVESYOU</span><span><a href="index.html"><3</a></span></footer>
-<script src="config.js"></script><script src="shop.js"></script>
-</body></html>
+  <header class="topbar">
+    <a class="brand" href="index.html">YARDS<span>LOVES<span>YOU</span></span></a>
+    <nav>
+      <a href="index.html">Portfolio</a>
+      <a class="active" href="shop.html">Shop</a>
+    </nav>
+    <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
+  </header>
+
+  <main class="wrap">
+    <div id="products" class="product-grid">
+      <div class="empty">Load products...</div>
+    </div>
+
+    <p class="fineprint">
+      Your products will be available as a zip-download.
+    </p>
+
+    <section id="download-result" class="admin-panel hidden"></section>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> YARDSLOVESYOU</span>
+    <span><a href="index.html">&lt;3</a></span>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="shop.js"></script>
+</body>
+</html>
