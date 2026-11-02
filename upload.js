@@ -111,7 +111,6 @@
         // 8. Zu Stripe weiterleiten
         location.href = checkoutData.url;
 
-      }schwach (err) {
       } catch (err) {
         console.error(err);
         if(status) status.textContent = "Error: " + (err.message || "Upload failed.");
