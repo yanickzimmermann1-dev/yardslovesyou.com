@@ -1,52 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YARDSLOVESYOU - Submit Track</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Upload · YARDSLOVESYOU</title>
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <header>
+
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      YARDS<span>LOVES<span>YOU</span></span>
+    </a>
+
     <nav>
       <a href="index.html">Home</a>
       <a href="shop.html">Shop</a>
-      <a href="upload.html" class="active">Submit Track</a>
+      <a class="active" href="upload.html">Upload</a>
     </nav>
+
+    <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
   </header>
 
-  <main class="container">
-    <h1>Submit Your Track</h1>
-    <p class="muted">Upload your WAV file, leave your contact info, and describe your vision or specific requests.</p>
+  <main class="wrap">
 
-    <form id="upload-form" class="card-form">
-      <div class="field">
-        <label for="artist-name">Artist Name / Your Name</label>
-        <input type="text" id="artist-name" required placeholder="e.g. John Doe">
+    <section class="hero shop-hero">
+      <p class="eyebrow">CLIENT SUBMISSION</p>
+      <h1>Submit your track,<br><span>let's work together</span></h1>
+      <p class="muted">
+        Upload your WAV file, leave your contact info, and describe your vision or specific requests.
+      </p>
+    </section>
+
+    <section class="section-head">
+      <div>
+        <p class="eyebrow"></p>
+        <h2>Track Upload</h2>
       </div>
+    </section>
 
-      <div class="field">
-        <label for="artist-email">Email Address</label>
-        <input type="email" id="artist-email" required placeholder="john@example.com">
-      </div>
+    <section class="admin-panel" style="background: var(--card-bg, #14121d); border: 1px solid var(--border, #262235); padding: 2rem; border-radius: 12px; margin-bottom: 3rem;">
+      <form id="upload-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="artist-name" style="font-size: 0.9rem; font-weight: 500;">Artist Name / Your Name</label>
+          <input id="artist-name" type="text" placeholder="e.g. Zimmi" required style="padding: 0.75rem; background: #0a080f; border: 1px solid #262235; color: #fff; border-radius: 6px;">
+        </div>
 
-      <div class="field">
-        <label for="track-wishes">Project Details & Wishes</label>
-        <textarea id="track-wishes" rows="4" placeholder="Describe what you need (mixing, mastering, etc.)..."></textarea>
-      </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="artist-email" style="font-size: 0.9rem; font-weight: 500;">Email Address</label>
+          <input id="artist-email" type="email" placeholder="your@email.com" required style="padding: 0.75rem; background: #0a080f; border: 1px solid #262235; color: #fff; border-radius: 6px;">
+        </div>
 
-      <div class="field">
-        <label for="audio-file">WAV File (.wav only)</label>
-        <input type="file" id="audio-file" accept=".wav" required>
-      </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="track-wishes" style="font-size: 0.9rem; font-weight: 500;">Project Details & Wishes</label>
+          <textarea id="track-wishes" rows="4" placeholder="Tell me about your vision, reference tracks, or mixing notes..." style="padding: 0.75rem; background: #0a080f; border: 1px solid #262235; color: #fff; border-radius: 6px; resize: vertical;"></textarea>
+        </div>
 
-      <button type="submit" class="button" id="submit-btn">Upload & Send</button>
-      <p id="upload-status" class="status"></p>
-    </form>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="audio-file" style="font-size: 0.9rem; font-weight: 500;">WAV File (.wav only)</label>
+          <input id="audio-file" type="file" accept=".wav,audio/wav" required style="padding: 0.5rem 0; color: #aaa;">
+        </div>
+
+        <button id="submit-btn" class="button" type="submit" style="align-self: flex-start; margin-top: 0.5rem;">Upload & Send</button>
+      </form>
+
+      <p id="upload-status" class="status" role="status" style="margin-top: 1.5rem; font-weight: 500;"></p>
+    </section>
+
   </main>
 
-  <!-- Supabase Client & Skripte -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <footer>
+    <span>© <span id="year"></span> YARDSLOVESYOU</span>
+    <span><a href="index.html"><3</a></span>
+  </footer>
+
   <script src="config.js"></script>
   <script src="upload.js"></script>
 </body>
