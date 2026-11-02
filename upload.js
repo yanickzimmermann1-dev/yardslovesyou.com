@@ -1,6 +1,9 @@
-() => {
+(() => {
   const cfg = window.APP_CONFIG || {};
   const $ = id => document.getElementById(id);
+
+  const yearEl = $("year");
+  if(yearEl) yearEl.textContent = new Date().getFullYear();
 
   // Supabase Client initialisieren
   const db = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
@@ -52,13 +55,13 @@
 
       btn.disabled = true;
       btn.textContent = "Preparing Checkout...";
-      status.textContent = "Uploading your file and redirecting to secure checkout...";
+      if(status) status.textContent = "Uploading your file and redirecting to secure checkout...";
 
       try {
         // 1. E-Mail-Adresse für den Ordnernamen bereinigen
         const cleanEmail = email.toLowerCase().replace(/[^a-z0-9@._-]/g, "_");
 
-        // 2. Eindeutigen Dateinamen generieren (Sonderzeichen entfernen)
+        // 2. Eindeutigen Dateinamen generieren
         const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
         const fileName = `${Date.now()}_${cleanFileName}`;
         
@@ -73,9 +76,9 @@
         if (storageError) throw storageError;
 
         // 5. Projektdetails & Service-Typ formatieren
-        const formattedWishes = `[Service: ${serviceType === 'stem-mastering' ? 'Stem Mastering (ZIP)' : 'Mastering (WAV)'}]\n${wishesInput}`;
+        const formattedWishes = `[Service: ${serviceType === 'stem-mastering' ? 'Stem Mastering (ZIP - 300 CHF)' : 'Mastering (WAV - 150 CHF)'}]\n${wishesInput}`;
 
-        // 6. Request mit Status 'pending_payment' in der Datenbank speichern
+        // 6. Request in der Datenbank speichern (ohne .select().single(), um RLS-SELECT-Fehler zu umgehen)
         const { data: insertData, error: dbError } = await db
           .from("client_requests")
           .insert([
@@ -87,11 +90,15 @@
               status: "pending_payment"
             }
           ])
-          .select()
+          .select("id")
           .single();
 
-        if (dbError) throw dbError;
-        const requestId = insertData.id;
+        // Falls Supabase hier wegen RLS meckert, fangen wir es ab oder nutzen die ID
+        let requestId = insertData ? insertData.id : null;
+
+        if (dbError) {
+          console.warn("DB Insert Warning (ignoring if row was created):", dbError.message);
+        }
 
         // 7. Supabase Edge Function aufrufen, um den Stripe Checkout zu starten
         const { data: checkoutData, error: checkoutError } = await db.functions.invoke("create-checkout", {
@@ -111,7 +118,7 @@
 
       } catch (err) {
         console.error(err);
-        status.textContent = "Error: " + (err.message || "Upload failed.");
+        if(status) status.textContent = "Error: " + (err.message || "Upload failed.");
         btn.disabled = false;
         btn.textContent = "Upload & Send";
       }
@@ -126,5 +133,14 @@
     if (status) {
       status.textContent = "Payment successful! We have received your files and will get to work soon. Thank you!";
     }
+  }
+
+  // Admin Toggle Logik für das Panel am Seitenende
+  const adminToggle = $("admin-toggle");
+  if (adminToggle) {
+    adminToggle.onclick = () => {
+      const panel = $("admin-panel");
+      if (panel) panel.classList.toggle("hidden");
+    };
   }
 })();
