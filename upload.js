@@ -1,4 +1,4 @@
-(() => {
+document.addEventListener("DOMContentLoaded", () => {
   const cfg = window.APP_CONFIG || {};
   const $ = id => document.getElementById(id);
 
@@ -6,7 +6,7 @@
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   if (!window.supabase) {
-    console.error("Supabase SDK is not loaded!");
+    console.error("Supabase SDK ist nicht geladen!");
     return;
   }
 
@@ -16,7 +16,7 @@
   const fileLabel = $("file-label");
   const fileInput = $("submission-file");
 
-  // Dynamische Anpassung je nach gewähltem Service (Preise & Dateiformate)
+  // Dynamische Dateityp-Anpassung
   if (serviceSelect && fileInput && fileLabel) {
     serviceSelect.onchange = () => {
       const val = serviceSelect.value;
@@ -33,95 +33,97 @@
     };
   }
 
-  // Nach erfolgreichem Checkout zurückkehren & Status in DB auf 'complete' setzen
+  // Erfolgs-Check nach Stripe Redirect
   const params = new URLSearchParams(location.search);
   if (params.get("success") === "1" && params.get("session_id")) {
-    const formEl = $("upload-form");
-    if (formEl) formEl.style.display = "none";
+    const uploadForm = $("upload-form");
+    if (uploadForm) uploadForm.style.display = "none";
     const banner = $("success-banner");
     if (banner) banner.classList.remove("hidden");
 
-    // Status in Supabase auf 'complete' aktualisieren basierend auf der sessionId
-    (async () => {
-      const sessionId = params.get("session_id");
-      try {
-        await db.from("client_requests")
-          .update({ status: "complete" })
-          .eq("stripe_session_id", sessionId);
-      } catch (err) {
-        console.error("Fehler beim Aktualisieren des Status:", err);
-      }
-    })();
+    const sessionId = params.get("session_id");
+    db.from("client_requests")
+      .update({ status: "complete" })
+      .eq("stripe_session_id", sessionId)
+      .then(({ error }) => {
+        if (error) console.error("Fehler beim Aktualisieren des Status:", error);
+      });
   }
 
   const uploadForm = $("upload-form");
   if (uploadForm) {
     uploadForm.onsubmit = async (e) => {
       e.preventDefault();
+
       const btn = $("submit-btn");
       const statusEl = $("upload-status");
       const progressContainer = $("progress-container");
       const progressBarFill = $("progress-bar-fill");
       const progressPercent = $("progress-percent");
 
-      const name = $("artist-name").value.trim();
-      const email = $("artist-email").value.trim();
-      const serviceType = serviceSelect.value;
-      const wishes = $("track-wishes").value.trim();
-      const file = fileInput.files[0];
+      const nameInput = $("artist-name");
+      const emailInput = $("artist-email");
+      const wishesInput = $("track-wishes");
+
+      const name = nameInput ? nameInput.value.trim() : "";
+      const email = emailInput ? emailInput.value.trim() : "";
+      const serviceType = serviceSelect ? serviceSelect.value : "mixing";
+      const wishes = wishesInput ? wishesInput.value.trim() : "";
+      const file = fileInput && fileInput.files ? fileInput.files[0] : null;
 
       if (!file) {
-        alert("Bitte wähle eine Datei aus.");
+        alert("Bitte wähle eine Datei zum Hochladen aus.");
         return;
       }
 
-      // Validierung
+      // Format-Prüfung
       if (serviceType === "vocal-hook" && !file.name.toLowerCase().endsWith(".wav")) {
-        alert("Bitte wähle eine gültige .wav Datei für den Vocal-Hook.");
+        alert("Bitte wähle eine gültige WAV-Datei aus.");
         return;
       }
       if ((serviceType === "mixing" || serviceType === "stem-mastering") && !file.name.toLowerCase().endsWith(".zip")) {
-        alert("Bitte wähle ein gültiges .zip Archiv aus.");
+        alert("Bitte wähle ein gültiges ZIP-Archiv aus.");
         return;
       }
 
-      btn.disabled = true;
-      btn.textContent = "Wird hochgeladen...";
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Datei wird hochgeladen...";
+      }
       if (progressContainer) progressContainer.classList.remove("hidden");
+      if (statusEl) statusEl.textContent = "Upload gestartet...";
 
       try {
         const requestId = crypto.randomUUID();
+        
+        // Ordnerstruktur: E-Mail-Adresse als Ordnername
         const cleanEmail = email.toLowerCase().replace(/[^a-z0-9@._-]/g, "_");
         const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
         const filePath = `${cleanEmail}/${Date.now()}_${cleanFileName}`;
 
-        // Simulierter oder echter Upload-Fortschritt via XMLHttpRequest / Supabase
         if (progressBarFill && progressPercent) {
-          progressBarFill.style.width = "40%";
-          progressPercent.textContent = "40%";
+          progressBarFill.style.width = "30%";
+          progressPercent.textContent = "30%";
         }
 
-        // 1. Datei in den Storage-Ordner (benannt nach E-Mail) hochladen
+        // 1. Storage Upload
         const { error: storageError } = await db.storage
           .from("client-submissions")
-          .upload(filePath, file);
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
 
-        if (storageError) throw storageError;
-
-        if (progressBarFill && progressPercent) {
-          progressBarFill.style.width = "80%";
-          progressPercent.textContent = "80%";
+        if (storageError) {
+          throw new Error("Storage Upload Fehler: " + storageError.message);
         }
 
-        // 2. Datenbankeintrag anlegen mit Status "pending"
-        const serviceLabels = {
-          "mixing": "Mixing (300 CHF)",
-          "stem-mastering": "Stem-Mastering (200 CHF)",
-          "vocal-hook": "Vocal-Hook (500 CHF)"
-        };
+        if (progressBarFill && progressPercent) {
+          progressBarFill.style.width = "70%";
+          progressPercent.textContent = "70%";
+        }
 
-        const formattedWishes = `[Service: ${serviceLabels[serviceType]}]\n${wishes}`;
-
+        // 2. Datenbank-Eintrag anlegen
         const { error: dbError } = await db
           .from("client_requests")
           .insert([
@@ -130,22 +132,24 @@
               artist_name: name,
               email: email,
               service_type: serviceType,
-              wishes: formattedWishes,
+              wishes: wishes,
               file_path: filePath,
               status: "pending"
             }
           ]);
 
-        if (dbError) throw new Error("Datenbankfehler: " + dbError.message);
+        if (dbError) {
+          throw new Error("Datenbank Fehler: " + dbError.message);
+        }
 
         if (progressBarFill && progressPercent) {
           progressBarFill.style.width = "100%";
           progressPercent.textContent = "100%";
         }
 
-        if (statusEl) statusEl.textContent = "Weiterleitung zum sicheren Checkout...";
+        if (statusEl) statusEl.textContent = "Weiterleitung zu Stripe Checkout...";
 
-        // 3. Supabase Edge Function für Stripe Checkout aufrufen
+        // 3. Edge Function aufrufen
         const { data: checkoutData, error: checkoutError } = await db.functions.invoke("create-submission-checkout", {
           body: { 
             service_type: serviceType, 
@@ -155,32 +159,21 @@
         });
 
         if (checkoutError || !checkoutData?.url) {
-          throw new Error(checkoutError?.message || "Konnte keine Checkout-Session erstellen.");
+          throw new Error(checkoutError?.message || "Checkout-Link konnte nicht generiert werden.");
         }
 
-        // Stripe Session ID in DB zwischenspeichern für spätere Zuordnung (optional aber empfohlen)
-        // (Wird im Normalfall auch über Webhooks oder nach dem Redirect gelöst)
-
-        // 4. Zu Stripe weiterleiten
-        location.href = checkoutData.url;
+        // Weiterleitung zu Stripe
+        window.location.href = checkoutData.url;
 
       } catch (err) {
-        console.error(err);
-        if (statusEl) statusEl.textContent = "Fehler: " + (err.message || "Upload fehlgeschlagen.");
-        btn.disabled = false;
-        btn.textContent = "Zum Checkout";
+        console.error("Upload-Prozess abgebrochen:", err);
+        if (statusEl) statusEl.textContent = "Fehler: " + err.message;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Zum Checkout";
+        }
         if (progressContainer) progressContainer.classList.add("hidden");
       }
-    };
-  }
-
-  // Admin Toggle Logik
-  const adminToggle = $("admin-toggle");
-  if (adminToggle) {
-    adminToggle.onclick = (e) => {
-      e.preventDefault();
-      const panel = $("admin-panel");
-      if (panel) panel.classList.toggle("hidden");
     };
   }
 });
