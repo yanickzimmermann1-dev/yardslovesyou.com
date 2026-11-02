@@ -11,7 +11,7 @@
 
   if (!ready) { 
     const tracksEl = $("tracks");
-    if (tracksEl) tracksEl.innerHTML = '<div class="empty">Bitte zuerst deine Supabase-Zugangsdaten in <code>config.js</code> eintragen und das SQL aus <code>supabase/setup.sql</code> ausführen.</div>'; 
+    if (tracksEl) tracksEl.innerHTML = '<div class="empty">Bitte zuerst deine Supabase-Zugangsdaten in <code>config.js</code> eintragen.</div>'; 
     return; 
   }
   
@@ -25,13 +25,11 @@
     if (!tracksContainer) return;
 
     const {data,error} = await db.from("audio_tracks").select("*").order("created_at",{ascending:false});
-    if (error) { tracksContainer.innerHTML = '<div class="empty">Tracks konnten nicht geladen werden. Prüfe die Supabase-Einrichtung.</div>'; return; }
+    if (error) { tracksContainer.innerHTML = '<div class="empty">Tracks konnten nicht geladen werden.</div>'; return; }
     
     tracksContainer.innerHTML = data.length ? data.map(t => {
       const imageUrl = t.image_path ? db.storage.from("coverart-portolio").getPublicUrl(t.image_path).data.publicUrl : null;
       const audioUrl = db.storage.from("audio-files").getPublicUrl(t.storage_path).data.publicUrl;
-
-      // Generiere 30 Balken für die Wellenform
       const barsHtml = Array.from({length: 30}, () => '<span class="wave-bar"></span>').join('');
 
       return `
@@ -60,10 +58,10 @@
           </div>
         </div>
 
-        ${user ? `<button class="delete-track" data-delete="${esc(t.id)}" style="margin-top:10px; background:rgba(255,0,0,0.2); border:none; color:#ff8b8b; padding:6px 12px; border-radius:4px; cursor:pointer;">Track löschen</button>` : ""}
+        ${user ? `<button class="delete-track" data-delete="${esc(t.id)}">Track löschen</button>` : ""}
       </article>
     `;
-    }).join("") : '<div class="empty">Noch keine Tracks. Melde dich unten rechts als Admin an, um deine erste Audiodatei hochzuladen.</div>';
+    }).join("") : '<div class="empty">Noch keine Tracks.</div>';
     
     document.querySelectorAll("[data-delete]").forEach(b => b.onclick = () => deleteTrack(b.dataset.delete));
 
@@ -114,13 +112,9 @@
         if (audio.duration && bars.length) {
           const progress = audio.currentTime / audio.duration;
           const activeIndex = Math.floor(progress * bars.length);
-          
           bars.forEach((bar, idx) => {
-            if (idx <= activeIndex) {
-              bar.classList.add("active");
-            } else {
-              bar.classList.remove("active");
-            }
+            if (idx <= activeIndex) bar.classList.add("active");
+            else bar.classList.remove("active");
           });
         }
       };
@@ -134,10 +128,7 @@
         waveformContainer.onclick = (e) => {
           const rect = waveformContainer.getBoundingClientRect();
           const clickX = e.clientX - rect.left;
-          const width = rect.width;
-          if (audio.duration) {
-            audio.currentTime = (clickX / width) * audio.duration;
-          }
+          if (audio.duration) audio.currentTime = (clickX / rect.width) * audio.duration;
         };
       }
     });
@@ -157,7 +148,7 @@
         user=null;
         if(loginForm) loginForm.classList.remove("hidden");
         if(adminTools) adminTools.classList.add("hidden");
-        status("Dieses Konto ist nicht als Admin freigeschaltet.");
+        status("Nicht als Admin freigeschaltet.");
       } 
     }
     await loadTracks();
@@ -184,72 +175,30 @@
     for(const file of files) {
       const isAudio = file.type.startsWith("audio/");
       const isImage = file.type.startsWith("image/");
-
-      if(!isAudio && !isImage) { 
-        status(`${file.name}: Weder Audio- noch Bilddatei.`); 
-        continue; 
-      }
+      if(!isAudio && !isImage) continue;
 
       const path = `${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,"_")}`;
-      status(`Lade ${file.name} hoch …`);
-      
       if(isAudio) {
-        const {error:upErr} = await db.storage.from("audio-files").upload(path, file, {contentType:file.type, upsert:false});
+        const {error:upErr} = await db.storage.from("audio-files").upload(path, file);
         if(upErr) { status(upErr.message); continue; }
-
-        const {error:dbErr} = await db.from("audio_tracks").insert({
-          title: file.name.replace(/\.[^.]+$/, ""),
-          description: "",
-          storage_path: path
-        });
-        if(dbErr) { await db.storage.from("audio-files").remove([path]); status(dbErr.message); continue; }
-        status(`${file.name} hochgeladen.`);
+        await db.from("audio_tracks").insert({ title: file.name.replace(/\.[^.]+$/, ""), storage_path: path });
       } else if(isImage) {
-        const {error:upErr} = await db.storage.from("coverart-portolio").upload(path, file, {contentType:file.type, upsert:false});
+        const {error:upErr} = await db.storage.from("coverart-portolio").upload(path, file);
         if(upErr) { status(upErr.message); continue; }
-
         const {data: latestTrack} = await db.from("audio_tracks").select("id").order("created_at", {ascending: false}).limit(1).single();
-        if(latestTrack) {
-          const {error:dbErr} = await db.from("audio_tracks").update({ image_path: path }).eq("id", latestTrack.id);
-          if(dbErr) { await db.storage.from("coverart-portolio").remove([path]); status(dbErr.message); continue; }
-          status(`Cover-Bild für den neuesten Track aktualisiert.`);
-        } else {
-          await db.storage.from("coverart-portolio").remove([path]);
-          status(`Bild hochgeladen, aber es existiert noch kein Track dafür.`);
-        }
+        if(latestTrack) await db.from("audio_tracks").update({ image_path: path }).eq("id", latestTrack.id);
       }
     }
     await loadTracks();
   }
 
-  async function deleteTrack(id) {
-    if(!confirm("Diesen Track wirklich löschen?")) return;
-    const {data:track} = await db.from("audio_tracks").select("*").eq("id",id).single();
-    if(!track) return status("Track nicht gefunden.");
-    
-    const {error:removeAudioErr} = await db.storage.from("audio-files").remove([track.storage_path]);
-    if(removeAudioErr) return status(removeAudioErr.message);
-
-    if(track.image_path) {
-      const {error:removeImgErr} = await db.storage.from("coverart-portolio").remove([track.image_path]);
-      if(removeImgErr) return status(removeImgErr.message);
-    }
-    
-    const {error} = await db.from("audio_tracks").delete().eq("id",id);
-    status(error ? error.message : "Track gelöscht."); await loadTracks();
-  }
-
   const dz = $("dropzone");
   if(dz) {
-    dz.addEventListener("dragover",e=>{e.preventDefault();dz.style.borderColor="#e5a5ff";});
-    dz.addEventListener("dragleave",()=>dz.style.borderColor="");
-    dz.addEventListener("drop",e=>{e.preventDefault();dz.style.borderColor="";upload([...e.dataTransfer.files]);});
+    dz.addEventListener("dragover",e=>{e.preventDefault();});
+    dz.addEventListener("drop",e=>{e.preventDefault();upload([...e.dataTransfer.files]);});
   }
-  
   const audioFilesInput = $("audio-files");
-  if(audioFilesInput) {
-    audioFilesInput.onchange = e => upload([...e.target.files]);
-  }
+  if(audioFilesInput) audioFilesInput.onchange = e => upload([...e.target.files]);
 
   refreshUser();
 })();
