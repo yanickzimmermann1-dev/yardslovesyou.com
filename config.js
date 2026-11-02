@@ -1,6 +1,5 @@
 // Supabase Dashboard → Project Settings → API
-// Nur die Project URL und den Publishable Key (oder alten anon key) hier eintragen.
-// NIEMALS den service_role/secret key in diese Datei schreiben.
+// Nur die Project URL und den Publishable Key hier eintragen.
 window.APP_CONFIG = {
   SUPABASE_URL: "https://kmekgjllklwrxizqbrac.supabase.co",
   SUPABASE_PUBLISHABLE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttZWtnamxsa2x3cnhpenFicmFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMyOTM3NTUsImV4cCI6MjEwODg2OTc1NX0.D5OuetH9LRR9NBnjgaSzbNUNa0VmmugM3vd4pVOnY0s",
