@@ -146,7 +146,7 @@
         if (statusEl) statusEl.textContent = "Weiterleitung zum sicheren Checkout...";
 
         // 3. Supabase Edge Function für Stripe Checkout aufrufen
-        const { data: checkoutData, error: checkoutError } = await db.functions.invoke("create-checkout", {
+        const { data: checkoutData, error: checkoutError } = await db.functions.invoke("create-submission-checkout", {
           body: { 
             service_type: serviceType, 
             request_id: requestId, 
