@@ -94,7 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (statusEl) statusEl.textContent = "Upload gestartet...";
 
       try {
-        const requestId = crypto.randomUUID();
+        const requestId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  const r = Math.random() * 16 | 0;
+  return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+});
         
         // Ordnerstruktur: E-Mail-Adresse als Ordnername
         const cleanEmail = email.toLowerCase().replace(/[^a-z0-9@._-]/g, "_");
