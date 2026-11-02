@@ -19,7 +19,7 @@
       if(error) throw error;
       if(!data?.url) throw new Error(data?.error||"Checkout-Link fehlt.");
       location.href=data.url;
-    }catch(e){alert("Checkout ist noch nicht eingerichtet: "+(e.message||e));if(b){b.disabled=false;b.textContent="Kaufen ↗";}}
+    }catch(e){alert("Checkout ist noch nicht eingerichtet: "+(e.message||e));if(b){b.disabled=false;b.textContent="Buy";}}
   }
   const params=new URLSearchParams(location.search);
   if(params.get("success")==="1"&&params.get("session_id")){
