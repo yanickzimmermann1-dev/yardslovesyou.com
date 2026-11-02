@@ -24,12 +24,12 @@
   const params=new URLSearchParams(location.search);
   if(params.get("success")==="1"&&params.get("session_id")){
     $("download-result").classList.remove("hidden");
-    $("download-result").innerHTML="<h2>Zahlung prüfen</h2><p class='muted'>Wenn die Zahlung erfolgreich war, kannst du deinen Download jetzt anfordern.</p><button class='button' id='get-download'>ZIP herunterladen</button><p id='download-status' class='status'></p>";
+    $("download-result").innerHTML="<h2>Verifying payment...</h2><p class='muted'>If your payment was successful, you can now request your download.</p><button class='button' id='get-download'>Download ZIP</button><p id='download-status' class='status'></p>";
     $("get-download").onclick=async()=>{
-      $("download-status").textContent="Prüfe Zahlung …";
+      $("download-status").textContent="Veryfying payment...";
       const {data,error}=await db.functions.invoke("download-zip",{body:{session_id:params.get("session_id")}});
       if(error||!data?.url){$("download-status").textContent="Download nicht freigegeben: "+(error?.message||data?.error||"Zahlung konnte nicht bestätigt werden.");return;}
-      const a=document.createElement("a");a.href=data.url;a.textContent="Download starten";a.className="download-link";a.rel="noopener";a.target="_blank";$("download-status").replaceWith(a);
+      const a=document.createElement("a");a.href=data.url;a.textContent="Start download";a.className="download-link";a.rel="noopener";a.target="_blank";$("download-status").replaceWith(a);
     };
   }
   load();
