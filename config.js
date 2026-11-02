@@ -3,6 +3,6 @@
 // NIEMALS den service_role/secret key in diese Datei schreiben.
 window.APP_CONFIG = {
   SUPABASE_URL: "https://kmekgjllklwrxizqbrac.supabase.co",
-  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_UDzFS9ZQxclIeegI8_vkWA_XYrA9TJ_",
+  SUPABASE_PUBLISHABLE_KEY: "pk_live_51UVyoi0bqUVEMVOkFxyuP778uhBZLTc24uVTrBPEwKzwq6dT8UgQzTHyIL9C9IHoiVZk6dew89bA9etJjHIxlRnq009fcwzC6H",
   CURRENCY: "CHF"
 };
