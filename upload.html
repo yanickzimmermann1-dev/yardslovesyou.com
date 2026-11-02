@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YARDSLOVESYOU - Submit Track</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="upload.html" class="active">Submit Track</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>Submit Your Track</h1>
+    <p class="muted">Upload your WAV file, leave your contact info, and describe your vision or specific requests.</p>
+
+    <form id="upload-form" class="card-form">
+      <div class="field">
+        <label for="artist-name">Artist Name / Your Name</label>
+        <input type="text" id="artist-name" required placeholder="e.g. John Doe">
+      </div>
+
+      <div class="field">
+        <label for="artist-email">Email Address</label>
+        <input type="email" id="artist-email" required placeholder="john@example.com">
+      </div>
+
+      <div class="field">
+        <label for="track-wishes">Project Details & Wishes</label>
+        <textarea id="track-wishes" rows="4" placeholder="Describe what you need (mixing, mastering, etc.)..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="audio-file">WAV File (.wav only)</label>
+        <input type="file" id="audio-file" accept=".wav" required>
+      </div>
+
+      <button type="submit" class="button" id="submit-btn">Upload & Send</button>
+      <p id="upload-status" class="status"></p>
+    </form>
+  </main>
+
+  <!-- Supabase Client & Skripte -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="upload.js"></script>
+</body>
+</html>
