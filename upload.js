@@ -78,8 +78,8 @@
         // 5. Projektdetails & Service-Typ formatieren
         const formattedWishes = `[Service: ${serviceType === 'stem-mastering' ? 'Stem Mastering (ZIP - 300 CHF)' : 'Mastering (WAV - 150 CHF)'}]\n${wishesInput}`;
 
-        // 6. Request in der Datenbank speichern (ohne .select().single(), um RLS-SELECT-Fehler zu umgehen)
-        const { data: insertData, error: dbError } = await db
+        // 6. Request in der Datenbank speichern (Ohne .single() oder .select(), damit RLS keinen Fehler wirft)
+        const { error: dbError } = await db
           .from("client_requests")
           .insert([
             {
@@ -89,22 +89,17 @@
               file_path: filePath,
               status: "pending_payment"
             }
-          ])
-          .select("id")
-          .single();
-
-        // Falls Supabase hier wegen RLS meckert, fangen wir es ab oder nutzen die ID
-        let requestId = insertData ? insertData.id : null;
+          ]);
 
         if (dbError) {
-          console.warn("DB Insert Warning (ignoring if row was created):", dbError.message);
+          console.error("DB Insert Error:", dbError.message);
+          throw new Error("Database error: " + dbError.message);
         }
 
         // 7. Supabase Edge Function aufrufen, um den Stripe Checkout zu starten
         const { data: checkoutData, error: checkoutError } = await db.functions.invoke("create-checkout", {
           body: { 
             service_type: serviceType, 
-            request_id: requestId,
             email: email 
           }
         });
@@ -116,6 +111,7 @@
         // 8. Zu Stripe weiterleiten
         location.href = checkoutData.url;
 
+      }schwach (err) {
       } catch (err) {
         console.error(err);
         if(status) status.textContent = "Error: " + (err.message || "Upload failed.");
@@ -135,10 +131,11 @@
     }
   }
 
-  // Admin Toggle Logik für das Panel am Seitenende
+  // Admin Toggle Logik für das Panel oben in der Topbar
   const adminToggle = $("admin-toggle");
   if (adminToggle) {
-    adminToggle.onclick = () => {
+    adminToggle.onclick = (e) => {
+      e.preventDefault();
       const panel = $("admin-panel");
       if (panel) panel.classList.toggle("hidden");
     };
