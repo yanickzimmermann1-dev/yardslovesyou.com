@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Upload & Services · YARDSLOVESYOU</title>
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      YARDS<span>LOVES<span>YOU</span></span>
+    </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a class="active" href="upload.html">Upload</a>
+    </nav>
+
+    <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero shop-hero">
+      <p class="eyebrow">CLIENT SUBMISSION</p>
+      <h1>Submit your track,<br><span>let's work together</span></h1>
+      <p class="muted">
+        Wähle deinen Service, lade deine Dateien hoch und starte dein Projekt.
+      </p>
+    </section>
+
+    <!-- Erfolgsnachricht nach erfolgreichem Stripe-Checkout -->
+    <section id="success-banner" class="admin-panel hidden" style="border-color: var(--green); margin-bottom: 2rem;">
+      <h2 style="color: var(--green);">Zahlung erfolgreich!</h2>
+      <p class="muted">Vielen Dank! Deine Dateien wurden erfolgreich übermittelt und der Status wurde auf <strong style="color:var(--text);">complete</strong> gesetzt. Wir melden uns in Kürze bei dir.</p>
+    </section>
+
+    <section class="admin-panel" style="background: var(--panel); border: 1px solid var(--line); padding: 2rem; border-radius: 16px; margin-bottom: 3rem;">
+      <form id="upload-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        
+        <!-- 1. Option / Service Auswahl -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="service-type" style="font-size: 0.9rem; font-weight: 500;">Wähle deinen Service</label>
+          <select id="service-type" style="padding: 0.75rem; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px;">
+            <option value="stem-mastering">Stem-Mastering (ZIP Upload) – 200 CHF</option>
+            <option value="mixing">Mixing (ZIP Upload) – 300 CHF</option>
+            <option value="vocal-hook">Vocal-Hook (Einzelne WAV Datei) – 500 CHF</option>
+          </select>
+        </div>
+
+        <!-- 2. Eingabefelder (erscheinen/bleiben aktiv) -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="artist-name" style="font-size: 0.9rem; font-weight: 500;">Name / Künstlername</label>
+          <input id="artist-name" type="text" placeholder="Dein Name" required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="artist-email" style="font-size: 0.9rem; font-weight: 500;">E-Mail-Adresse</label>
+          <input id="artist-email" type="email" placeholder="deine@email.com" required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label for="track-wishes" style="font-size: 0.9rem; font-weight: 500;">Wünsche / Anmerkungen / Referenzen</label>
+          <textarea id="track-wishes" rows="4" placeholder="Erzähl mir von deiner Vision, Referenztracks oder genauen Vorstellungen..." style="background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 9px; padding: 12px; font: inherit; resize: vertical;"></textarea>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label id="file-label" for="submission-file" style="font-size: 0.9rem; font-weight: 500;">ZIP-Datei (Stems / Mixing)</label>
+          <input id="submission-file" type="file" accept=".zip,application/zip" required style="padding: 0.5rem 0; color: var(--muted);">
+        </div>
+
+        <!-- Upload Fortschrittsbalken -->
+        <div id="progress-container" class="hidden" style="display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--muted);">
+            <span id="progress-text">Upload läuft...</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div style="width: 100%; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--line);">
+            <div id="progress-bar-fill" style="width: 0%; height: 100%; background: var(--purple); transition: width 0.1s ease;"></div>
+          </div>
+        </div>
+
+        <!-- Checkout Button -->
+        <button id="submit-btn" class="button" type="submit" style="align-self: flex-start; margin-top: 0.5rem;">Zum Checkout</button>
+      </form>
+
+      <p id="upload-status" class="status" role="status" style="margin-top: 1.5rem; font-weight: 500;"></p>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> YARDSLOVESYOU</span>
+    <span><a href="index.html">&lt;3</a></span>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="upload.js"></script>
+</body>
+</html>
