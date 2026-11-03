@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,54 +31,54 @@
       <p class="eyebrow">CLIENT SUBMISSION</p>
       <h1>Submit your track,<br><span>let's work together</span></h1>
       <p class="muted">
-        Wähle deinen Service, lade deine Dateien hoch und starte dein Projekt.
+        Choose your service, upload your files and start your project.
       </p>
     </section>
 
-    <!-- Erfolgsnachricht nach erfolgreichem Stripe-Checkout -->
+    <!-- Success message after successful Stripe checkout -->
     <section id="success-banner" class="admin-panel hidden" style="border-color: var(--green); margin-bottom: 2rem;">
-      <h2 style="color: var(--green);">Zahlung erfolgreich!</h2>
-      <p class="muted">Vielen Dank! Deine Dateien wurden erfolgreich übermittelt und der Status wurde auf <strong style="color:var(--text);">complete</strong> gesetzt. Wir melden uns in Kürze bei dir.</p>
+      <h2 style="color: var(--green);">Payment successful!</h2>
+      <p class="muted">Thank you! Your files were submitted successfully and the status has been set to <strong style="color:var(--text);">complete</strong>. We'll get back to you shortly.</p>
     </section>
 
     <section class="admin-panel" style="background: var(--panel); border: 1px solid var(--line); padding: 2rem; border-radius: 16px; margin-bottom: 3rem;">
       <form id="upload-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
         
-        <!-- 1. Option / Service Auswahl -->
+        <!-- 1. Option / service selection -->
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label for="service-type" style="font-size: 0.9rem; font-weight: 500;">Wähle deinen Service</label>
+          <label for="service-type" style="font-size: 0.9rem; font-weight: 500;">Choose your service</label>
           <select id="service-type" style="padding: 0.75rem; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px;">
-            <option value="stem-mastering">Stem-Mastering (ZIP Upload) – 200 CHF</option>
-            <option value="mixing">Mixing (ZIP Upload) – 300 CHF</option>
-            <option value="vocal-hook">Vocal-Hook (Einzelne WAV Datei) – 500 CHF</option>
+            <option value="stem-mastering">Stem Mastering (ZIP upload) – 200 CHF</option>
+            <option value="mixing">Mixing (ZIP upload) – 300 CHF</option>
+            <option value="vocal-hook">Vocal Hook (single WAV file) – 500 CHF</option>
           </select>
         </div>
 
-        <!-- 2. Eingabefelder (erscheinen/bleiben aktiv) -->
+        <!-- 2. Input fields (appear/stay active) -->
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label for="artist-name" style="font-size: 0.9rem; font-weight: 500;">Name / Künstlername</label>
-          <input id="artist-name" type="text" placeholder="Dein Name" required>
+          <label for="artist-name" style="font-size: 0.9rem; font-weight: 500;">Name / Artist name</label>
+          <input id="artist-name" type="text" placeholder="Your name" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label for="artist-email" style="font-size: 0.9rem; font-weight: 500;">E-Mail-Adresse</label>
-          <input id="artist-email" type="email" placeholder="deine@email.com" required>
+          <label for="artist-email" style="font-size: 0.9rem; font-weight: 500;">Email address</label>
+          <input id="artist-email" type="email" placeholder="your@email.com" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label for="track-wishes" style="font-size: 0.9rem; font-weight: 500;">Wünsche / Anmerkungen / Referenzen</label>
-          <textarea id="track-wishes" rows="4" placeholder="Erzähl mir von deiner Vision, Referenztracks oder genauen Vorstellungen..." style="background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 9px; padding: 12px; font: inherit; resize: vertical;"></textarea>
+          <label for="track-wishes" style="font-size: 0.9rem; font-weight: 500;">Wishes / Notes / References</label>
+          <textarea id="track-wishes" rows="4" placeholder="Tell me about your vision, reference tracks or specific ideas..." style="background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 9px; padding: 12px; font: inherit; resize: vertical;"></textarea>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label id="file-label" for="submission-file" style="font-size: 0.9rem; font-weight: 500;">ZIP-Datei (Stems / Mixing)</label>
+          <label id="file-label" for="submission-file" style="font-size: 0.9rem; font-weight: 500;">ZIP file (stems / mixing)</label>
           <input id="submission-file" type="file" accept=".zip,application/zip" required style="padding: 0.5rem 0; color: var(--muted);">
         </div>
 
-        <!-- Upload Fortschrittsbalken -->
+        <!-- Upload progress bar -->
         <div id="progress-container" class="hidden" style="display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem;">
           <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--muted);">
-            <span id="progress-text">Upload läuft...</span>
+            <span id="progress-text">Uploading...</span>
             <span id="progress-percent">0%</span>
           </div>
           <div style="width: 100%; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--line);">
@@ -86,8 +86,8 @@
           </div>
         </div>
 
-        <!-- Checkout Button -->
-        <button id="submit-btn" class="button" type="submit" style="align-self: flex-start; margin-top: 0.5rem;">Zum Checkout</button>
+        <!-- Checkout button -->
+        <button id="submit-btn" class="button" type="submit" style="align-self: flex-start; margin-top: 0.5rem;">Proceed to checkout</button>
       </form>
 
       <p id="upload-status" class="status" role="status" style="margin-top: 1.5rem; font-weight: 500;"></p>
@@ -97,13 +97,13 @@
 
   <footer>
   <div style="display: flex; flex-direction: column; width: 100%; gap: 16px;">
-    <!-- Erste Zeile: Copyright links, Herz rechts -->
+    <!-- First row: copyright left, heart right -->
     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
       <span>© <span id="year">2026</span> YARDSLOVESYOU</span>
       <span>&lt;3</span>
     </div>
     
-    <!-- Zweite Zeile: Links zentriert mit Abstand -->
+    <!-- Second row: links centered with spacing -->
     <div style="display: flex; justify-content: center; gap: 20px; font-size: 11px; color: var(--muted); margin-top: 12px;">
       <a href="code-of-conduct.html">Code of Conduct</a>
       <a href="contributing.html">Contributing</a>
