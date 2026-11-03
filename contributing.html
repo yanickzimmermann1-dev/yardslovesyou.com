@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Contributing · YARDSLOVESYOU</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">YARDS<span>LOVES<span>YOU</span></span></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="upload.html">Upload</a>
+    </nav>
+    <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
+  </header>
+
+  <main class="wrap" style="padding: 60px 0;">
+    <section class="hero shop-hero" style="padding: 20px 0 40px;">
+      <p class="eyebrow">GUIDELINES</p>
+      <h1>Contributing</h1>
+    </section>
+    <div class="muted" style="line-height: 1.8; display: flex; flex-direction: column; gap: 20px;">
+      <h2>Contributing to YARDSLOVESYOU</h2>
+      <p>First off, thank you for taking the time to contribute! Contributions are welcome, encouraged, and appreciated.</p>
+      <h2>Using Issue Tracker</h2>
+      <p>The issue tracker is the preferred channel for bug reports, features requests, and submitting pull requests.</p>
+      <h2>Pull Requests</h2>
+      <p>1. Fork the repo and create your branch from `main`.<br>2. If you've added code that should be tested, add tests.<br>3. Ensure the test suite passes.<br>4. Issue that pull request!</p>
+    </div>
+  </main>
+
+  <footer>
+    <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>© <span id="year">2026</span> YARDSLOVESYOU</span>
+        <span>&lt;3</span>
+      </div>
+      <div style="display: flex; gap: 16px; font-size: 11px; color: var(--muted);">
+        <a href="code-of-conduct.html">Code of Conduct</a>
+        <a href="contributing.html">Contributing</a>
+        <a href="license.html">License</a>
+        <a href="security.html">Security</a>
+      </div>
+    </div>
+  </footer>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
