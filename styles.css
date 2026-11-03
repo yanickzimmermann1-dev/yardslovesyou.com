@@ -251,7 +251,7 @@ input{
   font:inherit;
 }
 
-/* --- Neu hinzugefügt: Modernes Dropdown & File-Input Design --- */
+/* --- Modernes Dropdown Styling --- */
 select {
   appearance: none;
   -webkit-appearance: none;
@@ -284,11 +284,12 @@ select option {
   padding: 10px;
 }
 
+/* --- Modernes File-Input & Button Styling (mit Abstand) --- */
 input[type="file"] {
   background: #0f0c15;
   border: 1px solid var(--line);
   border-radius: 9px;
-  padding: 8px 12px;
+  padding: 8px 12px 8px 14px;
   color: var(--muted);
   cursor: pointer;
   width: 100%;
@@ -307,7 +308,7 @@ input[type="file"]::-webkit-file-upload-button {
   font-weight: 600;
   font-size: 12px;
   cursor: pointer;
-  margin-right: 12px;
+  margin-right: 14px;
   transition: background 0.2s ease;
 }
 
@@ -315,18 +316,26 @@ input[type="file"]::file-selector-button:hover,
 input[type="file"]::-webkit-file-upload-button:hover {
   background: var(--pink);
 }
-/* ------------------------------------------------------------- */
 
 .status{color:var(--green);font-size:13px}
 .hidden{display:none!important}
 
+/* --- Footer Layout Anpassung --- */
 footer{
   border-top:1px solid #ffffff12;
   padding:26px clamp(20px,6vw,90px);
-  display:flex;
-  justify-content:space-between;
   color:var(--muted);
   font-size:12px;
+  display:flex;
+  justify-content:space-between;
+}
+
+/* Optional: falls du den erweiterten mehrzeiligen Footer nutzt, greift dieses Flex-Layout perfekt */
+footer > div {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
 }
 
 .nav-admin{padding:9px 12px}
