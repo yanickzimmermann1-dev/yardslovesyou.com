@@ -6,11 +6,12 @@
   const db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const img=u=>/^https?:\/\//.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
+  const link=id=>`product.html?id=${encodeURIComponent(id)}`;
   async function load() {
     const {data,error}=await db.from("shop_products").select("id,title,description,price_cents,currency,cover_emoji,image_url").eq("published",true).order("created_at",{ascending:false});
     if(error){$("products").innerHTML='<div class="empty">Produkte konnten nicht geladen werden. Bitte SQL und Supabase prüfen.</div>';return;}
     $("shop-count").textContent=`${data.length} Produkte`;
-    $("products").innerHTML=data.length?data.map(p=>`<article class="product"><div class="cover">${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" loading="lazy">`:esc(p.cover_emoji||"")}</div><h3>${esc(p.title)}</h3><p>${esc(p.description||"Digitaler Download als ZIP-Datei.")}</p><div class="price-row"><span class="price">${(p.price_cents/100).toLocaleString("de-CH",{style:"currency",currency:p.currency||cfg.CURRENCY||"CHF"})}</span><button class="button" data-buy="${esc(p.id)}">Buy</button></div></article>`).join(""):'<div class="empty">Noch keine Produkte veröffentlicht. Lege Produkte in Supabase unter shop_products an.</div>';
+    $("products").innerHTML=data.length?data.map(p=>`<article class="product"><a class="product-link" href="${link(p.id)}"><div class="cover">${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" loading="lazy">`:esc(p.cover_emoji||"")}</div><h3>${esc(p.title)}</h3><p>${esc(p.description||"Digitaler Download als ZIP-Datei.")}</p></a><div class="price-row"><span class="price">${(p.price_cents/100).toLocaleString("de-CH",{style:"currency",currency:p.currency||cfg.CURRENCY||"CHF"})}</span><div class="row-actions"><a class="outline" href="${link(p.id)}">Details</a><button class="button" data-buy="${esc(p.id)}">Buy</button></div></div></article>`).join(""):'<div class="empty">Noch keine Produkte veröffentlicht. Lege Produkte in Supabase unter shop_products an.</div>';
     document.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy));
   }
   async function buy(productId) {
@@ -22,6 +23,7 @@
       location.href=data.url;
     }catch(e){alert("Checkout ist noch nicht eingerichtet: "+(e.message||e));if(b){b.disabled=false;b.textContent="Buy";}}
   }
+  // Ältere Kauf-Links (shop.html?success=1&session_id=...) funktionieren weiterhin
   const params=new URLSearchParams(location.search);
   if(params.get("success")==="1"&&params.get("session_id")){
     $("download-result").classList.remove("hidden");
