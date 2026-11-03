@@ -284,12 +284,12 @@ select option {
   padding: 10px;
 }
 
-/* --- Modernes File-Input & Button Styling (mit Abstand) --- */
+/* --- Modernes File-Input & Button Styling (mit vergrößertem Abstand links) --- */
 input[type="file"] {
   background: #0f0c15;
   border: 1px solid var(--line);
   border-radius: 9px;
-  padding: 8px 12px 8px 14px;
+  padding: 10px 12px 10px 20px; /* Hier schiebt '20px' den Button weiter nach rechts */
   color: var(--muted);
   cursor: pointer;
   width: 100%;
@@ -308,7 +308,7 @@ input[type="file"]::-webkit-file-upload-button {
   font-weight: 600;
   font-size: 12px;
   cursor: pointer;
-  margin-right: 14px;
+  margin-right: 16px;
   transition: background 0.2s ease;
 }
 
@@ -330,7 +330,6 @@ footer{
   justify-content:space-between;
 }
 
-/* Optional: falls du den erweiterten mehrzeiligen Footer nutzt, greift dieses Flex-Layout perfekt */
 footer > div {
   display: flex;
   flex-direction: column;
@@ -429,7 +428,7 @@ footer > div {
   display:none !important;
 }
 
-/* Admin-Bereich statisch am Ende der Seite platziert (kein fixed mehr!) */
+/* Admin-Bereich statisch am Ende der Seite platziert */
 #admin-container-bottom{
   position:relative !important;
   bottom:auto !important;
