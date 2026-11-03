@@ -251,6 +251,72 @@ input{
   font:inherit;
 }
 
+/* --- Neu hinzugefügt: Modernes Dropdown & File-Input Design --- */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #0f0c15;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 12px 16px;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  width: 100%;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b68aff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
+  transition: border-color 0.2s ease;
+}
+
+select:focus, input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+
+select option {
+  background-color: var(--panel);
+  color: var(--text);
+  padding: 10px;
+}
+
+input[type="file"] {
+  background: #0f0c15;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 8px 12px;
+  color: var(--muted);
+  cursor: pointer;
+  width: 100%;
+  font-size: 13px;
+  transition: border-color 0.2s ease;
+}
+
+input[type="file"]::file-selector-button,
+input[type="file"]::-webkit-file-upload-button {
+  background: var(--purple);
+  color: #180e23;
+  border: 0;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 12px;
+  transition: background 0.2s ease;
+}
+
+input[type="file"]::file-selector-button:hover,
+input[type="file"]::-webkit-file-upload-button:hover {
+  background: var(--pink);
+}
+/* ------------------------------------------------------------- */
+
 .status{color:var(--green);font-size:13px}
 .hidden{display:none!important}
 
