@@ -45,6 +45,7 @@
             <option value="stem-mastering">Stem Mastering (ZIP upload) – 200 CHF</option>
             <option value="mixing">Mixing (ZIP upload) – 300 CHF</option>
             <option value="vocal-hook">Vocal Hook (single WAV file) – 500 CHF</option>
+            <option value="instrumental-review">Instrumental Review (single WAV file) – 2 CHF</option>
           </select>
         </div>
 
@@ -65,8 +66,8 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label id="file-label" for="submission-file" style="font-size: 0.9rem; font-weight: 500;">ZIP file (stems / mixing)</label>
-          <input id="submission-file" type="file" accept=".zip,application/zip" required>
+          <label id="file-label" for="submission-file" style="font-size: 0.9rem; font-weight: 500;">ZIP Archive (.zip only) – Stem Mastering (200 CHF)</label>
+          <input id="submission-file" type="file" accept=".zip,application/zip,application/x-zip-compressed" required>
         </div>
 
         <!-- Upload progress bar -->
