@@ -59,17 +59,22 @@
   </main>
 
   <footer>
-    <span>© <span id="year"></span> YARDSLOVESYOU</span>
+  <div style="display: flex; flex-direction: column; width: 100%; gap: 16px;">
+    <!-- Erste Zeile: Copyright links, Herz rechts -->
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <span>© <span id="year">2026</span> YARDSLOVESYOU</span>
+      <span>&lt;3</span>
     </div>
-    <div style="display: flex; gap: 16px; font-size: 11px; color: var(--muted);">
+    
+    <!-- Zweite Zeile: Links zentriert mit Abstand -->
+    <div style="display: flex; justify-content: center; gap: 20px; font-size: 11px; color: var(--muted); margin-top: 12px;">
       <a href="code-of-conduct.html">Code of Conduct</a>
       <a href="contributing.html">Contributing</a>
       <a href="license.html">License</a>
       <a href="security.html">Security</a>
     </div>
   </div>
-    <span><a href="index.html"><3</a></span>
-  </footer>
+</footer>
 
   <script src="config.js"></script>
   <script src="shop.js"></script>
