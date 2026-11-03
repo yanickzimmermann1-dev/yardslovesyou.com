@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   if (!window.supabase) {
-    console.error("Supabase SDK ist nicht geladen!");
+    console.error("Supabase SDK is not loaded!");
     return;
   }
 
@@ -16,24 +16,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const fileLabel = $("file-label");
   const fileInput = $("submission-file");
 
-  // Dynamische Dateityp-Anpassung
+  // Dynamic file type adjustment
   if (serviceSelect && fileInput && fileLabel) {
     serviceSelect.onchange = () => {
       const val = serviceSelect.value;
       if (val === "vocal-hook") {
-        fileLabel.textContent = "WAV File (.wav only) – Vocal-Hook (500 CHF)";
+        fileLabel.textContent = "WAV File (.wav only) – Vocal Hook (500 CHF)";
         fileInput.accept = ".wav,audio/wav";
       } else if (val === "mixing") {
         fileLabel.textContent = "ZIP Archive (.zip only) – Mixing (300 CHF)";
         fileInput.accept = ".zip,application/zip,application/x-zip-compressed";
       } else {
-        fileLabel.textContent = "ZIP Archive (.zip only) – Stem-Mastering (200 CHF)";
+        fileLabel.textContent = "ZIP Archive (.zip only) – Stem Mastering (200 CHF)";
         fileInput.accept = ".zip,application/zip,application/x-zip-compressed";
       }
     };
   }
 
-  // Erfolgs-Check nach Stripe Redirect
+  // Success check after Stripe redirect
   const params = new URLSearchParams(location.search);
   if (params.get("success") === "1" && params.get("session_id")) {
     const uploadForm = $("upload-form");
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .update({ status: "complete" })
       .eq("stripe_session_id", sessionId)
       .then(({ error }) => {
-        if (error) console.error("Fehler beim Aktualisieren des Status:", error);
+        if (error) console.error("Error updating status:", error);
       });
   }
 
@@ -72,26 +72,26 @@ document.addEventListener("DOMContentLoaded", () => {
       const file = fileInput && fileInput.files ? fileInput.files[0] : null;
 
       if (!file) {
-        alert("Bitte wähle eine Datei zum Hochladen aus.");
+        alert("Please select a file to upload.");
         return;
       }
 
-      // Format-Prüfung
+      // Format validation
       if (serviceType === "vocal-hook" && !file.name.toLowerCase().endsWith(".wav")) {
-        alert("Bitte wähle eine gültige WAV-Datei aus.");
+        alert("Please select a valid WAV file.");
         return;
       }
       if ((serviceType === "mixing" || serviceType === "stem-mastering") && !file.name.toLowerCase().endsWith(".zip")) {
-        alert("Bitte wähle ein gültiges ZIP-Archiv aus.");
+        alert("Please select a valid ZIP archive.");
         return;
       }
 
       if (btn) {
         btn.disabled = true;
-        btn.textContent = "Datei wird hochgeladen...";
+        btn.textContent = "Uploading file...";
       }
       if (progressContainer) progressContainer.classList.remove("hidden");
-      if (statusEl) statusEl.textContent = "Upload gestartet...";
+      if (statusEl) statusEl.textContent = "Upload started...";
 
       try {
         const requestId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
   return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
 });
         
-        // Ordnerstruktur: E-Mail-Adresse als Ordnername
+        // Folder structure: email address as folder name
         const cleanEmail = email.toLowerCase().replace(/[^a-z0-9@._-]/g, "_");
         const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
         const filePath = `${cleanEmail}/${Date.now()}_${cleanFileName}`;
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
           progressPercent.textContent = "30%";
         }
 
-        // 1. Storage Upload
+        // 1. Storage upload
         const { error: storageError } = await db.storage
           .from("client-submissions")
           .upload(filePath, file, {
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
 
         if (storageError) {
-          throw new Error("Storage Upload Fehler: " + storageError.message);
+          throw new Error("Storage upload error: " + storageError.message);
         }
 
         if (progressBarFill && progressPercent) {
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
           progressPercent.textContent = "70%";
         }
 
-        // 2. Datenbank-Eintrag anlegen
+        // 2. Create database entry
         const { error: dbError } = await db
           .from("client_requests")
           .insert([
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ]);
 
         if (dbError) {
-          throw new Error("Datenbank Fehler: " + dbError.message);
+          throw new Error("Database error: " + dbError.message);
         }
 
         if (progressBarFill && progressPercent) {
@@ -150,9 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
           progressPercent.textContent = "100%";
         }
 
-        if (statusEl) statusEl.textContent = "Weiterleitung zu Stripe Checkout...";
+        if (statusEl) statusEl.textContent = "Redirecting to Stripe Checkout...";
 
-        // 3. Edge Function aufrufen
+        // 3. Call edge function
         const { data: checkoutData, error: checkoutError } = await db.functions.invoke("create-submission-checkout", {
           body: { 
             service_type: serviceType, 
@@ -162,18 +162,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (checkoutError || !checkoutData?.url) {
-          throw new Error(checkoutError?.message || "Checkout-Link konnte nicht generiert werden.");
+          throw new Error(checkoutError?.message || "Checkout link could not be generated.");
         }
 
-        // Weiterleitung zu Stripe
+        // Redirect to Stripe
         window.location.href = checkoutData.url;
 
       } catch (err) {
-        console.error("Upload-Prozess abgebrochen:", err);
-        if (statusEl) statusEl.textContent = "Fehler: " + err.message;
+        console.error("Upload process aborted:", err);
+        if (statusEl) statusEl.textContent = "Error: " + err.message;
         if (btn) {
           btn.disabled = false;
-          btn.textContent = "Zum Checkout";
+          btn.textContent = "Proceed to checkout";
         }
         if (progressContainer) progressContainer.classList.add("hidden");
       }
