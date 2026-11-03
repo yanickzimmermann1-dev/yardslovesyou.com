@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Security · YARDSLOVESYOU</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">YARDS<span>LOVES<span>YOU</span></span></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="upload.html">Upload</a>
+    </nav>
+    <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
+  </header>
+
+  <main class="wrap" style="padding: 60px 0;">
+    <section class="hero shop-hero" style="padding: 20px 0 40px;">
+      <p class="eyebrow">PROTECTION</p>
+      <h1>Security Policy</h1>
+    </section>
+    <div class="muted" style="line-height: 1.8; display: flex; flex-direction: column; gap: 20px;">
+      <h2>Reporting a Vulnerability</h2>
+      <p>If you discover a security vulnerability within this project, please send an e-mail or report it privately. All security vulnerabilities will be promptly addressed.</p>
+      <p>Thank you for helping keep YARDSLOVESYOU and its users safe!</p>
+    </div>
+  </main>
+
+  <footer>
+    <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>© <span id="year">2026</span> YARDSLOVESYOU</span>
+        <span>&lt;3</span>
+      </div>
+      <div style="display: flex; gap: 16px; font-size: 11px; color: var(--muted);">
+        <a href="code-of-conduct.html">Code of Conduct</a>
+        <a href="contributing.html">Contributing</a>
+        <a href="license.html">License</a>
+        <a href="security.html">Security</a>
+      </div>
+    </div>
+  </footer>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
