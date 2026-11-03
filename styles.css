@@ -297,6 +297,11 @@ input[type="file"] {
   transition: border-color 0.2s ease;
 }
 
+/* "no file selected" ausblenden, solange keine Datei gewählt ist */
+input[type="file"]:invalid {
+  color: transparent;
+}
+
 input[type="file"]::file-selector-button,
 input[type="file"]::-webkit-file-upload-button {
   background: var(--purple);
