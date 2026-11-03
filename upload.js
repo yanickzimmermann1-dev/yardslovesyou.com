@@ -33,22 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // Success check after Stripe redirect
-  const params = new URLSearchParams(location.search);
-  if (params.get("success") === "1" && params.get("session_id")) {
-    const uploadForm = $("upload-form");
-    if (uploadForm) uploadForm.style.display = "none";
-    const banner = $("success-banner");
-    if (banner) banner.classList.remove("hidden");
-
-    const sessionId = params.get("session_id");
-    db.from("client_requests")
-      .update({ status: "complete" })
-      .eq("stripe_session_id", sessionId)
-      .then(({ error }) => {
-        if (error) console.error("Error updating status:", error);
-      });
-  }
+  // Payment confirmation and status update now happen on success.html + stripe-webhook
 
   const uploadForm = $("upload-form");
   if (uploadForm) {
@@ -95,9 +80,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         const requestId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-  const r = Math.random() * 16 | 0;
-  return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-});
+          const r = Math.random() * 16 | 0;
+          return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
         
         // Folder structure: email address as folder name
         const cleanEmail = email.toLowerCase().replace(/[^a-z0-9@._-]/g, "_");
@@ -162,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (checkoutError || !checkoutData?.url) {
-          throw new Error(checkoutError?.message || "Checkout link could not be generated.");
+          throw new Error(checkoutData?.error || checkoutError?.message || "Checkout link could not be generated.");
         }
 
         // Redirect to Stripe
