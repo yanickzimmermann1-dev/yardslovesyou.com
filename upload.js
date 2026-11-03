@@ -16,12 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const fileLabel = $("file-label");
   const fileInput = $("submission-file");
 
+  // Services that require a single WAV file (all others require a ZIP archive)
+  const wavServices = ["vocal-hook", "instrumental-review"];
+
   // Dynamic file type adjustment
   if (serviceSelect && fileInput && fileLabel) {
     serviceSelect.onchange = () => {
       const val = serviceSelect.value;
       if (val === "vocal-hook") {
         fileLabel.textContent = "WAV File (.wav only) – Vocal Hook (500 CHF)";
+        fileInput.accept = ".wav,audio/wav";
+      } else if (val === "instrumental-review") {
+        fileLabel.textContent = "WAV File (.wav only) – Instrumental Review (2 CHF)";
         fileInput.accept = ".wav,audio/wav";
       } else if (val === "mixing") {
         fileLabel.textContent = "ZIP Archive (.zip only) – Mixing (300 CHF)";
@@ -30,10 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
         fileLabel.textContent = "ZIP Archive (.zip only) – Stem Mastering (200 CHF)";
         fileInput.accept = ".zip,application/zip,application/x-zip-compressed";
       }
+      // Reset previously selected file when switching between WAV and ZIP services
+      fileInput.value = "";
     };
   }
 
-  // Payment confirmation and status update now happen on success.html + stripe-webhook
+  // Payment confirmation and status update happen on success.html + stripe-webhook
 
   const uploadForm = $("upload-form");
   if (uploadForm) {
@@ -62,11 +70,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Format validation
-      if (serviceType === "vocal-hook" && !file.name.toLowerCase().endsWith(".wav")) {
+      if (wavServices.includes(serviceType) && !file.name.toLowerCase().endsWith(".wav")) {
         alert("Please select a valid WAV file.");
         return;
       }
-      if ((serviceType === "mixing" || serviceType === "stem-mastering") && !file.name.toLowerCase().endsWith(".zip")) {
+      if (!wavServices.includes(serviceType) && !file.name.toLowerCase().endsWith(".zip")) {
         alert("Please select a valid ZIP archive.");
         return;
       }
