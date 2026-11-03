@@ -284,12 +284,12 @@ select option {
   padding: 10px;
 }
 
-/* --- Modernes File-Input & Button Styling (mit vergrößertem Abstand links) --- */
+/* --- Modernes File-Input & Button Styling --- */
 input[type="file"] {
   background: #0f0c15;
   border: 1px solid var(--line);
   border-radius: 9px;
-  padding: 10px 12px 10px 20px; /* Hier schiebt '20px' den Button weiter nach rechts */
+  padding: 10px 12px 10px 34px; /* '34px' zentriert den Button über dem Checkout-Button */
   color: var(--muted);
   cursor: pointer;
   width: 100%;
