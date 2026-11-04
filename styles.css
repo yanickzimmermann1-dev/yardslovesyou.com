@@ -340,7 +340,7 @@ input[type="file"]::-webkit-file-upload-button:hover {
 .status{color:var(--green);font-size:13px}
 .hidden{display:none!important}
 
-/* --- Footer Layout Anpassung --- */
+/* --- Footer Layout --- */
 footer{
   border-top:1px solid #ffffff12;
   padding:26px clamp(20px,6vw,90px);
@@ -350,11 +350,37 @@ footer{
   justify-content:space-between;
 }
 
-footer > div {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 16px;
+footer.site-footer{
+  flex-direction:column;
+  justify-content:flex-start;
+  gap:12px;
+}
+
+.footer-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
+}
+
+/* Links unter dem Copyright, linksbündig */
+.footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 20px;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.footer-links a{white-space:nowrap}
+.footer-links a:hover{color:var(--text)}
+
+/* Handy: Links untereinander */
+@media (max-width:600px){
+  .footer-links{
+    flex-direction:column;
+    gap:10px;
+  }
 }
 
 .nav-admin{padding:9px 12px}
