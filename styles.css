@@ -317,24 +317,47 @@ input[type="file"]:invalid {
   color: transparent;
 }
 
-input[type="file"]::file-selector-button,
-input[type="file"]::-webkit-file-upload-button {
-  background: var(--purple);
-  color: #180e23;
-  border: 0;
+/* Choose-File-Button: hohl, lila Rand + lila Text
+   (zwei getrennte Regeln, damit Firefox, Chrome und Safari sie alle anwenden) */
+input[type="file"]::file-selector-button {
+  background: transparent;
+  color: var(--purple);
+  border: 1px solid var(--purple);
   border-radius: 6px;
-  padding: 8px 14px;
+  padding: 7px 13px;
   font-family: 'DM Sans', sans-serif;
   font-weight: 600;
   font-size: 12px;
   cursor: pointer;
   margin-right: 16px;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-input[type="file"]::file-selector-button:hover,
+input[type="file"]::-webkit-file-upload-button {
+  background: transparent;
+  color: var(--purple);
+  border: 1px solid var(--purple);
+  border-radius: 6px;
+  padding: 7px 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 16px;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Hover: leicht lila hinterlegt, Rand + Text heller */
+input[type="file"]::file-selector-button:hover {
+  background: rgba(182, 138, 255, 0.12);
+  color: var(--pink);
+  border-color: var(--pink);
+}
+
 input[type="file"]::-webkit-file-upload-button:hover {
-  background: var(--pink);
+  background: rgba(182, 138, 255, 0.12);
+  color: var(--pink);
+  border-color: var(--pink);
 }
 
 .status{color:var(--green);font-size:13px}
