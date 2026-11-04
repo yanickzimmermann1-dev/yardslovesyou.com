@@ -11,14 +11,13 @@
 <body>
 
 <header class="topbar">
-  <a class="brand" href="index.html">YARDS<span>LOVES<span>YOU</span></a>
+  <a class="brand" href="index.html">YARDS<span>LOVESYOU</span></a>
   <nav>
     <a class="active" href="index.html">Home</a>
     <a href="shop.html">Shop</a>
-    <a class="active" href="upload.html">Upload</a>
+    <a href="upload.html">Upload</a>
   </nav>
-  
-   <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
+  <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
 </header>
 
 <main class="wrap">
@@ -40,31 +39,21 @@
   <div id="tracks" class="track-grid">
     <div class="empty">Lade Tracks …</div>
   </div>
+
+  <p id="status" class="status" role="status"></p>
 </main>
 
-<!-- Admin-Bereich fixiert unten rechts -->
-
-    
-    <p id="status" class="status" role="status"></p>
+<footer class="site-footer">
+  <div class="footer-top">
+    <span>© <span id="year">2026</span> YARDSLOVESYOU</span>
+    <span>&lt;3</span>
   </div>
-</div>
-
-<footer>
-  <div style="display: flex; flex-direction: column; width: 100%; gap: 16px;">
-    <!-- Erste Zeile: Copyright links, Herz rechts -->
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-      <span>© <span id="year">2026</span> YARDSLOVESYOU</span>
-      <span>&lt;3</span>
-    </div>
-    
-    <!-- Zweite Zeile: Links zentriert mit Abstand -->
-    <div style="display: flex; justify-content: center; gap: 20px; font-size: 11px; color: var(--muted); margin-top: 12px;">
-      <a href="code-of-conduct.html">Code of Conduct</a>
-      <a href="contributing.html">Contributing</a>
-      <a href="license.html">License</a>
-      <a href="security.html">Security</a>
-    </div>
-  </div>
+  <nav class="footer-links" aria-label="Rechtliches">
+    <a href="code-of-conduct.html">Code of Conduct</a>
+    <a href="contributing.html">Contributing</a>
+    <a href="license.html">License</a>
+    <a href="security.html">Security</a>
+  </nav>
 </footer>
 
 <script src="config.js"></script>
