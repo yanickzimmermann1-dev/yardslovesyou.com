@@ -1,6 +1,6 @@
 (() => {
   const cfg = window.APP_CONFIG || {};
-  const ready = cfg.SUPABASE_URL.startsWith("https://") && !cfg.SUPABASE_URL.includes("DEINE_") && cfg.SUPABASE_PUBLISHABLE_KEY && !cfg.SUPABASE_PUBLISHABLE_KEY.includes("DEIN_");
+  const ready = cfg.SUPABASE_URL?.startsWith("https://") && !cfg.SUPABASE_URL.includes("DEINE_") && cfg.SUPABASE_PUBLISHABLE_KEY && !cfg.SUPABASE_PUBLISHABLE_KEY.includes("DEIN_");
   const $ = id => document.getElementById(id);
   
   const yearEl = $("year");
@@ -11,7 +11,7 @@
 
   if (!ready) { 
     const tracksEl = $("tracks");
-    if (tracksEl) tracksEl.innerHTML = '<div class="empty">Bitte zuerst deine Supabase-Zugangsdaten in <code>config.js</code> eintragen.</div>'; 
+    if (tracksEl) tracksEl.innerHTML = '<div class="empty">Tracks are not available right now.</div>'; 
     return; 
   }
   
@@ -25,7 +25,7 @@
     if (!tracksContainer) return;
 
     const {data,error} = await db.from("audio_tracks").select("*").order("created_at",{ascending:false});
-    if (error) { tracksContainer.innerHTML = '<div class="empty">Tracks konnten nicht geladen werden.</div>'; return; }
+    if (error) { tracksContainer.innerHTML = '<div class="empty">Tracks could not be loaded. Please try again later.</div>'; return; }
     
     tracksContainer.innerHTML = data.length ? data.map(t => {
       const imageUrl = t.image_path ? db.storage.from("coverart-portolio").getPublicUrl(t.image_path).data.publicUrl : null;
@@ -36,7 +36,7 @@
       <article class="track" data-id="${t.id}">
         <div class="track-top">
           <div class="cover">
-            ${imageUrl ? `<img src="${esc(imageUrl)}" alt="Cover" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : "♫"}
+            ${imageUrl ? `<img src="${esc(imageUrl)}" alt="${esc(t.title)} cover" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : "♫"}
           </div>
           <div>
             <h3>${esc(t.title)}</h3>
@@ -46,22 +46,22 @@
 
         <div class="custom-player">
           <audio preload="none" src="${esc(audioUrl)}"></audio>
-          <button class="play-btn" aria-label="Play/Pause">
+          <button class="play-btn" type="button" aria-label="Play ${esc(t.title)}">
             <svg class="play-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5,3 19,12 5,21"></polygon></svg>
             <svg class="pause-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
           </button>
           
-          <div class="waveform-container" title="Fortschritt">
+          <div class="waveform-container" title="Seek">
             <div class="waveform-bars">
               ${barsHtml}
             </div>
           </div>
         </div>
 
-        ${user ? `<button class="delete-track" data-delete="${esc(t.id)}">Track löschen</button>` : ""}
+        ${user ? `<button class="delete-track" data-delete="${esc(t.id)}">Delete track</button>` : ""}
       </article>
     `;
-    }).join("") : '<div class="empty">Noch keine Tracks.</div>';
+    }).join("") : '<div class="empty">No tracks yet.</div>';
     
     document.querySelectorAll("[data-delete]").forEach(b => b.onclick = () => deleteTrack(b.dataset.delete));
 
@@ -148,7 +148,7 @@
         user=null;
         if(loginForm) loginForm.classList.remove("hidden");
         if(adminTools) adminTools.classList.add("hidden");
-        status("Nicht als Admin freigeschaltet.");
+        status("Not authorized as admin.");
       } 
     }
     await loadTracks();
@@ -160,18 +160,18 @@
       e.preventDefault(); 
       const {error} = await db.auth.signInWithPassword({email:$("email").value,password:$("password").value}); 
       if(error){status(error.message);return;} 
-      status("Angemeldet."); 
+      status("Signed in."); 
       await refreshUser(); 
     };
   }
 
   const logoutBtn = $("logout");
   if(logoutBtn) {
-    logoutBtn.onclick = async () => { await db.auth.signOut(); status("Abgemeldet."); await refreshUser(); };
+    logoutBtn.onclick = async () => { await db.auth.signOut(); status("Signed out."); await refreshUser(); };
   }
 
   async function upload(files) {
-    if(!user) return status("Bitte zuerst anmelden.");
+    if(!user) return status("Please sign in first.");
     for(const file of files) {
       const isAudio = file.type.startsWith("audio/");
       const isImage = file.type.startsWith("image/");
