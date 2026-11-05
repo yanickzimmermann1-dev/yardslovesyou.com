@@ -4,7 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0b12">
-  <title>Upload & Services · YARDSLOVESYOU</title>
+  <title>Mixing & Mastering Services: Upload your Track · YARDSLOVESYOU</title>
+  <meta name="description" content="Book stem mastering, mixing, a vocal hook or an instrumental review with YARDSLOVESYOU. Upload your files online and pay securely.">
+  <link rel="canonical" href="https://yardslovesyou.com/upload.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="YARDSLOVESYOU">
+  <meta property="og:title" content="Submit your track · YARDSLOVESYOU">
+  <meta property="og:description" content="Stem mastering, mixing, vocal hooks and instrumental reviews. Upload your files online.">
+  <meta property="og:url" content="https://yardslovesyou.com/upload.html">
+  <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
 
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,92 +25,112 @@
 <body>
 
   <header class="topbar">
-    <a class="brand" href="index.html">
-      YARDS<span>LOVES<span>YOU</span></span>
-    </a>
-
-    <nav>
-      <a href="index.html">Home</a>
+    <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
+    <nav aria-label="Main">
+      <a href="/">Home</a>
       <a href="shop.html">Shop</a>
       <a class="active" href="upload.html">Upload</a>
     </nav>
-
-    <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
   </header>
 
   <main class="wrap">
 
-    <section class="hero shop-hero">
+    <section class="hero compact">
       <p class="eyebrow">CLIENT SUBMISSION</p>
-      <h1>Submit your track,<br><span>let's work together.</span></h1>
-      <p class="muted">
-        Choose your service, upload your files and start your project.
-      </p>
+      <h1>Submit your track, <span>let's work together.</span></h1>
+      <p class="muted">Choose your service, upload your files and start your project.</p>
     </section>
 
-    <section class="admin-panel" style="background: var(--panel); border: 1px solid var(--line); padding: 2rem; border-radius: 16px; margin-bottom: 3rem;">
-      <form id="upload-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
-        
-        <!-- 1. Option / service selection -->
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label for="service-type" style="font-size: 0.9rem; font-weight: 500;">Choose your service</label>
-          <select id="service-type" style="padding: 0.75rem; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px;">
-            <option value="stem-mastering">Stem Mastering (ZIP upload) – 200 CHF</option>
-            <option value="mixing">Mixing (ZIP upload) – 300 CHF</option>
-            <option value="vocal-hook">Vocal Hook (single WAV file) – 500 CHF</option>
-            <option value="instrumental-review">Instrumental Review (single WAV file) – 2 CHF</option>
-          </select>
+    <ol class="steps" aria-label="How it works">
+      <li><strong>Choose</strong>Pick the service that fits your track.</li>
+      <li><strong>Upload</strong>Send your ZIP or WAV and tell me your vision.</li>
+      <li><strong>Pay</strong>Secure checkout with Stripe.</li>
+      <li><strong>Receive</strong>I get to work and send you the result by email.</li>
+    </ol>
+
+    <section class="upload-card">
+      <form id="upload-form" class="upload-form">
+
+        <!-- 1. Service -->
+        <fieldset class="field">
+          <legend>Choose your service</legend>
+          <div class="service-picker">
+            <label class="service-option">
+              <input type="radio" name="service" value="stem-mastering" data-name="Stem Mastering" data-price="200" data-kind="zip" checked>
+              <span class="opt"><strong>Stem Mastering</strong><span>ZIP upload</span><span class="opt-price">CHF 200</span></span>
+            </label>
+            <label class="service-option">
+              <input type="radio" name="service" value="mixing" data-name="Mixing" data-price="300" data-kind="zip">
+              <span class="opt"><strong>Mixing</strong><span>ZIP upload</span><span class="opt-price">CHF 300</span></span>
+            </label>
+            <label class="service-option">
+              <input type="radio" name="service" value="vocal-hook" data-name="Vocal Hook" data-price="500" data-kind="wav">
+              <span class="opt"><strong>Vocal Hook</strong><span>Single WAV file</span><span class="opt-price">CHF 500</span></span>
+            </label>
+            <label class="service-option">
+              <input type="radio" name="service" value="instrumental-review" data-name="Instrumental Review" data-price="2" data-kind="wav">
+              <span class="opt"><strong>Instrumental Review</strong><span>Single WAV file</span><span class="opt-price">CHF 2</span></span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- 2. Kontaktdaten -->
+        <div class="field">
+          <label for="artist-name">Name / Artist name</label>
+          <input id="artist-name" type="text" placeholder="Your name" autocomplete="name" required>
         </div>
 
-        <!-- 2. Input fields (appear/stay active) -->
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label for="artist-name" style="font-size: 0.9rem; font-weight: 500;">Name / Artist name</label>
-          <input id="artist-name" type="text" placeholder="Your name" required>
+        <div class="field">
+          <label for="artist-email">Email address</label>
+          <input id="artist-email" type="email" placeholder="your@email.com" autocomplete="email" required>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label for="artist-email" style="font-size: 0.9rem; font-weight: 500;">Email address</label>
-          <input id="artist-email" type="email" placeholder="your@email.com" required>
+        <div class="field">
+          <label for="track-wishes">Wishes / Notes / References</label>
+          <textarea id="track-wishes" rows="4" placeholder="Tell me about your vision, reference tracks or specific ideas..."></textarea>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label for="track-wishes" style="font-size: 0.9rem; font-weight: 500;">Wishes / Notes / References</label>
-          <textarea id="track-wishes" rows="4" placeholder="Tell me about your vision, reference tracks or specific ideas..." style="background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 9px; padding: 12px; font: inherit; resize: vertical;"></textarea>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label id="file-label" for="submission-file" style="font-size: 0.9rem; font-weight: 500;">ZIP Archive (.zip only) – Stem Mastering (200 CHF)</label>
+        <!-- 3. Datei -->
+        <div class="field">
+          <label id="file-label" for="submission-file">ZIP Archive (.zip only) – Stem Mastering (CHF 200)</label>
           <input id="submission-file" type="file" accept=".zip,application/zip,application/x-zip-compressed" required>
+          <p class="hint" id="file-hint">Put all stems into one ZIP file.</p>
         </div>
 
         <!-- Upload progress bar -->
-        <div id="progress-container" class="hidden" style="display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem;">
-          <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--muted);">
+        <div id="progress-container" class="progress hidden">
+          <div class="progress-head">
             <span id="progress-text">Uploading...</span>
             <span id="progress-percent">0%</span>
           </div>
-          <div style="width: 100%; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--line);">
-            <div id="progress-bar-fill" style="width: 0%; height: 100%; background: var(--purple); transition: width 0.1s ease;"></div>
+          <div class="progress-track">
+            <div id="progress-bar-fill" class="progress-fill"></div>
           </div>
         </div>
 
-        <!-- Checkout button -->
-                <button id="submit-btn" class="button" type="submit" style="align-self: center; margin-top: 0.5rem;">Proceed to checkout</button>
+        <p class="hint">By continuing you agree to the processing of your data as described in the <a href="privacy.html" style="color:var(--purple)">privacy policy</a>.</p>
+
+        <button id="submit-btn" class="button" type="submit" style="align-self:center;margin-top:.5rem">Proceed to checkout</button>
       </form>
 
-      <p id="upload-status" class="status" role="status" style="margin-top: 1.5rem; font-weight: 500;"></p>
+      <p id="upload-status" class="status" role="status" style="margin-top:1.5rem;font-weight:500"></p>
     </section>
 
   </main>
 
   <footer class="site-footer">
     <div class="footer-top">
-      <span>© <span id="year">2026</span> YARDSLOVESYOU</span>
-      <span>&lt;3</span>
+      <span>© <span id="year">2026</span> YARDSLOVESYOU &lt;3</span>
+      <nav class="footer-social" aria-label="Social media">
+        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener">YouTube</a>
+      </nav>
     </div>
     <nav class="footer-links" aria-label="Legal">
-      <a href="code-of-conduct.html">Code of Conduct</a>
+      <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
       <a href="license.html">License</a>
+      <a href="code-of-conduct.html">Code of Conduct</a>
       <a href="security.html">Security</a>
     </nav>
   </footer>
