@@ -52,3 +52,124 @@
       <form id="upload-form" class="upload-form">
 
         <!-- 1. Service -->
+        <fieldset class="field">
+          <legend>Choose your service</legend>
+          <div class="service-picker">
+            <label class="service-option">
+              <input type="radio" name="service" value="stem-mastering" checked
+                data-kind="zip" data-name="Stem Mastering" data-price="200"
+                data-hint="Put all your stems into one ZIP file.">
+              <span class="opt">
+                <strong>Stem Mastering</strong>
+                <span>ZIP upload</span>
+                <span class="opt-price">CHF 200</span>
+              </span>
+            </label>
+            <label class="service-option">
+              <input type="radio" name="service" value="mixing"
+                data-kind="zip" data-name="Mixing" data-price="300"
+                data-hint="Put all your stems into one ZIP file.">
+              <span class="opt">
+                <strong>Mixing</strong>
+                <span>ZIP upload</span>
+                <span class="opt-price">CHF 300</span>
+              </span>
+            </label>
+            <label class="service-option">
+              <input type="radio" name="service" value="vocal-mix"
+                data-kind="zip" data-name="Vocal Mix" data-price="XXX"
+                data-hint="Put the 2-track beat and your vocal stems into one ZIP file.">
+              <span class="opt">
+                <strong>Vocal Mix</strong>
+                <span>ZIP upload · 2-track beat</span>
+                <span class="opt-price">CHF XXX</span>
+              </span>
+            </label>
+            <label class="service-option">
+              <input type="radio" name="service" value="vocal-hook"
+                data-kind="wav" data-name="Vocal Hook" data-price="500"
+                data-hint="Upload your instrumental as one WAV file (no MP3).">
+              <span class="opt">
+                <strong>Vocal Hook</strong>
+                <span>Single WAV</span>
+                <span class="opt-price">CHF 500</span>
+              </span>
+            </label>
+            <label class="service-option">
+              <input type="radio" name="service" value="instrumental-review"
+                data-kind="wav" data-name="Instrumental Review" data-price="2"
+                data-hint="Upload your instrumental as one WAV file (no MP3).">
+              <span class="opt">
+                <strong>Instrumental Review</strong>
+                <span>Single WAV</span>
+                <span class="opt-price">CHF 2</span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- 2. Kontakt -->
+        <div class="field">
+          <label for="artist-name">Name / Artist name</label>
+          <input id="artist-name" type="text" placeholder="Your name" autocomplete="name" required>
+        </div>
+
+        <div class="field">
+          <label for="artist-email">Email address</label>
+          <input id="artist-email" type="email" placeholder="your@email.com" autocomplete="email" required>
+        </div>
+
+        <!-- 3. Wünsche -->
+        <div class="field">
+          <label for="track-wishes">Wishes / Notes / References</label>
+          <textarea id="track-wishes" rows="4" placeholder="Tell me about your vision, reference tracks or specific ideas..."></textarea>
+        </div>
+
+        <!-- 4. Datei -->
+        <div class="field">
+          <label id="file-label" for="submission-file">ZIP Archive (.zip only) – Stem Mastering (CHF 200)</label>
+          <input id="submission-file" type="file" accept=".zip,application/zip,application/x-zip-compressed" required>
+          <p id="file-hint" class="hint">Put all your stems into one ZIP file.</p>
+        </div>
+
+        <!-- Upload-Fortschritt -->
+        <div id="progress-container" class="progress hidden">
+          <div class="progress-head">
+            <span id="progress-text">Uploading...</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="progress-bar-fill" class="progress-fill"></div>
+          </div>
+        </div>
+
+        <!-- Checkout -->
+        <button id="submit-btn" class="button" type="submit" style="align-self: center; margin-top: 0.5rem;">Proceed to checkout</button>
+      </form>
+
+      <p id="upload-status" class="status" role="status" style="margin-top: 1.5rem; font-weight: 500; text-align: center;"></p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <span>© <span id="year">2026</span> YARDSLOVESYOU &lt;3</span>
+      <nav class="footer-social" aria-label="Social media">
+        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener">YouTube</a>
+      </nav>
+    </div>
+    <nav class="footer-links" aria-label="Legal">
+      <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="license.html">License</a>
+      <a href="code-of-conduct.html">Code of Conduct</a>
+      <a href="security.html">Security</a>
+    </nav>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="upload.js"></script>
+</body>
+</html>
