@@ -12,34 +12,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const db = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
 
-  const serviceSelect = $("service-type");
   const fileLabel = $("file-label");
   const fileInput = $("submission-file");
+  const fileHint = $("file-hint");
+  const serviceRadios = [...document.querySelectorAll('input[name="service"]')];
+  const selectedService = () => serviceRadios.find(r => r.checked) || serviceRadios[0];
 
   // Services that require a single WAV file (all others require a ZIP archive)
-  const wavServices = ["vocal-hook", "instrumental-review"];
+  const wavServices = serviceRadios.filter(r => r.dataset.kind === "wav").map(r => r.value);
 
-  // Dynamic file type adjustment
-  if (serviceSelect && fileInput && fileLabel) {
-    serviceSelect.onchange = () => {
-      const val = serviceSelect.value;
-      if (val === "vocal-hook") {
-        fileLabel.textContent = "WAV File (.wav only) – Vocal Hook (500 CHF)";
-        fileInput.accept = ".wav,audio/wav";
-      } else if (val === "instrumental-review") {
-        fileLabel.textContent = "WAV File (.wav only) – Instrumental Review (2 CHF)";
-        fileInput.accept = ".wav,audio/wav";
-      } else if (val === "mixing") {
-        fileLabel.textContent = "ZIP Archive (.zip only) – Mixing (300 CHF)";
-        fileInput.accept = ".zip,application/zip,application/x-zip-compressed";
-      } else {
-        fileLabel.textContent = "ZIP Archive (.zip only) – Stem Mastering (200 CHF)";
-        fileInput.accept = ".zip,application/zip,application/x-zip-compressed";
-      }
-      // Reset previously selected file when switching between WAV and ZIP services
-      fileInput.value = "";
-    };
+  // Label, erlaubter Dateityp und Hinweis passend zum gewählten Service
+  function applyService(resetFile) {
+    const r = selectedService();
+    if (!r || !fileInput || !fileLabel) return;
+    const isWav = r.dataset.kind === "wav";
+    fileLabel.textContent = isWav
+      ? `WAV File (.wav only) – ${r.dataset.name} (CHF ${r.dataset.price})`
+      : `ZIP Archive (.zip only) – ${r.dataset.name} (CHF ${r.dataset.price})`;
+    fileInput.accept = isWav ? ".wav,audio/wav" : ".zip,application/zip,application/x-zip-compressed";
+    if (fileHint) fileHint.textContent = isWav ? "Upload one WAV file (no MP3)." : "Put all stems into one ZIP file.";
+    // Reset previously selected file when switching between WAV and ZIP services
+    if (resetFile) fileInput.value = "";
   }
+
+  // Service aus dem Link vorauswählen, z. B. upload.html?service=mixing
+  const preset = new URLSearchParams(location.search).get("service");
+  const presetRadio = serviceRadios.find(r => r.value === preset);
+  if (presetRadio) presetRadio.checked = true;
+
+  serviceRadios.forEach(r => r.addEventListener("change", () => applyService(true)));
+  applyService(false);
 
   // Payment confirmation and status update happen on success.html + stripe-webhook
 
@@ -60,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const name = nameInput ? nameInput.value.trim() : "";
       const email = emailInput ? emailInput.value.trim() : "";
-      const serviceType = serviceSelect ? serviceSelect.value : "mixing";
+      const serviceType = selectedService() ? selectedService().value : "mixing";
       const wishes = wishesInput ? wishesInput.value.trim() : "";
       const file = fileInput && fileInput.files ? fileInput.files[0] : null;
 
