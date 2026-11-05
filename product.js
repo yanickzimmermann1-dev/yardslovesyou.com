@@ -37,6 +37,7 @@
 
     document.title=`${p.title} · YARDSLOVESYOU`;
     const images=[p.image_url,...(p.gallery||[])].filter(Boolean).map(media);
+    setSeo(p,images);
     const features=(p.features||[]).filter(Boolean);
     const videos=(p.video_urls||[]).map(embed).filter(Boolean);
     const bars=Array.from({length:64},()=>'<span class="wave-bar"></span>').join("");
@@ -82,6 +83,46 @@
 
     $("buy-btn").onclick=buy;
     if(p.preview_audio) setupPlayer(media(p.preview_audio));
+  }
+
+  // SEO: Beschreibung, Canonical, Teilen-Vorschau und Produktdaten für Google
+  function setSeo(p,images){
+    const url=`https://yardslovesyou.com/product.html?id=${encodeURIComponent(p.id)}`;
+    const desc=String(p.description||"Digital download as ZIP file.").slice(0,160);
+    const meta=(attr,key,val)=>{
+      let el=document.head.querySelector(`meta[${attr}="${key}"]`);
+      if(!el){el=document.createElement("meta");el.setAttribute(attr,key);document.head.appendChild(el);}
+      el.setAttribute("content",val);
+    };
+    meta("name","description",desc);
+    meta("property","og:title",`${p.title} · YARDSLOVESYOU`);
+    meta("property","og:description",desc);
+    meta("property","og:url",url);
+    if(images[0]) meta("property","og:image",images[0]);
+
+    let canon=document.head.querySelector('link[rel="canonical"]');
+    if(!canon){canon=document.createElement("link");canon.rel="canonical";document.head.appendChild(canon);}
+    canon.href=url;
+
+    const ld=document.createElement("script");
+    ld.type="application/ld+json";
+    ld.textContent=JSON.stringify({
+      "@context":"https://schema.org",
+      "@type":"Product",
+      "name":p.title,
+      "description":p.description||"",
+      "image":images,
+      "url":url,
+      "brand":{"@type":"Brand","name":"YARDSLOVESYOU"},
+      "offers":{
+        "@type":"Offer",
+        "url":url,
+        "price":(p.price_cents/100).toFixed(2),
+        "priceCurrency":String(p.currency||cfg.CURRENCY||"CHF").toUpperCase(),
+        "availability":"https://schema.org/InStock"
+      }
+    });
+    document.head.appendChild(ld);
   }
 
   function setupPlayer(src){
