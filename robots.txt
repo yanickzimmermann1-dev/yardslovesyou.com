@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /success.html
+Disallow: /contributing.html
+
+Sitemap: https://yardslovesyou.com/sitemap.xml
