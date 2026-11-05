@@ -684,3 +684,179 @@ footer.site-footer{
   .pd-videos{grid-template-columns:1fr}
   .row-actions .outline{display:none}
 }
+
+/* =====================================================================
+   UPDATE 2026-11
+   ===================================================================== */
+
+/* Doodles im Hintergrund dezenter, links (wo der Text steht) etwas dunkler */
+body::before{
+  background:
+    radial-gradient(ellipse 70% 60% at 25% 35%, rgba(13,11,18,.55), rgba(13,11,18,0) 70%),
+    linear-gradient(rgba(13,11,18,.68),rgba(13,11,18,.88)),
+    url("background.jpg") center / cover no-repeat;
+}
+@media(max-width:760px){
+  body::before{
+    background:
+      linear-gradient(rgba(13,11,18,.80),rgba(13,11,18,.92)),
+      url("background.jpg") center / cover no-repeat;
+  }
+}
+
+/* Zwei Buttons nebeneinander im Hero */
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px}
+
+/* Kompakter Hero (Shop, Upload): Inhalt ist sofort sichtbar */
+.hero.compact{padding:56px 0 34px}
+.hero.compact h1{font-size:clamp(38px,5.6vw,60px);letter-spacing:-2.5px;margin:14px 0 12px}
+.hero.compact .muted{margin-bottom:0}
+
+/* Abschnitte auf der Startseite */
+.home-section{margin:0 0 90px}
+.home-section .section-head{margin-bottom:22px}
+
+/* Service-Karten */
+.service-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:16px;
+}
+.service-card{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  background:linear-gradient(145deg,#1b1624,#131019);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:20px;
+  transition:border-color .2s, transform .2s;
+}
+.service-card:hover{border-color:var(--purple);transform:translateY(-2px)}
+.service-card h3{font:600 18px 'Space Grotesk';margin:0}
+.service-card p{color:var(--muted);font-size:13px;line-height:1.6;margin:0;flex-grow:1}
+.service-card .service-meta{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--purple);font-weight:700}
+.service-card .price{font-size:22px}
+.service-card .service-cta{font-size:13px;font-weight:600;color:var(--purple)}
+
+/* About & Kontakt */
+.about-box{
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
+  gap:30px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:28px;
+}
+.about-box h2{font:600 30px 'Space Grotesk';margin:8px 0 14px}
+.about-box .muted{margin:0 0 12px}
+.contact-list{display:flex;flex-direction:column;gap:10px;align-self:center}
+.contact-list a{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 16px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--bg);
+  font-size:14px;font-weight:500;
+  transition:border-color .2s;
+}
+.contact-list a:hover{border-color:var(--purple)}
+.contact-list svg{flex-shrink:0;color:var(--purple)}
+@media(max-width:760px){
+  .about-box{grid-template-columns:1fr;padding:22px}
+}
+
+/* Upload: Ablauf in Schritten */
+.steps{
+  list-style:none;
+  padding:0;
+  margin:0 0 28px;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  counter-reset:step;
+}
+.steps li{
+  counter-increment:step;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+}
+.steps li::before{
+  content:counter(step);
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--purple);color:#180e23;
+  font:700 13px 'Space Grotesk';
+  margin-bottom:10px;
+}
+.steps strong{display:block;color:var(--text);font-size:14px;margin-bottom:2px}
+@media(max-width:760px){.steps{grid-template-columns:1fr 1fr}}
+
+/* Upload-Formular */
+.upload-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:2rem;
+  margin-bottom:3rem;
+}
+.upload-form{display:flex;flex-direction:column;gap:1.25rem}
+.field{display:flex;flex-direction:column;gap:.5rem;border:0;padding:0;margin:0;min-width:0}
+.field > label,.field legend{font-size:.9rem;font-weight:500;padding:0;margin-bottom:.5rem}
+.field textarea{
+  background:#0f0c15;color:var(--text);
+  border:1px solid var(--line);border-radius:9px;
+  padding:12px;font:inherit;resize:vertical;
+}
+.hint{font-size:12px;color:var(--muted);margin:0;line-height:1.6}
+@media(max-width:500px){.upload-card{padding:1.25rem}}
+
+/* Service-Auswahl als Karten (statt Dropdown) */
+.service-picker{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:10px;
+}
+.service-option{position:relative;cursor:pointer}
+.service-option input{position:absolute;opacity:0;pointer-events:none}
+.service-option .opt{
+  display:flex;flex-direction:column;gap:4px;
+  height:100%;
+  padding:14px 16px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#0f0c15;
+  transition:border-color .2s, background .2s;
+}
+.service-option .opt strong{font-size:14px}
+.service-option .opt span{font-size:12px;color:var(--muted)}
+.service-option .opt .opt-price{font:600 16px 'Space Grotesk';color:var(--text);margin-top:4px}
+.service-option:hover .opt{border-color:#5a4775}
+.service-option input:checked + .opt{border-color:var(--purple);background:rgba(182,138,255,.08)}
+.service-option input:focus-visible + .opt{outline:2px solid var(--purple);outline-offset:2px}
+
+/* Progress-Balken im Upload */
+.progress{display:flex;flex-direction:column;gap:.4rem;margin-top:.5rem}
+.progress-head{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.progress-track{width:100%;height:8px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+.progress-fill{width:0;height:100%;background:var(--purple);transition:width .1s ease}
+
+/* Rechtstexte (Impressum, Datenschutz, Lizenz …) */
+.legal{padding:20px 0 60px;max-width:760px}
+.legal h1{font:600 clamp(36px,5vw,54px)/1.05 'Space Grotesk';letter-spacing:-2px;margin:14px 0 26px}
+.legal h2{font:600 20px 'Space Grotesk';margin:34px 0 10px;color:var(--text)}
+.legal p,.legal li{color:var(--muted);line-height:1.8;font-size:15px}
+.legal ul{padding-left:20px}
+.legal a{color:var(--purple)}
+.legal .placeholder{color:#ffcf8a}
+
+/* Footer: Social-Links */
+.footer-social{display:flex;gap:16px;align-items:center;font-size:12px}
+.footer-social a{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.footer-social a:hover{color:var(--text)}
