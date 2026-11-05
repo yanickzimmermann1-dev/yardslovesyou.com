@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0b12">
   <title>Product · YARDSLOVESYOU</title>
+  <meta name="description" content="Digital product by YARDSLOVESYOU. Instant ZIP download after payment.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <meta property="og:type" content="product">
+  <meta property="og:site_name" content="YARDSLOVESYOU">
+  <meta property="og:title" content="Product · YARDSLOVESYOU">
+  <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
 
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,17 +22,12 @@
 <body>
 
   <header class="topbar">
-    <a class="brand" href="index.html">
-      YARDS<span>LOVES<span>YOU</span></span>
-    </a>
-
-    <nav>
-      <a href="index.html">Home</a>
+    <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
+    <nav aria-label="Main">
+      <a href="/">Home</a>
       <a class="active" href="shop.html">Shop</a>
       <a href="upload.html">Upload</a>
     </nav>
-
-    <a class="outline nav-admin" href="index.html#admin-panel">Admin</a>
   </header>
 
   <main class="wrap" id="product-root">
@@ -31,13 +36,17 @@
 
   <footer class="site-footer">
     <div class="footer-top">
-      <span>© <span id="year">2026</span> YARDSLOVESYOU</span>
-      <span>&lt;3</span>
+      <span>© <span id="year">2026</span> YARDSLOVESYOU &lt;3</span>
+      <nav class="footer-social" aria-label="Social media">
+        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener">YouTube</a>
+      </nav>
     </div>
     <nav class="footer-links" aria-label="Legal">
-      <a href="code-of-conduct.html">Code of Conduct</a>
-      <a href="contributing.html">Contributing</a>
+      <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
       <a href="license.html">License</a>
+      <a href="code-of-conduct.html">Code of Conduct</a>
       <a href="security.html">Security</a>
     </nav>
   </footer>
