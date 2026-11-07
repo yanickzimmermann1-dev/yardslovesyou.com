@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /success.html
 Disallow: /contributing.html
+Disallow: /unsubscribe.html
+Disallow: /drop-admin.html
 
 Sitemap: https://yardslovesyou.com/sitemap.xml
