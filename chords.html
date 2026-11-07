@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Chord & Melody Generator for Trap, Drill, R&B · YARDSLOVESYOU</title>
+  <meta name="description" content="Free chord progression and melody generator: pick a key, mood and genre, hear chords, melody and bass instantly and download the MIDI for your DAW.">
+  <link rel="canonical" href="https://yardslovesyou.com/chords.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="YARDSLOVESYOU">
+  <meta property="og:title" content="Listen to my chords · YARDSLOVESYOU">
+  <meta property="og:description" content="Made with the free Chord & Melody Starter. Press play and make it yours.">
+  <meta property="og:url" content="https://yardslovesyou.com/chords.html">
+  <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
+    <nav aria-label="Main">
+      <a href="/">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="upload.html">Upload</a>
+      <a class="active" href="free.html">Free</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero compact">
+      <a class="back-link" href="free.html" style="margin-top:0">← All free tools</a>
+      <p class="eyebrow" style="margin-top:18px">FREE TOOL</p>
+      <h1>Chord &amp; Melody Starter: <span>beat the blank page.</span></h1>
+      <p class="muted">Pick a key, a mood and a genre. Get chords, a melody and a bassline in one click, then take the MIDI straight into your DAW.</p>
+    </section>
+
+    <section class="cm" aria-label="Chord and Melody Starter">
+
+      <!-- Schritt 1: Stimmung & Genre -->
+      <div class="cm-settings">
+        <div class="cm-field">
+          <span class="cm-label"><span class="mc-step">1</span> Mood</span>
+          <div class="cm-pills" id="cm-moods"></div>
+        </div>
+        <div class="cm-field">
+          <span class="cm-label"><span class="mc-step">2</span> Genre</span>
+          <div class="cm-pills" id="cm-genres"></div>
+        </div>
+        <div class="cm-field cm-field-key">
+          <span class="cm-label"><span class="mc-step">3</span> Key</span>
+          <div class="cm-key-row">
+            <select id="cm-key" aria-label="Key"></select>
+            <span class="cm-scale" id="cm-scale"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Erzeugen -->
+      <div class="cm-generate-row">
+        <button type="button" class="button cm-generate" id="cm-generate">✨ Generate</button>
+        <button type="button" class="outline" id="cm-new-chords">New chords</button>
+        <button type="button" class="outline" id="cm-new-melody">New melody</button>
+      </div>
+
+      <!-- Transport -->
+      <div class="cm-transport">
+        <button type="button" class="bl-play" id="cm-play" aria-label="Play">
+          <svg class="i-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="i-stop" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
+        </button>
+        <label class="bl-ctl">
+          <span>BPM <strong id="cm-bpm-val">140</strong></span>
+          <input type="range" id="cm-bpm" min="60" max="180" step="1" value="140">
+        </label>
+        <label class="bl-ctl bl-ctl-small">
+          <span>Chord sound</span>
+          <select id="cm-chord-sound"></select>
+        </label>
+        <label class="bl-ctl bl-ctl-small">
+          <span>Melody sound</span>
+          <select id="cm-mel-sound"></select>
+        </label>
+        <div class="cm-parts" id="cm-parts" role="group" aria-label="Parts">
+          <button type="button" class="cm-pill" data-part="chords">Chords</button>
+          <button type="button" class="cm-pill" data-part="melody">Melody</button>
+          <button type="button" class="cm-pill" data-part="bass">Bass</button>
+        </div>
+      </div>
+
+      <!-- Akkorde -->
+      <div class="cm-chords" id="cm-chords"></div>
+
+      <!-- Piano Roll -->
+      <div class="cm-roll" aria-hidden="true">
+        <div class="cm-roll-bars"><span></span><span></span><span></span><span></span></div>
+        <div class="cm-roll-notes" id="cm-roll-notes"></div>
+        <div class="cm-playhead hidden" id="cm-playhead"></div>
+      </div>
+      <p class="bl-hint">Purple = melody, grey = chords. Not feeling it? Hit <strong>New melody</strong> or <strong>New chords</strong> until it clicks. <kbd>Space</kbd> = play / stop.</p>
+
+      <!-- Export -->
+      <div class="bl-actions">
+        <button type="button" class="button" id="cm-share">🔗 Share link</button>
+        <button type="button" class="outline" id="cm-midi">Download MIDI</button>
+        <button type="button" class="outline locked" id="cm-pack">🔒 MIDI pack (10 ideas)</button>
+      </div>
+      <p class="status" id="cm-status" role="status"></p>
+
+      <!-- Freischalten -->
+      <form class="bl-unlock hidden" id="cm-unlock" novalidate>
+        <div>
+          <h3>Unlock the MIDI pack – <span>free</span></h3>
+          <p class="muted">Get 10 chord &amp; melody ideas in your key, mood and genre as MIDI. As a bonus you'll get <strong>Essentials Lite</strong> (20 free sounds) in your inbox.</p>
+        </div>
+        <div class="free-kit-form">
+          <label class="sr-only" for="cm-email">Email address</label>
+          <div class="free-kit-row">
+            <input id="cm-email" type="email" placeholder="your@email.com" autocomplete="email" required>
+            <button id="cm-unlock-btn" class="button" type="submit">Unlock &amp; download</button>
+          </div>
+          <label class="consent">
+            <input id="cm-consent" type="checkbox">
+            <span>Yes, also send me the monthly Sound Drop, new releases and deals. I can unsubscribe at any time.</span>
+          </label>
+          <p class="hint">See our <a href="privacy.html">privacy policy</a>.</p>
+          <p id="cm-unlock-status" class="status" role="status"></p>
+        </div>
+      </form>
+    </section>
+
+    <section class="bl-cta">
+      <div>
+        <p class="eyebrow">NEXT STEP</p>
+        <h2>Add drums in the Beat Lab.</h2>
+        <p class="muted">Got your chords? Build the drums in seconds with hand-crafted sounds from Essentials, then export both into your DAW.</p>
+      </div>
+      <a class="button" href="beatlab.html">Open Beat Lab</a>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <span>© <span id="year">2026</span> YARDSLOVESYOU &lt;3</span>
+      <nav class="footer-social" aria-label="Social media">
+        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener">YouTube</a>
+      </nav>
+    </div>
+    <nav class="footer-links" aria-label="Legal">
+      <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="license.html">License</a>
+      <a href="code-of-conduct.html">Code of Conduct</a>
+      <a href="security.html">Security</a>
+    </nav>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="chords.js"></script>
+</body>
+</html>

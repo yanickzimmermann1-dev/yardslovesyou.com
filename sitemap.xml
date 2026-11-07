@@ -5,6 +5,7 @@
   <url><loc>https://yardslovesyou.com/upload.html</loc><priority>0.9</priority></url>
   <url><loc>https://yardslovesyou.com/free.html</loc><priority>0.9</priority></url>
   <url><loc>https://yardslovesyou.com/beatlab.html</loc><priority>0.8</priority></url>
+  <url><loc>https://yardslovesyou.com/chords.html</loc><priority>0.8</priority></url>
   <!-- Produktseiten: pro Produkt eine Zeile mit der ID aus Supabase (shop_products.id) -->
   <!-- <url><loc>https://yardslovesyou.com/product.html?id=PRODUKT-ID</loc><priority>0.8</priority></url> -->
   <url><loc>https://yardslovesyou.com/imprint.html</loc><priority>0.3</priority></url>
