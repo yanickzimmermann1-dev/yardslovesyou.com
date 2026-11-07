@@ -13,6 +13,9 @@
   const money=(cents,cur)=>(cents/100).toLocaleString("de-CH",{style:"currency",currency:String(cur||cfg.CURRENCY||"CHF").toUpperCase()});
   const paragraphs=t=>String(t||"").trim().split(/\n\s*\n/).map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
 
+  const PLAY='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+  const PAUSE='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+
   // YouTube / Vimeo / MP4 -> eingebettetes Video
   const embed=u=>{
     let m;
@@ -25,13 +28,44 @@
     return "";
   };
 
+  // Hörproben: preview_tracks (Liste) oder – falls leer – die einzelne preview_audio
+  const getTracks=p=>{
+    let list=p.preview_tracks;
+    if(typeof list==="string"){ try{ list=JSON.parse(list); }catch(_){ list=null; } }
+    list=Array.isArray(list)?list.map((t,i)=>typeof t==="string"?{title:`Preview ${i+1}`,file:t}:t).filter(t=>t&&t.file):[];
+    if(!list.length&&p.preview_audio) list=[{title:"Preview",file:p.preview_audio}];
+    return list;
+  };
+
+  // Info-Zeile: "120 sounds · 24-bit WAV · 350 MB" -> einzelne Chips
+  const specChips=s=>String(s||"").split(/[·|•]/).map(x=>x.trim()).filter(Boolean);
+
+  const faqFor=p=>{
+    const items=[];
+    items.push(["How do I get my download?",
+      "Right after payment you are taken to your download page. You also receive an email with your download link, so you can download it again later."]);
+    if(p.royalty_free){
+      items.push(["Can I use the sounds in my released music?",
+        `Yes. All sounds are 100% royalty-free: use them in your songs, beats you sell or lease, releases, videos and placements. No credit and no further payments needed. You just may not resell or share the sounds on their own. <a href="license.html">Read the full license</a>.`]);
+      items.push(["Which DAWs are supported?",
+        "All of them. The sounds are standard audio files that work in FL Studio, Ableton Live, Logic Pro, Pro Tools, Cubase, Studio One, GarageBand and every other DAW."]);
+    }else{
+      items.push(["How may I use this product?",
+        `This product is licensed for your personal use. <a href="license.html">Read the full license</a>.`]);
+    }
+    items.push(["Which payment methods can I use?",
+      "Credit and debit cards, TWINT, PayPal, and Apple Pay or Google Pay where available. Payments are processed securely by Stripe."]);
+    items.push(["I have a question that isn't answered here.",
+      `Just write to <a href="mailto:yardsyurr@gmail.com">yardsyurr@gmail.com</a> – I'm happy to help.`]);
+    return items;
+  };
+
   const id=new URLSearchParams(location.search).get("id");
   if(!id) return fail("Product not found.");
 
   async function load(){
-    const {data:p,error}=await db.from("shop_products")
-      .select("id,title,description,price_cents,currency,cover_emoji,image_url,long_description,features,gallery,video_urls,preview_audio")
-      .eq("id",id).eq("published",true).maybeSingle();
+    // select("*"): neue Spalten (badge, specs, preview_tracks …) werden automatisch mitgeladen
+    const {data:p,error}=await db.from("shop_products").select("*").eq("id",id).eq("published",true).maybeSingle();
     if(error) return fail("Product could not be loaded.");
     if(!p) return fail("Product not found.");
 
@@ -40,7 +74,11 @@
     setSeo(p,images);
     const features=(p.features||[]).filter(Boolean);
     const videos=(p.video_urls||[]).map(embed).filter(Boolean);
-    const bars=Array.from({length:64},()=>'<span class="wave-bar"></span>').join("");
+    const tracks=getTracks(p);
+    const chips=specChips(p.specs);
+    const price=money(p.price_cents,p.currency);
+    const was=Number(p.compare_at_cents)>p.price_cents?`<s class="was-price">${money(p.compare_at_cents,p.currency)}</s>`:"";
+    const bars=n=>Array.from({length:n},()=>'<span class="wave-bar"></span>').join("");
 
     root.innerHTML=`
       <a class="back-link" href="shop.html#downloads">← Back to shop</a>
@@ -52,28 +90,54 @@
         </div>
 
         <div class="pd-info">
-          <p class="eyebrow">Digital product</p>
+          <p class="eyebrow">Digital product ${p.badge?`<span class="badge badge-inline">${esc(p.badge)}</span>`:""}</p>
           <h1>${esc(p.title)}</h1>
           <p class="muted">${esc(p.description||"Digital download as ZIP file.")}</p>
+          ${chips.length?`<ul class="pd-specs">${chips.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>`:""}
           <div class="pd-buy">
-            <span class="price">${money(p.price_cents,p.currency)}</span>
+            <span class="price-wrap">${was}<span class="price">${price}</span></span>
             <button class="button" id="buy-btn" type="button">Buy</button>
           </div>
           <p class="fineprint">Instant ZIP download after payment.</p>
-          ${p.preview_audio?`
+          ${p.royalty_free?`<p class="license-badge">✓ 100% royalty-free – use in your beats, releases &amp; placements. <a href="license.html">License</a></p>`:""}
+
+          ${tracks.length?`
           <div class="pd-preview">
-            <p class="eyebrow">Preview</p>
-            <div class="custom-player">
-              <button class="play-btn" id="pd-play" type="button" aria-label="Play preview"></button>
-              <div class="waveform-container" id="pd-wave"><div class="waveform-bars">${bars}</div></div>
-            </div>
+            <p class="eyebrow">${tracks.length>1?"Previews":"Preview"}</p>
+            <ul class="pd-tracks">
+              ${tracks.map((t,i)=>`
+              <li class="pd-track" data-track="${i}">
+                <button class="play-btn" type="button" aria-label="Play ${esc(t.title)}">${PLAY}</button>
+                <div class="pd-track-body">
+                  ${tracks.length>1||t.title!=="Preview"?`<span class="pd-track-title">${esc(t.title)}</span>`:""}
+                  <div class="waveform-container"><div class="waveform-bars">${bars(tracks.length>1?40:64)}</div></div>
+                </div>
+              </li>`).join("")}
+            </ul>
           </div>`:""}
         </div>
       </section>
 
       ${p.long_description?`<section class="pd-section"><h2>About</h2><div class="pd-text">${paragraphs(p.long_description)}</div></section>`:""}
       ${features.length?`<section class="pd-section"><h2>What's included</h2><ul class="pd-features">${features.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></section>`:""}
-      ${videos.length?`<section class="pd-section"><h2>Showcase</h2><div class="pd-videos">${videos.map(v=>`<div class="pd-video">${v}</div>`).join("")}</div></section>`:""}`;
+      ${videos.length?`<section class="pd-section"><h2>Showcase</h2><div class="pd-videos">${videos.map(v=>`<div class="pd-video">${v}</div>`).join("")}</div></section>`:""}
+
+      <section class="pd-section">
+        <h2>FAQ</h2>
+        <div class="pd-faq">
+          ${faqFor(p).map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${a}</p></details>`).join("")}
+        </div>
+      </section>
+
+      <div class="pd-sticky" id="pd-sticky" aria-hidden="true">
+        <div class="pd-sticky-inner">
+          <div class="pd-sticky-info">
+            <strong>${esc(p.title)}</strong>
+            <span class="price-wrap">${was}<span class="price">${price}</span></span>
+          </div>
+          <button class="button" id="sticky-buy-btn" type="button" tabindex="-1">Buy</button>
+        </div>
+      </div>`;
 
     // Galerie: Klick auf Vorschaubild wechselt das Hauptbild
     root.querySelectorAll("[data-img]").forEach(b=>b.onclick=()=>{
@@ -82,7 +146,66 @@
     });
 
     $("buy-btn").onclick=buy;
-    if(p.preview_audio) setupPlayer(media(p.preview_audio));
+    $("sticky-buy-btn").onclick=buy;
+    setupSticky();
+    if(tracks.length) setupPlayers(tracks);
+  }
+
+  // Fixierte Kaufleiste: erscheint, sobald der Haupt-Kaufbutton aus dem Bild gescrollt ist,
+  // und verschwindet wieder, sobald der Footer sichtbar ist (verdeckt so keine Links)
+  function setupSticky(){
+    const bar=$("pd-sticky"), main=$("buy-btn"), footer=document.querySelector("footer");
+    if(!bar||!main||!("IntersectionObserver" in window)) return;
+    let pastBuy=false, footerVisible=false;
+    const update=()=>{
+      const show=pastBuy&&!footerVisible;
+      bar.classList.toggle("visible",show);
+      bar.setAttribute("aria-hidden",show?"false":"true");
+      $("sticky-buy-btn").tabIndex=show?0:-1;
+    };
+    new IntersectionObserver(([e])=>{ pastBuy=!e.isIntersecting&&e.boundingClientRect.top<0; update(); }).observe(main);
+    if(footer) new IntersectionObserver(([e])=>{ footerVisible=e.isIntersecting; update(); }).observe(footer);
+  }
+
+  // Ein Audio-Element für alle Hörproben: es spielt immer nur eine gleichzeitig
+  function setupPlayers(tracks){
+    const audio=new Audio(); audio.preload="none";
+    const rows=[...root.querySelectorAll(".pd-track")];
+    let current=-1;
+
+    const reset=i=>{
+      const r=rows[i]; if(!r) return;
+      r.querySelector(".play-btn").innerHTML=PLAY;
+      r.classList.remove("playing");
+      r.querySelectorAll(".wave-bar").forEach(b=>b.classList.remove("active"));
+    };
+
+    rows.forEach((row,i)=>{
+      const btn=row.querySelector(".play-btn"), wave=row.querySelector(".waveform-container");
+      btn.onclick=()=>{
+        if(current===i){ audio.paused?audio.play():audio.pause(); return; }
+        reset(current); current=i;
+        audio.src=media(tracks[i].file);
+        audio.play().catch(()=>{});
+      };
+      wave.onclick=e=>{
+        if(current!==i){ btn.onclick(); return; }
+        if(!audio.duration) return;
+        const r=wave.getBoundingClientRect();
+        audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+      };
+    });
+
+    audio.onplay=()=>{ const r=rows[current]; if(r){ r.querySelector(".play-btn").innerHTML=PAUSE; r.classList.add("playing"); } };
+    audio.onpause=()=>{ const r=rows[current]; if(r) r.querySelector(".play-btn").innerHTML=PLAY; };
+    audio.onended=()=>reset(current);
+    audio.onerror=()=>{ const r=rows[current]; if(r){ reset(current); r.querySelector(".play-btn").setAttribute("title","Preview not available"); } };
+    audio.ontimeupdate=()=>{
+      const r=rows[current]; if(!r) return;
+      const bars=[...r.querySelectorAll(".wave-bar")];
+      const n=Math.round((audio.duration?audio.currentTime/audio.duration:0)*bars.length);
+      bars.forEach((b,k)=>b.classList.toggle("active",k<n));
+    };
   }
 
   // SEO: Beschreibung, Canonical, Teilen-Vorschau und Produktdaten für Google
@@ -125,34 +248,15 @@
     document.head.appendChild(ld);
   }
 
-  function setupPlayer(src){
-    const audio=new Audio(src); audio.preload="metadata";
-    const btn=$("pd-play"), wave=$("pd-wave"), bars=[...wave.querySelectorAll(".wave-bar")];
-    const PLAY='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-    const PAUSE='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
-    btn.innerHTML=PLAY;
-    btn.onclick=()=>audio.paused?audio.play():audio.pause();
-    audio.onplay=()=>{btn.innerHTML=PAUSE;};
-    audio.onpause=audio.onended=()=>{btn.innerHTML=PLAY;};
-    audio.ontimeupdate=()=>{
-      const n=Math.round((audio.duration?audio.currentTime/audio.duration:0)*bars.length);
-      bars.forEach((b,i)=>b.classList.toggle("active",i<n));
-    };
-    wave.onclick=e=>{
-      if(!audio.duration) return;
-      const r=wave.getBoundingClientRect();
-      audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
-    };
-  }
-
   async function buy(){
-    const b=$("buy-btn"); b.disabled=true; b.textContent="Redirecting …";
+    const btns=[$("buy-btn"),$("sticky-buy-btn")].filter(Boolean);
+    btns.forEach(b=>{b.disabled=true;b.textContent="Redirecting …";});
     try{
       const {data,error}=await db.functions.invoke("create-checkout",{body:{product_id:id}});
       if(error) throw error;
       if(!data?.url) throw new Error(data?.error||"Checkout link missing.");
       location.href=data.url;
-    }catch(e){alert("Checkout failed: "+(e.message||e));b.disabled=false;b.textContent="Buy";}
+    }catch(e){alert("Checkout failed: "+(e.message||e));btns.forEach(b=>{b.disabled=false;b.textContent="Buy";});}
   }
 
   load();
