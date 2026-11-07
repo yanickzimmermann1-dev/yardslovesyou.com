@@ -20,7 +20,7 @@ window.YLY = (() => {
   ];
   const POST_SELECT = "id,type,title,data,remix_of,like_count,featured,hidden,created_at,user_id," +
     "author:profiles!posts_user_id_fkey(handle,display_name)," +
-    "parent:posts!posts_remix_of_fkey(id,title,author:profiles!posts_user_id_fkey(handle))";
+    "parent:remix_of(id,title,author:profiles!posts_user_id_fkey(handle))";
 
   // ---------- Sitzung & eigenes Profil ----------
   let meCache;
