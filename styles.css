@@ -1465,3 +1465,42 @@ body::before{
   .brand{font-size:14px;letter-spacing:.5px}
   nav{font-size:11.5px;gap:9px}
 }
+
+/* =====================================================================
+   CHORD & MELODY: Piano-Roll-Editor
+   ===================================================================== */
+.ed-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 10px}
+.ed-label{font-size:13px;font-weight:600;align-self:center;margin-right:2px}
+.ed-snap{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer}
+.ed-snap input{accent-color:var(--purple);width:16px;height:16px;padding:0}
+.ed-tools{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.ed-tools .cp-icon:disabled{opacity:.4;cursor:default}
+
+.ed-roll{display:flex;height:auto;overflow:hidden}
+.cm-keys{position:relative;width:42px;flex-shrink:0;border-right:1px solid var(--line);background:#0b0910}
+.cm-keys span{position:absolute;left:0;right:0;font-size:9px;color:#6f6680;padding-left:6px;display:flex;align-items:center;border-bottom:1px solid #ffffff06}
+.cm-keys span.sc{background:#ffffff06}
+.cm-keys span.c{color:var(--muted);border-bottom-color:#ffffff14}
+.cm-scrollx{flex:1;min-width:0;overflow-x:auto}
+.cm-grid{
+  position:relative;min-width:100%;cursor:crosshair;touch-action:pan-x pan-y;
+  background:
+    repeating-linear-gradient(90deg, #ffffff14 0 1px, transparent 1px 25%),
+    repeating-linear-gradient(90deg, #ffffff0a 0 1px, transparent 1px 6.25%),
+    repeating-linear-gradient(90deg, #ffffff05 0 1px, transparent 1px 1.5625%);
+}
+.cm-notes{position:absolute;inset:0}
+.cm-notes .lane{position:absolute;left:0;right:0;background:#ffffff05;pointer-events:none}
+.cm-note.ghost{background:#ffffff14;pointer-events:none;border-radius:3px}
+.cm-note.ed{cursor:grab;border-radius:3px;touch-action:none;box-shadow:0 0 0 1px #0f0c15 inset}
+.cm-note.ed.mel{background:var(--purple)}
+.cm-note.ed.ch{background:var(--green)}
+.cm-note.ed.sel{outline:2px solid var(--text);outline-offset:0;z-index:2}
+.cm-note.ed:active{cursor:grabbing}
+.cm-note .rz{position:absolute;top:0;right:0;bottom:0;width:7px;cursor:ew-resize;background:#ffffff40;border-radius:0 3px 3px 0}
+
+@media(max-width:600px){
+  .cm-grid{min-width:720px}
+  .ed-tools{margin-left:0}
+  .cm-note .rz{width:10px}
+}

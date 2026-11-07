@@ -97,6 +97,7 @@
 
   // ---------- Erzeugen ----------
   function newChords() {
+    state.chordNotes = null;                                       // eigene Akkord-Noten verwerfen
     state.prog = pick(MOODS[state.mood].progs).slice();
     state.chordRhythm = pick(GENRES[state.genre].chords);
     state.bassRhythm = pick(GENRES[state.genre].bass);
@@ -144,17 +145,58 @@
     newChords(); newMelody();
   }
 
+  // Akkord-Noten aus der Akkordfolge (wenn nicht von Hand bearbeitet)
+  function progChordNotes(s = state) {
+    const list = []; let prevVoicing = null;
+    for (let bar = 0; bar < BARS; bar++) {
+      const v = voice(chordTones(s.prog[bar]), prevVoicing); prevVoicing = v;
+      CHORD_RHYTHMS[s.chordRhythm].forEach(([st, l]) => v.forEach(p => list.push({ s: bar * SPB + st, l, p })));
+    }
+    return list;
+  }
+  const chordNotesOf = (s = state) => s.chordNotes || progChordNotes(s);
+
+  // Akkord aus gespielten Tönen erkennen (für eigene Akkorde)
+  const CHORD_SHAPES = [
+    ["maj7", [0, 4, 7, 11]], ["7", [0, 4, 7, 10]], ["m7", [0, 3, 7, 10]], ["m7♭5", [0, 3, 6, 10]], ["m(maj7)", [0, 3, 7, 11]],
+    ["", [0, 4, 7]], ["m", [0, 3, 7]], ["dim", [0, 3, 6]], ["aug", [0, 4, 8]], ["sus4", [0, 5, 7]], ["sus2", [0, 2, 7]],
+    ["5", [0, 7]],
+  ];
+  function detectChord(pitches) {
+    if (!pitches.length) return null;
+    const pcs = [...new Set(pitches.map(p => p % 12))];
+    const lowest = Math.min(...pitches) % 12;
+    let best = null;
+    for (const root of pcs) {
+      const iv = new Set(pcs.map(pc => (pc - root + 12) % 12));
+      for (const [q, shape] of CHORD_SHAPES) {
+        if (shape.every(x => iv.has(x)) && iv.size <= shape.length + 1) {
+          const score = shape.length * 10 - (iv.size - shape.length) * 3 + (root === lowest ? 2 : 0);
+          if (!best || score > best.score) best = { root, name: NOTES[root] + q, score };
+        }
+      }
+    }
+    return best || { root: lowest, name: pcs.length === 1 ? NOTES[lowest] : pcs.map(pc => NOTES[pc]).join("·") };
+  }
+  // Akkordname und Grundton pro Takt
+  function barChords(s = state) {
+    if (!s.chordNotes) return s.prog.map(d => ({ name: chordName(d), root: chordTones(d)[0] % 12 }));
+    return Array.from({ length: BARS }, (_, bar) => {
+      const ps = s.chordNotes.filter(n => n.s >= bar * SPB && n.s < (bar + 1) * SPB).map(n => n.p);
+      const d = detectChord(ps);
+      return d ? { name: d.name, root: d.root } : { name: "–", root: null };
+    });
+  }
+
   // Alle Noten (für Wiedergabe, Anzeige, MIDI)
   function buildEvents(s = state) {
     const ev = [];
-    let prevVoicing = null;
-    for (let bar = 0; bar < BARS; bar++) {
-      const v = voice(chordTones(s.prog[bar]), prevVoicing); prevVoicing = v;
-      CHORD_RHYTHMS[s.chordRhythm].forEach(([st, l]) => v.forEach(p => ev.push({ part: "chords", s: bar * SPB + st, l, p })));
-      const root = chordTones(s.prog[bar])[0] % 12;
-      let bp = 36 + root; if (bp > 43) bp -= 12;                    // Bass um C2
+    chordNotesOf(s).forEach(n => ev.push({ part: "chords", s: n.s, l: n.l, p: n.p }));
+    barChords(s).forEach((c, bar) => {
+      if (c.root === null) return;
+      let bp = 36 + c.root; if (bp > 43) bp -= 12;                 // Bass um C2
       BASS_RHYTHMS[s.bassRhythm].forEach(([st, l]) => ev.push({ part: "bass", s: bar * SPB + st, l, p: bp }));
-    }
+    });
     s.melody.forEach(n => ev.push({ part: "melody", s: n.s, l: n.l, p: n.p }));
     return ev;
   }
@@ -165,6 +207,7 @@
     chordSound: "pad", melSound: "pluck",
     on: { chords: true, melody: true, bass: true },
     prog: [0, 5, 2, 6], chordRhythm: "whole", bassRhythm: "trap", melody: [],
+    chordNotes: null,                                              // eigene Akkord-Noten (nach Bearbeitung)
   };
 
   // ---------- Teilen-Link ----------
@@ -175,21 +218,37 @@
       v: 1, k: state.key, m: state.mood, g: state.genre, b: state.bpm, cs: state.chordSound, ms: state.melSound,
       o: [state.on.chords, state.on.melody, state.on.bass].map(x => x ? 1 : 0).join(""),
       p: state.prog.join(""), cr: state.chordRhythm, br: state.bassRhythm,
-      n: state.melody.map(n => [n.s, n.l, n.p]),
+      n: packNotes(state.melody),
+      ...(state.chordNotes ? { cn: packNotes(state.chordNotes) } : {}),
     }));
   }
+  // Note -> 5 Zeichen: Schritt (2), Länge (1), Tonhöhe (2) in Base36
+  const b36 = (n, w) => n.toString(36).padStart(w, "0");
+  const packNotes = list => list.map(n => b36(n.s, 2) + b36(n.l - 1, 1) + b36(n.p - 24, 2)).join("");
+  function unpackNotes(v, max) {
+    if (Array.isArray(v)) return v.slice(0, max).map(([s, l, p]) => ({ s: +s, l: +l, p: +p }));
+    if (typeof v !== "string") return [];
+    const out = [];
+    for (let i = 0; i + 5 <= v.length && out.length < max; i += 5)
+      out.push({ s: parseInt(v.slice(i, i + 2), 36), l: parseInt(v[i + 2], 36) + 1, p: parseInt(v.slice(i + 3, i + 5), 36) + 24 });
+    return out;
+  }
+  const cleanNotes = list => list.filter(n => [n.s, n.l, n.p].every(Number.isFinite))
+    .map(n => ({ s: clamp(n.s, 0, TOTAL - 1), l: clamp(n.l, 1, 16), p: clamp(n.p, 36, 96) }))
+    .map(n => ({ ...n, l: Math.min(n.l, TOTAL - n.s) }));
   function decodeState(str) {
     try {
       const o = JSON.parse(b64d(str));
       if (o.v !== 1 || !MOODS[o.m] || !GENRES[o.g] || !CHORD_RHYTHMS[o.cr] || !BASS_RHYTHMS[o.br]) return null;
       const prog = String(o.p).split("").map(Number);
       if (prog.length !== BARS || prog.some(d => isNaN(d) || d < 0 || d > 6)) return null;
-      const mel = (o.n || []).slice(0, 128).map(([s, l, p]) => ({ s: clamp(+s, 0, TOTAL - 1), l: clamp(+l, 1, 16), p: clamp(+p, 36, 96) }));
+      const mel = cleanNotes(unpackNotes(o.n, MAX_MEL));
+      const cn = o.cn ? cleanNotes(unpackNotes(o.cn, MAX_CHORD)) : null;
       return {
         key: clamp(+o.k, 0, 11), mood: o.m, genre: o.g, bpm: clamp(+o.b, 60, 180),
         chordSound: SOUNDS[o.cs] ? o.cs : "pad", melSound: SOUNDS[o.ms] ? o.ms : "pluck",
         on: { chords: o.o?.[0] !== "0", melody: o.o?.[1] !== "0", bass: o.o?.[2] !== "0" },
-        prog, chordRhythm: o.cr, bassRhythm: o.br, melody: mel,
+        prog, chordRhythm: o.cr, bassRhythm: o.br, melody: mel, chordNotes: cn && cn.length ? cn : null,
       };
     } catch (_) { return null; }
   }
@@ -323,16 +382,8 @@
     document.querySelectorAll("[data-part]").forEach(b => { b.classList.toggle("active", state.on[b.dataset.part]); b.setAttribute("aria-pressed", state.on[b.dataset.part]); });
   }
   function renderView() {
-    $("cm-chords").innerHTML = state.prog.map((d, i) => `<div class="cm-chord"><span>Bar ${i + 1}</span><strong>${chordName(d)}</strong></div>`).join("");
-    const ev = buildEvents();
-    const mel = ev.filter(e => e.part === "melody"), ch = ev.filter(e => e.part === "chords");
-    // Melodie oben (0–64 %), Akkorde unten (70–100 %), jeweils auf ihren eigenen Tonumfang skaliert
-    const zone = (list, top, height, cls) => {
-      if (!list.length) return "";
-      const lo = Math.min(...list.map(e => e.p)) - 1, hi = Math.max(...list.map(e => e.p)) + 1, rows = hi - lo + 1;
-      return list.map(e => `<span class="cm-note ${cls}" style="left:${e.s / TOTAL * 100}%;width:${e.l / TOTAL * 100}%;top:${top + (hi - e.p) / rows * height}%;height:${height / rows}%"></span>`).join("");
-    };
-    $("cm-roll-notes").innerHTML = zone(mel, 0, 64, "mel") + zone(ch, 70, 30, "ch");
+    $("cm-chords").innerHTML = barChords().map((c, i) => `<div class="cm-chord"><span>Bar ${i + 1}${state.chordNotes ? " · edited" : ""}</span><strong>${c.name}</strong></div>`).join("");
+    renderRoll();
     $("cm-scale").textContent = `${NOTES[state.key]} ${MOODS[state.mood].scale === "major" ? "major" : MOODS[state.mood].scale === "harmonic" ? "harmonic minor" : "minor"}`;
   }
 
@@ -344,23 +395,187 @@
   $("cm-genres").innerHTML = Object.entries(GENRES).map(([k, g]) => `<button type="button" class="cm-pill" data-genre="${k}">${g.name}</button>`).join("");
 
   $("cm-play").onclick = toggle;
-  $("cm-key").onchange = e => { state.key = +e.target.value; newMelodyKeepRhythm(); refresh(); };
+  $("cm-key").onchange = e => {
+    const nk = +e.target.value; let d = ((nk - state.key) % 12 + 12) % 12; if (d > 6) d -= 12;
+    const shift = list => list.map(n => ({ ...n, p: clamp(n.p + d, 36, 96) }));
+    state.key = nk; state.melody = shift(state.melody); if (state.chordNotes) state.chordNotes = shift(state.chordNotes);
+    refresh();
+  };
   $("cm-bpm").oninput = e => { state.bpm = +e.target.value; $("cm-bpm-val").textContent = state.bpm; saveHash(); };
   $("cm-chord-sound").onchange = e => { state.chordSound = e.target.value; saveHash(); };
   $("cm-mel-sound").onchange = e => { state.melSound = e.target.value; saveHash(); };
   $("cm-moods").onclick = e => { const b = e.target.closest("[data-mood]"); if (!b) return; state.mood = b.dataset.mood; generateAll(false); renderSettings(); refresh(); };
   $("cm-genres").onclick = e => { const b = e.target.closest("[data-genre]"); if (!b) return; state.genre = b.dataset.genre; generateAll(true); renderSettings(); refresh(); };
   $("cm-parts").onclick = e => { const b = e.target.closest("[data-part]"); if (!b) return; state.on[b.dataset.part] = !state.on[b.dataset.part]; renderSettings(); saveHash(); };
-  $("cm-generate").onclick = () => { generateAll(false); refresh(); if (!playing) play(); };
-  $("cm-new-chords").onclick = () => { newChords(); newMelody(); refresh(); };
-  $("cm-new-melody").onclick = () => { newMelody(); refresh(); };
+  $("cm-generate").onclick = () => { pushUndo(); generateAll(false); refresh(); if (!playing) play(); };
+  $("cm-new-chords").onclick = () => { pushUndo(); newChords(); newMelody(); refresh(); };
+  $("cm-new-melody").onclick = () => { pushUndo(); newMelody(); refresh(); };
   document.addEventListener("keydown", e => {
     if (e.code === "Space" && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); toggle(); }
   });
-  // Tonart wechseln: Melodie neu passend erzeugen (Rhythmus/Akkorde bleiben)
-  function newMelodyKeepRhythm() { newMelody(); }
 
   function setStatus(msg, bad) { const el = $("cm-status"); el.textContent = msg; el.classList.toggle("danger", !!bad); }
+
+
+  // =====================================================================
+  // PIANO-ROLL-EDITOR: Noten setzen, verschieben, verlängern, löschen
+  // =====================================================================
+  const MAX_MEL = 128, MAX_CHORD = 160;
+  const ed = { target: "melody", snap: true, sel: -1, lastLen: 2, drag: null };
+  const undoStack = [];
+  const snapshot = () => JSON.stringify({ m: state.melody, c: state.chordNotes, p: state.prog, cr: state.chordRhythm, br: state.bassRhythm });
+  function pushUndo() { undoStack.push(snapshot()); if (undoStack.length > 60) undoStack.shift(); $("ed-undo").disabled = false; }
+  function undo() {
+    const s = undoStack.pop(); if (!s) return;
+    const o = JSON.parse(s);
+    state.melody = o.m; state.chordNotes = o.c; state.prog = o.p; state.chordRhythm = o.cr; state.bassRhythm = o.br;
+    ed.sel = -1; $("ed-undo").disabled = !undoStack.length; refresh();
+  }
+
+  // Sichtbarer Tonbereich je nach Ziel
+  const range = () => ed.target === "melody"
+    ? { lo: 60 + state.key - 5, hi: 60 + state.key + 24 }
+    : { lo: 45, hi: 79 };
+  const inScale = p => scaleOf().includes(((p - state.key) % 12 + 12) % 12);
+  const snapPitch = p => {
+    if (!ed.snap || inScale(p)) return p;
+    for (let d = 1; d < 3; d++) { if (inScale(p - d)) return p - d; if (inScale(p + d)) return p + d; }
+    return p;
+  };
+  // Liste, die gerade bearbeitet wird (Akkorde werden beim ersten Bearbeiten „aufgeklappt“)
+  function targetList(create) {
+    if (ed.target === "melody") return state.melody;
+    if (!state.chordNotes && create) state.chordNotes = progChordNotes();
+    return state.chordNotes || progChordNotes();
+  }
+
+  function renderRoll() {
+    const { lo, hi } = range(), rows = hi - lo + 1, grid = $("cm-grid");
+    const rowH = matchMedia("(max-width: 600px)").matches ? 14 : 12;
+    grid.style.height = (rows * rowH) + "px"; $("cm-keys").style.height = (rows * rowH) + "px";
+    grid.style.setProperty("--rowh", rowH + "px");
+    // Tasten links + Zeilen der Tonleiter hervorheben
+    let keys = "", lanes = "";
+    for (let p = hi; p >= lo; p--) {
+      const isC = p % 12 === 0, sc = inScale(p), y = (hi - p) * rowH;
+      keys += `<span class="${sc ? "sc" : ""} ${isC ? "c" : ""}" style="top:${y}px;height:${rowH}px">${isC || (p - state.key) % 12 === 0 ? NOTES[p % 12] + (Math.floor(p / 12) - 1) : ""}</span>`;
+      if (sc) lanes += `<i class="lane" style="top:${y}px;height:${rowH}px"></i>`;
+    }
+    $("cm-keys").innerHTML = keys;
+    const other = ed.target === "melody" ? chordNotesOf() : state.melody;
+    const mine = ed.target === "melody" ? state.melody : chordNotesOf();
+    const block = (n, i, cls) => {
+      if (n.p < lo || n.p > hi) return "";
+      return `<span class="cm-note ${cls}${i === ed.sel ? " sel" : ""}" ${i >= 0 ? `data-i="${i}"` : ""} style="left:${n.s / TOTAL * 100}%;width:${n.l / TOTAL * 100}%;top:${(hi - n.p) * rowH}px;height:${rowH}px">${i >= 0 ? '<b class="rz"></b>' : ""}</span>`;
+    };
+    $("cm-notes").innerHTML = lanes + other.map(n => block(n, -1, "ghost")).join("") +
+      mine.map((n, i) => block(n, i, ed.target === "melody" ? "mel ed" : "ch ed")).join("");
+    $("ed-delete").disabled = ed.sel < 0;
+  }
+
+  async function previewNote(p, part) {
+    ensureAudio(); if (ctx.state === "suspended") await ctx.resume();
+    note(ctx, partGain[part], verb, typeFor(part), p, ctx.currentTime + 0.01, 0.25, 0.6);
+  }
+  const part = () => ed.target === "melody" ? "melody" : "chords";
+
+  function cellFromEvent(e) {
+    const r = $("cm-grid").getBoundingClientRect(), { hi } = range();
+    const rowH = parseFloat(getComputedStyle($("cm-grid")).getPropertyValue("--rowh")) || 12;
+    const x = clamp(e.clientX - r.left, 0, r.width - 1), y = clamp(e.clientY - r.top, 0, r.height - 1);
+    return { step: Math.floor(x / r.width * TOTAL), pitch: hi - Math.floor(y / rowH), colW: r.width / TOTAL, rowH };
+  }
+
+  $("cm-grid").addEventListener("pointerdown", e => {
+    if (e.button !== undefined && e.button !== 0) return;
+    const c = cellFromEvent(e), hitEl = e.target.closest(".cm-note.ed");
+    const before = snapshot();
+    const list = targetList(true);
+    let i;
+    if (hitEl) {
+      i = +hitEl.dataset.i;
+      // Zweiter Klick auf dieselbe Note innerhalb von 350 ms = löschen (eigener Doppelklick)
+      const now = performance.now();
+      if (ed.lastTap && ed.lastTap.i === i && ed.lastTap.t > now - 350) { ed.lastTap = null; ed.sel = i; deleteSel(); return; }
+      ed.lastTap = { i, t: now };
+      const mode = e.target.classList.contains("rz") ? "resize" : "move";
+      ed.drag = { i, mode, x0: e.clientX, y0: e.clientY, orig: { ...list[i] }, before, moved: false };
+    } else {
+      const max = ed.target === "melody" ? MAX_MEL : MAX_CHORD;
+      if (list.length >= max) { setStatus("That's the maximum number of notes for this part.", true); return; }
+      const s = Math.min(c.step, TOTAL - 1), l = Math.min(ed.lastLen, TOTAL - s), p = snapPitch(c.pitch);
+      list.push({ s, l, p }); i = list.length - 1;
+      ed.drag = { i, mode: "move", x0: e.clientX, y0: e.clientY, orig: { s, l, p }, before, moved: true };
+      previewNote(p, part());
+    }
+    ed.sel = i;
+    try { $("cm-grid").setPointerCapture(e.pointerId); } catch (_) {}
+    renderRoll();
+  });
+  $("cm-grid").addEventListener("pointermove", e => {
+    const d = ed.drag; if (!d) return;
+    const list = targetList(true), n = list[d.i]; if (!n) return;
+    const { colW, rowH } = cellFromEvent(e);
+    const ds = Math.round((e.clientX - d.x0) / colW), dp = -Math.round((e.clientY - d.y0) / rowH);
+    if (d.mode === "resize") {
+      n.l = clamp(d.orig.l + ds, 1, Math.min(16, TOTAL - n.s));
+    } else {
+      const { lo, hi } = range();
+      const np = snapPitch(clamp(d.orig.p + dp, lo, hi)), ns = clamp(d.orig.s + ds, 0, TOTAL - n.l);
+      if (np !== n.p) previewNote(np, part());
+      n.p = np; n.s = ns;
+    }
+    if (ds || dp) d.moved = true;
+    renderRoll();
+  });
+  function endDrag() {
+    const d = ed.drag; if (!d) return; ed.drag = null;
+    const n = targetList(false)[d.i];
+    if (n && d.mode === "resize") ed.lastLen = n.l;
+    if (d.moved) ed.lastTap = null;
+    if (d.moved || snapshot() !== d.before) { undoStack.push(d.before); if (undoStack.length > 60) undoStack.shift(); $("ed-undo").disabled = false; }
+    refresh();
+  }
+  $("cm-grid").addEventListener("pointerup", endDrag);
+  $("cm-grid").addEventListener("pointercancel", endDrag);
+  // Rechtsklick auf eine Note löscht sie ebenfalls
+  $("cm-grid").addEventListener("contextmenu", e => { const el = e.target.closest(".cm-note.ed"); if (el) { e.preventDefault(); ed.sel = +el.dataset.i; deleteSel(); } });
+
+  function deleteSel() {
+    if (ed.sel < 0) return;
+    pushUndo();
+    targetList(true).splice(ed.sel, 1); ed.sel = -1; refresh();
+  }
+  $("ed-delete").onclick = deleteSel;
+  $("ed-undo").onclick = undo;
+  $("ed-clear").onclick = () => {
+    if (!confirm(ed.target === "melody" ? "Remove all melody notes?" : "Remove all chord notes?")) return;
+    pushUndo();
+    if (ed.target === "melody") state.melody = []; else state.chordNotes = [];
+    ed.sel = -1; refresh();
+  };
+  $("ed-snap").onchange = e => { ed.snap = e.target.checked; renderRoll(); };
+  $("ed-target").addEventListener("click", e => {
+    const b = e.target.closest("[data-target]"); if (!b) return;
+    ed.target = b.dataset.target; ed.sel = -1;
+    document.querySelectorAll("[data-target]").forEach(x => x.classList.toggle("active", x === b));
+    renderRoll();
+  });
+  // Tastatur: Entf = löschen, Pfeile = verschieben, Cmd/Ctrl+Z = rückgängig
+  document.addEventListener("keydown", e => {
+    if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); return; }
+    if (ed.sel < 0) return;
+    const n = targetList(false)[ed.sel]; if (!n) return;
+    if (e.key === "Delete" || e.key === "Backspace") { e.preventDefault(); deleteSel(); return; }
+    const mv = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
+    if (!mv) return;
+    e.preventDefault(); pushUndo();
+    const l = targetList(true)[ed.sel], { lo, hi } = range();
+    l.s = clamp(l.s + mv[0], 0, TOTAL - l.l);
+    if (mv[1]) { let p = l.p + mv[1]; if (ed.snap) while (!inScale(p) && p > lo && p < hi) p += mv[1]; l.p = clamp(p, lo, hi); previewNote(l.p, part()); }
+    refresh();
+  });
 
   // ---------- Teilen ----------
   $("cm-share").onclick = async () => {
@@ -404,7 +619,7 @@
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   }
-  const progName = s => s.prog.map(d => chordName(d)).join("-").replace(/♭/g, "b");
+  const progName = s => barChords(s).map(c => c.name).join("-").replace(/♭/g, "b").replace(/·/g, "+");
   const fileName = s => `${NOTES[s.key].replace("#", "s")} ${MOODS[s.mood].name} ${GENRES[s.genre].name} ${s.bpm}bpm - ${progName(s)}`;
   $("cm-midi").onclick = () => {
     download(new Blob([midiFile(state)], { type: "audio/midi" }), fileName(state) + ".mid");

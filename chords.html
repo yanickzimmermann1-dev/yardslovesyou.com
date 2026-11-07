@@ -100,13 +100,30 @@
       <!-- Akkorde -->
       <div class="cm-chords" id="cm-chords"></div>
 
-      <!-- Piano Roll -->
-      <div class="cm-roll" aria-hidden="true">
-        <div class="cm-roll-bars"><span></span><span></span><span></span><span></span></div>
-        <div class="cm-roll-notes" id="cm-roll-notes"></div>
-        <div class="cm-playhead hidden" id="cm-playhead"></div>
+      <!-- Piano-Roll-Editor -->
+      <div class="ed-bar">
+        <div class="cm-pills" id="ed-target" role="group" aria-label="Edit">
+          <span class="ed-label">Edit:</span>
+          <button type="button" class="cm-pill active" data-target="melody">Melody</button>
+          <button type="button" class="cm-pill" data-target="chords">Chords</button>
+        </div>
+        <label class="ed-snap"><input type="checkbox" id="ed-snap" checked> Snap to key</label>
+        <div class="ed-tools">
+          <button type="button" class="cp-icon" id="ed-undo" disabled title="Undo (Cmd/Ctrl + Z)">↶ Undo</button>
+          <button type="button" class="cp-icon" id="ed-delete" disabled title="Delete note (Del)">Delete note</button>
+          <button type="button" class="cp-icon danger" id="ed-clear">Clear</button>
+        </div>
       </div>
-      <p class="bl-hint">Purple = melody, grey = chords. Not feeling it? Hit <strong>New melody</strong> or <strong>New chords</strong> until it clicks. <kbd>Space</kbd> = play / stop.</p>
+      <div class="cm-roll ed-roll">
+        <div class="cm-keys" id="cm-keys" aria-hidden="true"></div>
+        <div class="cm-scrollx">
+          <div class="cm-grid" id="cm-grid">
+            <div class="cm-notes" id="cm-notes"></div>
+            <div class="cm-playhead hidden" id="cm-playhead"></div>
+          </div>
+        </div>
+      </div>
+      <p class="bl-hint"><strong>Click</strong> an empty spot to add a note · <strong>drag</strong> a note to move it · drag its <strong>right edge</strong> to make it longer · <strong>double-click</strong> (or double-tap) to delete. Switch to <strong>Chords</strong> to edit the chord notes – the chord names and the bass follow automatically. <kbd>Space</kbd> = play / stop, arrow keys move the selected note.</p>
 
       <!-- Export -->
       <div class="bl-actions">
