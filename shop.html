@@ -39,6 +39,9 @@
       <p class="eyebrow">DIGITAL PRODUCTS</p>
       <h1>Organic sounds, <span>ready to download.</span></h1>
       <p class="muted">Instrumentals, one-shots, drums and more. Instant ZIP download after payment.</p>
+      <div class="hero-actions" style="margin-top:22px">
+        <a class="outline" href="#free-kit">Get a free kit</a>
+      </div>
     </section>
 
     <section class="section-head" id="downloads">
@@ -55,6 +58,28 @@
     <p class="fineprint">
       Your product will be available as a ZIP download.
     </p>
+
+    <!-- Free Kit gegen E-Mail -->
+    <section class="free-kit" id="free-kit" aria-labelledby="free-kit-title">
+      <div class="free-kit-text">
+        <p class="eyebrow">FREE DOWNLOAD</p>
+        <h2 id="free-kit-title">Essentials Lite</h2>
+        <p class="muted">10 drum one-shots + 10 percussive elements, straight from Essentials. 100% royalty-free. Enter your email and the download link lands in your inbox.</p>
+      </div>
+      <form id="free-kit-form" class="free-kit-form" novalidate>
+        <label class="sr-only" for="free-kit-email">Email address</label>
+        <div class="free-kit-row">
+          <input id="free-kit-email" type="email" placeholder="your@email.com" autocomplete="email" required>
+          <button id="free-kit-btn" class="button" type="submit">Send me the kit</button>
+        </div>
+        <label class="consent">
+          <input id="free-kit-consent" type="checkbox">
+          <span>Yes, send me new releases and deals by email. I can unsubscribe at any time.</span>
+        </label>
+        <p class="hint">We use your email to send you the download. See our <a href="privacy.html">privacy policy</a>.</p>
+        <p id="free-kit-status" class="status" role="status"></p>
+      </form>
+    </section>
 
     <!-- Bleibt für ältere Kauf-Links (shop.html?success=1) erhalten -->
     <section id="download-result" class="admin-panel hidden"
