@@ -3,7 +3,14 @@
   const params = new URLSearchParams(location.search);
   // Nur Weiterleitungen auf die eigene Website erlauben
   const nextRaw = params.get("next") || "";
-  const next = (() => { try { const u = new URL(nextRaw, location.origin); return u.origin === location.origin ? u.href : ""; } catch (_) { return ""; } })();
+  const next = (() => {
+    if (!nextRaw) return "";                                   // kein Ziel angegeben -> auf der Konto-Seite bleiben
+    try {
+      const u = new URL(nextRaw, location.origin);
+      if (u.origin !== location.origin || u.pathname.endsWith("/account.html")) return "";
+      return u.href;
+    } catch (_) { return ""; }
+  })();
   const show = id => ["acc-login", "acc-create", "acc-edit"].forEach(x => $(x).classList.toggle("hidden", x !== id));
   const status = (id, msg, bad) => { const el = $(id); el.textContent = msg; el.classList.toggle("danger", !!bad); };
 
