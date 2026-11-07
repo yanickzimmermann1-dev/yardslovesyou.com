@@ -144,11 +144,10 @@
     if(user) { 
       const {data:admin} = await db.from("audio_admins").select("user_id").eq("user_id",user.id).maybeSingle(); 
       if(!admin){
-        await db.auth.signOut();
+        // Eingeloggte Community-Mitglieder NICHT abmelden – sie sind nur keine Admins
         user=null;
         if(loginForm) loginForm.classList.remove("hidden");
         if(adminTools) adminTools.classList.add("hidden");
-        status("Not authorized as admin.");
       } 
     }
     await loadTracks();

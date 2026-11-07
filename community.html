@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Community: Beats & Chords by Producers · YARDSLOVESYOU</title>
+  <meta name="description" content="Listen to beats and chord ideas made by producers in the YARDSLOVESYOU Beat Lab and Chord & Melody Starter. Like, follow and remix them.">
+  <link rel="canonical" href="https://yardslovesyou.com/community.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="YARDSLOVESYOU">
+  <meta property="og:title" content="YARDSLOVESYOU Community">
+  <meta property="og:description" content="Beats and chord ideas by producers. Press play and remix them.">
+  <meta property="og:url" content="https://yardslovesyou.com/community.html">
+  <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
+    <nav aria-label="Main">
+      <a href="/">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="upload.html">Upload</a>
+      <a href="free.html">Free</a>
+      <a class="active" href="community.html">Community</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero compact cm-hero">
+      <div>
+        <p class="eyebrow">COMMUNITY</p>
+        <h1>Share your beats. <span>Find your people.</span></h1>
+        <p class="muted">Beats and chord ideas made by producers in the Beat Lab and the Chord &amp; Melody Starter. Press play, leave a like, follow and remix.</p>
+        <div class="hero-actions" style="margin-top:20px">
+          <a class="button" href="beatlab.html">Make a beat</a>
+          <a class="outline" href="chords.html">Make chords</a>
+        </div>
+      </div>
+      <div class="cm-auth" id="cm-auth"></div>
+    </section>
+
+    <section class="cm-shared-wrap hidden" id="cm-shared-wrap" aria-label="Shared post">
+      <p class="eyebrow">SHARED WITH YOU</p>
+      <div class="cp-list" id="cm-shared"></div>
+    </section>
+
+    <div class="cm-toolbar">
+      <div class="cm-tabs" id="cm-tabs" role="tablist">
+        <button type="button" class="cm-tab active" data-tab="new" role="tab" aria-selected="true">New</button>
+        <button type="button" class="cm-tab" data-tab="trending" role="tab" aria-selected="false">Trending</button>
+        <button type="button" class="cm-tab" data-tab="following" role="tab" aria-selected="false">Following</button>
+      </div>
+      <div class="cm-pills" id="cm-filter">
+        <button type="button" class="cm-pill active" data-filter="all">All</button>
+        <button type="button" class="cm-pill" data-filter="beat">Beats</button>
+        <button type="button" class="cm-pill" data-filter="chords">Chords</button>
+      </div>
+    </div>
+
+    <section class="cp-list" id="cm-feed" aria-live="polite"></section>
+    <div style="text-align:center;margin:24px 0 10px">
+      <button type="button" class="outline hidden" id="cm-more">Load more</button>
+    </div>
+    <p class="fineprint">Be kind and keep it about the music. Read the <a class="cp-link" href="community-guidelines.html">Community Guidelines</a>.</p>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <span>© <span id="year">2026</span> YARDSLOVESYOU &lt;3</span>
+      <nav class="footer-social" aria-label="Social media">
+        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener">YouTube</a>
+      </nav>
+    </div>
+    <nav class="footer-links" aria-label="Legal">
+      <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="license.html">License</a>
+      <a href="community-guidelines.html">Community Guidelines</a>
+      <a href="code-of-conduct.html">Code of Conduct</a>
+      <a href="security.html">Security</a>
+    </nav>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="community-core.js"></script>
+  <script src="community.js"></script>
+</body>
+</html>

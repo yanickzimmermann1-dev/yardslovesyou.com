@@ -31,6 +31,7 @@
       <a href="shop.html">Shop</a>
       <a href="upload.html">Upload</a>
       <a class="active" href="free.html">Free</a>
+      <a href="community.html">Community</a>
     </nav>
   </header>
 
@@ -110,6 +111,7 @@
       <!-- Export -->
       <div class="bl-actions">
         <button type="button" class="button" id="cm-share">🔗 Share link</button>
+        <button type="button" class="outline" id="pub-btn">⬆ Publish to Community</button>
         <button type="button" class="outline" id="cm-midi">Download MIDI</button>
         <button type="button" class="outline locked" id="cm-pack">🔒 MIDI pack (10 ideas)</button>
       </div>
@@ -135,6 +137,28 @@
           <p id="cm-unlock-status" class="status" role="status"></p>
         </div>
       </form>
+      <!-- In der Community veröffentlichen -->
+      <dialog class="pub-dialog" id="pub-dialog">
+        <form id="pub-form" method="dialog" novalidate>
+          <h3>Publish to Community</h3>
+          <p class="muted">Posting as <strong id="pub-handle"></strong>. Others can play, like and remix it.</p>
+          <p class="hint hidden" id="pub-remix">This will be shown as a remix of the original post.</p>
+          <label class="field"><span>Title</span><input id="pub-title" type="text" maxlength="60" placeholder="e.g. Late night trap idea" required></label>
+          <div class="hero-actions">
+            <button type="submit" class="button" id="pub-go">Publish</button>
+            <button type="button" class="outline" id="pub-cancel">Cancel</button>
+          </div>
+          <p class="status" id="pub-status" role="status"></p>
+        </form>
+        <div class="hidden" id="pub-done">
+          <h3>Published! 🎉</h3>
+          <p class="muted">Your post is live in the Community. Share the link with your friends.</p>
+          <div class="hero-actions">
+            <a class="button" id="pub-link" href="community.html">View post</a>
+            <button type="button" class="outline" id="pub-close">Close</button>
+          </div>
+        </div>
+      </dialog>
     </section>
 
     <section class="bl-cta">
@@ -167,5 +191,7 @@
 
   <script src="config.js"></script>
   <script src="chords.js"></script>
+  <script src="community-core.js"></script>
+  <script src="publish.js"></script>
 </body>
 </html>

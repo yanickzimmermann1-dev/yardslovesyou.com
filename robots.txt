@@ -4,5 +4,7 @@ Disallow: /success.html
 Disallow: /contributing.html
 Disallow: /unsubscribe.html
 Disallow: /drop-admin.html
+Disallow: /account.html
+Disallow: /community-admin.html
 
 Sitemap: https://yardslovesyou.com/sitemap.xml
