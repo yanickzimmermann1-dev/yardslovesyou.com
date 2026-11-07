@@ -860,3 +860,136 @@ body::before{
 .footer-social{display:flex;gap:16px;align-items:center;font-size:12px}
 .footer-social a{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
 .footer-social a:hover{color:var(--text)}
+
+/* =====================================================================
+   SHOP-UPDATE: Badges, Streichpreis, Lizenz, Hörproben, Kaufleiste, FAQ,
+   Free Kit
+   ===================================================================== */
+
+/* Badge auf der Shop-Kachel und neben "Digital product" */
+.product .cover{position:relative}
+.badge{
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:1;
+  background:var(--purple);
+  color:#180e23;
+  font:700 10px 'DM Sans',sans-serif;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  padding:5px 9px;
+  border-radius:6px;
+}
+.badge.badge-inline{position:static;display:inline-block;margin-left:8px;vertical-align:middle}
+
+/* Preis mit optionalem Streichpreis */
+.price-wrap{display:inline-flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.was-price{color:var(--muted);font-size:14px;text-decoration:line-through}
+.pd-buy .was-price{font-size:18px}
+
+/* Kleine Zeile "✓ Royalty-free" auf der Kachel */
+.product .tag-line{margin-top:8px;color:var(--green);font-size:12px;font-weight:600}
+
+/* Info-Chips unter der Beschreibung */
+.pd-specs{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:16px 0 0}
+.pd-specs li{
+  font-size:12px;
+  color:var(--text);
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 12px;
+}
+
+/* Lizenz-Hinweis unter dem Kaufbutton */
+.license-badge{
+  margin:14px 0 0;
+  padding:10px 14px;
+  border:1px solid rgba(158,240,206,.35);
+  background:rgba(158,240,206,.06);
+  border-radius:10px;
+  color:var(--green);
+  font-size:13px;
+  line-height:1.5;
+}
+.license-badge a{color:var(--text);text-decoration:underline}
+
+/* Mehrere Hörproben */
+.pd-tracks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.pd-track{display:flex;align-items:center;gap:14px}
+.pd-track .play-btn{width:42px;height:42px}
+.pd-track-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pd-track-title{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-track.playing .pd-track-title{color:var(--text)}
+.pd-track .waveform-container{height:30px;padding:0}
+
+/* FAQ */
+.pd-faq{display:flex;flex-direction:column;gap:10px;max-width:760px}
+.pd-faq details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:0 16px}
+.pd-faq summary{cursor:pointer;list-style:none;padding:14px 0;font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:12px}
+.pd-faq summary::-webkit-details-marker{display:none}
+.pd-faq summary::after{content:"+";color:var(--purple);font-size:18px;line-height:1}
+.pd-faq details[open] summary::after{content:"–"}
+.pd-faq details p{margin:0 0 14px;color:var(--muted);line-height:1.7;font-size:14px}
+.pd-faq a{color:var(--purple)}
+
+/* Fixierte Kaufleiste unten auf der Produktseite */
+.pd-sticky{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:6;
+  background:#0d0b12e6;
+  border-top:1px solid var(--line);
+  backdrop-filter:blur(14px);
+  transform:translateY(110%);
+  transition:transform .25s ease;
+}
+.pd-sticky.visible{transform:translateY(0)}
+.pd-sticky-inner{
+  max-width:1120px;
+  width:calc(100% - 40px);
+  margin:auto;
+  padding:12px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.pd-sticky-info{display:flex;align-items:baseline;gap:14px;min-width:0}
+.pd-sticky-info strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-sticky .price{font-size:18px}
+
+/* Free Kit */
+.free-kit{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:30px;
+  align-items:center;
+  background:linear-gradient(135deg,rgba(182,138,255,.12),rgba(23,19,31,.95) 60%);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:28px;
+  margin:0 0 60px;
+}
+.free-kit h2{font:600 30px 'Space Grotesk';margin:8px 0 10px}
+.free-kit .muted{margin:0}
+.free-kit-form{display:flex;flex-direction:column;gap:12px}
+.free-kit-row{display:flex;gap:10px;flex-wrap:wrap}
+.free-kit-row input{flex:1;min-width:200px}
+.free-kit .consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);line-height:1.5;cursor:pointer}
+.free-kit .consent input{margin-top:3px;accent-color:var(--purple);width:16px;height:16px;flex-shrink:0;padding:0}
+.free-kit .hint a{color:var(--purple)}
+.free-kit .status.danger{color:#ffb8c7}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+@media(max-width:760px){
+  .free-kit{grid-template-columns:1fr;padding:22px}
+}
+@media(max-width:500px){
+  .pd-sticky-info strong{display:none}
+  .free-kit-row .button{width:100%}
+}
