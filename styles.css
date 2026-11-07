@@ -993,3 +993,7 @@ body::before{
   .pd-sticky-info strong{display:none}
   .free-kit-row .button{width:100%}
 }
+
+/* Shop-Kacheln: Preis + Buttons immer unten auf gleicher Höhe */
+.product{display:flex;flex-direction:column}
+.product .price-row{margin-top:auto;padding-top:17px}
