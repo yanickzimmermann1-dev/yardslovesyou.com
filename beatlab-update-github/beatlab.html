@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Beat Lab: Free Online Beat Maker · YARDSLOVESYOU</title>
+  <meta name="description" content="Make a trap, drill, boom bap or afro beat in seconds with hand-crafted drum sounds. Share it with a link, export MIDI or download WAV stems – free.">
+  <link rel="canonical" href="https://yardslovesyou.com/beatlab.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="YARDSLOVESYOU">
+  <meta property="og:title" content="Check out my beat · YARDSLOVESYOU Beat Lab">
+  <meta property="og:description" content="Made in the free Beat Lab. Press play and remix it.">
+  <meta property="og:url" content="https://yardslovesyou.com/beatlab.html">
+  <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
+    <nav aria-label="Main">
+      <a href="/">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="upload.html">Upload</a>
+      <a class="active" href="free.html">Free</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero compact">
+      <a class="back-link" href="free.html" style="margin-top:0">← All free tools</a>
+      <p class="eyebrow" style="margin-top:18px">FREE TOOL</p>
+      <h1>Beat Lab: <span>make a beat in seconds.</span></h1>
+      <p class="muted">Hand-crafted drums from Essentials, right in your browser. Pick a preset or hit random, tweak it, then share the link or take it into your DAW.</p>
+    </section>
+
+    <section class="bl" aria-label="Beat Lab">
+      <!-- Transport -->
+      <div class="bl-bar">
+        <button type="button" class="bl-play" id="bl-play" aria-label="Play">
+          <svg class="i-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="i-stop" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
+        </button>
+        <label class="bl-ctl">
+          <span>BPM <strong id="bl-bpm-val">140</strong></span>
+          <input type="range" id="bl-bpm" min="60" max="200" step="1" value="140">
+        </label>
+        <label class="bl-ctl">
+          <span>Swing <strong id="bl-swing-val">0%</strong></span>
+          <input type="range" id="bl-swing" min="0" max="100" step="1" value="0">
+        </label>
+        <label class="bl-ctl bl-ctl-small">
+          <span>808 key</span>
+          <select id="bl-key"></select>
+        </label>
+        <div class="bl-bar-actions">
+          <select id="bl-preset" aria-label="Presets"></select>
+          <button type="button" class="outline" id="bl-random">🎲 Random</button>
+          <button type="button" class="outline" id="bl-clear">Clear</button>
+        </div>
+      </div>
+
+      <!-- Raster -->
+      <div class="bl-scroll">
+        <div class="bl-grid" id="bl-grid"></div>
+      </div>
+      <p class="bl-hint">Click a step to add a hit. <strong>Hi-hats:</strong> click again for rolls (×2, ×3). <strong>808:</strong> click again for higher notes (5th, octave). Click a sound name to switch sounds. <kbd>Space</kbd> = play / stop.</p>
+
+      <!-- Export -->
+      <div class="bl-actions">
+        <button type="button" class="button" id="bl-share">🔗 Share link</button>
+        <button type="button" class="outline" id="bl-midi">Download MIDI</button>
+        <button type="button" class="outline locked" id="bl-wav">🔒 Download WAV + stems</button>
+      </div>
+      <p class="status" id="bl-status" role="status"></p>
+
+      <!-- Freischalten -->
+      <form class="bl-unlock hidden" id="bl-unlock" novalidate>
+        <div>
+          <h3>Unlock WAV + stems – <span>free</span></h3>
+          <p class="muted">Enter your email and get your beat as WAV with every track as a separate stem. As a bonus you'll get <strong>Essentials Lite</strong> (20 free sounds) in your inbox.</p>
+        </div>
+        <div class="free-kit-form" id="bl-unlock-form-wrap">
+          <label class="sr-only" for="bl-email">Email address</label>
+          <div class="free-kit-row">
+            <input id="bl-email" type="email" placeholder="your@email.com" autocomplete="email" required>
+            <button id="bl-unlock-btn" class="button" type="submit">Unlock &amp; download</button>
+          </div>
+          <label class="consent">
+            <input id="bl-consent" type="checkbox">
+            <span>Yes, also send me the monthly Sound Drop, new releases and deals. I can unsubscribe at any time.</span>
+          </label>
+          <p class="hint">See our <a href="privacy.html">privacy policy</a>.</p>
+          <p id="bl-unlock-status" class="status" role="status"></p>
+        </div>
+      </form>
+    </section>
+
+    <section class="bl-cta">
+      <div>
+        <p class="eyebrow">LIKE THESE SOUNDS?</p>
+        <h2>Get the full Essentials kit.</h2>
+        <p class="muted">Every sound in the Beat Lab comes from Essentials – hand-crafted kicks, snares, 808s and unique percussive elements. 100% royalty-free.</p>
+      </div>
+      <a class="button" href="product.html?id=11f558ea-9332-4bf3-ad2f-d8327c489445">Get Essentials</a>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <span>© <span id="year">2026</span> YARDSLOVESYOU &lt;3</span>
+      <nav class="footer-social" aria-label="Social media">
+        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener">YouTube</a>
+      </nav>
+    </div>
+    <nav class="footer-links" aria-label="Legal">
+      <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="license.html">License</a>
+      <a href="code-of-conduct.html">Code of Conduct</a>
+      <a href="security.html">Security</a>
+    </nav>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="beatlab.js"></script>
+</body>
+</html>
