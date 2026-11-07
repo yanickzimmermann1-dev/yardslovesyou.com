@@ -7,13 +7,41 @@
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const img=u=>/^https?:\/\//.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
   const link=id=>`product.html?id=${encodeURIComponent(id)}`;
+  const money=(cents,cur)=>(cents/100).toLocaleString("de-CH",{style:"currency",currency:String(cur||cfg.CURRENCY||"CHF").toUpperCase()});
+
+  // Preis, optional mit durchgestrichenem Originalpreis (nur wenn höher als der aktuelle Preis)
+  const priceHtml=p=>{
+    const was=Number(p.compare_at_cents)>p.price_cents?`<s class="was-price">${money(p.compare_at_cents,p.currency)}</s>`:"";
+    return `<span class="price-wrap">${was}<span class="price">${money(p.price_cents,p.currency)}</span></span>`;
+  };
+
   async function load() {
-    const {data,error}=await db.from("shop_products").select("id,title,description,price_cents,currency,cover_emoji,image_url").eq("published",true).order("created_at",{ascending:false});
+    // select("*"): neue Spalten (badge, compare_at_cents …) werden automatisch mitgeladen
+    const {data,error}=await db.from("shop_products").select("*").eq("published",true).order("created_at",{ascending:false});
     if(error){$("products").innerHTML='<div class="empty">Products could not be loaded. Please try again later.</div>';return;}
     $("shop-count").textContent=`${data.length} ${data.length===1?"product":"products"}`;
-    $("products").innerHTML=data.length?data.map(p=>`<article class="product"><a class="product-link" href="${link(p.id)}"><div class="cover">${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" loading="lazy">`:esc(p.cover_emoji||"")}</div><h3>${esc(p.title)}</h3><p>${esc(p.description||"Digital download as ZIP file.")}</p></a><div class="price-row"><span class="price">${(p.price_cents/100).toLocaleString("de-CH",{style:"currency",currency:p.currency||cfg.CURRENCY||"CHF"})}</span><div class="row-actions"><a class="outline" href="${link(p.id)}">Details</a><button class="button" data-buy="${esc(p.id)}">Buy</button></div></div></article>`).join(""):'<div class="empty">No products yet. Check back soon.</div>';
+    $("products").innerHTML=data.length?data.map(p=>`
+      <article class="product">
+        <a class="product-link" href="${link(p.id)}">
+          <div class="cover">
+            ${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}
+            ${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" loading="lazy">`:esc(p.cover_emoji||"")}
+          </div>
+          <h3>${esc(p.title)}</h3>
+          <p>${esc(p.description||"Digital download as ZIP file.")}</p>
+          ${p.royalty_free?`<p class="tag-line">✓ Royalty-free</p>`:""}
+        </a>
+        <div class="price-row">
+          ${priceHtml(p)}
+          <div class="row-actions">
+            <a class="outline" href="${link(p.id)}">Details</a>
+            <button class="button" data-buy="${esc(p.id)}">Buy</button>
+          </div>
+        </div>
+      </article>`).join(""):'<div class="empty">No products yet. Check back soon.</div>';
     document.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy));
   }
+
   async function buy(productId) {
     const b=document.querySelector(`[data-buy="${CSS.escape(productId)}"]`); if(b){b.disabled=true;b.textContent="Redirecting …";}
     try{
@@ -23,6 +51,39 @@
       location.href=data.url;
     }catch(e){alert("Checkout failed: "+(e.message||e));if(b){b.disabled=false;b.textContent="Buy";}}
   }
+
+  // Free Kit gegen E-Mail
+  const kitForm=$("free-kit-form");
+  if(kitForm){
+    kitForm.onsubmit=async e=>{
+      e.preventDefault();
+      const email=$("free-kit-email").value.trim();
+      const btn=$("free-kit-btn"), status=$("free-kit-status");
+      status.classList.remove("danger");
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+        status.textContent="Please enter a valid email address."; status.classList.add("danger"); return;
+      }
+      btn.disabled=true; btn.textContent="Sending …"; status.textContent="";
+      try{
+        const {data,error}=await db.functions.invoke("free-kit",{body:{email,marketing_consent:$("free-kit-consent").checked}});
+        if(error){
+          let msg=error.message;
+          try{ const j=await error.context.json(); if(j?.error) msg=j.error; }catch(_){}
+          throw new Error(msg);
+        }
+        if(!data?.ok) throw new Error(data?.error||"Something went wrong.");
+        status.textContent=data.already_sent
+          ? "We just sent it to you – please check your inbox (and spam folder)."
+          : "Done! Check your inbox for the download link (and your spam folder, just in case).";
+        kitForm.reset();
+      }catch(err){
+        status.textContent=err.message||"Something went wrong. Please try again."; status.classList.add("danger");
+      }finally{
+        btn.disabled=false; btn.textContent="Send me the kit";
+      }
+    };
+  }
+
   // Ältere Kauf-Links (shop.html?success=1&session_id=...) funktionieren weiterhin
   const params=new URLSearchParams(location.search);
   if(params.get("success")==="1"&&params.get("session_id")){
