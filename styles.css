@@ -1547,3 +1547,137 @@ main.wrap{position:relative}
   .cm-generate-row{justify-content:flex-start}
   .cm-generate-row .cm-generate{flex:1}
 }
+
+/* =====================================================================
+   BUBBLY & MOTION – weicher, runder, lebendiger (mit motion.js)
+   ===================================================================== */
+:root{
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --smooth:cubic-bezier(.22,1,.36,1);
+  --r-card:22px;
+  --r-ctl:14px;
+  --glow:0 10px 30px -10px rgba(182,138,255,.55);
+}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Weiche Seitenübergänge (Chrome, Edge, Safari 18+) */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:vtOut .18s ease both}
+::view-transition-new(root){animation:vtIn .32s var(--smooth) both}
+@keyframes vtOut{to{opacity:0;transform:scale(.99)}}
+@keyframes vtIn{from{opacity:0;transform:translateY(8px)}}
+
+/* Hintergrund: unscharfe Ebene, die beim Scrollen eingeblendet wird */
+.bg-blur{
+  position:fixed;inset:-40px;z-index:-1;pointer-events:none;opacity:0;
+  background:
+    linear-gradient(rgba(13,11,18,.62),rgba(13,11,18,.86)),
+    url("background.jpg") center / cover no-repeat;
+  filter:blur(22px) saturate(1.15);
+  will-change:opacity;
+}
+/* Scroll-Fortschritt oben */
+.scroll-progress{
+  position:fixed;top:0;left:0;right:0;height:3px;z-index:30;pointer-events:none;
+  background:linear-gradient(90deg,var(--purple),var(--pink),var(--green));
+  transform-origin:0 50%;transform:scaleX(0);
+}
+
+/* Kopfzeile wird beim Scrollen kompakter und gläserner */
+.topbar{transition:background .35s, box-shadow .35s}
+.topbar .brand{transition:transform .35s var(--spring)}
+.topbar.scrolled{background:#0d0b12b8;box-shadow:0 10px 30px -18px #000}
+.topbar.scrolled .brand{transform:scale(.94)}
+
+/* ---------- Buttons: rund, federnd, mit Glow ---------- */
+.button,.outline,.cm-pill,.cm-tab,.cp-like,.cp-icon,.bl-sound,.mc-toggle button{
+  position:relative;overflow:hidden;
+  transition:transform .35s var(--spring), box-shadow .3s ease, background .25s ease, border-color .25s ease, color .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.button,.outline{border-radius:999px;padding:12px 20px}
+.button{box-shadow:var(--glow);background:linear-gradient(135deg,var(--purple),#c9a4ff)}
+.button:hover{transform:translateY(-2px);box-shadow:0 16px 36px -12px rgba(182,138,255,.75);background:linear-gradient(135deg,#c39cff,var(--pink))}
+.outline:hover{transform:translateY(-2px);border-color:var(--purple);box-shadow:0 10px 26px -14px rgba(182,138,255,.6)}
+.button:active,.outline:active,.cm-pill:active,.cm-tab:active,.cp-like:active,.cp-icon:active,.bl-sound:active,.mc-toggle button:active{
+  transform:scale(.94);transition-duration:.12s;
+}
+.button:disabled,.outline:disabled{transform:none;opacity:.6}
+.cp-like,.cp-icon{border-radius:999px}
+.cp-like.liked{animation:likePop .45s var(--spring)}
+@keyframes likePop{40%{transform:scale(1.25)}}
+
+/* Runde Play-Buttons */
+.play-btn,.bl-play{transition:transform .35s var(--spring), box-shadow .3s, background .2s;box-shadow:var(--glow)}
+.play-btn:active,.bl-play:active{transform:scale(.9)!important}
+.bl-play.playing{animation:breathe 1.6s ease-in-out infinite}
+@keyframes breathe{50%{box-shadow:0 0 0 10px rgba(182,138,255,0),0 0 28px 2px rgba(182,138,255,.45)}}
+
+/* Wellen-Effekt beim Drücken (motion.js) */
+.ripple{
+  position:absolute;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,255,255,.45) 0%,rgba(255,255,255,0) 60%);
+  transform:scale(0);animation:ripple .6s var(--smooth) forwards;
+}
+@keyframes ripple{to{transform:scale(1);opacity:0}}
+
+/* ---------- Karten: grösser gerundet, Licht folgt der Maus ---------- */
+.product,.track,.service-card,.cp,.free-nav a,.mc,.drop,.free-kit,.bl,.cm,.bl-cta,.about-box,.upload-card,.acc-card,.pf-head,.steps li,.admin-panel,.pd-preview,.pd-features li,.mc-tile,.cm-chord{
+  border-radius:var(--r-card);
+}
+.product,.service-card,.cp,.free-nav a,.track{
+  --mx:50%;--my:50%;
+  transition:transform .45s var(--spring), border-color .3s, box-shadow .35s;
+  transform-style:preserve-3d;
+}
+.product::after,.service-card::after,.cp::after,.free-nav a::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+  background:radial-gradient(420px circle at var(--mx) var(--my),rgba(182,138,255,.14),transparent 45%);
+  transition:opacity .3s;
+}
+.product,.service-card,.cp,.free-nav a{position:relative}
+.product:hover::after,.service-card:hover::after,.cp:hover::after,.free-nav a:hover::after{opacity:1}
+.product:hover,.service-card:hover,.cp:hover{border-color:#5a4775;box-shadow:0 22px 50px -28px rgba(0,0,0,.9),0 0 0 1px rgba(182,138,255,.12)}
+.product .cover{border-radius:16px}
+.product .cover img,.pd-main img{transition:transform .6s var(--smooth)}
+.product:hover .cover img{transform:scale(1.06)}
+.pd-main{border-radius:var(--r-card)}
+
+/* Eingabefelder: runder, sanfter Fokus */
+input,select,textarea,.field textarea,.acc-card textarea{border-radius:var(--r-ctl)!important;transition:border-color .2s, box-shadow .25s}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px rgba(182,138,255,.18)}
+input[type="checkbox"],input[type="range"]{border-radius:0!important;box-shadow:none!important}
+
+/* Beat Lab: Schritte „ploppen“ beim Setzen */
+.bl-cell{border-radius:10px;transition:background .12s, border-color .12s, transform .3s var(--spring)}
+.bl-cell:active{transform:scale(.86)}
+.bl-cell.on{animation:pop .32s var(--spring)}
+@keyframes pop{0%{transform:scale(.7)}100%{transform:scale(1)}}
+.cm-note.ed{transition:box-shadow .2s}
+.cm-note.ed:hover{box-shadow:0 0 0 1px #fff6 inset,0 4px 12px -4px rgba(182,138,255,.8)}
+
+/* ---------- Einblenden beim Scrollen (motion.js) ---------- */
+html.js-motion .rv{opacity:0;transform:translateY(26px) scale(.985);transition:opacity .7s var(--smooth), transform .8s var(--smooth)}
+html.js-motion .rv.in{opacity:1;transform:none}
+html.js-motion .hero h1,html.js-motion .hero .eyebrow,html.js-motion .hero .muted,html.js-motion .hero .hero-actions{animation:heroIn .9s var(--smooth) both}
+html.js-motion .hero .eyebrow{animation-delay:.05s}
+html.js-motion .hero h1{animation-delay:.12s}
+html.js-motion .hero .muted{animation-delay:.22s}
+html.js-motion .hero .hero-actions{animation-delay:.32s}
+@keyframes heroIn{from{opacity:0;transform:translateY(22px)}}
+
+/* Toasts & LIVE-Anzeige etwas weicher */
+.yly-toast{border-radius:999px;padding:12px 20px}
+.live-pill{transition:transform .35s var(--spring)}
+.live-pill.visible{animation:pillIn .5s var(--spring)}
+@keyframes pillIn{from{transform:scale(.6);opacity:0}}
+
+/* Ruhige Version für „Bewegung reduzieren“ */
+@media(prefers-reduced-motion:reduce){
+  html.js-motion .rv{opacity:1;transform:none;transition:none}
+  html.js-motion .hero *{animation:none!important}
+  .bl-cell.on,.cp-like.liked,.bl-play.playing,.live-pill.visible{animation:none}
+  .button:hover,.outline:hover{transform:none}
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+}
