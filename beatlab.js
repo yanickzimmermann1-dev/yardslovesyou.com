@@ -11,13 +11,14 @@
 
   // ---------- Spuren und Sounds ----------
   const TRACKS = [
-    { id: "kick", name: "Kick", sounds: [["kick-1-heavy", "Heavy"], ["kick-2-cathedral", "Cathedral"], ["kick-3-thrones", "Thrones"]], midi: [36, 36, 36], vol: 0.9 },
-    { id: "snare", name: "Snare", sounds: [["snare-1-smash", "Smash"], ["snare-2-hit", "Hit"], ["snare-3-box", "Box"]], midi: [38, 38, 38], vol: 0.75 },
-    { id: "clap", name: "Clap", sounds: [["clap-1-og", "OG"], ["clap-2-kingdom", "Kingdom"], ["clap-3-beach", "Beach"]], midi: [39, 39, 39], vol: 0.75 },
-    { id: "hat", name: "Hi-Hat", sounds: [["hat-1-note", "Note"], ["hat-2-slack", "Slack"], ["hat-3-softhearted", "Softhearted"]], midi: [42, 42, 42], vol: 0.5, rolls: true },
+    { id: "kick", name: "Kick", sounds: [["kick-1-anvil", "Anvil"], ["kick-2-titan", "Titan"], ["kick-3-boulder", "Boulder"]], midi: [36, 36, 36], vol: 0.9 },
+    { id: "snare", name: "Snare", sounds: [["snare-1-whip", "Whip"], ["snare-2-crack", "Crack"], ["snare-3-blaze", "Blaze"]], midi: [38, 38, 38], vol: 0.75 },
+    { id: "clap", name: "Clap", sounds: [["clap-1-fireworks", "Fireworks"], ["clap-2-velvet", "Velvet"], ["clap-3-ritual", "Ritual"]], midi: [39, 39, 39], vol: 0.75 },
+    { id: "hat", name: "Hi-Hat", sounds: [["hat-1-sparrow", "Sparrow"], ["hat-2-ticker", "Ticker"], ["hat-3-glitter", "Glitter"]], midi: [42, 42, 42], vol: 0.5, rolls: true },
     { id: "openhat", name: "Open Hat", sounds: [["openhat-1-keeper", "Keeper"], ["openhat-2-dinged", "Dinged"], ["openhat-3-sniff", "Sniff"]], midi: [46, 46, 46], vol: 0.45 },
-    { id: "perc", name: "Perc", sounds: [["perc-1-rim", "Rim"], ["perc-2-conga", "Conga"], ["perc-3-shaker", "Shaker"]], midi: [37, 63, 70], vol: 0.6 },
-    { id: "808", name: "808", sounds: [["808-1-rockstar", "Rockstar"], ["808-2-creation", "Creation"], ["808-3-extend", "Extend"]], midi: [24, 24, 24], vol: 0.8, bass: true },
+    { id: "perc", name: "Perc", sounds: [["perc-1-pebble", "Pebble"], ["perc-2-bamboo", "Bamboo"], ["perc-3-marble", "Marble"]], midi: [37, 76, 75], vol: 0.6 },
+    { id: "808", name: "808", sounds: [["808-1-gravity", "Gravity"], ["808-2-monsoon", "Monsoon"], ["808-3-voltage", "Voltage"]], midi: [24, 24, 24], vol: 0.8, bass: true,
+      tune: [-0.32, -1.56, 0] },   // Feinstimmung in Halbtönen, damit jedes 808 genau auf C klingt
   ];
   const BASS_OFFSETS = [0, 0, 7, 12];          // Stufe 1 = Grundton, 2 = Quinte, 3 = Oktave
   const BASS_LABEL = ["", "", "5", "8"];
@@ -114,12 +115,18 @@
     const names = TRACKS.flatMap(t => t.sounds.map(s => s[0]));
     let done = 0;
     setStatus("Loading sounds …");
-    loading = Promise.all(names.map(async n => {
+    // Einzelne fehlende Sounds blockieren das Beat Lab nicht mehr
+    loading = Promise.allSettled(names.map(async n => {
       const res = await fetch(SOUND_BASE + n + ".wav");
       if (!res.ok) throw new Error("Sound missing: " + n);
       buffers[n] = await ctx.decodeAudioData(await res.arrayBuffer());
       done++; setStatus(`Loading sounds … ${done}/${names.length}`);
-    })).then(() => setStatus("")).catch(e => { loading = null; setStatus("Sounds could not be loaded. Please reload the page.", true); throw e; });
+    })).then(results => {
+      const missing = results.filter(r => r.status === "rejected").length;
+      if (missing === names.length) { loading = null; setStatus("Sounds could not be loaded. Please reload the page.", true); throw new Error("no sounds"); }
+      if (missing) console.warn(`Beat Lab: ${missing} sound(s) missing`, results.filter(r => r.status === "rejected").map(r => r.reason && r.reason.message));
+      setStatus("");
+    });
     return loading;
   }
 
@@ -130,7 +137,7 @@
     const src = ac.createBufferSource(); src.buffer = buf;
     const g = ac.createGain(); g.gain.value = 1;
     src.connect(g).connect(dest);
-    if (t.bass) src.playbackRate.value = Math.pow(2, (state.key + BASS_OFFSETS[val]) / 12);
+    if (t.bass) src.playbackRate.value = Math.pow(2, (state.key + BASS_OFFSETS[val] + ((t.tune || [])[state.sound[t.id]] || 0)) / 12);
     // Choke: neues 808 stoppt das alte, Closed Hat stoppt Open Hat
     const group = t.bass ? "808" : (t.id === "hat" || t.id === "openhat") ? "hats" : null;
     if (group && voices[group] && (t.bass || t.id === "hat")) {
