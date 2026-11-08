@@ -82,7 +82,7 @@
         <a href="community.html?post=${p.id}">${esc(p.title)}</a>
         <span class="muted">${timeAgo(p.created_at)} · ♥ ${p.like_count}${p.hidden ? " · hidden by moderation" : ""}</span>
         <button type="button" class="cp-icon danger" data-del="${p.id}">Delete</button>
-      </li>`).join("") : '<li class="muted">No posts yet. Make something in the <a class="cp-link" href="beatlab.html">Beat Lab</a> or the <a class="cp-link" href="chords.html">Chord &amp; Melody Starter</a> and hit Publish.</li>';
+      </li>`).join("") : '<li class="muted">No posts yet. Make something in the <a class="cp-link" href="beatlab.html">Beat Lab</a> or the <a class="cp-link" href="chords.html">Chord Starter</a> and hit Publish.</li>';
   }
   $("acc-posts").addEventListener("click", async e => {
     const b = e.target.closest("[data-del]"); if (!b) return;

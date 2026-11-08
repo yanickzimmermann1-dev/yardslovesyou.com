@@ -64,25 +64,24 @@
 
   const scaleOf = () => SCALES[MOODS[state.mood].scale];
   const midiOfDeg = (deg, base) => base + 12 * Math.floor(deg / 7) + scaleOf()[((deg % 7) + 7) % 7];
-  const useSevenths = () => MOODS[state.mood].sevenths || !!GENRES[state.genre].sevenths;
+  const CHORD_TYPES = { auto: "Auto", triad: "Triads", seventh: "7ths", ninth: "9ths" };
+  const RHYTHM_NAMES = { auto: "Auto", whole: "Whole", half: "Half", stabs: "Stabs", sync: "Syncopated", offbeat: "Offbeat" };
+  // Akkordtyp: "Auto" nimmt Septakkorde bei Emotional/Dreamy bzw. R&B/Lo-fi, sonst Dreiklänge
+  const chordExt = () => state.chordType && state.chordType !== "auto" ? state.chordType
+    : (MOODS[state.mood].sevenths || GENRES[state.genre].sevenths ? "seventh" : "triad");
 
   // Akkord aus Stufe bauen (Dreiklang oder Septakkord)
   function chordTones(deg) {
     const base = 48 + state.key;                                   // um C3
-    const degs = [deg, deg + 2, deg + 4].concat(useSevenths() ? [deg + 6] : []);
+    const ext = chordExt();
+    const degs = [deg, deg + 2, deg + 4].concat(ext === "seventh" || ext === "ninth" ? [deg + 6] : []).concat(ext === "ninth" ? [deg + 8] : []);
     return degs.map(d => midiOfDeg(d, base));
   }
   function chordName(deg) {
-    const t = chordTones(deg), root = t[0] % 12;
-    const iv = t.map(n => (n - t[0] + 120) % 12);
-    let q = iv[1] === 3 ? (iv[2] === 6 ? "dim" : "m") : (iv[2] === 8 ? "aug" : "");
-    if (t.length > 3) {
-      const s = iv[3];
-      if (s === 11) q = q === "m" ? "m(maj7)" : q === "" ? "maj7" : q + "maj7";
-      else if (s === 10) q = q === "dim" ? "m7♭5" : q + "7";
-    }
-    return NOTES[root] + q;
+    const d = detectChord(chordTones(deg));
+    return d ? d.name : "";
   }
+
   // Stimmführung: Umkehrung wählen, die am nächsten am vorherigen Akkord liegt
   function voice(tones, prev) {
     const cands = [];
@@ -99,7 +98,7 @@
   function newChords() {
     state.chordNotes = null;                                       // eigene Akkord-Noten verwerfen
     state.prog = pick(MOODS[state.mood].progs).slice();
-    state.chordRhythm = pick(GENRES[state.genre].chords);
+    state.chordRhythm = state.rhythmSel && state.rhythmSel !== "auto" ? state.rhythmSel : pick(GENRES[state.genre].chords);
     state.bassRhythm = pick(GENRES[state.genre].bass);
   }
   function newMelody() {
@@ -142,7 +141,7 @@
   }
   function generateAll(randomBpm) {
     if (randomBpm) { const [a, b] = GENRES[state.genre].bpm; state.bpm = a + rnd(b - a + 1); }
-    newChords(); newMelody();
+    newChords(); state.melody = [];                                 // nur Akkorde (keine Melodie mehr)
   }
 
   // Akkord-Noten aus der Akkordfolge (wenn nicht von Hand bearbeitet)
@@ -158,6 +157,9 @@
 
   // Akkord aus gespielten Tönen erkennen (für eigene Akkorde)
   const CHORD_SHAPES = [
+    ["maj9", [0, 4, 7, 11, 2]], ["9", [0, 4, 7, 10, 2]], ["m9", [0, 3, 7, 10, 2]], ["m(maj9)", [0, 3, 7, 11, 2]],
+    ["7♭9", [0, 4, 7, 10, 1]], ["m7♭9", [0, 3, 7, 10, 1]], ["maj7♯9", [0, 4, 7, 11, 3]], ["m9♭5", [0, 3, 6, 10, 2]], ["m7♭5(♭9)", [0, 3, 6, 10, 1]], ["maj9♯5", [0, 4, 8, 11, 2]],
+    ["dim7", [0, 3, 6, 9]], ["add9", [0, 4, 7, 2]], ["m(add9)", [0, 3, 7, 2]],
     ["maj7", [0, 4, 7, 11]], ["7", [0, 4, 7, 10]], ["m7", [0, 3, 7, 10]], ["m7♭5", [0, 3, 6, 10]], ["m(maj7)", [0, 3, 7, 11]],
     ["", [0, 4, 7]], ["m", [0, 3, 7]], ["dim", [0, 3, 6]], ["aug", [0, 4, 8]], ["sus4", [0, 5, 7]], ["sus2", [0, 2, 7]],
     ["5", [0, 7]],
@@ -204,7 +206,7 @@
   // ---------- Zustand ----------
   let state = {
     key: 9, mood: "sad", genre: "trap", bpm: 140,
-    chordSound: "pad", melSound: "pluck",
+    chordSound: "pad", melSound: "pluck", chordType: "auto", rhythmSel: "auto",
     on: { chords: true, melody: true, bass: true },
     prog: [0, 5, 2, 6], chordRhythm: "whole", bassRhythm: "trap", melody: [],
     chordNotes: null,                                              // eigene Akkord-Noten (nach Bearbeitung)
@@ -216,6 +218,7 @@
   function encodeState() {
     return b64e(JSON.stringify({
       v: 1, k: state.key, m: state.mood, g: state.genre, b: state.bpm, cs: state.chordSound, ms: state.melSound,
+      ct: state.chordType, rs: state.rhythmSel,
       o: [state.on.chords, state.on.melody, state.on.bass].map(x => x ? 1 : 0).join(""),
       p: state.prog.join(""), cr: state.chordRhythm, br: state.bassRhythm,
       n: packNotes(state.melody),
@@ -248,7 +251,8 @@
         key: clamp(+o.k, 0, 11), mood: o.m, genre: o.g, bpm: clamp(+o.b, 60, 180),
         chordSound: SOUNDS[o.cs] ? o.cs : "pad", melSound: SOUNDS[o.ms] ? o.ms : "pluck",
         on: { chords: o.o?.[0] !== "0", melody: o.o?.[1] !== "0", bass: o.o?.[2] !== "0" },
-        prog, chordRhythm: o.cr, bassRhythm: o.br, melody: mel, chordNotes: cn && cn.length ? cn : null,
+        chordType: CHORD_TYPES[o.ct] ? o.ct : "auto", rhythmSel: RHYTHM_NAMES[o.rs] ? o.rs : "auto",
+        prog, chordRhythm: o.cr, bassRhythm: o.br, melody: [], chordNotes: cn && cn.length ? cn : null,
       };
     } catch (_) { return null; }
   }
@@ -338,7 +342,7 @@
     const sd = 60 / state.bpm / 4;
     while (nextTime < ctx.currentTime + 0.12) {
       const t = nextTime + swingOf(cur, sd);
-      byStep[cur].forEach(e => { if (state.on[e.part]) note(ctx, partGain[e.part], verb, typeFor(e.part), e.p, t, e.l * sd, e.part === "melody" ? 0.7 : 0.55); });
+      byStep[cur].forEach(e => { if (e.part === "melody") return; if (e.part === "chords" || state.on[e.part]) note(ctx, partGain[e.part], verb, typeFor(e.part), e.p, t, e.l * sd, e.part === "melody" ? 0.7 : 0.55); });
       visQ.push({ step: cur, time: t });
       nextTime += sd; cur = (cur + 1) % TOTAL;
     }
@@ -376,7 +380,9 @@
   function renderSettings() {
     $("cm-key").value = state.key;
     $("cm-bpm").value = state.bpm; $("cm-bpm-val").textContent = state.bpm;
-    $("cm-chord-sound").value = state.chordSound; $("cm-mel-sound").value = state.melSound;
+    $("cm-chord-sound").value = state.chordSound;
+    document.querySelectorAll("[data-ctype]").forEach(b => b.classList.toggle("active", b.dataset.ctype === state.chordType));
+    document.querySelectorAll("[data-rhythm]").forEach(b => b.classList.toggle("active", b.dataset.rhythm === state.rhythmSel));
     document.querySelectorAll("[data-mood]").forEach(b => b.classList.toggle("active", b.dataset.mood === state.mood));
     document.querySelectorAll("[data-genre]").forEach(b => b.classList.toggle("active", b.dataset.genre === state.genre));
     document.querySelectorAll("[data-part]").forEach(b => { b.classList.toggle("active", state.on[b.dataset.part]); b.setAttribute("aria-pressed", state.on[b.dataset.part]); });
@@ -390,7 +396,9 @@
   // ---------- Bedienung ----------
   $("cm-key").innerHTML = NOTES.map((n, i) => `<option value="${i}">${n}</option>`).join("");
   const soundOpts = Object.entries(SOUNDS).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
-  $("cm-chord-sound").innerHTML = soundOpts; $("cm-mel-sound").innerHTML = soundOpts;
+  $("cm-chord-sound").innerHTML = soundOpts;
+  $("cm-types").innerHTML = Object.entries(CHORD_TYPES).map(([k, v]) => `<button type="button" class="cm-pill" data-ctype="${k}">${v}</button>`).join("");
+  $("cm-rhythms").innerHTML = Object.entries(RHYTHM_NAMES).map(([k, v]) => `<button type="button" class="cm-pill" data-rhythm="${k}">${v}</button>`).join("");
   $("cm-moods").innerHTML = Object.entries(MOODS).map(([k, m]) => `<button type="button" class="cm-pill" data-mood="${k}">${m.name}</button>`).join("");
   $("cm-genres").innerHTML = Object.entries(GENRES).map(([k, g]) => `<button type="button" class="cm-pill" data-genre="${k}">${g.name}</button>`).join("");
 
@@ -403,13 +411,23 @@
   };
   $("cm-bpm").oninput = e => { state.bpm = +e.target.value; $("cm-bpm-val").textContent = state.bpm; saveHash(); };
   $("cm-chord-sound").onchange = e => { state.chordSound = e.target.value; saveHash(); };
-  $("cm-mel-sound").onchange = e => { state.melSound = e.target.value; saveHash(); };
-  $("cm-moods").onclick = e => { const b = e.target.closest("[data-mood]"); if (!b) return; state.mood = b.dataset.mood; generateAll(false); renderSettings(); refresh(); };
-  $("cm-genres").onclick = e => { const b = e.target.closest("[data-genre]"); if (!b) return; state.genre = b.dataset.genre; generateAll(true); renderSettings(); refresh(); };
+  // Akkordtyp wechseln: gleiche Akkordfolge, neue Klangfarbe (eigene Bearbeitung wird ersetzt, Undo möglich)
+  $("cm-types").onclick = e => {
+    const b = e.target.closest("[data-ctype]"); if (!b || b.dataset.ctype === state.chordType) return;
+    pushUndo(); state.chordType = b.dataset.ctype; state.chordNotes = null; renderSettings(); refresh();
+  };
+  // Rhythmus wechseln: gleiche Akkorde, neuer Rhythmus
+  $("cm-rhythms").onclick = e => {
+    const b = e.target.closest("[data-rhythm]"); if (!b || b.dataset.rhythm === state.rhythmSel) return;
+    pushUndo(); state.rhythmSel = b.dataset.rhythm;
+    state.chordRhythm = state.rhythmSel !== "auto" ? state.rhythmSel : pick(GENRES[state.genre].chords);
+    state.chordNotes = null; renderSettings(); refresh();
+  };
+  $("cm-moods").onclick = e => { const b = e.target.closest("[data-mood]"); if (!b) return; pushUndo(); state.mood = b.dataset.mood; generateAll(false); renderSettings(); refresh(); };
+  $("cm-genres").onclick = e => { const b = e.target.closest("[data-genre]"); if (!b) return; pushUndo(); state.genre = b.dataset.genre; generateAll(true); renderSettings(); refresh(); };
   $("cm-parts").onclick = e => { const b = e.target.closest("[data-part]"); if (!b) return; state.on[b.dataset.part] = !state.on[b.dataset.part]; renderSettings(); saveHash(); };
   $("cm-generate").onclick = () => { pushUndo(); generateAll(false); refresh(); if (!playing) play(); };
-  $("cm-new-chords").onclick = () => { pushUndo(); newChords(); newMelody(); refresh(); };
-  $("cm-new-melody").onclick = () => { pushUndo(); newMelody(); refresh(); };
+
   document.addEventListener("keydown", e => {
     if (e.code === "Space" && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); toggle(); }
   });
@@ -421,7 +439,7 @@
   // PIANO-ROLL-EDITOR: Noten setzen, verschieben, verlängern, löschen
   // =====================================================================
   const MAX_MEL = 128, MAX_CHORD = 160;
-  const ed = { target: "melody", snap: true, sel: -1, lastLen: 2, drag: null };
+  const ed = { target: "chords", snap: true, sel: -1, lastLen: 4, drag: null };
   const undoStack = [];
   const snapshot = () => JSON.stringify({ m: state.melody, c: state.chordNotes, p: state.prog, cr: state.chordRhythm, br: state.bassRhythm });
   function pushUndo() { undoStack.push(snapshot()); if (undoStack.length > 60) undoStack.shift(); $("ed-undo").disabled = false; }
@@ -549,18 +567,12 @@
   $("ed-delete").onclick = deleteSel;
   $("ed-undo").onclick = undo;
   $("ed-clear").onclick = () => {
-    if (!confirm(ed.target === "melody" ? "Remove all melody notes?" : "Remove all chord notes?")) return;
+    if (!confirm("Remove all chord notes?")) return;
     pushUndo();
     if (ed.target === "melody") state.melody = []; else state.chordNotes = [];
     ed.sel = -1; refresh();
   };
   $("ed-snap").onchange = e => { ed.snap = e.target.checked; renderRoll(); };
-  $("ed-target").addEventListener("click", e => {
-    const b = e.target.closest("[data-target]"); if (!b) return;
-    ed.target = b.dataset.target; ed.sel = -1;
-    document.querySelectorAll("[data-target]").forEach(x => x.classList.toggle("active", x === b));
-    renderRoll();
-  });
   // Tastatur: Entf = löschen, Pfeile = verschieben, Cmd/Ctrl+Z = rückgängig
   document.addEventListener("keydown", e => {
     if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
@@ -583,7 +595,7 @@
     try {
       if (navigator.share && matchMedia("(max-width: 760px)").matches) { await navigator.share({ title: "My chords – YARDSLOVESYOU", url }); return; }
       await navigator.clipboard.writeText(url);
-      setStatus("Link copied! Whoever opens it hears exactly these chords and this melody.");
+      setStatus("Link copied! Whoever opens it hears exactly these chords.");
     } catch (_) { prompt("Copy this link:", url); }
   };
 
@@ -597,9 +609,9 @@
     const txt = (type, str) => { const b = [...str].map(c => c.charCodeAt(0) & 127); return [0x00, 0xff, type, b.length, ...b]; };
     const trackChunk = data => [0x4d, 0x54, 0x72, 0x6b, ...u32(data.length), ...data];
     const tempo = Math.round(60000000 / s.bpm);
-    const t0 = [...txt(0x03, "YARDSLOVESYOU Chord & Melody Starter"), 0x00, 0xff, 0x51, 0x03, (tempo >> 16) & 255, (tempo >> 8) & 255, tempo & 255,
+    const t0 = [...txt(0x03, "YARDSLOVESYOU Chord Starter"), 0x00, 0xff, 0x51, 0x03, (tempo >> 16) & 255, (tempo >> 8) & 255, tempo & 255,
       0x00, 0xff, 0x58, 0x04, 4, 2, 24, 8, 0x00, 0xff, 0x2f, 0x00];
-    const parts = [["chords", "Chords", 0, 85], ["melody", "Melody", 1, 100], ["bass", "Bass", 2, 100]];
+    const parts = [["chords", "Chords", 0, 90]].concat(s.on && s.on.bass ? [["bass", "Bass", 1, 100]] : []);
     const tracks = parts.map(([part, name, ch, vel]) => {
       const list = [];
       ev.filter(e => e.part === part).forEach(e => {
@@ -623,7 +635,7 @@
   const fileName = s => `${NOTES[s.key].replace("#", "s")} ${MOODS[s.mood].name} ${GENRES[s.genre].name} ${s.bpm}bpm - ${progName(s)}`;
   $("cm-midi").onclick = () => {
     download(new Blob([midiFile(state)], { type: "audio/midi" }), fileName(state) + ".mid");
-    setStatus("MIDI downloaded – drag it into your DAW. Chords, melody and bass are on separate tracks.");
+    setStatus("MIDI downloaded – drag it into your DAW. Chords and bass are on separate tracks.");
   };
 
   // ---------- MIDI-Pack (10 Ideen) gegen E-Mail ----------
@@ -658,12 +670,12 @@
     }));
     for (let i = 2; i <= 10; i++) {
       newChords(); if (pool.length) state.prog = pool.shift();
-      newMelody();
+      state.melody = [];
       const s = JSON.parse(JSON.stringify(state));
       files.push({ name: String(i).padStart(2, "0") + " " + fileName(s) + ".mid", data: midiFile(s) });
     }
     state = saved;
-    files.push({ name: "readme.txt", data: new TextEncoder().encode(`10 chord & melody ideas in ${NOTES[saved.key]} – ${MOODS[saved.mood].name} ${GENRES[saved.genre].name}\nMade with the YARDSLOVESYOU Chord & Melody Starter: https://yardslovesyou.com/chords.html\nEach MIDI file has 3 tracks: chords, melody and bass. Free to use in your own music.\nAdd drums in the Beat Lab: https://yardslovesyou.com/beatlab.html\n`) });
+    files.push({ name: "readme.txt", data: new TextEncoder().encode(`10 chord progressions in ${NOTES[saved.key]} – ${MOODS[saved.mood].name} ${GENRES[saved.genre].name}\nMade with the YARDSLOVESYOU Chord Starter: https://yardslovesyou.com/chords.html\nEach MIDI file contains the chords (and the bass, if switched on). Free to use in your own music.\nAdd drums in the Beat Lab: https://yardslovesyou.com/beatlab.html\n`) });
     download(zip(files), `YARDSLOVESYOU MIDI pack - ${NOTES[saved.key].replace("#", "s")} ${MOODS[saved.mood].name} ${GENRES[saved.genre].name}.zip`);
     setStatus("Your MIDI pack with 10 ideas is downloading.");
   }
@@ -705,7 +717,7 @@
   const shared = location.hash.startsWith("#c=") ? decodeState(location.hash.slice(3)) : null;
   if (shared) { state = shared; setStatus("You're listening to a shared idea – press play, then make it yours!"); }
   else generateAll(false);
-  if (!state.melody.length) newMelody();
+  state.melody = [];
   renderSettings(); renderView(); saveHash();
   if (isUnlocked()) showUnlocked();
 })();

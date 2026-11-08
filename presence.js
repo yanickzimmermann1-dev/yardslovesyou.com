@@ -1,6 +1,6 @@
 /* =====================================================================
    LIVE-ANZEIGE: Wie viele Producer sind gerade auf Beat Lab,
-   Chord & Melody, Community oder Profilen? (Supabase Realtime Presence)
+   Chord Starter, Community oder Profilen? (Supabase Realtime Presence)
    - Mehrere Tabs derselben Person zählen nur einmal
    - Unter MIN_SHOW Personen wird nichts angezeigt
    - Es werden keine persönlichen Daten übertragen, nur eine zufällige ID
@@ -35,7 +35,7 @@
     shown = n;
     pill.querySelector(".live-num").textContent = n;
     pill.querySelector(".live-label").textContent = n === 1 ? "producer" : "producers";
-    pill.title = `${n} producers are on the Beat Lab, Chord & Melody Starter or Community right now`;
+    pill.title = `${n} producers are on the Beat Lab, Chord Starter or Community right now`;
   }
 
   const channel = db.channel("producers-online", { config: { presence: { key: id } } });

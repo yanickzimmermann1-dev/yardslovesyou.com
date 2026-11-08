@@ -1529,3 +1529,21 @@ main.wrap{position:relative}
 .cm-hero > div:first-child{flex:1;min-width:280px}
 .cm-hero .cm-auth{margin-top:34px}
 @media(max-width:600px){.cm-subbar{padding-top:54px}.cm-hero .cm-auth{margin-top:0}}
+
+/* =====================================================================
+   CHORD STARTER (vereinfacht): Auswahl oben, Generate, Piano Roll unten
+   ===================================================================== */
+.cm-settings{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:20px}
+.cm-sound-row{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.cm-sound-row select{width:auto;padding:8px 34px 8px 12px;font-size:13px}
+.cm-sound-row .cm-bpm{min-width:120px;flex:1}
+.cm-sound-row .cm-parts{margin-left:0}
+.cm-generate-row{align-items:center;justify-content:center;gap:14px}
+.cm-generate-row .cm-generate{font-size:15px;padding:14px 26px}
+.ed-bar .ed-label{font-weight:700;font-size:14px}
+@media(max-width:900px){.cm-settings{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){
+  .cm-settings{grid-template-columns:1fr}
+  .cm-generate-row{justify-content:flex-start}
+  .cm-generate-row .cm-generate{flex:1}
+}

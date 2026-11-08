@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0b12">
-  <title>Chord & Melody Generator for Trap, Drill, R&B · YARDSLOVESYOU</title>
-  <meta name="description" content="Free chord progression and melody generator: pick a key, mood and genre, hear chords, melody and bass instantly and download the MIDI for your DAW.">
+  <title>Chord Progression Generator for Trap, Drill, R&B · YARDSLOVESYOU</title>
+  <meta name="description" content="Free chord progression generator: pick a mood, genre, key, chord type and rhythm, hear the chords instantly, edit them in the piano roll and download the MIDI for your DAW.">
   <link rel="canonical" href="https://yardslovesyou.com/chords.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="YARDSLOVESYOU">
   <meta property="og:title" content="Listen to my chords · YARDSLOVESYOU">
-  <meta property="og:description" content="Made with the free Chord & Melody Starter. Press play and make it yours.">
+  <meta property="og:description" content="Made with the free Chord Starter. Press play and make it yours.">
   <meta property="og:url" content="https://yardslovesyou.com/chords.html">
   <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -40,13 +40,13 @@
     <section class="hero compact">
       <a class="back-link" href="free.html" style="margin-top:0">← All free tools</a>
       <p class="eyebrow" style="margin-top:18px">FREE TOOL</p>
-      <h1>Chord &amp; Melody Starter: <span>beat the blank page.</span></h1>
-      <p class="muted">Pick a key, a mood and a genre. Get chords, a melody and a bassline in one click, then take the MIDI straight into your DAW.</p>
+      <h1>Chord Starter: <span>beat the blank page.</span></h1>
+      <p class="muted">Pick a mood, genre and key, choose your chord type and rhythm – and get a progression in one click. Shape it in the piano roll, then take the MIDI straight into your DAW.</p>
     </section>
 
-    <section class="cm" aria-label="Chord and Melody Starter">
+    <section class="cm" aria-label="Chord Starter">
 
-      <!-- Schritt 1: Stimmung & Genre -->
+      <!-- 1) Auswahl -->
       <div class="cm-settings">
         <div class="cm-field">
           <span class="cm-label"><span class="mc-step">1</span> Mood</span>
@@ -63,38 +63,36 @@
             <span class="cm-scale" id="cm-scale"></span>
           </div>
         </div>
+        <div class="cm-field">
+          <span class="cm-label"><span class="mc-step">4</span> Chord type</span>
+          <div class="cm-pills" id="cm-types"></div>
+        </div>
+        <div class="cm-field">
+          <span class="cm-label"><span class="mc-step">5</span> Rhythm</span>
+          <div class="cm-pills" id="cm-rhythms"></div>
+        </div>
+        <div class="cm-field cm-field-sound">
+          <span class="cm-label">Sound</span>
+          <div class="cm-sound-row">
+            <select id="cm-chord-sound" aria-label="Chord sound"></select>
+            <label class="bl-ctl cm-bpm">
+              <span>BPM <strong id="cm-bpm-val">140</strong></span>
+              <input type="range" id="cm-bpm" min="60" max="180" step="1" value="140">
+            </label>
+            <div class="cm-parts" id="cm-parts" role="group" aria-label="Bass">
+              <button type="button" class="cm-pill" data-part="bass">+ Bass</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Erzeugen -->
+      <!-- 2) Abspielen & Erzeugen -->
       <div class="cm-generate-row">
-        <button type="button" class="button cm-generate" id="cm-generate">✨ Generate</button>
-        <button type="button" class="outline" id="cm-new-chords">New chords</button>
-        <button type="button" class="outline" id="cm-new-melody">New melody</button>
-      </div>
-
-      <!-- Transport -->
-      <div class="cm-transport">
         <button type="button" class="bl-play" id="cm-play" aria-label="Play">
           <svg class="i-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
           <svg class="i-stop" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
         </button>
-        <label class="bl-ctl">
-          <span>BPM <strong id="cm-bpm-val">140</strong></span>
-          <input type="range" id="cm-bpm" min="60" max="180" step="1" value="140">
-        </label>
-        <label class="bl-ctl bl-ctl-small">
-          <span>Chord sound</span>
-          <select id="cm-chord-sound"></select>
-        </label>
-        <label class="bl-ctl bl-ctl-small">
-          <span>Melody sound</span>
-          <select id="cm-mel-sound"></select>
-        </label>
-        <div class="cm-parts" id="cm-parts" role="group" aria-label="Parts">
-          <button type="button" class="cm-pill" data-part="chords">Chords</button>
-          <button type="button" class="cm-pill" data-part="melody">Melody</button>
-          <button type="button" class="cm-pill" data-part="bass">Bass</button>
-        </div>
+        <button type="button" class="button cm-generate" id="cm-generate">✨ Generate chords</button>
       </div>
 
       <!-- Akkorde -->
@@ -102,11 +100,7 @@
 
       <!-- Piano-Roll-Editor -->
       <div class="ed-bar">
-        <div class="cm-pills" id="ed-target" role="group" aria-label="Edit">
-          <span class="ed-label">Edit:</span>
-          <button type="button" class="cm-pill active" data-target="melody">Melody</button>
-          <button type="button" class="cm-pill" data-target="chords">Chords</button>
-        </div>
+        <span class="ed-label">Edit your chords</span>
         <label class="ed-snap"><input type="checkbox" id="ed-snap" checked> Snap to key</label>
         <div class="ed-tools">
           <button type="button" class="cp-icon" id="ed-undo" disabled title="Undo (Cmd/Ctrl + Z)">↶ Undo</button>
@@ -123,7 +117,7 @@
           </div>
         </div>
       </div>
-      <p class="bl-hint"><strong>Click</strong> an empty spot to add a note · <strong>drag</strong> a note to move it · drag its <strong>right edge</strong> to make it longer · <strong>double-click</strong> (or double-tap) to delete. Switch to <strong>Chords</strong> to edit the chord notes – the chord names and the bass follow automatically. <kbd>Space</kbd> = play / stop, arrow keys move the selected note.</p>
+      <p class="bl-hint"><strong>Click</strong> an empty spot to add a note · <strong>drag</strong> a note to move it · drag its <strong>right edge</strong> to make it longer · <strong>double-click</strong> (or double-tap) to delete. The chord names above update automatically. <kbd>Space</kbd> = play / stop.</p>
 
       <!-- Export -->
       <div class="bl-actions">
@@ -138,7 +132,7 @@
       <form class="bl-unlock hidden" id="cm-unlock" novalidate>
         <div>
           <h3>Unlock the MIDI pack – <span>free</span></h3>
-          <p class="muted">Get 10 chord &amp; melody ideas in your key, mood and genre as MIDI. As a bonus you'll get <strong>Essentials Lite</strong> (20 free sounds) in your inbox.</p>
+          <p class="muted">Get 10 chord progressions in your key, mood and genre as MIDI. As a bonus you'll get <strong>Essentials Lite</strong> (20 free sounds) in your inbox.</p>
         </div>
         <div class="free-kit-form">
           <label class="sr-only" for="cm-email">Email address</label>
