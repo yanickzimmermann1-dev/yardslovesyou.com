@@ -1,6 +1,6 @@
 /* =====================================================================
    PERCUSSION LOOP LAB – Perkussions-Loops im Browser
-   10 Spuren x 32 Schritte, Rhythmus-Generator (Genre/Mood/Density/...),
+   5 Spuren x 32 Schritte, Rhythmus-Generator (Genre/Mood/Density/...),
    Sounds aus dem Storage-Ordner "perclab", Teilen-Link, MIDI- und WAV-Export.
    Läuft komplett im Browser.
    ===================================================================== */
@@ -9,7 +9,7 @@
   const cfg = window.APP_CONFIG || {}, $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const clamp = (x, a, b) => Math.min(b, Math.max(a, isNaN(x) ? a : x));
-  const STEPS = 32, MAX_TRACKS = 10;
+  const STEPS = 32, MAX_TRACKS = 5;
 
   /* ===================================================================
      REINE LOGIK (kein DOM): Zufall, Genres, Generator, Hash
@@ -151,7 +151,7 @@
     ["p", "b", "s", "o", "t", "y"].forEach(r => GEN[k][r] = parseV(g[r]));
   });
 
-  // Rollen: Reihenfolge = Priorität bei weniger als 10 Spuren
+  // Rollen: Reihenfolge = Priorität bei weniger Spuren
   const ROLE_ORDER = ["pulse", "back", "shaker", "timeline", "offbeat", "synco", "ghost", "roll", "accent", "ear"];
   const ROLE_KEY = { pulse: "p", back: "b", shaker: "s", offbeat: "o", timeline: "t", synco: "y" };
   const ROLE_NAME = { pulse: "Main pulse", back: "Backbeat", shaker: "Shaker 16ths", timeline: "Timeline / clave", offbeat: "Offbeat", synco: "Syncopation", ghost: "Ghost notes", roll: "Rolls / triplet feel", accent: "Accents", ear: "Ear candy" };
@@ -316,7 +316,7 @@
       const [v, bpm, swing, , , vol, mute, steps] = str.split("-");
       if (v !== "1" || !steps) return null;
       const rows = steps.split("."), specs = [];
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < Math.min(7, MAX_TRACKS); i++) {
         const r16 = (rows[i] || "").padEnd(16, "0").slice(0, 16).split("").map(x => (+x > 0 ? 1 : 0));
         specs.push({ h: null, vol: clamp(/\d/.test((vol || "")[i] || "") ? +vol[i] : 5, 0, 9), mute: (mute || "")[i] === "1", steps: r16.concat(r16) });
       }
