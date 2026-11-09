@@ -675,7 +675,7 @@
       files.push({ name: String(i).padStart(2, "0") + " " + fileName(s) + ".mid", data: midiFile(s) });
     }
     state = saved;
-    files.push({ name: "readme.txt", data: new TextEncoder().encode(`10 chord progressions in ${NOTES[saved.key]} – ${MOODS[saved.mood].name} ${GENRES[saved.genre].name}\nMade with the YARDSLOVESYOU Chord Starter: https://yardslovesyou.com/chords.html\nEach MIDI file contains the chords (and the bass, if switched on). Free to use in your own music.\nAdd percussion in the Percussion Loop Lab: https://yardslovesyou.com/beatlab.html\n`) });
+    files.push({ name: "readme.txt", data: new TextEncoder().encode(`10 chord progressions in ${NOTES[saved.key]} – ${MOODS[saved.mood].name} ${GENRES[saved.genre].name}\nMade with the YARDSLOVESYOU Chord Starter: https://yardslovesyou.com/chords.html\nEach MIDI file contains the chords (and the bass, if switched on). Free to use in your own music.\nAdd percussion in the Perc Lab: https://yardslovesyou.com/beatlab.html\n`) });
     download(zip(files), `YARDSLOVESYOU MIDI pack - ${NOTES[saved.key].replace("#", "s")} ${MOODS[saved.mood].name} ${GENRES[saved.genre].name}.zip`);
     setStatus("Your MIDI pack with 10 ideas is downloading.");
   }

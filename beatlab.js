@@ -1,5 +1,5 @@
 /* =====================================================================
-   PERCUSSION LOOP LAB – Perkussions-Loops im Browser
+   PERC LAB – Perkussions-Loops im Browser
    5 Spuren x 32 Schritte, Rhythmus-Generator (Genre/Mood/Density/...),
    Sounds aus dem Storage-Ordner "perclab", Teilen-Link, MIDI- und WAV-Export.
    Läuft komplett im Browser.
@@ -354,7 +354,7 @@
       const { data, error } = await db.storage.from("coverart-products").list("perclab", { limit: 1000, sortBy: { column: "name", order: "asc" } });
       if (error) throw error;
       files = (data || []).map(x => x.name).filter(n => n && n !== ".emptyFolderPlaceholder" && AUDIO_RE.test(n));
-    } catch (e) { console.warn("Percussion Lab: sound list failed, using fallback", e && e.message); }
+    } catch (e) { console.warn("Perc Lab: sound list failed, using fallback", e && e.message); }
     if (files.length) poolMode = "folder"; else { files = FALLBACK; poolMode = "fallback"; }
     pool = files.map(f => ({ file: f, name: niceName(f), h: fnv(f) }));
   }
@@ -714,7 +714,7 @@
     if (!tracks.length) return;
     const url = shareUrl();
     try {
-      if (navigator.share && matchMedia("(max-width: 760px)").matches) { await navigator.share({ title: "My percussion loop – YARDSLOVESYOU Percussion Loop Lab", url }); return; }
+      if (navigator.share && matchMedia("(max-width: 760px)").matches) { await navigator.share({ title: "My percussion loop – YARDSLOVESYOU Perc Lab", url }); return; }
       await navigator.clipboard.writeText(url);
       setStatus("Link copied! Send it to a friend – they'll hear exactly this loop.");
     } catch (_) { prompt("Copy this link:", url); }
@@ -733,7 +733,7 @@
     ev.sort((a, b) => a[0] - b[0] || (a[1][0] & 0xf0) - (b[1][0] & 0xf0));
     const vlq = n => { const out = [n & 0x7f]; while ((n >>= 7)) out.unshift((n & 0x7f) | 0x80); return out; };
     const tempo = Math.round(60000000 / state.bpm);
-    const name = [..."YARDSLOVESYOU Percussion Loop Lab"].map(c => c.charCodeAt(0));
+    const name = [..."YARDSLOVESYOU Perc Lab"].map(c => c.charCodeAt(0));
     const data = [0x00, 0xff, 0x03, name.length, ...name, 0x00, 0xff, 0x51, 0x03, (tempo >> 16) & 255, (tempo >> 8) & 255, tempo & 255, 0x00, 0xff, 0x58, 0x04, 4, 2, 24, 8];
     let last = 0;
     ev.forEach(([tick, bytes]) => { data.push(...vlq(tick - last), ...bytes); last = tick; });
@@ -829,7 +829,7 @@
         setStatus(`Rendering stems … ${nameOf(t.file)}`);
         files.push({ name: `stems/${String(i + 1).padStart(2, "0")} ${nameOf(t.file).replace(/[^\w -]/g, "")}.wav`, data: wavBlob(await renderMix(i)) });
       }
-      files.push({ name: "license.txt", data: new TextEncoder().encode("Made with the YARDSLOVESYOU Percussion Loop Lab (yardslovesyou.com/beatlab.html).\nThe sounds are royalty-free for use in your own music. You may not resell or share the sounds on their own.\nGet the full Essentials kit: https://yardslovesyou.com/shop.html\n") });
+      files.push({ name: "license.txt", data: new TextEncoder().encode("Made with the YARDSLOVESYOU Perc Lab (yardslovesyou.com/beatlab.html).\nThe sounds are royalty-free for use in your own music. You may not resell or share the sounds on their own.\nGet the full Essentials kit: https://yardslovesyou.com/shop.html\n") });
       download(zip(files), fileBase() + ".zip");
       setStatus("Done! Your loop and stems are downloading (2 bars, WAV, seamless loop).");
     } catch (e) {
