@@ -3,7 +3,7 @@
   $("year").textContent=new Date().getFullYear();
   const root=$("product-root");
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const fail=msg=>{root.innerHTML=`<a class="back-link" href="shop.html#downloads">← Back to shop</a><div class="empty" style="margin-top:24px">${esc(msg)}</div>`;};
+  const fail=msg=>{root.innerHTML=`<a class="back-link" href="shop.html#downloads"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m15 6-6 6 6 6"/></svg> Back to shop</a><div class="empty" style="margin-top:24px">${esc(msg)}</div>`;};
 
   if(!window.supabase) return fail("Supabase SDK is not loaded.");
   const db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
@@ -81,7 +81,7 @@
     const bars=n=>Array.from({length:n},()=>'<span class="wave-bar"></span>').join("");
 
     root.innerHTML=`
-      <a class="back-link" href="shop.html#downloads">← Back to shop</a>
+      <a class="back-link" href="shop.html#downloads"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m15 6-6 6 6 6"/></svg> Back to shop</a>
 
       <section class="product-detail">
         <div class="pd-media">
@@ -99,7 +99,7 @@
             <button class="button" id="buy-btn" type="button">Buy</button>
           </div>
           <p class="fineprint">Instant ZIP download after payment.</p>
-          ${p.royalty_free?`<p class="license-badge">✓ 100% royalty-free – use in your beats, releases &amp; placements. <a href="license.html">License</a></p>`:""}
+          ${p.royalty_free?`<p class="license-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m5 12.5 4.5 4.5L19 7"/></svg> 100% royalty-free – use in your beats, releases &amp; placements. <a href="license.html">License</a></p>`:""}
 
           ${tracks.length?`
           <div class="pd-preview">

@@ -58,7 +58,20 @@ window.YLY = (() => {
   const postLink = id => `${location.origin}/community.html?post=${id}`;
 
   // Vorschau eines Beats (Raster) bzw. einer Akkord-Idee (Eckdaten)
+  // Namen für das neue Percussion-Format (Reihenfolge wie in beatlab.js!)
+  const PL_GENRES = ["Trap", "Drill", "Afrobeats", "Amapiano", "Reggaeton", "Dancehall", "Baile Funk", "Jersey Club", "Boom Bap", "Lo-fi", "House", "Latin / Clave", "R&B"];
+  const PL_MOODS = ["Dark", "Bouncy", "Chill", "Energetic", "Hypnotic", "Tribal"];
+  // 32 Schritte (0/1/2) aus base36-Zahl zur Basis 3
+  const plUnpack = s => { let n = parseInt(s, 36) || 0; const o = Array(32); for (let i = 31; i >= 0; i--) { o[i] = n % 3; n = Math.floor(n / 3); } return o; };
   function preview(p) {
+    if (p.type === "beat" && String(p.data).startsWith("p1.")) {
+      try {
+        const q = p.data.split("."), n = Math.min(10, Math.max(1, parseInt(q[9], 10) || 10)), rows = q[13] || "";
+        let cells = "";
+        for (let r = 0; r < n; r++) cells += plUnpack(rows.slice(r * 10, r * 10 + 10)).map(v => `<i class="${v ? (v > 1 ? "on b" : "on") : ""}"></i>`).join("");
+        return `<div class="cp-grid" style="grid-template-columns:repeat(32,1fr);gap:1px" aria-hidden="true">${cells}</div><p class="cp-meta">${+q[1]} BPM · ${PL_GENRES[+q[3]] || ""} · ${PL_MOODS[+q[4]] || ""}</p>`;
+      } catch (_) { return ""; }
+    }
     if (p.type === "beat") {
       try {
         const parts = p.data.split("-"), bpm = +parts[1], key = +parts[3];
@@ -84,7 +97,7 @@ window.YLY = (() => {
       <article class="cp ${p.hidden ? "is-hidden" : ""}" data-id="${p.id}">
         <div class="cp-head">
           <span class="cp-type ${p.type}">${p.type === "beat" ? "Beat" : "Chords"}</span>
-          ${p.featured ? `<span class="cp-feat">★ Featured</span>` : ""}
+          ${p.featured ? `<span class="cp-feat">Featured</span>` : ""}
           ${p.hidden ? `<span class="cp-hidden-tag">Hidden</span>` : ""}
           <span class="cp-time">${timeAgo(p.created_at)}</span>
         </div>
@@ -92,9 +105,9 @@ window.YLY = (() => {
         <p class="cp-by">by ${by}${parent}</p>
         ${preview(p)}
         <div class="cp-actions">
-          <a class="button cp-btn" href="${toolUrl(p)}">▶ Play</a>
+          <a class="button cp-btn" href="${toolUrl(p)}">Play</a>
           <a class="outline cp-btn" href="${remixUrl(p)}">Remix</a>
-          <button type="button" class="cp-like ${liked ? "liked" : ""}" data-like="${p.id}" aria-pressed="${!!liked}" aria-label="Like">♥ <span>${p.like_count}</span></button>
+          <button type="button" class="cp-like ${liked ? "liked" : ""}" data-like="${p.id}" aria-pressed="${!!liked}" aria-label="Like"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-2px;margin-right:5px"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 4.8 6.6 4.8c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.6 0 5.7 3.7 4.2 7C19.5 16.4 12 21 12 21z"/></svg><span>${p.like_count}</span></button>
           <button type="button" class="cp-icon" data-share="${p.id}" title="Copy link">Share</button>
           ${mine ? `<button type="button" class="cp-icon danger" data-delete="${p.id}">Delete</button>`
                  : `<button type="button" class="cp-icon" data-report="${p.id}">Report</button>`}

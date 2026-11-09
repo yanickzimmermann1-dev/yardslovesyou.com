@@ -36,7 +36,7 @@
       <article class="track" data-id="${t.id}">
         <div class="track-top">
           <div class="cover">
-            ${imageUrl ? `<img src="${esc(imageUrl)}" alt="${esc(t.title)} cover" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : "♫"}
+            ${imageUrl ? `<img src="${esc(imageUrl)}" alt="${esc(t.title)} cover" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : ""}
           </div>
           <div>
             <h3>${esc(t.title)}</h3>

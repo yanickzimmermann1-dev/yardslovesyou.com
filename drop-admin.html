@@ -85,7 +85,7 @@
              <p><strong>Datei:</strong> ${esc(d.drop.file_path)}</p>
              <p><strong>Bereits verschickt:</strong> ${d.drop.sent_at ? esc(String(d.drop.sent_at).slice(0, 16).replace("T", " ")) + ` (an ${d.drop.sent_count ?? "?"})` : "nein"}</p>
              <p><strong>Empfänger mit Einwilligung:</strong> ${recipients}</p>`
-          : `<p>Kein veröffentlichter Drop gefunden. Lege zuerst in Supabase einen Eintrag in <strong>sound_drops</strong> an (published = true, release_date ≤ heute).</p>
+          : `<p>Kein veröffentlichter Drop gefunden. Lege zuerst in Supabase einen Eintrag in <strong>sound_drops</strong> an (published = true, release_date <= heute).</p>
              <p><strong>Empfänger mit Einwilligung:</strong> ${recipients}</p>`;
         $("send-all").textContent = `An alle senden (${recipients})`;
         $("panel").classList.remove("hidden");

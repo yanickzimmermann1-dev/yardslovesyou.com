@@ -22,6 +22,7 @@
     if (!current()) { toast("Make something first, then publish it.", true); return; }
     $("pub-handle").textContent = "@" + m.profile.handle;
     $("pub-remix").classList.toggle("hidden", !remixOf);
+    if (!$("pub-title").value && current().type === "beat") $("pub-title").value = "Percussion loop";
     $("pub-status").textContent = ""; $("pub-done").classList.add("hidden"); $("pub-form").classList.remove("hidden");
     if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
     $("pub-title").focus();

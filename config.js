@@ -1,4 +1,4 @@
-// Supabase Dashboard → Project Settings → API
+// Supabase Dashboard > Project Settings > API
 // Nur die Project URL und den Publishable Key hier eintragen.
 window.APP_CONFIG = {
   SUPABASE_URL: "https://kmekgjllklwrxizqbrac.supabase.co",

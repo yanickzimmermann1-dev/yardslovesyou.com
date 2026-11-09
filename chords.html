@@ -27,18 +27,18 @@
   <header class="topbar">
     <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
     <nav aria-label="Main">
-      <a href="/">Home</a>
-      <a href="shop.html">Shop</a>
-      <a href="upload.html">Upload</a>
-      <a class="active" href="free.html">Free</a>
-      <a href="community.html">Community</a>
+      <a href="/"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span>Home</span></a>
+      <a href="shop.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span>Shop</span></a>
+      <a href="upload.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg><span>Upload</span></a>
+      <a class="active" aria-current="page" href="free.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18v-3H3zM12 6v14"/><path d="M12 6c-1-3-5-3.5-5-1.2C7 6.2 9 6 12 6Zm0 0c1-3 5-3.5 5-1.2 0 1.4-2 1.2-5 1.2Z"/></svg><span>Free</span></a>
+      <a href="community.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5h5"/><path d="M10.5 3.5v6L5 19a1.5 1.5 0 0 0 1.3 2.2h11.4A1.5 1.5 0 0 0 19 19l-5.5-9.5v-6"/><path d="M7.5 15h9"/></svg><span>Lab</span></a>
     </nav>
   </header>
 
   <main class="wrap">
 
     <section class="hero compact">
-      <a class="back-link" href="free.html" style="margin-top:0">← All free tools</a>
+      <a class="back-link" href="free.html" style="margin-top:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m15 6-6 6 6 6"/></svg> All free tools</a>
       <p class="eyebrow" style="margin-top:18px">FREE TOOL</p>
       <h1>Chord Starter: <span>beat the blank page.</span></h1>
       <p class="muted">Pick a mood, genre and key, choose your chord type and rhythm – and get a progression in one click. Shape it in the piano roll, then take the MIDI straight into your DAW.</p>
@@ -92,7 +92,7 @@
           <svg class="i-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
           <svg class="i-stop" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
         </button>
-        <button type="button" class="button cm-generate" id="cm-generate">✨ Generate chords</button>
+        <button type="button" class="button cm-generate gen-btn" id="cm-generate">Generate chords</button>
       </div>
 
       <!-- Akkorde -->
@@ -103,7 +103,7 @@
         <span class="ed-label">Edit your chords</span>
         <label class="ed-snap"><input type="checkbox" id="ed-snap" checked> Snap to key</label>
         <div class="ed-tools">
-          <button type="button" class="cp-icon" id="ed-undo" disabled title="Undo (Cmd/Ctrl + Z)">↶ Undo</button>
+          <button type="button" class="cp-icon" id="ed-undo" disabled title="Undo (Cmd/Ctrl + Z)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg> Undo</button>
           <button type="button" class="cp-icon" id="ed-delete" disabled title="Delete note (Del)">Delete note</button>
           <button type="button" class="cp-icon danger" id="ed-clear">Clear</button>
         </div>
@@ -121,10 +121,10 @@
 
       <!-- Export -->
       <div class="bl-actions">
-        <button type="button" class="button" id="cm-share">🔗 Share link</button>
-        <button type="button" class="outline" id="pub-btn">⬆ Publish to Community</button>
+        <button type="button" class="button" id="cm-share"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg> Share link</button>
+        <button type="button" class="outline" id="pub-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg> Publish to Community</button>
         <button type="button" class="outline" id="cm-midi">Download MIDI</button>
-        <button type="button" class="outline locked" id="cm-pack">🔒 MIDI pack (10 ideas)</button>
+        <button type="button" class="outline locked" id="cm-pack"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> MIDI pack (10 ideas)</button>
       </div>
       <p class="status" id="cm-status" role="status"></p>
 
@@ -162,7 +162,7 @@
           <p class="status" id="pub-status" role="status"></p>
         </form>
         <div class="hidden" id="pub-done">
-          <h3>Published! 🎉</h3>
+          <h3>Published!</h3>
           <p class="muted">Your post is live in the Community. Share the link with your friends.</p>
           <div class="hero-actions">
             <a class="button" id="pub-link" href="community.html">View post</a>
@@ -175,10 +175,10 @@
     <section class="bl-cta">
       <div>
         <p class="eyebrow">NEXT STEP</p>
-        <h2>Add drums in the Beat Lab.</h2>
-        <p class="muted">Got your chords? Build the drums in seconds with hand-crafted sounds, then export both into your DAW.</p>
+        <h2>Add percussion in the Percussion Loop Lab.</h2>
+        <p class="muted">Got your chords? Generate a 10-track percussion loop by genre and mood, then export both into your DAW.</p>
       </div>
-      <a class="button" href="beatlab.html">Open Beat Lab</a>
+      <a class="button" href="beatlab.html">Open Percussion Loop Lab</a>
     </section>
 
   </main>

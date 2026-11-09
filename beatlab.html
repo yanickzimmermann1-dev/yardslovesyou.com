@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0b12">
-  <title>Beat Lab: Free Online Beat Maker · YARDSLOVESYOU</title>
-  <meta name="description" content="Make a trap, drill, boom bap or afro beat in seconds with hand-crafted drum sounds. Share it with a link, export MIDI or download WAV stems – free.">
+  <title>Percussion Loop Lab: Free Online Percussion Loop Maker · YARDSLOVESYOU</title>
+  <meta name="description" content="Build percussion loops for trap, drill, afrobeats, amapiano, reggaeton, house and more in seconds. 10 tracks, 32 steps, smart rhythm generator. Share a link, export MIDI or download WAV stems – free.">
   <link rel="canonical" href="https://yardslovesyou.com/beatlab.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
@@ -13,13 +13,14 @@
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="YARDSLOVESYOU">
-  <meta property="og:title" content="Check out my beat · YARDSLOVESYOU Beat Lab">
-  <meta property="og:description" content="Made in the free Beat Lab. Press play and remix it.">
+  <meta property="og:title" content="Check out my percussion loop · YARDSLOVESYOU Percussion Loop Lab">
+  <meta property="og:description" content="Made in the free Percussion Loop Lab. Press play and remix it.">
   <meta property="og:url" content="https://yardslovesyou.com/beatlab.html">
   <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="perclab.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -27,70 +28,70 @@
   <header class="topbar">
     <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
     <nav aria-label="Main">
-      <a href="/">Home</a>
-      <a href="shop.html">Shop</a>
-      <a href="upload.html">Upload</a>
-      <a class="active" href="free.html">Free</a>
-      <a href="community.html">Community</a>
+      <a href="/"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span>Home</span></a>
+      <a href="shop.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span>Shop</span></a>
+      <a href="upload.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg><span>Upload</span></a>
+      <a class="active" aria-current="page" href="free.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18v-3H3zM12 6v14"/><path d="M12 6c-1-3-5-3.5-5-1.2C7 6.2 9 6 12 6Zm0 0c1-3 5-3.5 5-1.2 0 1.4-2 1.2-5 1.2Z"/></svg><span>Free</span></a>
+      <a href="community.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5h5"/><path d="M10.5 3.5v6L5 19a1.5 1.5 0 0 0 1.3 2.2h11.4A1.5 1.5 0 0 0 19 19l-5.5-9.5v-6"/><path d="M7.5 15h9"/></svg><span>Lab</span></a>
     </nav>
   </header>
 
   <main class="wrap">
 
     <section class="hero compact">
-      <a class="back-link" href="free.html" style="margin-top:0">← All free tools</a>
+      <a class="back-link" href="free.html" style="margin-top:0">All free tools</a>
       <p class="eyebrow" style="margin-top:18px">FREE TOOL</p>
-      <h1>Beat Lab: <span>make a beat in seconds.</span></h1>
-      <p class="muted">Hand-crafted drums by YARDSLOVESYOU, right in your browser. Pick a preset or hit random, tweak it, then share the link or take it into your DAW.</p>
+      <h1>Percussion Loop Lab: <span>build grooves in seconds.</span></h1>
+      <p class="muted">Ten percussion tracks, 32 steps and a rhythm engine that knows trap, drill, afrobeats, amapiano, reggaeton and more. Hit Generate, tweak it, then share the link or take it into your DAW.</p>
     </section>
 
-    <section class="bl" aria-label="Beat Lab">
+    <section class="bl pl" aria-label="Percussion Loop Lab">
+      <!-- Steuerung -->
+      <div class="pl-panel">
+        <label class="pl-field"><span>Genre</span><select id="pl-genre"></select></label>
+        <label class="pl-field"><span>Mood</span><select id="pl-mood"></select></label>
+        <div class="pl-field"><span id="pl-dens-l">Density</span><div class="pl-seg" id="pl-dens" role="radiogroup" aria-labelledby="pl-dens-l"></div></div>
+        <div class="pl-field"><span id="pl-cx-l">Complexity</span><div class="pl-seg" id="pl-cx" role="radiogroup" aria-labelledby="pl-cx-l"></div></div>
+        <label class="pl-field"><span>BPM <strong id="pl-bpm-val">140</strong></span><input type="range" id="pl-bpm" min="60" max="200" step="1" value="140"></label>
+        <label class="pl-field"><span>Swing <strong id="pl-swing-val">0%</strong></span><input type="range" id="pl-swing" min="0" max="60" step="1" value="0"></label>
+        <label class="pl-field"><span>Humanize <strong id="pl-hum-val">20%</strong></span><input type="range" id="pl-hum" min="0" max="100" step="5" value="20"></label>
+      </div>
+
       <!-- Transport -->
-      <div class="bl-bar">
+      <div class="pl-main">
         <button type="button" class="bl-play" id="bl-play" aria-label="Play">
-          <svg class="i-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-          <svg class="i-stop" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
+          <svg class="i-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="i-stop" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
         </button>
-        <label class="bl-ctl">
-          <span>BPM <strong id="bl-bpm-val">140</strong></span>
-          <input type="range" id="bl-bpm" min="60" max="200" step="1" value="140">
-        </label>
-        <label class="bl-ctl">
-          <span>Swing <strong id="bl-swing-val">0%</strong></span>
-          <input type="range" id="bl-swing" min="0" max="100" step="1" value="0">
-        </label>
-        <label class="bl-ctl bl-ctl-small">
-          <span>808 key</span>
-          <select id="bl-key"></select>
-        </label>
-        <div class="bl-bar-actions">
-          <select id="bl-preset" aria-label="Presets"></select>
-          <button type="button" class="outline" id="bl-random">🎲 Random</button>
-          <button type="button" class="outline" id="bl-clear">Clear</button>
-        </div>
+        <button type="button" class="button gen-btn pl-gen" id="pl-gen">Generate</button>
+        <button type="button" class="outline" id="pl-shuffle">Shuffle sounds</button>
+        <button type="button" class="outline" id="pl-clear">Clear</button>
+        <span class="pl-seed" title="Same seed and settings give the same loop">Seed <code id="pl-seed">-</code></span>
       </div>
 
       <!-- Raster -->
-      <div class="bl-scroll">
-        <div class="bl-grid" id="bl-grid"></div>
+      <div class="pl-scroll" id="pl-scroll">
+        <div class="pl-grid" id="pl-grid"></div>
       </div>
-      <p class="bl-hint">Click a step to add a hit. <strong>Hi-hats:</strong> click again for rolls (×2, ×3). <strong>808:</strong> click again for higher notes (5th, octave). Click a sound name to switch sounds. <kbd>Space</kbd> = play / stop.</p>
+      <p class="bl-hint">Click or drag to paint hits, click again for an accent, once more to clear. Click a sound name to swap it for a fresh one. <kbd>Space</kbd> = play / stop. Changing genre, mood, density or complexity rewrites the pattern, so hit Generate for a new idea.</p>
 
       <!-- Export -->
       <div class="bl-actions">
-        <button type="button" class="button" id="bl-share">🔗 Share link</button>
-        <button type="button" class="outline" id="pub-btn">⬆ Publish to Community</button>
+        <button type="button" class="button" id="bl-share">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+          Share link</button>
+        <button type="button" class="outline" id="pub-btn">Publish to Community</button>
         <button type="button" class="outline" id="bl-midi">Download MIDI</button>
-        <button type="button" class="outline locked" id="bl-wav">🔒 Download WAV + stems</button>
+        <button type="button" class="outline locked" id="bl-wav">Download WAV + stems</button>
       </div>
       <p class="status" id="bl-status" role="status"></p>
-      <p class="bl-hint">Need chords for your beat? Try the <a href="chords.html" style="color:var(--purple)">Chord Starter →</a></p>
+      <p class="bl-hint">Need chords for your loop? Try the <a href="chords.html" style="color:var(--purple)">Chord Starter</a>.</p>
 
       <!-- Freischalten -->
       <form class="bl-unlock hidden" id="bl-unlock" novalidate>
         <div>
           <h3>Unlock WAV + stems – <span>free</span></h3>
-          <p class="muted">Enter your email and get your beat as WAV with every track as a separate stem. As a bonus you'll get <strong>Essentials Lite</strong> (20 free sounds) in your inbox.</p>
+          <p class="muted">Enter your email and get your loop as WAV with every track as a separate stem. As a bonus you'll get <strong>Essentials Lite</strong> (20 free sounds) in your inbox.</p>
         </div>
         <div class="free-kit-form" id="bl-unlock-form-wrap">
           <label class="sr-only" for="bl-email">Email address</label>
@@ -112,7 +113,7 @@
           <h3>Publish to Community</h3>
           <p class="muted">Posting as <strong id="pub-handle"></strong>. Others can play, like and remix it.</p>
           <p class="hint hidden" id="pub-remix">This will be shown as a remix of the original post.</p>
-          <label class="field"><span>Title</span><input id="pub-title" type="text" maxlength="60" placeholder="e.g. Late night trap idea" required></label>
+          <label class="field"><span>Title</span><input id="pub-title" type="text" maxlength="60" placeholder="e.g. Percussion loop" required></label>
           <div class="hero-actions">
             <button type="submit" class="button" id="pub-go">Publish</button>
             <button type="button" class="outline" id="pub-cancel">Cancel</button>
@@ -120,7 +121,7 @@
           <p class="status" id="pub-status" role="status"></p>
         </form>
         <div class="hidden" id="pub-done">
-          <h3>Published! 🎉</h3>
+          <h3>Published!</h3>
           <p class="muted">Your post is live in the Community. Share the link with your friends.</p>
           <div class="hero-actions">
             <a class="button" id="pub-link" href="community.html">View post</a>
@@ -159,8 +160,8 @@
   </footer>
 
   <script src="config.js"></script>
-  <script src="beatlab.js"></script>
   <script src="community-core.js"></script>
+  <script src="beatlab.js"></script>
   <script src="publish.js"></script>
   <script src="presence.js"></script>
   <script src="motion.js" defer></script>

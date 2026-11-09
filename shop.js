@@ -29,7 +29,7 @@
           </div>
           <h3>${esc(p.title)}</h3>
           <p>${esc(p.description||"Digital download as ZIP file.")}</p>
-          ${p.royalty_free?`<p class="tag-line">✓ Royalty-free</p>`:""}
+          ${p.royalty_free?`<p class="tag-line"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Royalty-free</p>`:""}
         </a>
         <div class="price-row">
           ${priceHtml(p)}

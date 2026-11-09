@@ -159,6 +159,56 @@
         } catch (err) {}
       }, { passive: true });
 
+
+      /* ---------- Lila Partikel-Burst für Generate-Buttons (.gen-btn) ---------- */
+      var fxLayer = null;
+      var P_COLORS = ['#b68aff', '#a374f5', '#c9a4ff', '#e5a5ff', '#d9c2ff'];
+      doc.addEventListener('click', function (e) {
+        try {
+          var t = e.target && e.target.closest ? e.target.closest('.gen-btn') : null;
+          if (!t || t.disabled || !t.animate) return;
+          // sanftes "Pop" auf dem Button, ohne Inhalt zu ändern
+          t.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.07)', offset: 0.35 }, { transform: 'scale(1)' }],
+            { duration: 320, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+          if (reduce) return;
+          var rect = t.getBoundingClientRect();
+          var cx = (e.clientX || e.clientY) ? e.clientX : rect.left + rect.width / 2;
+          var cy = (e.clientX || e.clientY) ? e.clientY : rect.top + rect.height / 2;
+          if (!fxLayer || !fxLayer.isConnected) {
+            fxLayer = doc.createElement('div');
+            fxLayer.className = 'fx-layer';
+            fxLayer.setAttribute('aria-hidden', 'true');
+            body.appendChild(fxLayer);
+          }
+          var n = 14 + Math.floor(Math.random() * 7);
+          for (var i = 0; i < n; i++) {
+            var p = doc.createElement('span');
+            var size = 3 + Math.random() * 5;
+            var col = P_COLORS[Math.floor(Math.random() * P_COLORS.length)];
+            p.className = 'fx-p';
+            p.style.width = p.style.height = size.toFixed(1) + 'px';
+            p.style.left = (cx - size / 2) + 'px';
+            p.style.top = (cy - size / 2) + 'px';
+            p.style.background = col;
+            if (Math.random() < 0.55) p.style.boxShadow = '0 0 ' + (6 + Math.random() * 8).toFixed(0) + 'px ' + col;
+            fxLayer.appendChild(p);
+            var ang = Math.random() * Math.PI * 2;
+            var dist = 36 + Math.random() * 70;
+            var dx = Math.cos(ang) * dist;
+            var dy = Math.sin(ang) * dist;
+            var dur = 600 + Math.random() * 200;
+            var anim = p.animate([
+              { transform: 'translate(0,0) scale(1)', opacity: 1 },
+              { transform: 'translate(' + (dx * 0.7).toFixed(1) + 'px,' + (dy * 0.7).toFixed(1) + 'px) scale(.9)', opacity: 1, offset: 0.55 },
+              { transform: 'translate(' + dx.toFixed(1) + 'px,' + (dy + 38).toFixed(1) + 'px) scale(.2)', opacity: 0 }
+            ], { duration: dur, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' });
+            (function (el) {
+              anim.onfinish = function () { if (el.parentNode) el.parentNode.removeChild(el); };
+            })(p);
+          }
+        } catch (err) {}
+      }, true);
+
       /* ---------- Karten-Neigung + Lichtfleck (nur Maus) ---------- */
       var fine = false;
       try { fine = !!matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (e) {}
