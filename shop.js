@@ -15,12 +15,11 @@
     return `<span class="price-wrap">${was}<span class="price">${money(p.price_cents,p.currency)}</span></span>`;
   };
 
-  async function load() {
-    // select("*"): neue Spalten (badge, compare_at_cents …) werden automatisch mitgeladen
-    const {data,error}=await db.from("shop_products").select("*").eq("published",true).order("created_at",{ascending:false});
-    if(error){$("products").innerHTML='<div class="empty">Products could not be loaded. Please try again later.</div>';return;}
-    $("shop-count").textContent=`${data.length} ${data.length===1?"product":"products"}`;
-    $("products").innerHTML=data.length?data.map(p=>`
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+  let products=[], cats=[], sel=null; // cats: nur Kategorien mit Produkten
+
+  const card=p=>`
       <article class="product">
         <a class="product-link" href="${link(p.id)}">
           <div class="cover">
@@ -38,8 +37,79 @@
             <button class="button" data-buy="${esc(p.id)}">Buy</button>
           </div>
         </div>
-      </article>`).join(""):'<div class="empty">No products yet. Check back soon.</div>';
-    document.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy));
+      </article>`;
+
+  const catUrl=slug=>slug?`shop.html?cat=${encodeURIComponent(slug)}`:"shop.html";
+
+  function renderBar(){
+    const bar=$("cat-bar");
+    if(!bar) return;
+    if(cats.length<2){bar.hidden=true;bar.innerHTML="";return;}
+    const chip=(slug,label,n)=>`<a class="cat-chip${(sel||"")===(slug||"")?" active":""}" href="${catUrl(slug)}" data-cat="${esc(slug||"")}"${(sel||"")===(slug||"")?' aria-current="true"':""}>${esc(label)}<span class="cat-n">${n}</span></a>`;
+    bar.hidden=false;
+    bar.innerHTML=`<div class="cat-scroll" role="group" aria-label="Filter by category">${chip("","All",products.length)}${cats.map(c=>chip(c.slug,c.name,c.n)).join("")}</div>`;
+    const on=bar.querySelector(".active"); // aktiven Chip bei schmalem Screen sichtbar halten
+    if(on&&on.scrollIntoView) { const sc=bar.firstElementChild; sc.scrollLeft=Math.max(0,on.offsetLeft-16); }
+  }
+
+  function renderGrid(animate){
+    const box=$("products");
+    if(!products.length){box.className="product-grid";box.innerHTML='<div class="empty">No products yet. Check back soon.</div>';return;}
+    const grouped=cats.length>=2&&!sel;
+    let list=products;
+    if(cats.length>=2&&sel) list=products.filter(p=>p.category===sel);
+    $("shop-count").textContent=`${list.length} ${list.length===1?"product":"products"}`;
+    if(grouped){
+      const groups=cats.map(c=>({name:c.name,tagline:c.tagline,items:products.filter(p=>p.category===c.slug)}));
+      const rest=products.filter(p=>!cats.some(c=>c.slug===p.category));
+      if(rest.length) groups.push({name:"More",tagline:"",items:rest});
+      box.className="cat-groups";
+      box.innerHTML=groups.filter(g=>g.items.length).map(g=>`
+        <section class="cat-section">
+          <div class="cat-head"><h3>${esc(g.name)}</h3>${g.tagline?`<p class="muted">${esc(g.tagline)}</p>`:""}</div>
+          <div class="product-grid">${g.items.map(card).join("")}</div>
+        </section>`).join("");
+    }else{
+      box.className="product-grid";
+      box.innerHTML=list.map(card).join("");
+    }
+    box.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy));
+    if(animate&&!reduce&&box.animate){
+      box.animate([{opacity:0,transform:"scale(.985) translateY(6px)"},{opacity:1,transform:"none"}],{duration:380,easing:"cubic-bezier(.34,1.2,.64,1)"});
+      box.querySelectorAll(".rv").forEach(el=>el.classList.add("in"));
+    }
+  }
+
+  function select(slug,push){
+    sel=cats.some(c=>c.slug===slug)?slug:null;
+    if(push){
+      try{history.replaceState(null,"",sel?`?cat=${encodeURIComponent(sel)}`:location.pathname);}catch(_){}
+    }
+    renderBar(); renderGrid(push);
+  }
+
+  async function loadCategories(){
+    // Tabelle/Spalte existiert evtl. noch nicht: dann still bei der flachen Liste bleiben
+    try{
+      const {data,error}=await db.from("shop_categories").select("slug,name,tagline,sort").order("sort",{ascending:true});
+      if(error||!Array.isArray(data)) return [];
+      return data.map(c=>({...c,n:products.filter(p=>p.category===c.slug).length})).filter(c=>c.n>0);
+    }catch(_){return [];}
+  }
+
+  async function load() {
+    // select("*"): neue Spalten (badge, compare_at_cents, category …) werden automatisch mitgeladen
+    const {data,error}=await db.from("shop_products").select("*").eq("published",true).order("created_at",{ascending:false});
+    if(error){$("products").innerHTML='<div class="empty">Products could not be loaded. Please try again later.</div>';return;}
+    products=data;
+    cats=products.length?await loadCategories():[];
+    const bar=$("cat-bar");
+    if(bar) bar.addEventListener("click",e=>{
+      const a=e.target.closest&&e.target.closest("[data-cat]");
+      if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button) return;
+      e.preventDefault(); select(a.dataset.cat||null,true);
+    });
+    select(new URLSearchParams(location.search).get("cat"),false);
   }
 
   async function buy(productId) {

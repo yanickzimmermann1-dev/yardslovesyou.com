@@ -80,7 +80,19 @@
     const was=Number(p.compare_at_cents)>p.price_cents?`<s class="was-price">${money(p.compare_at_cents,p.currency)}</s>`:"";
     const bars=n=>Array.from({length:n},()=>'<span class="wave-bar"></span>').join("");
 
+    // Kategorie für die Brotkrumen (optional; fehlt die Tabelle, nur "Shop / Produkt")
+    let cat=null;
+    if(p.category){
+      try{
+        const {data:c,error:ce}=await db.from("shop_categories").select("slug,name").eq("slug",p.category).maybeSingle();
+        if(!ce&&c) cat=c;
+      }catch(_){}
+    }
+    const SEP='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+    const crumbs=`<nav class="crumbs" aria-label="Breadcrumb"><a href="shop.html">Shop</a>${cat?`${SEP}<a href="shop.html?cat=${encodeURIComponent(cat.slug)}">${esc(cat.name)}</a>`:""}${SEP}<span aria-current="page">${esc(p.title)}</span></nav>`;
+
     root.innerHTML=`
+      ${crumbs}
       <a class="back-link" href="shop.html#downloads"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m15 6-6 6 6 6"/></svg> Back to shop</a>
 
       <section class="product-detail">
