@@ -28,6 +28,22 @@
         body.appendChild(bar);
       } catch (e) {}
 
+      /* ---------- Handy: Navigation aus der Kopfzeile lösen ----------
+         iOS Safari zeigt eine fixierte Leiste innerhalb des (sticky) Headers
+         teils nicht an. Darum hängt sie auf Handys direkt am <body>. */
+      try {
+        var nav = doc.querySelector('.topbar nav[aria-label="Main"]');
+        var navHome = nav && nav.parentNode, navNext = nav && nav.nextSibling;
+        var mq = window.matchMedia && window.matchMedia('(max-width: 720px)');
+        var placeNav = function () {
+          if (!nav || !mq) return;
+          if (mq.matches) { if (nav.parentNode !== body) body.appendChild(nav); }
+          else if (nav.parentNode !== navHome) navHome.insertBefore(nav, navNext);
+        };
+        placeNav();
+        if (mq) { if (mq.addEventListener) mq.addEventListener('change', placeNav); else if (mq.addListener) mq.addListener(placeNav); }
+      } catch (e) {}
+
       var ticking = false;
       function update() {
         ticking = false;
