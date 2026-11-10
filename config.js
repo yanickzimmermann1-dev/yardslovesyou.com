@@ -7,5 +7,5 @@ window.APP_CONFIG = {
   CURRENCY: "CHF",
   // Statistik (Umami Cloud, ohne Cookies): Website-ID aus cloud.umami.is > Websites > Einstellungen kopieren
   // und zwischen die Anfuehrungszeichen setzen. Leer lassen = keine Statistik.
-  UMAMI_WEBSITE_ID: ""
+  UMAMI_WEBSITE_ID: "8033f80b-f46b-457d-8b90-5775accd1175"
 };
