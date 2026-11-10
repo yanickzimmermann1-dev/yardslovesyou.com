@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Hear it? Free Ear Training Game for Producers · YARDSLOVESYOU</title>
+  <meta name="description" content="Hear it? A free ear training game for producers and mix engineers. Spot boosted frequencies, compression, reverb, panning and saturation in A/B tests. 5 new questions every day.">
+  <link rel="canonical" href="https://yardslovesyou.com/eartrainer.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="YARDSLOVESYOU">
+  <meta property="og:title" content="Hear it? Free ear training game · YARDSLOVESYOU">
+  <meta property="og:description" content="Train your ears like a mix engineer. 5 new questions every day.">
+  <meta property="og:url" content="https://yardslovesyou.com/eartrainer.html">
+  <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="eartrainer.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
+    <nav aria-label="Main">
+      <a href="/"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span>Home</span></a>
+      <a href="shop.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span>Shop</span></a>
+      <a href="upload.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg><span>Upload</span></a>
+      <a class="active" aria-current="page" href="free.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18v-3H3zM12 6v14"/><path d="M12 6c-1-3-5-3.5-5-1.2C7 6.2 9 6 12 6Zm0 0c1-3 5-3.5 5-1.2 0 1.4-2 1.2-5 1.2Z"/></svg><span>Free</span></a>
+      <a href="community.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5h5"/><path d="M10.5 3.5v6L5 19a1.5 1.5 0 0 0 1.3 2.2h11.4A1.5 1.5 0 0 0 19 19l-5.5-9.5v-6"/><path d="M7.5 15h9"/></svg><span>Lab</span></a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <div class="et" id="et">
+
+      <!-- ========== START ========== -->
+      <section class="et-screen" id="et-start" aria-label="Ear Trainer">
+        <div class="et-hero">
+          <a class="back-link" href="free.html" style="margin-top:0">All free tools</a>
+          <p class="eyebrow">FREE EAR TRAINER</p>
+          <h1>Hear <span>it?</span></h1>
+          <p class="muted">Train your ears like a mix engineer. 5 new questions every day.</p>
+          <p class="et-phones"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg>Headphones recommended</p>
+        </div>
+
+        <div class="et-modes">
+          <article class="et-mode et-mode-daily" id="et-daily-card">
+            <div class="et-mode-ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m9.5 15 2 2 3.5-4"/></svg></div>
+            <p class="eyebrow" id="et-daily-no">DAILY CHALLENGE</p>
+            <h2>Daily Challenge</h2>
+            <p class="muted" id="et-daily-text">5 questions, the same for everyone today. One attempt. Time bonus and streak multiplier.</p>
+            <p class="et-count hidden" id="et-count" aria-live="off">Next challenge in <strong id="et-count-t">--:--:--</strong></p>
+            <button type="button" class="button et-big" id="et-daily-go">Play today's challenge</button>
+          </article>
+          <article class="et-mode">
+            <div class="et-mode-ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8a4.5 4.5 0 1 0 0 8c3 0 7-8 10-8a4 4 0 1 1 0 8c-3 0-7-8-10-8Z"/></svg></div>
+            <p class="eyebrow">PRACTICE</p>
+            <h2>Practice</h2>
+            <p class="muted">Endless rounds. Pick your question types and difficulty. Three lives, build your best streak.</p>
+            <p class="et-best" id="et-best-line"></p>
+            <button type="button" class="outline et-big" id="et-prac-go">Start practice</button>
+          </article>
+        </div>
+
+        <div class="et-how">
+          <h3>How it works</h3>
+          <ol>
+            <li><span class="et-n">1</span><div><strong>Listen</strong><p>A loop plays nonstop. Flip between A and B instantly while it keeps running.</p></div></li>
+            <li><span class="et-n">2</span><div><strong>Spot the change</strong><p>One side was altered: EQ, compression, level, pan, reverb or saturation.</p></div></li>
+            <li><span class="et-n">3</span><div><strong>Answer fast</strong><p>Quick and right earns more. Chain correct answers for a streak bonus.</p></div></li>
+          </ol>
+        </div>
+
+        <div class="et-board-card">
+          <div class="et-board-head"><h3>Today's top 10</h3><span class="et-board-date" id="et-board-date"></span></div>
+          <div id="et-board-start" class="et-board"></div>
+        </div>
+      </section>
+
+      <!-- ========== PRACTICE SETUP ========== -->
+      <section class="et-screen hidden" id="et-setup" aria-label="Practice setup">
+        <button type="button" class="et-link" data-nav="start"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>Back</button>
+        <h2 class="et-h2">Practice setup</h2>
+        <p class="et-lbl" id="et-lbl-types">Question types</p>
+        <div class="et-chips" id="et-types" role="group" aria-labelledby="et-lbl-types"></div>
+        <p class="et-lbl" id="et-lbl-diff">Difficulty</p>
+        <div class="et-seg" id="et-diff" role="radiogroup" aria-labelledby="et-lbl-diff"></div>
+        <p class="et-hint" id="et-diff-hint"></p>
+        <button type="button" class="button et-big" id="et-prac-start">Start</button>
+      </section>
+
+      <!-- ========== GAME ========== -->
+      <section class="et-screen hidden" id="et-game" aria-label="Game">
+        <div class="et-hud">
+          <button type="button" class="et-exit" id="et-exit" aria-label="Quit to menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+          <div class="et-prog" id="et-prog" aria-label="Progress"></div>
+          <div class="et-stat et-streak" id="et-streak" title="Streak"><svg class="et-flame" id="et-flame" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 2.5c.6 3.2 3.2 4.6 4.7 7.3 1.3 2.3 1.1 5.4-.6 7.4A6 6 0 0 1 12 19.5a6 6 0 0 1-4.1-2.4c-1.5-2-1.5-4.8-.2-6.9.4 1.4 1.2 2.4 2.2 2.8-.3-3.6.6-6.5 2.1-10.5Z" fill="currentColor"/></svg><b id="et-streak-n">0</b></div>
+          <div class="et-stat et-score"><span>Score</span><b id="et-score">0</b></div>
+        </div>
+
+        <div class="et-viz-wrap">
+          <canvas id="et-viz" class="et-viz" width="600" height="140" aria-hidden="true"></canvas>
+          <span class="et-badge" id="et-diff-badge"></span>
+        </div>
+
+        <div class="et-deck">
+          <button type="button" class="et-play" id="et-play" aria-label="Play or pause">
+            <svg class="i-play" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>
+          </button>
+          <div class="et-ab" id="et-ab" role="radiogroup" aria-label="Listen to A or B" data-side="A">
+            <span class="et-ab-thumb" aria-hidden="true"></span>
+            <button type="button" role="radio" aria-checked="true" data-side="A" class="on"><b>A</b><small id="et-a-sub">Original</small></button>
+            <button type="button" role="radio" aria-checked="false" data-side="B"><b>B</b><small id="et-b-sub">Altered</small></button>
+          </div>
+        </div>
+
+        <div class="et-q" id="et-q">
+          <p class="et-qtype" id="et-qtype"></p>
+          <h2 class="et-qtext" id="et-qtext">Loading ...</h2>
+          <div id="et-answers" class="et-answers" role="group" aria-label="Answers"></div>
+        </div>
+
+        <div class="et-fb hidden" id="et-fb" aria-live="polite">
+          <div class="et-fb-top"><span class="et-verdict" id="et-verdict"></span><span class="et-pts" id="et-pts"></span></div>
+          <div class="et-reveal" id="et-reveal"></div>
+          <p class="et-tip" id="et-tip"></p>
+          <p class="et-listen">Keep flipping A and B to learn what it sounds like.</p>
+          <button type="button" class="button et-big" id="et-next">Next</button>
+        </div>
+        <p class="et-keys">Keys: <kbd>Space</kbd> play, <kbd>A</kbd> <kbd>B</kbd> switch, <kbd>1</kbd>-<kbd>9</kbd> answer, <kbd>Enter</kbd> next</p>
+      </section>
+
+      <!-- ========== RESULT ========== -->
+      <section class="et-screen hidden" id="et-result" aria-label="Result">
+        <div class="et-res-top">
+          <p class="eyebrow" id="et-res-eyebrow">DAILY RESULT</p>
+          <div class="et-res-score"><span id="et-res-score">0</span><small>pts</small></div>
+          <p class="et-res-sub" id="et-res-sub"></p>
+        </div>
+        <ul class="et-recap" id="et-recap"></ul>
+        <div class="et-res-actions">
+          <button type="button" class="button" id="et-share"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Share result</button>
+          <button type="button" class="outline" id="et-card"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.5 11 12 15.5 16.5 11"/><path d="M5 20h14"/></svg>Download result card</button>
+          <button type="button" class="outline" id="et-res-again">Play again</button>
+          <button type="button" class="outline" data-nav="start">Menu</button>
+        </div>
+        <div class="et-lb" id="et-lb" hidden>
+          <p class="et-lb-status" id="et-lb-status" role="status"></p>
+          <div class="et-lb-cta" id="et-lb-cta"></div>
+          <div class="et-board-head"><h3>Today's top 10</h3></div>
+          <div id="et-board-res" class="et-board"></div>
+        </div>
+        <div class="et-cta">
+          <div><strong>Want your song to sound right?</strong><p class="muted">Get it mixed by yards.</p></div>
+          <a class="button" href="upload.html">Get it mixed by yards</a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <span>© <span id="year">2026</span> YARDSLOVESYOU &lt;3</span>
+      <nav class="footer-social" aria-label="Social media">
+        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener">YouTube</a>
+      </nav>
+    </div>
+    <nav class="footer-links" aria-label="Legal">
+      <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="license.html">License</a>
+      <a href="code-of-conduct.html">Code of Conduct</a>
+      <a href="security.html">Security</a>
+    </nav>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="community-core.js"></script>
+  <script src="eartrainer.js"></script>
+  <script src="presence.js"></script>
+  <script src="motion.js" defer></script>
+</body>
+</html>
