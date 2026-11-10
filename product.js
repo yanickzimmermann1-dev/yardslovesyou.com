@@ -72,6 +72,7 @@
     document.title=`${p.title} · YARDSLOVESYOU`;
     const images=[p.image_url,...(p.gallery||[])].filter(Boolean).map(media);
     setSeo(p,images);
+    window.ylyTrack&&ylyTrack("product-view",{id:p.id});
     const features=(p.features||[]).filter(Boolean);
     const videos=(p.video_urls||[]).map(embed).filter(Boolean);
     const tracks=getTracks(p);
@@ -223,7 +224,8 @@
   // SEO: Beschreibung, Canonical, Teilen-Vorschau und Produktdaten für Google
   function setSeo(p,images){
     const url=`https://yardslovesyou.com/product.html?id=${encodeURIComponent(p.id)}`;
-    const desc=String(p.description||"Digital download as ZIP file.").slice(0,160);
+    let desc=String(p.description||"Digital download as ZIP file.").replace(/\s+/g," ").trim();
+    if(desc.length>155){desc=desc.slice(0,155);const sp=desc.lastIndexOf(" ");if(sp>100)desc=desc.slice(0,sp);desc=desc.replace(/[\s,.;:\-]+$/,"")+"…";}
     const meta=(attr,key,val)=>{
       let el=document.head.querySelector(`meta[${attr}="${key}"]`);
       if(!el){el=document.createElement("meta");el.setAttribute(attr,key);document.head.appendChild(el);}
@@ -233,19 +235,23 @@
     meta("property","og:title",`${p.title} · YARDSLOVESYOU`);
     meta("property","og:description",desc);
     meta("property","og:url",url);
-    if(images[0]) meta("property","og:image",images[0]);
+    meta("property","og:image",images[0]||"https://yardslovesyou.com/og-image.jpg");
+    meta("name","twitter:card","summary_large_image");
+    meta("name","twitter:title",`${p.title} · YARDSLOVESYOU`);
+    meta("name","twitter:description",desc);
+    meta("name","twitter:image",images[0]||"https://yardslovesyou.com/og-image.jpg");
 
     let canon=document.head.querySelector('link[rel="canonical"]');
     if(!canon){canon=document.createElement("link");canon.rel="canonical";document.head.appendChild(canon);}
     canon.href=url;
 
-    const ld=document.createElement("script");
-    ld.type="application/ld+json";
+    let ld=document.getElementById("ld-product");
+    if(!ld){ld=document.createElement("script");ld.id="ld-product";ld.type="application/ld+json";}
     ld.textContent=JSON.stringify({
       "@context":"https://schema.org",
       "@type":"Product",
       "name":p.title,
-      "description":p.description||"",
+      "description":desc,
       "image":images,
       "url":url,
       "brand":{"@type":"Brand","name":"YARDSLOVESYOU"},
@@ -263,6 +269,7 @@
   async function buy(){
     const btns=[$("buy-btn"),$("sticky-buy-btn")].filter(Boolean);
     btns.forEach(b=>{b.disabled=true;b.textContent="Redirecting …";});
+    window.ylyTrack&&ylyTrack("checkout-click",{id});
     try{
       const {data,error}=await db.functions.invoke("create-checkout",{body:{product_id:id}});
       if(error) throw error;

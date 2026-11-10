@@ -42,6 +42,7 @@
       if (remixOf && /^[0-9a-f-]{36}$/i.test(remixOf)) row.remix_of = remixOf;
       const { data, error } = await db.from("posts").insert(row).select("id").single();
       if (error) throw new Error(/limit/i.test(error.message) ? "You've reached today's post limit. Please try again tomorrow." : error.message);
+      if (c.type === "beat") window.ylyTrack && ylyTrack("perclab-publish");
       $("pub-form").classList.add("hidden");
       $("pub-done").classList.remove("hidden");
       $("pub-link").href = `community.html?post=${data.id}`;

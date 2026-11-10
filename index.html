@@ -54,6 +54,7 @@
   </script>
 
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="beforeafter.css">
   <!-- WICHTIG: UMD-Build für globales window.supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -80,6 +81,9 @@
       <a class="outline" href="shop.html">Shop</a>
     </div>
   </section>
+
+  <!-- Before / After (versteckt, bis Daten da sind) -->
+  <section class="home-section ba-section" id="hear" data-beforeafter data-cta="upload.html" hidden></section>
 
   <!-- Tracks -->
   <section class="home-section" aria-labelledby="work-title">
@@ -180,6 +184,7 @@
 
 <script src="config.js"></script>
 <script src="home.js"></script>
+<script src="beforeafter.js" defer></script>
   <script src="nav.js" defer></script>
   <script src="motion.js" defer></script>
 </body>

@@ -20,6 +20,7 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="beforeafter.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -49,6 +50,8 @@
       <li><strong>Pay</strong>Secure checkout with Stripe.</li>
       <li><strong>Receive</strong>I get to work and send you the result by email.</li>
     </ol>
+
+    <section class="ba-section" id="hear" data-beforeafter data-compact hidden></section>
 
     <section class="upload-card">
       <form id="upload-form" class="upload-form">
@@ -163,6 +166,7 @@
 
   <script src="config.js"></script>
   <script src="upload.js"></script>
+  <script src="beforeafter.js" defer></script>
   <script src="nav.js" defer></script>
   <script src="motion.js" defer></script>
 </body>

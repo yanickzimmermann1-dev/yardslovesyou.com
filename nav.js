@@ -2,6 +2,22 @@
    Macht bei jedem Fehler nichts; Handy (<=720px) bleibt unberuehrt (CSS blendet es aus). */
 (function () {
   'use strict';
+  // iPhone: Web-Audio (Player, Perc Lab, Ear Trainer) auch bei Lautlos-Schalter hörbar machen
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+  // Event-Helfer fuer die Statistik (macht nichts, wenn Umami nicht geladen ist; wirft nie)
+  window.ylyTrack = function (name, data) {
+    try { if (window.umami && typeof window.umami.track === 'function') { if (data) window.umami.track(name, data); else window.umami.track(name); } } catch (e) {}
+  };
+  // Umami Cloud (cookiefrei, EU): nur laden, wenn eine Website-ID in config.js steht
+  try {
+    var uid = window.APP_CONFIG && window.APP_CONFIG.UMAMI_WEBSITE_ID;
+    if (typeof uid === 'string' && uid.trim() && !document.querySelector('script[data-website-id]')) {
+      var us = document.createElement('script');
+      us.defer = true; us.src = 'https://cloud.umami.is/script.js';
+      us.setAttribute('data-website-id', uid.trim()); us.setAttribute('data-do-not-track', 'true');
+      document.head.appendChild(us);
+    }
+  } catch (e) {}
   try {
     var cfg = window.APP_CONFIG;
     if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY || String(cfg.SUPABASE_URL).indexOf('https://') !== 0) return;

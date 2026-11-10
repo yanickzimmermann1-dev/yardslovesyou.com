@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://yardslovesyou.com/</loc><priority>1.0</priority></url>
-  <url><loc>https://yardslovesyou.com/shop.html</loc><priority>0.9</priority></url>
-  <url><loc>https://yardslovesyou.com/upload.html</loc><priority>0.9</priority></url>
-  <url><loc>https://yardslovesyou.com/free.html</loc><priority>0.9</priority></url>
-  <url><loc>https://yardslovesyou.com/beatlab.html</loc><priority>0.8</priority></url>
-  <url><loc>https://yardslovesyou.com/chords.html</loc><priority>0.8</priority></url>
-  <url><loc>https://yardslovesyou.com/community.html</loc><priority>0.9</priority></url>
-  <url><loc>https://yardslovesyou.com/community-guidelines.html</loc><priority>0.3</priority></url>
-  <!-- Produktseiten: pro Produkt eine Zeile mit der ID aus Supabase (shop_products.id) -->
-  <!-- <url><loc>https://yardslovesyou.com/product.html?id=PRODUKT-ID</loc><priority>0.8</priority></url> -->
-  <url><loc>https://yardslovesyou.com/imprint.html</loc><priority>0.3</priority></url>
-  <url><loc>https://yardslovesyou.com/privacy.html</loc><priority>0.3</priority></url>
-  <url><loc>https://yardslovesyou.com/license.html</loc><priority>0.3</priority></url>
+  <url><loc>https://yardslovesyou.com/</loc><lastmod>2026-11-11</lastmod><priority>1.0</priority></url>
+  <url><loc>https://yardslovesyou.com/shop.html</loc><lastmod>2026-11-11</lastmod><priority>0.9</priority></url>
+  <url><loc>https://yardslovesyou.com/upload.html</loc><lastmod>2026-11-11</lastmod><priority>0.9</priority></url>
+  <url><loc>https://yardslovesyou.com/free.html</loc><lastmod>2026-11-11</lastmod><priority>0.9</priority></url>
+  <url><loc>https://yardslovesyou.com/beatlab.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://yardslovesyou.com/chords.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://yardslovesyou.com/eartrainer.html</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://yardslovesyou.com/community.html</loc><lastmod>2026-11-11</lastmod><priority>0.9</priority></url>
+  <url><loc>https://yardslovesyou.com/product.html?id=11f558ea-9332-4bf3-ad2f-d8327c489445</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://yardslovesyou.com/product.html?id=c9ab4f32-e7a1-4ae0-8e93-a421b3225c15</loc><lastmod>2026-11-11</lastmod><priority>0.8</priority></url>
+  <url><loc>https://yardslovesyou.com/community-guidelines.html</loc><lastmod>2026-11-11</lastmod><priority>0.3</priority></url>
+  <url><loc>https://yardslovesyou.com/imprint.html</loc><lastmod>2026-11-11</lastmod><priority>0.3</priority></url>
+  <url><loc>https://yardslovesyou.com/privacy.html</loc><lastmod>2026-11-11</lastmod><priority>0.3</priority></url>
+  <url><loc>https://yardslovesyou.com/license.html</loc><lastmod>2026-11-11</lastmod><priority>0.3</priority></url>
+  <url><loc>https://yardslovesyou.com/code-of-conduct.html</loc><lastmod>2026-11-11</lastmod><priority>0.3</priority></url>
+  <url><loc>https://yardslovesyou.com/security.html</loc><lastmod>2026-11-11</lastmod><priority>0.3</priority></url>
 </urlset>

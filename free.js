@@ -31,6 +31,7 @@
       button.disabled = true; button.textContent = busy;
       try {
         const data = await callFn(fn, { email: addr, marketing_consent: consent.checked, ...(extra ? extra() : {}) });
+        if (fn === "free-kit") window.ylyTrack && ylyTrack("freekit-signup");
         status.textContent = done(data);
         email.value = ""; consent.checked = false;
       } catch (err) {

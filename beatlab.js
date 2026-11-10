@@ -315,8 +315,7 @@
   // Display name: no extension, _ and - to spaces, title case, max 18 characters
   function niceName(f, strip) {
     let n = f.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
-    if (strip) n = n.replace(/^(kick|clap|snare|perc|percussion)\s+(\d+\s+)?/i, "") || n;
-    else n = n.replace(/^(perc|percussion)\s+/i, "");
+    n = n.replace(/^(kick|clap|snare|perc|percussion|hat|hihat|openhat|shaker|tom|rim|808)\s+(\d+\s+)?/i, "") || n;
     n = n.toLowerCase().replace(/(^|\s)(\S)/g, (m, a, b) => a + b.toUpperCase());
     return (n.length > 18 ? n.slice(0, 18).trim() : n) || f.slice(0, 18);
   }
@@ -582,7 +581,7 @@
       tracks.map((t, i) => {
         const base = i < 2, lab = rowLabel(t);
         const nameHtml = base
-          ? `<span class="pl-sname"><span class="pl-n pl-kind">${lab}</span><span class="pl-sub">${esc(t.e.name)}</span></span>`
+          ? `<span class="pl-sname"><span class="pl-n pl-kind">${lab}</span>${t.e.name.toLowerCase() === lab.toLowerCase() ? "" : `<span class="pl-sub">${esc(t.e.name)}</span>`}</span>`
           : `<span class="pl-sname"><span class="pl-n">${esc(t.e.name)}</span><em class="pl-role">${ROLE_NAME[t.role]}</em></span>`;
         return `
       <div class="pl-row${t.lock ? " locked" : ""}${base ? " base" : ""}" data-row="${i}">
@@ -723,7 +722,7 @@
   $("pl-swing").oninput = e => { state.swing = +e.target.value; touched.swing = true; $("pl-swing-val").textContent = state.swing + "%"; saveHash(); };
   $("pl-hum").oninput = e => { state.humanize = +e.target.value; $("pl-hum-val").textContent = state.humanize + "%"; saveHash(); };
   $("bl-play").onclick = toggle;
-  $("pl-gen").onclick = () => { if (!ready) return; generateAll(true); renderAll(); setStatus(""); };
+  $("pl-gen").onclick = () => { if (!ready) return; window.ylyTrack && ylyTrack("perclab-generate"); generateAll(true); renderAll(); setStatus(""); };
   $("pl-shuffle").onclick = shuffleSounds;
   $("pl-clear").onclick = () => { tracks.forEach(t => { if (!t.lock) t.steps = blankSteps(); }); renderGrid(); saveHash(); };
   document.addEventListener("keydown", e => {
@@ -779,6 +778,7 @@
   $("bl-midi").onclick = () => {
     if (!tracks.length) return;
     download(midiFile(), fileBase() + ".mid");
+    window.ylyTrack && ylyTrack("perclab-export-midi");
     setStatus("MIDI downloaded – 2 bars, one note per row (GM percussion, channel 10: kick 36, clap 39, timeline 75, steady 70, accent 56).");
   };
 
@@ -859,6 +859,7 @@
       }
       files.push({ name: "license.txt", data: new TextEncoder().encode("Made with the YARDSLOVESYOU Perc Lab (yardslovesyou.com/beatlab.html).\nThe sounds are royalty-free for use in your own music. You may not resell or share the sounds on their own.\nGet the full Essentials kit: https://yardslovesyou.com/shop.html\n") });
       download(zip(files), fileBase() + ".zip");
+      window.ylyTrack && ylyTrack("perclab-export-wav");
       setStatus("Done! Your loop and stems are downloading (2 bars, WAV, seamless loop).");
     } catch (e) {
       setStatus("Export failed. Please try again.", true);
@@ -890,6 +891,7 @@
       if (error) { let m = error.message; try { const j = await error.context.json(); if (j?.error) m = j.error; } catch (_) {} throw new Error(m); }
       if (!data?.ok) throw new Error(data?.error || "Something went wrong.");
       try { localStorage.setItem(UNLOCK_KEY, "1"); } catch (_) {}
+      window.ylyTrack && ylyTrack("freekit-signup");
       showUnlocked();
       setStatus("Unlocked! Essentials Lite is on its way to your inbox. Exporting your loop …");
       exportWav();

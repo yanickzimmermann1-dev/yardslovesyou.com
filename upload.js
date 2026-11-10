@@ -142,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setProgress(100);
 
         if (statusEl) statusEl.textContent = "Redirecting to Stripe Checkout...";
+        window.ylyTrack && ylyTrack("upload-checkout-click", { service: serviceType });
 
         // 3. Call edge function
         const { data: checkoutData, error: checkoutError } = await db.functions.invoke("create-submission-checkout", {

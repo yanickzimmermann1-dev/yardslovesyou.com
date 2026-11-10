@@ -114,6 +114,7 @@
 
   async function buy(productId) {
     const b=document.querySelector(`[data-buy="${CSS.escape(productId)}"]`); if(b){b.disabled=true;b.textContent="Redirecting …";}
+    window.ylyTrack&&ylyTrack("checkout-click",{id:productId});
     try{
       const {data,error}=await db.functions.invoke("create-checkout",{body:{product_id:productId}});
       if(error) throw error;

@@ -666,6 +666,7 @@
     loadQuestion(G.qs[0]);
   }
   function startPractice(c) {
+    window.ylyTrack && ylyTrack("eartrainer-practice-start");
     Object.assign(G, { mode: "practice", qs: [], i: 0, score: 0, streak: 0, maxStreak: 0, lives: 3, correct: 0, results: [], cfg: c, over: false, n: 0 });
     show("game"); $("et-score").dataset.v = 0;
     nextPractice();
@@ -741,6 +742,7 @@
     const rec = { day: G.day, done: true, score: G.score, correct: G.correct, results: G.results, saved: false };
     const old = store.get(DAILY_KEY, null); if (old && old.saved) rec.saved = true;
     store.set(DAILY_KEY, rec);
+    window.ylyTrack && ylyTrack("eartrainer-daily-finished", { score: G.score });
     showResult(rec, "daily");
     submitScore(rec);
   }

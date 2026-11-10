@@ -1510,25 +1510,26 @@ body::before{
    ===================================================================== */
 main.wrap{position:relative}
 .live-pill{
-  position:absolute;top:16px;right:0;z-index:3;
+  position:relative;top:auto;right:auto;z-index:3;
+  width:fit-content;margin:12px 0 12px auto;
   display:none;align-items:center;gap:7px;
   padding:7px 12px;border-radius:999px;
   background:#0f0c15cc;border:1px solid #ff5d7a55;backdrop-filter:blur(8px);
   font-size:12px;color:var(--muted);letter-spacing:.3px;
 }
-.live-pill.visible{display:inline-flex}
+.live-pill.visible{display:flex}
 .live-pill strong{color:#ff5d7a;font-weight:700;letter-spacing:1.5px}
 .live-pill .live-num{color:var(--text);font:700 14px 'Space Grotesk'}
 .live-pill .live-sep{opacity:.5}
 .live-dot{width:8px;height:8px;border-radius:50%;background:#ff5d7a;box-shadow:0 0 0 0 #ff5d7a99;animation:livePulse 1.8s infinite}
 @keyframes livePulse{0%{box-shadow:0 0 0 0 #ff5d7a88}70%{box-shadow:0 0 0 8px #ff5d7a00}100%{box-shadow:0 0 0 0 #ff5d7a00}}
 @media(prefers-reduced-motion:reduce){.live-dot{animation:none}}
-@media(max-width:600px){.live-pill{top:12px;padding:6px 10px;font-size:11px}}
+@media(max-width:600px){.live-pill{padding:6px 10px;font-size:11px}}
 /* Platz für die LIVE-Anzeige oben rechts */
-.cm-subbar{margin-top:0;padding-top:62px}            /* Innenabstand statt Aussenabstand: verhindert, dass die Anzeige mitrutscht */
+.cm-subbar{margin-top:0;padding-top:0}            /* Innenabstand statt Aussenabstand: verhindert, dass die Anzeige mitrutscht */
 .cm-hero > div:first-child{flex:1;min-width:280px}
-.cm-hero .cm-auth{margin-top:34px}
-@media(max-width:600px){.cm-subbar{padding-top:54px}.cm-hero .cm-auth{margin-top:0}}
+.cm-hero .cm-auth{margin-top:12px}
+
 
 /* =====================================================================
    CHORD STARTER (vereinfacht): Auswahl oben, Generate, Piano Roll unten
