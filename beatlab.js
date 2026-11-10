@@ -1,8 +1,9 @@
 /* =====================================================================
-   PERC LAB – Perkussions-Loops im Browser
-   5 Spuren x 32 Schritte, Rhythmus-Generator (Genre/Mood/Density/...),
-   Sounds aus dem Storage-Ordner "perclab", Teilen-Link, MIDI- und WAV-Export.
-   Läuft komplett im Browser.
+   PERC LAB - relaxed percussion loops in the browser
+   5 rows x 32 steps: Kick, Clap and three percussion tracks (Timeline, Steady, Accent)
+   that interlock. Sounds come from the storage folders "perclab", "perclab/kick" and
+   "perclab/clap" (with fallback to the old Beat Lab files). Rows can be locked.
+   Share link, MIDI and WAV export. Runs completely in the browser.
    ===================================================================== */
 (() => {
   "use strict";
@@ -12,11 +13,11 @@
   const STEPS = 32, MAX_TRACKS = 5;
 
   /* ===================================================================
-     REINE LOGIK (kein DOM): Zufall, Genres, Generator, Hash
+     PURE LOGIC (no DOM): random, genres, generator, hash
      =================================================================== */
   // ==PURE-START==
 
-  // ---------- Zufall (reproduzierbar über Seed) ----------
+  // ---------- Random (reproducible via seed) ----------
   const mulberry32 = a => () => {
     a = (a + 0x6D2B79F5) | 0;
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
@@ -30,391 +31,397 @@
   };
   const newSeed = () => (Math.random() * 4294967296) >>> 0;
 
-  // ---------- Listen (Reihenfolge NIE ändern, sie steckt im Hash!) ----------
-  const GENRE_KEYS = ["trap", "drill", "afro", "amapiano", "reggaeton", "dancehall", "baile", "jersey", "boombap", "lofi", "house", "latin", "rnb"];
-  const GENRE_NAMES = ["Trap", "Drill", "Afrobeats", "Amapiano", "Reggaeton", "Dancehall", "Baile Funk", "Jersey Club", "Boom Bap", "Lo-fi", "House", "Latin / Clave", "R&B"];
+  // ---------- Lists (NEVER reorder: the indexes live in the p2 hash) ----------
+  const GENRE_KEYS = ["trap", "drill", "afro", "amapiano", "reggaeton", "dancehall", "boombap", "lofi", "house", "latin", "rnb"];
+  const GENRE_NAMES = ["Trap", "Drill", "Afrobeats", "Amapiano", "Reggaeton", "Dancehall", "Boom Bap", "Lo-fi", "House", "Latin / Clave", "R&B"];
+  const OLD_GENRE_KEYS = ["trap", "drill", "afro", "amapiano", "reggaeton", "dancehall", "baile", "jersey", "boombap", "lofi", "house", "latin", "rnb"];   // p1 hashes
+  const OLD_GENRE_MAP = { baile: "reggaeton", jersey: "trap" };
   const MOOD_KEYS = ["dark", "bouncy", "chill", "energetic", "hypnotic", "tribal"];
   const MOOD_NAMES = ["Dark", "Bouncy", "Chill", "Energetic", "Hypnotic", "Tribal"];
   const DENS_NAMES = ["Sparse", "Medium", "Busy"], CX_NAMES = ["Simple", "Groovy", "Wild"];
 
-  // Mood: d = Dichte-Verschiebung, bpm/sw = Auto-Werte auf BPM und Swing
+  // Mood: bpm/sw = automatic offsets for BPM and swing
   const MOOD = {
-    dark:      { d: -0.5, bpm: -4, sw: 0 },
-    bouncy:    { d: 0,    bpm: 0,  sw: 8 },
-    chill:     { d: -1,   bpm: -6, sw: 12 },
-    energetic: { d: 1,    bpm: 6,  sw: -5 },
-    hypnotic:  { d: -0.3, bpm: 0,  sw: 0 },
-    tribal:    { d: 0.3,  bpm: 2,  sw: 5 },
+    dark:      { bpm: -4, sw: 0 },
+    bouncy:    { bpm: 0,  sw: 8 },
+    chill:     { bpm: -6, sw: 12 },
+    energetic: { bpm: 6,  sw: -5 },
+    hypnotic:  { bpm: 0,  sw: 0 },
+    tribal:    { bpm: 2,  sw: 5 },
   };
 
-  // ---------- Referenz-Grooves auf dem 16er-Raster ----------
-  // x = Schlag, X = Akzent, . = Pause. Leerzeichen sind nur Lesehilfe (4er-Gruppen = Beats).
-  // Varianten mit | getrennt (Variante 2 dient u.a. als Abwandlung für Takt 2).
-  // p = Puls/Kick-artig, b = Backbeat, s = Shaker/Hats, o = Offbeat, t = Timeline (Clave/Tresillo...), y = Synkope
-  const RAW = {
-    trap: { bpm: 140, sw: 0,
-      p: "x... .... x..x ....|x... ..x. ..x. ....|x..x .... x... ..x.",
-      b: ".... .... x... ....|.... .... x... ...x",
-      s: "x.x. x.x. x.x. x.x.|xxxx xxxx xxxx xxxx|x.x. x.xx x.x. xxxx",
-      o: ".... ..x. .... ..x.|.... .... ..x. ....",
-      t: "x..x ..x. x..x ..x.|x..x ..x. .... x.x.",
-      y: "..x. ...x ..x. ...x|.x.. ..x. ...x ..x." },
-    drill: { bpm: 142, sw: 0,
-      p: "x... ...x ..x. ....|x... .... .x.. x...",
-      b: ".... .... x... ....|.... .... x... ..x.",
-      s: "x.xx x.x. x.xx x.x.|x.x. xx.x x.x. xx.x",
-      o: ".... .... .... ..x.|.... ...x .... ....",
-      t: "x..x ..x. ..x. ....|..x. x..x ..x. ....",
-      y: ".... .x.. ...x ..x.|..x. .... .x.. x..x" },
-    afro: { bpm: 104, sw: 10,
-      p: "x... ..x. x... ..x.|x..x ..x. x..x ..x.",
-      b: ".... x... .... x...|.... x..x .... x...",
-      s: "xxxx xxxx xxxx xxxx|x.xx x.xx x.xx x.xx|x.x. x.x. x.x. x.x.",
-      o: "..x. ..x. ..x. ..x.|.x.x .... .x.x ....",
-      t: "x..x ..x. x..x ..x.|x..x ..x. ..x. x...",
-      y: "..x. x..x ..x. x...|x.x. ..x. x... ..x." },
-    amapiano: { bpm: 112, sw: 15,
-      p: "x... x... x... x...|x... x... x... x..x",
-      b: ".... .... x... ....|.... x... .... x...",
-      s: "..x. ..x. ..x. ..x.|x.xx .xx. x.xx .xx.",
-      o: ".x.. .x.. .x.. .x..|..x. .... ..x. ....",
-      t: "x..x ..x. .x.. x...|x..x ..x. ...x ..x.",
-      y: "...x ..x. ..x. .x..|x..x .... x..x ..x." },
-    reggaeton: { bpm: 94, sw: 0,
-      p: "x... x... x... x...|x... x... x... x..x",
-      b: "...x ..x. ...x ..x.|...x ..x. ...x ..xx",
-      s: "x.xx x.xx x.xx x.xx|x.x. x.x. x.x. x.x.",
-      o: "..x. ..x. ..x. ..x.",
-      t: "x..x ..x. x..x ..x.",
-      y: ".... ..x. .... ..x.|..x. .... ...x ..x." },
-    dancehall: { bpm: 100, sw: 5,
-      p: "x... .x.. x... .x..|x..x ..x. x..x ..x.",
-      b: "...x ..x. ...x ..x.|.... .x.. ...x ..x.",
-      s: "x.x. x.x. x.x. x.x.|xxxx xxxx xxxx xxxx",
-      o: ".x.. .x.. .x.. .x..|..x. ..x. ..x. ..x.",
-      t: "x..x ..x. x... ..x.|x..x .... x..x ....",
-      y: "...x ..x. ...x ...x|..x. .... ..x. x..." },
-    baile: { bpm: 130, sw: 0,
-      p: "x..x ..x. x..x ..x.|x..x .x.. x..x .x..",
-      b: "..x. .... ..x. ....|.... x... .... x...",
-      s: "x.xx x.xx x.xx x.xx|xxxx xxxx xxxx xxxx",
-      o: "..x. ..x. ..x. ..x.",
-      t: "x..x ..x. x..x ..x.",
-      y: ".x.. x..x ..x. x..x|..x. ..x. x..x ..x." },
-    jersey: { bpm: 140, sw: 0,
-      p: "x..x ..x. ..x. ..x.|x..x ..x. x..x ....",
-      b: ".... x... .... x...|.... x... ..x. x..x",
-      s: "x.x. x.x. x.x. x.x.|xxxx xxxx xxxx xxxx",
-      o: "..x. ..x. ..x. ..x.",
-      t: "x..x ..x. x..x ..x.",
-      y: "...x .x.. ...x .x..|..x. ..x. x..x ...x" },
-    boombap: { bpm: 90, sw: 40,
-      p: "x... ..x. ..x. ....|x... .... x.x. ....",
-      b: ".... x... .... x...|.... x... .... x..x",
-      s: "x.x. x.x. x.x. x.x.|x.x. x.x. x.x. xxx.",
-      o: ".... .... .... ..x.|.... .... .... ...x",
-      t: "x... ..x. .x.. ..x.|x..x .... x..x ....",
-      y: ".... ...x ..x. ....|.... ..x. ...x ...." },
-    lofi: { bpm: 76, sw: 45,
-      p: "x... .... ..x. ....|x... ..x. .... .x..",
-      b: ".... x... .... x...|.... x... .... x..x",
-      s: "x... x... x... x...|x.x. x.x. x.x. x.x.",
-      o: ".... .... .... ..x.|.... ..x. .... ....",
-      t: "..x. .... x... ..x.|x... ..x. ...x ....",
-      y: ".... .x.. ...x ....|..x. ...x .... .x.." },
-    house: { bpm: 124, sw: 12,
-      p: "x... x... x... x...|x... x... x... x..x",
-      b: ".... x... .... x...|.... x... .... x..x",
-      s: "x.x. x.x. x.x. x.x.|xxxx xxxx xxxx xxxx|.xx. .xx. .xx. .xx.",
-      o: "..x. ..x. ..x. ..x.",
-      t: "..x. x..x ..x. x...|x..x ..x. ..x. x..x",
-      y: ".x.. ..x. .x.. ..x.|..x. ...x ..x. .x.." },
-    latin: { bpm: 100, sw: 5,
-      p: "..x. ...x ..x. .xx.|..x. x... ..x. .x.x",
-      b: "...x ..x. ...x ....|...x .... ...x ..x.",
-      s: "x.xx .x.x x.x. x.x.|x.xx .x.x x.x. xxx.",
-      o: "..x. ..x. ..x. ..x.",
-      t: "x..x ..x. ..x. x...|x..x ...x ..x. x...|..x. x... x..x ..x.",
-      y: ".x.. ..x. .x.. x...|..x. .x.. .... x.x." },
-    rnb: { bpm: 88, sw: 30,
-      p: "x... .... ..x. ....|x... ..x. ..x. ....",
-      b: ".... x... .... x...|.... x... .... x..x",
-      s: "x.x. x.x. x.x. x.x.|x.xx x.x. x.xx x.x.",
-      o: ".... ..x. .... ..x.|.... .... ..x. ....",
-      t: "x... ..x. x... .x..|..x. x... ..x. ...x",
-      y: ".... ..x. ...x ....|..x. .... .x.. ..x." },
-  };
-  const parseV = str => str.split("|").map(v => v.replace(/\s/g, "").split("").map(c => c === "X" ? 2 : c === "x" ? 1 : 0));
-  const GEN = {};
-  GENRE_KEYS.forEach(k => {
-    const g = RAW[k]; GEN[k] = { bpm: g.bpm, sw: g.sw };
-    ["p", "b", "s", "o", "t", "y"].forEach(r => GEN[k][r] = parseV(g[r]));
-  });
-
-  // Rollen: Reihenfolge = Priorität bei weniger Spuren
-  const ROLE_ORDER = ["pulse", "back", "shaker", "timeline", "offbeat", "synco", "ghost", "roll", "accent", "ear"];
-  const ROLE_KEY = { pulse: "p", back: "b", shaker: "s", offbeat: "o", timeline: "t", synco: "y" };
-  const ROLE_NAME = { pulse: "Main pulse", back: "Backbeat", shaker: "Shaker 16ths", timeline: "Timeline / clave", offbeat: "Offbeat", synco: "Syncopation", ghost: "Ghost notes", roll: "Rolls / triplet feel", accent: "Accents", ear: "Ear candy" };
-  const ROLE_VOL = { pulse: 8, back: 7, shaker: 5, timeline: 6, offbeat: 5, synco: 6, ghost: 4, roll: 5, accent: 7, ear: 5 };   // Start-Lautstärke 0-9
-  const HIGH = new Set(["shaker", "offbeat", "ear", "ghost", "roll"]), LOW = new Set(["pulse", "synco", "timeline"]);
-
-  const rolesFor = (seed, n) => {
-    const r = mulberry32((seed ^ 0x5bd1e995) >>> 0), a = ROLE_ORDER.slice(0, n);
-    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
-    return a;
+  // ---------- Genre templates on the 16th grid (step 0 = beat 1, 4 = beat 2, 8 = beat 3, 12 = beat 4) ----------
+  // clap: list of backbeat variants. kick: fix = always, opt = [step, weight], n = [min, max] hits per bar.
+  // tl: timeline variants in priority order (the last one is the syncopated one, used by Bouncy).
+  const GEN = {
+    trap:      { bpm: 140, sw: 0,  clap: [[8]],                       kick: { opt: [[7, 2], [10, 3], [3, 1], [14, 2], [11, 1]], n: [2, 4] }, tl: [[6, 12, 3, 11, 14, 8], [10, 6, 14, 3, 2]] },
+    drill:     { bpm: 142, sw: 0,  clap: [[8]],                       kick: { opt: [[6, 2], [10, 2], [7, 1], [13, 1], [3, 1]],  n: [2, 4] }, tl: [[6, 10, 14, 3, 11], [10, 3, 6, 14]] },
+    afro:      { bpm: 104, sw: 10, clap: [[4, 12]],                   kick: { opt: [[6, 3], [10, 2], [8, 1], [3, 1]],           n: [2, 4] }, tl: [[6, 10, 3, 14, 2], [3, 6, 10, 14]] },
+    amapiano:  { bpm: 112, sw: 15, clap: [[4, 12], [12]],             kick: { opt: [[8, 3], [6, 2], [10, 2], [3, 1], [14, 1]],  n: [2, 4] }, tl: [[6, 10, 14, 3, 2], [3, 10, 14, 7]] },
+    reggaeton: { bpm: 94,  sw: 0,  clap: [[3, 6, 11, 14], [3, 11]],   kick: { opt: [[8, 3], [4, 3], [12, 3]],                    n: [2, 4] }, tl: [[10, 2, 13, 5, 7], [2, 5, 10, 13]] },
+    dancehall: { bpm: 100, sw: 5,  clap: [[6, 14], [3, 6, 11, 14], [4, 12]], kick: { opt: [[3, 2], [6, 2], [8, 2], [11, 2], [10, 1]], n: [2, 4] }, tl: [[6, 10, 14, 2, 3], [3, 6, 10, 14, 11]] },
+    boombap:   { bpm: 90,  sw: 40, clap: [[4, 12]],                   kick: { opt: [[10, 3], [7, 2], [2, 2], [11, 1]],          n: [2, 4] }, tl: [[6, 10, 14, 2, 3], [10, 3, 14, 6]] },
+    lofi:      { bpm: 76,  sw: 45, clap: [[4, 12]],                   kick: { opt: [[10, 3], [7, 2], [3, 1], [14, 1]],          n: [2, 3] }, tl: [[6, 14, 10, 2], [10, 3, 14, 6]] },
+    house:     { bpm: 124, sw: 12, clap: [[4, 12]],                   kick: { fix: [0, 4, 8, 12], opt: [],                      n: [4, 4] }, tl: [[6, 10, 3, 14, 2], [3, 6, 11, 14, 2]] },
+    latin:     { bpm: 100, sw: 5,  clap: [[12], [4, 12]],             kick: { opt: [[6, 2], [8, 2], [10, 2], [3, 1]],           n: [2, 4] }, tl: [[6, 10, 3, 12, 0], [3, 10, 7, 12, 6]] },
+    rnb:       { bpm: 88,  sw: 30, clap: [[4, 12], [12]],             kick: { opt: [[10, 3], [7, 2], [3, 1], [14, 1]],          n: [2, 3] }, tl: [[6, 10, 14, 3, 2], [3, 10, 6, 14, 11]] },
   };
 
-  // ---------- Einstellungen ----------
-  const state = { bpm: 140, swing: 0, genre: "trap", mood: "bouncy", density: 1, complexity: 1, humanize: 20, seed: 1 };
+  // Roles: row 0 = kick, row 1 = clap, rows 2-4 = percussion with a role each
+  const ROLES = ["kick", "clap", "timeline", "steady", "accent"];       // index = role digit in the hash
+  const PERC_ROLES = ["timeline", "steady", "accent"];
+  const ROLE_NAME = { kick: "Kick", clap: "Clap", timeline: "Timeline", steady: "Steady", accent: "Accent" };
+  const ROLE_VOL = { kick: 8, clap: 7, timeline: 6, steady: 5, accent: 5 };    // start volume 0-9
+  const MIDI_NOTE = { kick: 36, clap: 39, timeline: 75, steady: 70, accent: 56 };   // GM percussion
+  const CAP = [3, 4, 6], TOT = [7, 10, 14];                              // per perc track / all perc tracks, per bar, by density
+
+  // ---------- Settings ----------
+  const state = { bpm: 140, swing: 0, genre: "trap", mood: "bouncy", density: 1, complexity: 0, humanize: 10, seed: 1 };
   const autoBpm = () => clamp(GEN[state.genre].bpm + MOOD[state.mood].bpm, 60, 200);
   const autoSwing = () => clamp(GEN[state.genre].sw + MOOD[state.mood].sw, 0, 60);
 
   // ---------- Generator ----------
-  const sameBar = (a, b) => a.every((v, i) => v === b[i]);
-
-  // Grundmuster für Rollen ohne feste Genre-Vorlage (Ghost, Rolls, Accent, Ear Candy)
-  function baseBar(role, r, dEff) {
-    const a = Array(16).fill(0);
-    const pickN = (pool, n, val) => { const p = pool.slice(); for (let k = 0; k < n && p.length; k++) a[p.splice(Math.floor(r() * p.length), 1)[0]] = val; };
-    if (role === "ghost") {
-      for (let i = 0; i < 16; i++) { const p = (i % 4 === 3 ? 0.4 : i % 2 ? 0.25 : 0.08) * (0.5 + Math.max(0, dEff) * 0.6); if (r() < p) a[i] = 1; }
-    } else if (role === "accent") {
-      pickN([0, 6, 10, 12, 14], 2 + (dEff > 1.3 ? 1 : 0), 2);
-    } else if (role === "ear") {
-      pickN([1, 3, 5, 7, 9, 11, 13, 15], 1 + (r() < 0.5 ? 1 : 0) + (dEff > 1.5 ? 1 : 0), 1);
-    } else if (role === "roll") {
-      // Wirbel: kurze Bursts, die zum Ende der Zählzeit hin lauter werden
-      const starts = [12, 6, 14, 9].slice(0, dEff > 1.4 ? 2 : 1);
-      starts.forEach(s => { const len = s === 12 ? 4 : 3; for (let k = 0; k < len && s + k < 16; k++) a[s + k] = k === len - 1 ? 2 : 1; });
+  const barCnt = (row, bar) => { let c = 0; for (let k = 0; k < 16; k++) if (row[bar * 16 + k]) c++; return c; };
+  function weightedOrder(r, pairs) {
+    const p = pairs.slice(), out = [];
+    while (p.length) {
+      let x = r() * p.reduce((a, q) => a + q[1], 0), k = 0;
+      while (k < p.length - 1 && (x -= p[k][1]) >= 0) k++;
+      out.push(p.splice(k, 1)[0][0]);
     }
-    return a;
+    return out;
   }
 
-  // Ein Takt (16 Schritte) formen: Dichte + Mood
-  function shape(b, role, r, dEff, mood) {
-    const o = b.slice(), high = HIGH.has(role), low = LOW.has(role);
-    const anchor = i => (role === "pulse" && i === 0) || role === "back";
-    // ausdünnen
-    const pRem = clamp((1 - dEff) * 0.3, 0, 0.6) + (mood === "dark" && high ? 0.4 : 0) + (mood === "tribal" && (role === "shaker" || role === "offbeat") ? 0.35 : 0);
-    if (pRem > 0) for (let i = 0; i < 16; i++) if (o[i] && !anchor(i) && r() < pRem) o[i] = 0;
-    // auffüllen (nicht beim Backbeat)
-    if (role !== "back" && role !== "ear") {
-      let pAdd = clamp((dEff - 1) * 0.13, 0, 0.3) * (high || role === "shaker" ? 1.2 : 0.8);
-      if (mood === "dark" && high) pAdd *= 0.3;
-      if (pAdd > 0) for (let i = 0; i < 16; i++) if (!o[i] && (i % 2 || i % 4 === 2) && r() < pAdd * (i % 2 ? 1 : 0.7)) o[i] = 1;
-    }
-    // Mood-Färbung
-    if (mood === "chill") {
-      if (role === "shaker" || role === "ghost" || role === "offbeat") for (let i = 1; i < 16; i += 2) if (o[i] && r() < 0.65) o[i] = 0;
-      for (let i = 0; i < 16; i++) if (o[i] === 2 && r() < 0.8) o[i] = 1;
-    } else if (mood === "energetic") {
-      if (role === "shaker") for (let i = 1; i < 16; i += 2) if (!o[i] && r() < 0.55) o[i] = 1;
-      if (role === "shaker" || role === "offbeat" || role === "accent") for (let i = 2; i < 16; i += 4) if (o[i]) o[i] = 2;
-      if (role === "pulse") o[0] = 2;
-    } else if (mood === "bouncy") {
-      if (role === "offbeat" || role === "synco" || role === "timeline" || role === "pulse") for (let i = 2; i < 16; i += 4) { if (!o[i] && r() < 0.2) o[i] = 1; if (o[i]) o[i] = 2; }
-    } else if (mood === "dark") {
-      if (low && r() < 0.35) o[[3, 6, 10, 11, 14][Math.floor(r() * 5)]] = 1;
-      if (high) for (let i = 0; i < 16; i++) if (o[i] === 2) o[i] = 1;
-    } else if (mood === "tribal") {
-      if (low) for (let k = 0; k < 2; k++) if (r() < 0.3) o[[3, 6, 9, 10, 12][Math.floor(r() * 5)]] = 1;
-    }
-    if (!o.some(Boolean)) o[role === "ear" ? 13 : 2] = 1;
-    return o;
-  }
+  // Generates the rows listed in `which` (array of row indexes 0-4). Other rows are fixed context
+  // (locked rows). rows = array of 5 arrays with 32 steps, roles = role names per row, r = random function.
+  function genLoop(rows, which, roles, r, S) {
+    S = S || state;
+    const d = S.density, cx = S.complexity, mood = S.mood, G = GEN[S.genre], hyp = mood === "hypnotic";
+    const has = ri => which.includes(ri);
+    const mk = (ri, s, v) => { rows[ri][s] = v; rows[ri][s + 16] = v; };            // bar 1 and its copy in bar 2
+    which.forEach(ri => rows[ri].fill(0));
+    const clapAt = s => rows[1][s] || rows[1][s + 16];
 
-  // Takt 2 als Variation von Takt 1 (verschobene Schläge, Fill am Ende)
-  function vary(b2, b1, role, r, cI, mood) {
-    const anchor = i => (role === "pulse" && i === 0) || role === "back";
-    const hyp = mood === "hypnotic", hot = mood === "energetic" ? 1.25 : mood === "chill" ? 0.55 : 1;
-    if (hyp) {
-      if (r() < 0.3) { const i = [15, 14, 13][Math.floor(r() * 3)]; b2[i] = b2[i] ? 0 : 1; }
-    } else {
-      const pD = [0.05, 0.16, 0.34][cI];
-      for (let i = 0; i < 16; i++) if (b2[i] && !anchor(i) && r() < pD) {
-        const j = i + (r() < 0.5 ? -1 : 1);
-        if (j >= 0 && j < 16 && !b2[j]) { b2[j] = b2[i]; b2[i] = 0; }
+    // --- Clap: genre backbeat, rarely one pickup before bar 2 (Groovy / Wild)
+    if (has(1)) {
+      const v = G.clap[Math.floor(r() * G.clap.length)];
+      v.forEach(p => mk(1, p, 1));
+      if (cx > 0 && !hyp && r() < (cx === 2 ? 0.45 : 0.3) && !rows[1][14]) rows[1][14] = 1;
+    }
+
+    // --- Kick: genre positions, always step 1 of each bar
+    if (has(0)) {
+      const K = G.kick, fix = K.fix || [0];
+      const eff = clamp(d + (mood === "chill" ? -1 : mood === "dark" ? -0.5 : mood === "energetic" ? 1 : 0), 0, 2);
+      let n = K.n[0] + Math.round((K.n[1] - K.n[0]) * eff / 2);
+      if (cx === 2 && r() < 0.4) n++;
+      n = Math.max(clamp(n, 2, 5), fix.length);
+      const ch = fix.slice();
+      let opts = K.opt.map(([p, w]) => [p, p % 2 && cx === 0 ? w * 0.3 : w]);
+      while (ch.length < n) {
+        opts = opts.filter(([p]) => !clapAt(p) && ch.every(q => Math.abs(q - p) > 1));
+        if (!opts.length) break;
+        const p = weightedOrder(r, opts)[0];
+        ch.push(p);
       }
-      if (r() < [0.4, 0.75, 0.95][cI] * hot) {                 // Fill im letzten Viertel
-        if (role === "shaker" || role === "ghost" || role === "roll") {
-          for (let k = 12; k < 16; k++) if (!b2[k] && r() < 0.65) b2[k] = 1;
-          b2[15] = 2;
+      ch.forEach(p => mk(0, p, 1));
+    }
+
+    // --- Percussion rows: Timeline, then Steady, then Accent (ear candy in what is left open)
+    const gen = [2, 3, 4].filter(has).sort((a, b) => PERC_ROLES.indexOf(roles[a]) - PERC_ROLES.indexOf(roles[b]));
+    const oddMax = cx === 0 ? 0 : cx === 1 ? 1 : 2;
+    const oddLim = ri => mood === "tribal" && roles[ri] === "timeline" ? Math.max(2, oddMax) : oddMax;
+    const oddCnt = (ri, bar) => { let c = 0; for (let k = 1; k < 16; k += 2) if (rows[ri][bar * 16 + k]) c++; return c; };
+    const sharedCnt = bar => { let c = 0; for (let k = 0; k < 16; k++) { const s = bar * 16 + k; if ((rows[2][s] ? 1 : 0) + (rows[3][s] ? 1 : 0) + (rows[4][s] ? 1 : 0) >= 2) c++; } return c; };
+    const capOf = role => role === "steady" && d === 2 ? 8 : CAP[d];
+
+    // Is it OK to put a hit on step s (mirror = also on s+16)?
+    const okP = (ri, s, mirror, strict, loose) => {
+      const ps = mirror ? [s, s + 16] : [s], row = rows[ri];
+      if (!loose && s % 2 && oddCnt(ri, s >= 16 ? 1 : 0) >= oddLim(ri)) return false;
+      for (const p of ps) {
+        const b = p >= 16 ? 1 : 0;
+        if (row[p] || rows[1][p]) return false;                                  // not on the clap
+        if (row[(p + 1) % 32] || row[(p + 31) % 32]) return false;               // never two adjacent 16ths
+        if (strict) { if (rows.some((x, i) => i !== ri && x[p])) return false; continue; }
+        if (!loose && rows[0][p] && r() < 0.85) return false;                              // mostly avoid the kick
+        if (loose !== 2) for (let o = 2; o < 5; o++) if (o !== ri && rows[o][p] && sharedCnt(b) >= 1) return false;   // share a step max 1x per bar
+      }
+      return true;
+    };
+    const put = (ri, cands, n, strict, loose) => { let c = 0; for (const s of cands) { if (c >= n) break; if (okP(ri, s, true, strict, loose)) { mk(ri, s, 1); c++; } } return c; };
+
+    if (gen.length) {
+      const others = [2, 3, 4].filter(i => !has(i)).reduce((a, i) => a + Math.max(barCnt(rows[i], 0), barCnt(rows[i], 1)), 0);
+      const cool = mood === "chill" || mood === "dark", hot = mood === "energetic";
+      const target = role => {
+        let t;
+        if (role === "timeline") { t = [3, 3, 5][d] + (d === 1 && r() < 0.35 ? 1 : 0); if (cool) t = Math.max(2, t - 1); if (hot) t++; }
+        else if (role === "steady") {
+          t = d === 0 ? 2 : d === 1 ? (r() < 0.3 ? 2 : 4) : 4;
+          if (hot) t = d === 2 ? 6 + (r() < 0.5 ? 2 : 0) : t + 1;
+          if (cool) t = Math.max(2, t - 1);
+        } else { t = 1 + (r() < [0, 0.3, 0.6][d] ? 1 : 0); if (hot && d > 0) t = 2; }
+        return clamp(t, 1, capOf(role));
+      };
+      const tg = gen.map(ri => target(roles[ri])), room = Math.max(gen.length, TOT[d] - others);
+      while (tg.reduce((a, b) => a + b, 0) > room) {
+        let k = 0; tg.forEach((v, i) => { if (v > tg[k]) k = i; });
+        if (tg[k] <= 1) break; tg[k]--;
+      }
+      const evens = [2, 6, 10, 14, 4, 12, 8, 0];
+      gen.forEach((ri, gi) => {
+        const role = roles[ri], n = tg[gi];
+        let c = 0;
+        if (role === "timeline") {
+          const vs = G.tl;
+          const v = mood === "tribal" ? [0, 6, 12, 9, 3] : mood === "bouncy" ? vs[vs.length - 1] : vs[cx === 0 ? 0 : Math.floor(r() * vs.length)];
+          c = put(ri, v, n);
+          if (c < n) c += put(ri, evens, n - c);
+        } else if (role === "steady") {
+          const a = hyp || r() < 0.5 ? [6, 14, 2, 10] : [14, 6, 10, 2];
+          c = put(ri, a.concat(r() < 0.5 ? [12, 4, 8, 0] : [4, 12, 0, 8]), n);
         } else {
-          const n = 1 + (r() < 0.4 ? 1 : 0), pool = [11, 13, 14, 15];
-          for (let k = 0; k < n; k++) b2[pool.splice(Math.floor(r() * pool.length), 1)[0]] = 1;
+          const w = [[14, 3], [10, 3], [6, 2], [2, 1], [12, 1], [8, 1], [4, 1]];
+          if (cx > 0) w.push([15, 1.5], [13, 1.5], [11, 1], [7, 1]);
+          const order = weightedOrder(r, w);
+          c = put(ri, order, n, true);
+          if (c < n) c += put(ri, order, n - c);
+        }
+        if (!barCnt(rows[ri], 0)) { const odds = [1, 3, 5, 7, 9, 11, 13, 15]; if (!put(ri, evens, 1, false, 1) && !put(ri, odds, 1, false, 1) && !put(ri, evens, 1, false, 2)) put(ri, odds, 1, false, 2); }
+      });
+
+      // Variation: bar 2 = exact repeat, except small changes in its last 4 steps (Groovy 1, Wild 2, never Simple/Hypnotic)
+      if (!hyp && cx > 0) {
+        let nCh = cx === 1 ? 1 : 2, tries = 0;
+        while (nCh > 0 && tries++ < 8) {
+          const ri = weightedOrder(r, gen.map((g, i) => [g, roles[g] === "accent" ? 3 : 1]))[0];
+          const loc = [14, 12].sort(() => r() - 0.5).concat(oddMax ? [13, 15].sort(() => r() - 0.5) : []);
+          const total2 = [2, 3, 4].reduce((a, i) => a + barCnt(rows[i], 1), 0);
+          let done = false;
+          if (barCnt(rows[ri], 1) < capOf(roles[ri]) && total2 < TOT[d]) {
+            for (const l of loc) if (okP(ri, 16 + l, false)) { rows[ri][16 + l] = 1; done = true; break; }
+          }
+          if (!done) {
+            const from = [28, 29, 30, 31].find(s => rows[ri][s]);
+            if (from !== undefined) {
+              rows[ri][from] = 0;
+              for (const l of loc) if (16 + l !== from && okP(ri, 16 + l, false)) { rows[ri][16 + l] = 1; done = true; break; }
+              if (!done) rows[ri][from] = 1;
+            }
+          }
+          if (done) nCh--;
         }
       }
-      if (cI > 0 && r() < 0.3) {                                // ein Schlag in der Mitte weglassen
-        const i = 8 + Math.floor(r() * 4); if (b2[i] && !anchor(i)) b2[i] = 0;
-      }
     }
-    if (!hyp && sameBar(b1, b2)) { const i = [15, 14, 13, 11, 10][Math.floor(r() * 5)]; b2[i] = b2[i] ? 0 : 1; }
-    if (!b2.some(Boolean)) b2[2] = 1;
-    return b2;
+
+    // --- Accents: only rarely, one per bar at most, on the first hit ("downbeat") of the row
+    const accP = role => mood === "chill" ? 0.05 : mood === "energetic" ? 0.4 : mood === "dark" ? (role === "timeline" || role === "kick" ? 0.12 : 0) : 0.2;
+    if (has(0) && r() < accP("kick")) { rows[0][0] = 2; rows[0][16] = 2; }
+    [2, 3, 4].filter(has).forEach(ri => {
+      if (r() >= accP(roles[ri])) return;
+      const s0 = rows[ri].findIndex((v, i) => i < 16 && v);
+      if (s0 >= 0) { rows[ri][s0] = 2; if (rows[ri][s0 + 16]) rows[ri][s0 + 16] = 2; }
+    });
   }
 
-  // Eine komplette Zeile (32 Schritte) für eine Rolle erzeugen; nonce 0 = Gesamt-Generate
-  function genRow(role, ti, nonce) {
-    const G = GEN[state.genre], r = mulberry32(h32(state.seed, ti, nonce));
-    const cI = state.complexity, mood = state.mood, dEff = state.density + MOOD[mood].d, hyp = mood === "hypnotic";
-    // Polyrhythmus 3 gegen 4 (läuft über beide Takte durch)
-    if (role === "roll" && (mood === "tribal" || (["afro", "latin", "amapiano"].includes(state.genre) && r() < 0.5))) {
-      const a = Array(STEPS).fill(0);
-      for (let i = 0; i < STEPS; i += 3) a[i] = i % 12 === 0 ? 2 : 1;
-      if (dEff < 1) for (let i = 3; i < STEPS; i += 6) a[i] = 0;
-      return a;
-    }
-    const vs = ROLE_KEY[role] ? G[ROLE_KEY[role]] : null;
-    let b1, b2;
-    if (vs) {
-      const i1 = cI === 0 || hyp ? 0 : Math.floor(r() * vs.length);
-      b1 = vs[i1].slice();
-      b2 = vs.length > 1 && cI > 0 && !hyp && r() < 0.65 ? vs[(i1 + 1 + Math.floor(r() * (vs.length - 1))) % vs.length].slice() : b1.slice();
-    } else {
-      b1 = baseBar(role, r, dEff);
-      b2 = hyp ? b1.slice() : baseBar(role, r, dEff);
-    }
-    b1 = shape(b1, role, r, dEff, mood);
-    b2 = hyp ? b1.slice() : shape(b2, role, r, dEff, mood);
-    if (role !== "ear") b2 = vary(b2, b1, role, r, cI, mood);
-    else if (hyp) b2 = b1.slice();
-    return b1.concat(b2);
-  }
-
-  // ---------- Teilen-Link ----------
-  // Neues Format (Version "p1", nur Zeichen 0-9 a-z und "."), z. B.
-  // p1.<bpm>.<swing>.<genre>.<mood>.<density>.<complexity>.<humanize>.<seed36>.<n>.<vols>.<mutes>.<files>.<rows>
-  //   vols  = n Ziffern 0-9, mutes = n x 0/1, files = n x 7 Zeichen (FNV-Hash des Dateinamens, base36)
-  //   rows  = n x 10 Zeichen: 32 Schritte (0/1/2) als Zahl zur Basis 3, dann base36
+  // ---------- Share link ----------
+  // Format "p2" (only characters 0-9 a-z and "."):
+  // p2.<bpm>.<swing>.<genre>.<mood>.<density>.<complexity>.<humanize>.<seed36>.<vols>.<mutes>.<locks>.<roles>.<files>.<rows>
+  //   vols/mutes/locks/roles = 5 characters each (vol 0-9, 0/1, 0/1, role digit 0 kick,1 clap,2 timeline,3 steady,4 accent;
+  //   the role digit also tells the sound pool: kick / clap / perc), files = 5 x 7 characters (FNV hash of the file name, base36),
+  //   rows = 5 x 10 characters: 32 steps (0/1/2) as a base-3 number written in base36.
+  // The old format "p1" (up to 5 tracks) and "1-..." (Beat Lab) can still be read.
   const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36).padStart(7, "0"); };
   const pack = row => { let n = 0; for (let i = 0; i < STEPS; i++) n = n * 3 + (row[i] || 0); return n.toString(36).padStart(10, "0"); };
   const unpack = s => { let n = parseInt(s, 36) || 0; const out = Array(STEPS); for (let i = STEPS - 1; i >= 0; i--) { out[i] = n % 3; n = Math.floor(n / 3); } return out; };
 
   function encodeHash(s, trs) {
-    return ["p1", s.bpm, s.swing, GENRE_KEYS.indexOf(s.genre), MOOD_KEYS.indexOf(s.mood), s.density, s.complexity, s.humanize,
-      (s.seed >>> 0).toString(36), trs.length,
-      trs.map(t => t.vol).join(""), trs.map(t => t.mute ? 1 : 0).join(""),
-      trs.map(t => fnv(t.file)).join(""), trs.map(t => pack(t.steps)).join("")].join(".");
+    return ["p2", s.bpm, s.swing, GENRE_KEYS.indexOf(s.genre), MOOD_KEYS.indexOf(s.mood), s.density, s.complexity, s.humanize,
+      (s.seed >>> 0).toString(36),
+      trs.map(t => t.vol).join(""), trs.map(t => t.mute ? 1 : 0).join(""), trs.map(t => t.lock ? 1 : 0).join(""),
+      trs.map(t => Math.max(0, ROLES.indexOf(t.role))).join(""),
+      trs.map(t => fnv(t.e.file)).join(""), trs.map(t => pack(t.steps)).join("")].join(".");
   }
 
-  // Liefert { settings, specs:[{h,vol,mute,steps}] } oder null. Altes Format ("1-140-0-...") wird übernommen.
+  const rolesByHits = specs => {                           // old loops: fewest hits = Accent, most = Steady
+    const idx = specs.map((s, i) => [i, s.steps.filter(Boolean).length]).sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+    const order = ["accent", "timeline", "steady"], out = [];
+    idx.forEach(([i], k) => { out[i] = order[k] || "timeline"; });
+    return out;
+  };
+
+  // Returns { ver, settings, specs:[5 x spec|null], old } or null. spec = {h, vol, mute, lock, role, steps}
   function decodeHash(str) {
     try {
-      if (str.startsWith("p1.")) {
-        const p = str.split("."), n = clamp(parseInt(p[9], 10), 1, MAX_TRACKS);
-        if (p.length < 14 || p[10].length < n || p[11].length < n || p[12].length < n * 7 || p[13].length < n * 10) return null;
+      const num = (v, a, b) => clamp(parseInt(v, 10), a, b);
+      if (str.startsWith("p2.")) {
+        const p = str.split(".");
+        if (p.length < 15 || p[9].length < 5 || p[10].length < 5 || p[11].length < 5 || p[12].length < 5 || p[13].length < 35 || p[14].length < 50) return null;
         const g = GENRE_KEYS[parseInt(p[3], 10)], m = MOOD_KEYS[parseInt(p[4], 10)];
         if (!g || !m) return null;
-        const settings = { bpm: clamp(parseInt(p[1], 10), 60, 200), swing: clamp(parseInt(p[2], 10), 0, 60), genre: g, mood: m,
-          density: clamp(parseInt(p[5], 10), 0, 2), complexity: clamp(parseInt(p[6], 10), 0, 2), humanize: clamp(parseInt(p[7], 10), 0, 100),
-          seed: (parseInt(p[8], 36) >>> 0) || 1 };
+        const settings = { bpm: num(p[1], 60, 200), swing: num(p[2], 0, 60), genre: g, mood: m, density: num(p[5], 0, 2), complexity: num(p[6], 0, 2),
+          humanize: num(p[7], 0, 100), seed: (parseInt(p[8], 36) >>> 0) || 1 };
         const specs = [];
-        for (let i = 0; i < n; i++) specs.push({ h: p[12].slice(i * 7, i * 7 + 7), vol: clamp(parseInt(p[10][i], 10), 0, 9), mute: p[11][i] === "1", steps: unpack(p[13].slice(i * 10, i * 10 + 10)) });
-        return { old: false, settings, specs };
+        for (let i = 0; i < 5; i++) {
+          let role = ROLES[parseInt(p[12][i], 10)];
+          if (i === 0) role = "kick"; else if (i === 1) role = "clap"; else if (!PERC_ROLES.includes(role)) role = PERC_ROLES[i - 2];
+          specs.push({ h: p[13].slice(i * 7, i * 7 + 7), vol: num(p[9][i], 0, 9), mute: p[10][i] === "1", lock: p[11][i] === "1", role, steps: unpack(p[14].slice(i * 10, i * 10 + 10)) });
+        }
+        return { ver: "p2", old: false, settings, specs };
       }
-      // Altes Beat-Lab-Format: 7 Zeilen à 16 Schritte -> erste 7 Spuren, auf 32 Schritte verdoppelt
+      if (str.startsWith("p1.")) {
+        const p = str.split("."), n = clamp(parseInt(p[9], 10), 1, 5);
+        if (p.length < 14 || p[10].length < n || p[11].length < n || p[12].length < n * 7 || p[13].length < n * 10) return null;
+        let gk = OLD_GENRE_KEYS[parseInt(p[3], 10)]; const m = MOOD_KEYS[parseInt(p[4], 10)];
+        if (!gk || !m) return null;
+        gk = OLD_GENRE_MAP[gk] || gk;
+        const settings = { bpm: num(p[1], 60, 200), swing: num(p[2], 0, 60), genre: gk, mood: m, density: num(p[5], 0, 2), complexity: num(p[6], 0, 2),
+          humanize: num(p[7], 0, 100), seed: (parseInt(p[8], 36) >>> 0) || 1 };
+        const pr = [];
+        for (let i = 0; i < Math.min(3, n); i++) pr.push({ h: p[12].slice(i * 7, i * 7 + 7), vol: num(p[10][i], 0, 9), mute: p[11][i] === "1", lock: false, steps: unpack(p[13].slice(i * 10, i * 10 + 10)) });
+        const rl = rolesByHits(pr);
+        pr.forEach((s, i) => { s.role = rl[i]; });
+        return { ver: "p1", old: true, settings, specs: [null, null, pr[0] || null, pr[1] || null, pr[2] || null] };
+      }
+      // Old Beat Lab format: 7 rows of 16 steps (kick, snare, clap, hat, open hat, perc, 808), doubled to 32 steps
       const [v, bpm, swing, , , vol, mute, steps] = str.split("-");
       if (v !== "1" || !steps) return null;
-      const rows = steps.split("."), specs = [];
-      for (let i = 0; i < Math.min(7, MAX_TRACKS); i++) {
-        const r16 = (rows[i] || "").padEnd(16, "0").slice(0, 16).split("").map(x => (+x > 0 ? 1 : 0));
-        specs.push({ h: null, vol: clamp(/\d/.test((vol || "")[i] || "") ? +vol[i] : 5, 0, 9), mute: (mute || "")[i] === "1", steps: r16.concat(r16) });
-      }
-      return { old: true, settings: { bpm: clamp(+bpm, 60, 200), swing: clamp(Math.round((+swing || 0) * 0.6), 0, 60), genre: "trap", mood: "bouncy", density: 1, complexity: 1, humanize: 20, seed: newSeed() }, specs };
+      const rows = steps.split("."), r32 = i => { const r16 = (rows[i] || "").padEnd(16, "0").slice(0, 16).split("").map(x => (+x > 0 ? 1 : 0)); return r16.concat(r16); };
+      const vl = i => clamp(/\d/.test((vol || "")[i] || "") ? +vol[i] : 5, 0, 9), mt = i => (mute || "")[i] === "1";
+      const clapSteps = r32(1).map((x, i) => x || r32(2)[i] ? 1 : 0);
+      const pr = [3, 4, 5].map(i => ({ h: null, vol: vl(i), mute: mt(i), lock: false, steps: r32(i) })), rl = rolesByHits(pr);
+      pr.forEach((s, i) => { s.role = rl[i]; });
+      return { ver: "old", old: true,
+        settings: { bpm: clamp(+bpm, 60, 200), swing: clamp(Math.round((+swing || 0) * 0.6), 0, 60), genre: "trap", mood: "bouncy", density: 1, complexity: 0, humanize: 10, seed: newSeed() },
+        specs: [{ h: null, vol: vl(0), mute: mt(0), lock: false, role: "kick", steps: r32(0) },
+                { h: null, vol: Math.max(vl(1), vl(2)), mute: mt(1) && mt(2), lock: false, role: "clap", steps: clapSteps }, pr[0], pr[1], pr[2]] };
     } catch (_) { return null; }
   }
   // ==PURE-END==
 
   /* ===================================================================
-     SOUND-POOL (Ordner "perclab" oder Fallback) und Spuren
+     SOUND POOLS (folders "perclab/kick", "perclab/clap", "perclab" or fallback) and tracks
      =================================================================== */
-  const SB = window.BEATLAB_SOUND_BASE || `${cfg.SUPABASE_URL}/storage/v1/object/public/coverart-products/beatlab/beatlab-sounds%202/`;
+  const BUCKET = `${cfg.SUPABASE_URL}/storage/v1/object/public/coverart-products/`;
+  const SB = window.BEATLAB_SOUND_BASE || `${BUCKET}beatlab/beatlab-sounds%202/`;
   const FALLBACK = ["kick-1-anvil", "kick-2-titan", "kick-3-boulder", "snare-1-whip", "snare-2-crack", "snare-3-blaze", "clap-1-fireworks", "clap-2-velvet", "clap-3-ritual",
     "hat-1-sparrow", "hat-2-ticker", "hat-3-glitter", "openhat-1-keeper", "openhat-2-dinged", "openhat-3-sniff", "perc-1-pebble", "perc-2-bamboo", "perc-3-marble",
     "808-1-gravity", "808-2-monsoon", "808-3-voltage"].map(n => n + ".wav");
   const AUDIO_RE = /\.(wav|mp3|ogg|aif|aiff|flac)$/i;
 
-  let pool = [], poolMode = "folder", ready = false;
-  const bad = new Set();                                   // Sounds, die nicht laden
-  const fileUrl = f => poolMode === "folder"
-    ? `${cfg.SUPABASE_URL}/storage/v1/object/public/coverart-products/perclab/${encodeURIComponent(f)}` : SB + encodeURIComponent(f);
-  // Anzeigename: Endung weg, _ und - zu Leerzeichen, "perc"-Präfix weg, Title Case, max. 18 Zeichen
-  function niceName(f) {
-    let n = f.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim().replace(/^(perc|percussion)\s+/i, "");
+  let kickPool = [], clapPool = [], percPool = [], ready = false;
+  const bad = new Set();                                   // urls of sounds that fail to load
+  // Display name: no extension, _ and - to spaces, title case, max 18 characters
+  function niceName(f, strip) {
+    let n = f.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+    if (strip) n = n.replace(/^(kick|clap|snare|perc|percussion)\s+(\d+\s+)?/i, "") || n;
+    else n = n.replace(/^(perc|percussion)\s+/i, "");
     n = n.toLowerCase().replace(/(^|\s)(\S)/g, (m, a, b) => a + b.toUpperCase());
     return (n.length > 18 ? n.slice(0, 18).trim() : n) || f.slice(0, 18);
   }
-  const poolEntry = f => pool.find(p => p.file === f);
-  const nameOf = f => (poolEntry(f) || { name: niceName(f) }).name;
+  const mkEntry = (f, base, strip) => ({ file: f, name: niceName(f, strip), h: fnv(f), url: base + encodeURIComponent(f) });
+  const poolFor = i => i === 0 ? kickPool : i === 1 ? clapPool : percPool;
+  const poolName = i => i === 0 ? "kick" : i === 1 ? "clap" : "perc";
+  const FB_KICK = f => /^kick/i.test(f), FB_CLAP = f => /^(clap|snare)/i.test(f), FB_PERC = f => !/^(kick|clap|snare)/i.test(f) && !/808/.test(f);
 
   async function loadPool() {
-    let files = [];
-    try {
-      const db = (window.YLY && window.YLY.db) || window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
-      const { data, error } = await db.storage.from("coverart-products").list("perclab", { limit: 1000, sortBy: { column: "name", order: "asc" } });
-      if (error) throw error;
-      files = (data || []).map(x => x.name).filter(n => n && n !== ".emptyFolderPlaceholder" && AUDIO_RE.test(n));
-    } catch (e) { console.warn("Perc Lab: sound list failed, using fallback", e && e.message); }
-    if (files.length) poolMode = "folder"; else { files = FALLBACK; poolMode = "fallback"; }
-    pool = files.map(f => ({ file: f, name: niceName(f), h: fnv(f) }));
+    let db = null;
+    try { db = (window.YLY && window.YLY.db) || window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY); } catch (e) { console.warn("Perc Lab: no storage client", e && e.message); }
+    const list = async path => {
+      try {
+        if (!db) return [];
+        const { data, error } = await db.storage.from("coverart-products").list(path, { limit: 1000, sortBy: { column: "name", order: "asc" } });
+        if (error) throw error;
+        return (data || []).map(x => x.name).filter(n => n && n !== ".emptyFolderPlaceholder" && AUDIO_RE.test(n) && !/808/i.test(n));
+      } catch (e) { console.warn("Perc Lab: sound list failed for", path, e && e.message); return []; }
+    };
+    const [kf, cf, pf] = await Promise.all([list("perclab/kick"), list("perclab/clap"), list("perclab")]);
+    const fbEntries = fn => FALLBACK.filter(fn).map(f => mkEntry(f, SB, true));
+    kickPool = kf.length ? kf.map(f => mkEntry(f, BUCKET + "perclab/kick/", true)) : fbEntries(FB_KICK);
+    clapPool = cf.length ? cf.map(f => mkEntry(f, BUCKET + "perclab/clap/", true)) : fbEntries(FB_CLAP);
+    percPool = pf.map(f => mkEntry(f, BUCKET + "perclab/", false));
+    if (percPool.length < 3) {                              // too few perc sounds: add old non-kick/clap/808 files
+      const fb = FALLBACK.filter(FB_PERC).map(f => mkEntry(f, SB, false));
+      percPool = percPool.concat(percPool.length ? fb.slice(0, 3 - percPool.length) : fb);
+    }
   }
 
-  // Mood beeinflusst die Sound-Auswahl leicht (Namen mit passenden Stichworten sind wahrscheinlicher)
-  const MOOD_KW = { tribal: /tom|conga|bongo|djembe|drum|log|tabla|timbale|talking|cajon/i, dark: /low|deep|tom|log|kick|808|dark|boom/i,
-    chill: /shaker|rim|click|soft|wood|block|egg/i, energetic: /clap|snap|shaker|cowbell|hat|tamb/i, bouncy: /cowbell|clave|block|snap|bell/i };
-  function pickDistinct(n, exclude) {
-    const taken = new Set(exclude || []), out = [], kw = MOOD_KW[state.mood];
-    let cand = pool.filter(p => !bad.has(p.file));
+  // Mood nudges the perc sound choice (names with matching keywords are more likely)
+  const MOOD_KW = { tribal: /tom|conga|bongo|djembe|drum|log|tabla|timbale|talking|cajon/i, dark: /low|deep|tom|log|dark|boom/i,
+    chill: /shaker|rim|click|soft|wood|block|egg/i, energetic: /snap|shaker|cowbell|hat|tamb/i, bouncy: /cowbell|clave|block|snap|bell/i };
+  function pick(poolArr, n, exclude) {
+    const taken = new Set(exclude || []), out = [], kw = poolArr === percPool ? MOOD_KW[state.mood] : null;
+    const cand = poolArr.filter(p => !bad.has(p.url));
     while (out.length < n) {
-      const free = cand.filter(p => !taken.has(p.file));
+      const free = cand.filter(p => !taken.has(p.url));
       if (!free.length) break;
       const w = free.map(p => kw && kw.test(p.file) ? 3 : 1);
       let x = Math.random() * w.reduce((a, b) => a + b, 0), k = 0;
       while (k < free.length - 1 && (x -= w[k]) >= 0) k++;
-      out.push(free[k].file); taken.add(free[k].file);
+      out.push(free[k]); taken.add(free[k].url);
     }
     return out;
   }
-  const trackCount = () => Math.min(MAX_TRACKS, pool.filter(p => !bad.has(p.file)).length);
 
-  // tracks: { file, vol 0-9, mute, solo, steps[32] }
+  // tracks (always 5): { e: pool entry, role, vol 0-9, mute, solo, lock, steps[32] }
   let tracks = [];
-  const roles = () => rolesFor(state.seed, tracks.length);
   const blankSteps = () => Array(STEPS).fill(0);
+  const touched = { bpm: false, swing: false };           // touched by the user -> do not overwrite automatically
+  const rowLabel = t => t.role === "kick" ? "Kick" : t.role === "clap" ? "Clap" : t.e.name;
+  const makeTrack = (i, e, sp) => ({ e, role: sp && sp.role || ROLES[i], vol: sp ? sp.vol : ROLE_VOL[ROLES[i]], mute: !!(sp && sp.mute), solo: false, lock: !!(sp && sp.lock), steps: sp && sp.steps ? sp.steps.slice(0, STEPS) : blankSteps() });
 
+  // Percussion roles for the unlocked perc rows: shuffled by seed, locked rows keep theirs
+  function assignRoles() {
+    const r = mulberry32((state.seed ^ 0x5bd1e995) >>> 0);
+    const free = PERC_ROLES.filter(x => ![2, 3, 4].some(i => tracks[i].lock && tracks[i].role === x));
+    for (let i = free.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [free[i], free[j]] = [free[j], free[i]]; }
+    [2, 3, 4].filter(i => !tracks[i].lock).forEach((i, k) => { tracks[i].role = free.length ? free[k % free.length] : PERC_ROLES[k]; });
+  }
+  // Generate patterns for the given rows (default: all unlocked rows)
+  function genRows(which, nonce) {
+    const rows = tracks.map(t => t.steps.slice());
+    genLoop(rows, which, tracks.map(t => t.role), mulberry32(h32(state.seed, which.length === 1 ? which[0] : 7, nonce || 0)));
+    which.forEach(i => { tracks[i].steps = rows[i]; });
+  }
   function generateAll(newSeedToo) {
     if (newSeedToo) {
       state.seed = newSeed();
       if (!touched.bpm) state.bpm = autoBpm();
       if (!touched.swing) state.swing = autoSwing();
     }
-    const rl = roles();
-    tracks.forEach((t, i) => {
-      t.steps = genRow(rl[i], i, 0);
-      if (newSeedToo) { t.vol = ROLE_VOL[rl[i]]; t.mute = false; t.solo = false; }
-    });
+    assignRoles();
+    const which = [0, 1, 2, 3, 4].filter(i => !tracks[i].lock);
+    genRows(which, 0);
+    if (newSeedToo) which.forEach(i => { tracks[i].vol = ROLE_VOL[tracks[i].role]; tracks[i].mute = false; tracks[i].solo = false; });
   }
-  const touched = { bpm: false, swing: false };           // vom Nutzer angefasst -> nicht automatisch überschreiben
 
-  // Spuren aus Hash-Vorgaben aufbauen: fehlende/doppelte Sounds werden ersetzt
+  // Build tracks from hash specs: missing / duplicate sounds are replaced; rows without a pattern are generated
   function buildTracks(specs) {
-    const n = Math.min(MAX_TRACKS, pool.length), used = new Set(), out = [];
-    for (let i = 0; i < n; i++) {
-      const sp = specs[i] || { vol: 6, mute: false, steps: blankSteps() };
-      let f = null;
-      if (sp.h) { const e = pool.find(p => p.h === sp.h && !used.has(p.file) && !bad.has(p.file)); if (e) f = e.file; }
-      if (!f) f = pickDistinct(1, used)[0];
-      if (!f) break;
-      used.add(f);
-      out.push({ file: f, vol: sp.vol, mute: !!sp.mute, solo: false, steps: sp.steps.slice(0, STEPS) });
+    const used = new Set(), out = [], need = [];
+    for (let i = 0; i < MAX_TRACKS; i++) {
+      const sp = specs[i], P = poolFor(i);
+      let e = null;
+      if (sp && sp.h) e = P.find(p => p.h === sp.h && !used.has(p.url) && !bad.has(p.url));
+      if (!e) e = pick(P, 1, used)[0] || P.find(p => !used.has(p.url)) || P[0];
+      used.add(e.url);
+      out.push(makeTrack(i, e, sp));
+      if (!sp || !sp.steps) need.push(i);
     }
-    return out;
+    tracks = out;
+    if (need.length) {
+      const lockedBefore = tracks.map(t => t.lock);
+      tracks.forEach((t, i) => { t.lock = !need.includes(i); });          // only fill the missing rows
+      assignRoles();
+      tracks.forEach((t, i) => { t.lock = lockedBefore[i]; });
+      genRows(need, 0);
+    }
   }
 
   /* ===================================================================
      AUDIO
      =================================================================== */
-  const VEL = [0, 0.66, 1];                                // Schrittwert -> Lautstärke (an / Akzent)
+  const VEL = [0, 0.66, 1];                                // step value -> loudness (on / accent)
   const volGain = v => Math.pow(v / 9, 1.5);
   let ctx = null, master = null;
   const trackGain = [], rawCache = {}, bufCache = {};
@@ -425,7 +432,7 @@
     const AC = window.AudioContext || window.webkitAudioContext;
     ctx = new AC();
     master = ctx.createGain(); master.gain.value = 0.9;
-    const comp = ctx.createDynamicsCompressor();           // sanfter Limiter gegen Übersteuern
+    const comp = ctx.createDynamicsCompressor();           // soft limiter against clipping
     comp.threshold.value = -8; comp.knee.value = 12; comp.ratio.value = 6; comp.attack.value = 0.003; comp.release.value = 0.15;
     master.connect(comp).connect(ctx.destination);
     for (let i = 0; i < MAX_TRACKS; i++) { const g = ctx.createGain(); g.connect(master); trackGain.push(g); }
@@ -436,33 +443,35 @@
   const effGain = t => t.mute || (anySolo() && !t.solo) ? 0 : volGain(t.vol);
   function updateGains() { if (ctx) tracks.forEach((t, i) => { trackGain[i].gain.value = effGain(t); }); }
 
-  // Download vorab (ohne AudioContext), Decodieren erst bei Bedarf
-  const fetchRaw = f => rawCache[f] || (rawCache[f] = fetch(fileUrl(f)).then(r => { if (!r.ok) throw new Error("missing " + f); return r.arrayBuffer(); }));
-  const prefetch = () => tracks.forEach(t => { if (!bufCache[t.file]) fetchRaw(t.file).catch(() => {}); });
-  async function decodeFile(f) {
-    if (bufCache[f]) return;
-    const ab = await fetchRaw(f);
-    bufCache[f] = await ctx.decodeAudioData(ab.slice(0));
+  // Download first (no AudioContext needed), decode on demand
+  const fetchRaw = u => rawCache[u] || (rawCache[u] = fetch(u).then(r => { if (!r.ok) throw new Error("missing " + u); return r.arrayBuffer(); }));
+  const prefetch = () => tracks.forEach(t => { if (!bufCache[t.e.url]) fetchRaw(t.e.url).catch(() => {}); });
+  async function decodeUrl(u) {
+    if (bufCache[u]) return;
+    const ab = await fetchRaw(u);
+    bufCache[u] = await ctx.decodeAudioData(ab.slice(0));
   }
 
-  // Nur die zugewiesenen Sounds laden; fehlerhafte werden durch andere ersetzt
+  // Load only the assigned sounds; broken ones are replaced by others from the same pool
   let loadChain = Promise.resolve();
   async function loadRun() {
     ensureAudio();
     for (let attempt = 0; attempt < 8; attempt++) {
-      const need = [...new Set(tracks.map(t => t.file).filter(f => !bufCache[f]))];
-      if (!need.length) { if (status.startsWith("Loading")) setStatus(""); return; }
+      const need = [...new Set(tracks.map(t => t.e.url).filter(u => !bufCache[u] && !bad.has(u)))];
+      if (!need.length) { if (status.startsWith("Loading")) setStatus(""); break; }
       setStatus("Loading sounds …");
-      const res = await Promise.allSettled(need.map(decodeFile));
-      const failed = need.filter((f, k) => res[k].status === "rejected");
-      if (!failed.length) { setStatus(""); return; }
-      failed.forEach(f => { bad.add(f); delete rawCache[f]; });
-      // kaputte Sounds durch andere, ungenutzte ersetzen (sonst Spur entfernen)
-      tracks.forEach(t => { if (bad.has(t.file)) { const f = pickDistinct(1, tracks.map(x => x.file))[0]; if (f) t.file = f; } });
-      tracks = tracks.filter(t => !bad.has(t.file));
+      const res = await Promise.allSettled(need.map(decodeUrl));
+      const failed = need.filter((u, k) => res[k].status === "rejected");
+      if (!failed.length) { setStatus(""); break; }
+      failed.forEach(u => { bad.add(u); delete rawCache[u]; });
+      tracks.forEach((t, i) => {
+        if (!bad.has(t.e.url)) return;
+        const e = pick(poolFor(i), 1, tracks.filter((x, j) => poolName(j) === poolName(i)).map(x => x.e.url))[0];
+        if (e) t.e = e;
+      });
       renderGrid(); saveHash();
     }
-    if (!tracks.length) { setStatus("Sounds could not be loaded. Please reload the page.", true); throw new Error("no sounds"); }
+    if (!tracks.some(t => bufCache[t.e.url])) { setStatus("Sounds could not be loaded. Please reload the page.", true); throw new Error("no sounds"); }
   }
   function ensureLoaded() {
     const p = loadChain.then(loadRun);
@@ -470,7 +479,7 @@
     return p;
   }
 
-  // Einen Schlag planen (auch für den Offline-Export)
+  // Schedule one hit (also used for the offline export)
   function playHit(ac, dest, buf, when, vel) {
     const src = ac.createBufferSource(); src.buffer = buf;
     const g = ac.createGain(); g.gain.value = vel;
@@ -478,14 +487,14 @@
   }
   const swingOffset = (step, stepDur) => step % 2 === 1 ? (state.swing / 100) * 0.55 * stepDur : 0;
 
-  // ---------- Transport (Look-ahead-Scheduler) ----------
+  // ---------- Transport (look-ahead scheduler) ----------
   let playing = false, timer = null, nextTime = 0, curStep = 0;
   const queue = [];
 
   function scheduleStep(step, time) {
     const hum = state.humanize / 100;
     tracks.forEach((t, i) => {
-      const v = t.steps[step], buf = bufCache[t.file];
+      const v = t.steps[step], buf = bufCache[t.e.url];
       if (!v || !buf) return;
       let when = time, vel = VEL[v];
       if (hum) { when += (Math.random() - 0.5) * 2 * hum * 0.012; vel *= 1 + (Math.random() - 0.5) * 2 * hum * 0.22; }
@@ -533,22 +542,25 @@
   }
   const toggle = () => playing ? stop() : play();
 
-  // Vorhören beim Klicken (auch während der Wiedergabe)
+  // Preview when clicking a cell (also while playing)
   async function preview(i, v) {
     const t = tracks[i]; if (!t) return;
     try { ensureAudio(); if (ctx.state === "suspended") await ctx.resume(); await ensureLoaded(); } catch (_) { return; }
-    const buf = bufCache[t.file]; if (!buf || !tracks[i]) return;
+    const buf = bufCache[t.e.url]; if (!buf || !tracks[i]) return;
     playHit(ctx, trackGain[i], buf, ctx.currentTime + 0.01, VEL[v || 1]);
   }
 
   /* ===================================================================
-     OBERFLÄCHE
+     INTERFACE
      =================================================================== */
   const ICON_SWAP = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/></svg>`;
   const ICON_REGEN = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>`;
+  const ICON_LOCK = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>`;
+  const ICON_UNLOCK = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-1.5"/></svg>`;
+  const LOCK_TITLE = "Lock row: Generate and Shuffle won't change it";
 
   function cellsHtml(ti) {
-    const t = tracks[ti], nm = esc(nameOf(t.file));
+    const t = tracks[ti], nm = esc(rowLabel(t));
     let h = "";
     for (let bar = 0; bar < 2; bar++) {
       h += `<div class="pl-bar">`;
@@ -565,20 +577,26 @@
     return h;
   }
   function renderGrid() {
-    const rl = roles();
     const ruler = [0, 1].map(b => `<div class="pl-bar">${[0, 1, 2, 3].map(be => `<div class="pl-beat">${[0, 1, 2, 3].map(k => `<span>${k === 0 ? b * 4 + be + 1 : ""}</span>`).join("")}</div>`).join("")}</div>`).join("");
     $("pl-grid").innerHTML = `<div class="pl-row pl-ruler"><div class="pl-head"></div><div class="pl-cells">${ruler}</div></div>` +
-      tracks.map((t, i) => `
-      <div class="pl-row" data-row="${i}">
+      tracks.map((t, i) => {
+        const base = i < 2, lab = rowLabel(t);
+        const nameHtml = base
+          ? `<span class="pl-sname"><span class="pl-n pl-kind">${lab}</span><span class="pl-sub">${esc(t.e.name)}</span></span>`
+          : `<span class="pl-sname"><span class="pl-n">${esc(t.e.name)}</span><em class="pl-role">${ROLE_NAME[t.role]}</em></span>`;
+        return `
+      <div class="pl-row${t.lock ? " locked" : ""}${base ? " base" : ""}" data-row="${i}">
         <div class="pl-head">
-          <button type="button" class="pl-sound" data-act="sound" data-t="${i}" title="Click to swap the sound (${esc(ROLE_NAME[rl[i]] || "")})"><span class="pl-sname">${esc(nameOf(t.file))}</span>${ICON_SWAP}</button>
+          <button type="button" class="pl-sound" data-act="sound" data-t="${i}"${t.lock ? " disabled" : ""} title="${t.lock ? "Unlock the row to swap its sound" : `Click to swap the ${esc(base ? lab.toLowerCase() : "sound")} (${esc(t.e.name)})`}">${nameHtml}${ICON_SWAP}</button>
+          <button type="button" class="pl-mini pl-lock${t.lock ? " on" : ""}" data-act="lock" data-t="${i}" aria-pressed="${t.lock}" aria-label="${esc(lab)}: lock row" title="${LOCK_TITLE}">${t.lock ? ICON_LOCK : ICON_UNLOCK}</button>
           <button type="button" class="pl-mini pl-mute${t.mute ? " on" : ""}" data-act="mute" data-t="${i}" aria-pressed="${t.mute}" title="Mute">M</button>
           <button type="button" class="pl-mini pl-solo${t.solo ? " on" : ""}" data-act="solo" data-t="${i}" aria-pressed="${t.solo}" title="Solo">S</button>
-          <input type="range" class="pl-vol" data-t="${i}" min="0" max="9" step="1" value="${t.vol}" aria-label="${esc(nameOf(t.file))} volume">
-          <button type="button" class="pl-mini gen-btn pl-regen" data-act="regen" data-t="${i}" aria-label="Regenerate this row" title="Regenerate this row">${ICON_REGEN}</button>
+          <input type="range" class="pl-vol" data-t="${i}" min="0" max="9" step="1" value="${t.vol}" aria-label="${esc(lab)} volume">
+          <button type="button" class="pl-mini gen-btn pl-regen" data-act="regen" data-t="${i}"${t.lock ? " disabled" : ""} aria-label="Regenerate this row" title="${t.lock ? "Unlock the row to regenerate it" : "Regenerate this row"}">${ICON_REGEN}</button>
         </div>
         <div class="pl-cells">${cellsHtml(i)}</div>
-      </div>`).join("");
+      </div>`;
+      }).join("");
     cols = Array.from({ length: STEPS }, (_, s) => [...$("pl-grid").querySelectorAll(`.pl-cell[data-s="${s}"]`)]);
     nowStep = -1;
   }
@@ -602,7 +620,7 @@
   }
   const renderAll = () => { renderControls(); renderGrid(); saveHash(); };
 
-  // Genre/Mood/Density/Complexity geändert: gleicher Seed, neues Muster
+  // Genre/mood/density/complexity changed: same seed, new pattern (locked rows stay)
   function regenKeepSeed() {
     if (!ready) return;
     if (!touched.bpm) state.bpm = autoBpm();
@@ -619,7 +637,7 @@
   const shareUrl = () => `${location.origin}${location.pathname}#b=${currentHash()}`;
   function setStatus(msg, bad) { status = msg; const el = $("bl-status"); el.textContent = msg; el.classList.toggle("danger", !!bad); }
 
-  // Schritt setzen und Zelle aktualisieren
+  // Set a step and update its cell
   function setCell(ti, si, v, doPreview) {
     const t = tracks[ti]; if (!t || t.steps[si] === v) return;
     t.steps[si] = v;
@@ -628,25 +646,33 @@
     if (v && doPreview) preview(ti, v);
   }
 
-  // Sound einer Spur tauschen: zufälliger ungenutzter Sound, sonst Tausch mit einer anderen Spur
+  // Swap the sound of one row (explicit click; locked rows are disabled). Perc: unused sound, else swap with another unlocked perc row.
   function swapSound(i) {
-    const t = tracks[i], used = tracks.map(x => x.file);
-    const f = pickDistinct(1, used)[0];
-    if (f) t.file = f;
-    else if (tracks.length > 1) { let j; do j = Math.floor(Math.random() * tracks.length); while (j === i); [t.file, tracks[j].file] = [tracks[j].file, t.file]; }
+    const t = tracks[i]; if (t.lock) return;
+    const used = tracks.filter((x, j) => poolName(j) === poolName(i)).map(x => x.e.url);
+    const e = pick(poolFor(i), 1, used)[0];
+    if (e) t.e = e;
+    else if (i >= 2) {
+      const others = [2, 3, 4].filter(j => j !== i && !tracks[j].lock);
+      if (others.length) { const j = others[Math.floor(Math.random() * others.length)]; [t.e, tracks[j].e] = [tracks[j].e, t.e]; }
+    }
     renderGrid(); saveHash(); prefetch();
     preview(i, 1);
   }
+  // New sounds for all unlocked rows, patterns stay
   function shuffleSounds() {
     if (!ready) return;
-    const files = pickDistinct(tracks.length);
-    tracks.forEach((t, i) => { if (files[i]) t.file = files[i]; });
+    const lockedPerc = [2, 3, 4].filter(i => tracks[i].lock).map(i => tracks[i].e.url);
+    if (!tracks[0].lock) { const e = pick(kickPool, 1, [tracks[0].e.url])[0]; if (e) tracks[0].e = e; }
+    if (!tracks[1].lock) { const e = pick(clapPool, 1, [tracks[1].e.url])[0]; if (e) tracks[1].e = e; }
+    const un = [2, 3, 4].filter(i => !tracks[i].lock), es = pick(percPool, un.length, lockedPerc);
+    un.forEach((i, k) => { if (es[k]) tracks[i].e = es[k]; });
     renderGrid(); saveHash(); prefetch();
     if (ctx) ensureLoaded().catch(() => {});
-    setStatus("New sounds picked. The pattern stays.");
+    setStatus("New sounds picked. The patterns stay.");
   }
 
-  // ---------- Klicks im Raster ----------
+  // ---------- Clicks in the grid ----------
   let mouseHandled = false, paintVal = null;
   const grid = $("pl-grid");
   grid.addEventListener("pointerdown", e => {
@@ -669,7 +695,7 @@
   });
   grid.addEventListener("click", e => {
     const c = e.target.closest(".pl-cell");
-    if (c) {                                                // Touch / Tastatur (Maus läuft über pointerdown)
+    if (c) {                                                // touch / keyboard (mouse goes through pointerdown)
       if (mouseHandled) return;
       const ti = +c.dataset.t, si = +c.dataset.s;
       setCell(ti, si, (tracks[ti].steps[si] + 1) % 3, true); saveHash(); return;
@@ -677,16 +703,17 @@
     const b = e.target.closest("[data-act]"); if (!b) return;
     const i = +b.dataset.t, t = tracks[i]; if (!t) return;
     if (b.dataset.act === "sound") swapSound(i);
+    else if (b.dataset.act === "lock") { t.lock = !t.lock; renderGrid(); saveHash(); setStatus(t.lock ? `${rowLabel(t)} locked. Generate and Shuffle will leave it alone.` : ""); }
     else if (b.dataset.act === "mute") { t.mute = !t.mute; b.classList.toggle("on", t.mute); b.setAttribute("aria-pressed", t.mute); updateGains(); saveHash(); }
     else if (b.dataset.act === "solo") { t.solo = !t.solo; b.classList.toggle("on", t.solo); b.setAttribute("aria-pressed", t.solo); updateGains(); }
-    else if (b.dataset.act === "regen") { t.steps = genRow(roles()[i], i, 1 + Math.floor(Math.random() * 1e6)); renderGrid(); saveHash(); }
+    else if (b.dataset.act === "regen") { if (t.lock) return; genRows([i], 1 + Math.floor(Math.random() * 1e6)); renderGrid(); saveHash(); }
   });
   grid.addEventListener("input", e => {
     const r = e.target.closest(".pl-vol"); if (!r) return;
     tracks[+r.dataset.t].vol = +r.value; updateGains(); saveHash();
   });
 
-  // ---------- Steuerelemente ----------
+  // ---------- Controls ----------
   $("pl-genre").innerHTML = GENRE_KEYS.map((k, i) => `<option value="${k}">${GENRE_NAMES[i]}</option>`).join("");
   $("pl-mood").innerHTML = MOOD_KEYS.map((k, i) => `<option value="${k}">${MOOD_NAMES[i]}</option>`).join("");
   seg("pl-dens", DENS_NAMES, "density"); seg("pl-cx", CX_NAMES, "complexity");
@@ -698,18 +725,18 @@
   $("bl-play").onclick = toggle;
   $("pl-gen").onclick = () => { if (!ready) return; generateAll(true); renderAll(); setStatus(""); };
   $("pl-shuffle").onclick = shuffleSounds;
-  $("pl-clear").onclick = () => { tracks.forEach(t => t.steps = blankSteps()); renderGrid(); saveHash(); };
+  $("pl-clear").onclick = () => { tracks.forEach(t => { if (!t.lock) t.steps = blankSteps(); }); renderGrid(); saveHash(); };
   document.addEventListener("keydown", e => {
     if (e.code !== "Space") return;
     const el = e.target, tag = el.tagName;
     if (el.isContentEditable || tag === "TEXTAREA" || tag === "SELECT" || (tag === "INPUT" && !/range|checkbox/.test(el.type)) || (el.classList && el.classList.contains("pl-cell")) || document.querySelector("dialog[open]")) return;
     e.preventDefault(); toggle();
   });
-  document.addEventListener("keyup", e => {                  // verhindert, dass ein fokussierter Button zusätzlich "klickt"
+  document.addEventListener("keyup", e => {                  // stops a focused button from also "clicking"
     if (e.code === "Space" && e.target.tagName === "BUTTON" && !e.target.classList.contains("pl-cell") && !document.querySelector("dialog[open]")) e.preventDefault();
   });
 
-  // ---------- Teilen ----------
+  // ---------- Share ----------
   $("bl-share").onclick = async () => {
     if (!tracks.length) return;
     const url = shareUrl();
@@ -720,14 +747,14 @@
     } catch (_) { prompt("Copy this link:", url); }
   };
 
-  // ---------- MIDI-Export (2 Takte, eine Note pro Spur, GM-Percussion ab 60) ----------
+  // ---------- MIDI export (2 bars, one note per row: kick 36, clap 39, percussion by role) ----------
   function midiFile() {
     const PPQ = 96, T16 = PPQ / 4, ev = [];
     const swingTicks = s => s % 2 === 1 ? Math.round((state.swing / 100) * 0.55 * T16) : 0;
-    for (let s = 0; s < STEPS; s++) tracks.forEach((t, i) => {
+    for (let s = 0; s < STEPS; s++) tracks.forEach(t => {
       const v = t.steps[s]; if (!v || t.mute || (anySolo() && !t.solo)) return;
       const vel = Math.round(clamp((v === 2 ? 112 : 84) * (0.45 + 0.55 * t.vol / 9), 20, 127));
-      const at = s * T16 + swingTicks(s), note = 60 + i;
+      const at = s * T16 + swingTicks(s), note = MIDI_NOTE[t.role] || 60;
       ev.push([at, [0x99, note, vel]], [at + Math.max(4, Math.round(T16 * 0.8)), [0x89, note, 0]]);
     });
     ev.sort((a, b) => a[0] - b[0] || (a[1][0] & 0xf0) - (b[1][0] & 0xf0));
@@ -737,7 +764,7 @@
     const data = [0x00, 0xff, 0x03, name.length, ...name, 0x00, 0xff, 0x51, 0x03, (tempo >> 16) & 255, (tempo >> 8) & 255, tempo & 255, 0x00, 0xff, 0x58, 0x04, 4, 2, 24, 8];
     let last = 0;
     ev.forEach(([tick, bytes]) => { data.push(...vlq(tick - last), ...bytes); last = tick; });
-    const end = STEPS * T16;                                // Ende exakt nach 2 Takten (sauberer Loop)
+    const end = STEPS * T16;                                // ends exactly after 2 bars (clean loop)
     data.push(...vlq(Math.max(0, end - last)), 0xff, 0x2f, 0x00);
     const u32 = n => [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255];
     const bytes = [0x4d, 0x54, 0x68, 0x64, ...u32(6), 0, 0, 0, 1, (PPQ >> 8) & 255, PPQ & 255, 0x4d, 0x54, 0x72, 0x6b, ...u32(data.length), ...data];
@@ -752,10 +779,10 @@
   $("bl-midi").onclick = () => {
     if (!tracks.length) return;
     download(midiFile(), fileBase() + ".mid");
-    setStatus(`MIDI downloaded – 2 bars, one note per track (GM percussion, channel 10, notes 60-${59 + tracks.length}).`);
+    setStatus("MIDI downloaded – 2 bars, one note per row (GM percussion, channel 10: kick 36, clap 39, timeline 75, steady 70, accent 56).");
   };
 
-  // ---------- WAV- und Stems-Export (Loop über OfflineAudioContext) ----------
+  // ---------- WAV and stems export (loop via OfflineAudioContext) ----------
   async function renderMix(onlyIdx) {
     const SR = 44100, stepDur = 60 / state.bpm / 4, loopSamples = Math.round(STEPS * stepDur * SR);
     const off = new OfflineAudioContext(2, loopSamples + Math.ceil(2.5 * SR), SR);
@@ -769,12 +796,12 @@
       const when = s * stepDur + swingOffset(s, stepDur);
       tracks.forEach((t, i) => {
         if (onlyIdx !== undefined && i !== onlyIdx) return;
-        const v = t.steps[s], buf = bufCache[t.file];
+        const v = t.steps[s], buf = bufCache[t.e.url];
         if (v && buf) playHit(off, g[i], buf, when, VEL[v]);
       });
     }
     const out = await off.startRendering();
-    // Ausklang hinten wieder an den Anfang mischen, damit der Loop nahtlos wiederholt
+    // Mix the tail back onto the start so the loop repeats seamlessly
     for (let c = 0; c < out.numberOfChannels; c++) {
       const d = out.getChannelData(c);
       for (let i = loopSamples; i < d.length; i++) d[i - loopSamples] += d[i];
@@ -826,8 +853,9 @@
       for (let i = 0; i < tracks.length; i++) {
         const t = tracks[i];
         if (!t.steps.some(Boolean)) continue;
-        setStatus(`Rendering stems … ${nameOf(t.file)}`);
-        files.push({ name: `stems/${String(i + 1).padStart(2, "0")} ${nameOf(t.file).replace(/[^\w -]/g, "")}.wav`, data: wavBlob(await renderMix(i)) });
+        setStatus(`Rendering stems … ${rowLabel(t)}`);
+        const nm = (t.role === "kick" || t.role === "clap" ? rowLabel(t) + " " + t.e.name : t.e.name + " " + ROLE_NAME[t.role]).replace(/[^\w -]/g, "");
+        files.push({ name: `stems/${String(i + 1).padStart(2, "0")} ${nm}.wav`, data: wavBlob(await renderMix(i)) });
       }
       files.push({ name: "license.txt", data: new TextEncoder().encode("Made with the YARDSLOVESYOU Perc Lab (yardslovesyou.com/beatlab.html).\nThe sounds are royalty-free for use in your own music. You may not resell or share the sounds on their own.\nGet the full Essentials kit: https://yardslovesyou.com/shop.html\n") });
       download(zip(files), fileBase() + ".zip");
@@ -875,18 +903,24 @@
      =================================================================== */
   function applyDecoded(d) {
     Object.assign(state, d.settings);
-    touched.bpm = touched.swing = true;                     // Link-Werte nicht automatisch überschreiben
-    tracks = buildTracks(d.specs);
+    touched.bpm = touched.swing = true;                     // values from a link are not overwritten automatically
+    buildTracks(d.specs);
   }
   function freshStart() {
-    state.genre = "trap"; state.mood = "bouncy"; state.density = 1; state.complexity = 1; state.humanize = 20;
+    state.genre = "trap"; state.mood = "bouncy"; state.density = 1; state.complexity = 0; state.humanize = 10;
     touched.bpm = touched.swing = false;
-    tracks = pickDistinct(Math.min(MAX_TRACKS, pool.length)).map(f => ({ file: f, vol: 6, mute: false, solo: false, steps: blankSteps() }));
+    const used = new Set();
+    tracks = [0, 1, 2, 3, 4].map(i => {
+      const e = pick(poolFor(i), 1, used)[0] || poolFor(i)[0]; used.add(e.url);
+      return makeTrack(i, e);
+    });
     generateAll(true);
   }
   const hashData = () => location.hash.startsWith("#b=") ? location.hash.slice(3) : "";
+  const loadedMsg = d => d.ver === "p2" ? "You're listening to a shared loop – press play, then remix it!"
+    : "Loaded an older Perc Lab / Beat Lab link – its percussion sits in the three percussion rows, kick and clap were added. Press play!";
 
-  // Geteilter Link, während die Seite schon offen ist
+  // Shared link while the page is already open
   window.addEventListener("hashchange", () => {
     const h = hashData();
     if (!ready || !h || h === currentHash()) return;
@@ -894,11 +928,17 @@
     if (d) { stop(); applyDecoded(d); renderAll(); prefetch(); setStatus("Shared loop loaded – press play, then remix it!"); }
   });
 
+  // Test hook (only with ?pltest in the address)
+  if (/[?&]pltest\b/.test(location.search)) window.__plTest = {
+    state, get tracks() { return tracks; }, set tracks(v) { tracks = v; }, generateAll, shuffleSounds, swapSound, genRows, encodeHash, decodeHash, applyDecoded, renderAll, genLoop, mulberry32,
+    pools: () => ({ kickPool, clapPool, percPool }), GEN, CAP, TOT, GENRE_KEYS, MOOD_KEYS, currentHash,
+  };
+
   (async function init() {
     setStatus("Loading sounds …");
     await loadPool();
     const h = hashData(), d = h ? decodeHash(h) : null;
-    if (d) { applyDecoded(d); setStatus(d.old ? "Loaded an older Beat Lab link – the pattern now lives in the first tracks. Press play!" : "You're listening to a shared loop – press play, then remix it!"); }
+    if (d) { applyDecoded(d); setStatus(loadedMsg(d)); }
     else { freshStart(); setStatus(""); }
     ready = true;
     renderAll(); prefetch();

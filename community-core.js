@@ -63,7 +63,16 @@ window.YLY = (() => {
   const PL_MOODS = ["Dark", "Bouncy", "Chill", "Energetic", "Hypnotic", "Tribal"];
   // 32 Schritte (0/1/2) aus base36-Zahl zur Basis 3
   const plUnpack = s => { let n = parseInt(s, 36) || 0; const o = Array(32); for (let i = 31; i >= 0; i--) { o[i] = n % 3; n = Math.floor(n / 3); } return o; };
+  const PL2_GENRES = ["Trap", "Drill", "Afrobeats", "Amapiano", "Reggaeton", "Dancehall", "Boom Bap", "Lo-fi", "House", "Latin / Clave", "R&B"];   // p2 (order as in beatlab.js)
   function preview(p) {
+    if (p.type === "beat" && String(p.data).startsWith("p2.")) {                 // Perc Lab v2: kick, clap + 3 percussion rows
+      try {
+        const q = p.data.split("."), rows = q[14] || "";
+        let cells = "";
+        for (let r = 0; r < 5; r++) cells += plUnpack(rows.slice(r * 10, r * 10 + 10)).map(v => `<i class="${v ? (r < 2 ? "on b" : "on") : ""}"></i>`).join("");
+        return `<div class="cp-grid" style="grid-template-columns:repeat(32,1fr);gap:1px" aria-hidden="true">${cells}</div><p class="cp-meta">${+q[1]} BPM · ${PL2_GENRES[+q[3]] || ""} · ${PL_MOODS[+q[4]] || ""}</p>`;
+      } catch (_) { return ""; }
+    }
     if (p.type === "beat" && String(p.data).startsWith("p1.")) {
       try {
         const q = p.data.split("."), n = Math.min(10, Math.max(1, parseInt(q[9], 10) || 10)), rows = q[13] || "";
