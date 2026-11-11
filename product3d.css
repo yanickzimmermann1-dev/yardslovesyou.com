@@ -72,3 +72,12 @@
 .gd-scene.gd-has3d .p3d{opacity:0}
 .gd-scene.gd-has3d .p3d.p3d-ready{opacity:1}
 @media(max-width:860px){.gd-scene.gd-has3d{min-height:400px;padding:0}}
+
+/* Nur das Objekt sichtbar: kein Rahmen/Hintergrund um das 3D-Modell */
+.has-p3d,.pd-main.has-p3d,.gd-scene.has-p3d,.product .cover.has-p3d,.cover.has-p3d{
+  background:none!important;background-color:transparent!important;background-image:none!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.has-p3d::before,.has-p3d::after{content:none!important;display:none!important;background:none!important;box-shadow:none!important}
+.has-p3d .p3d-glow{display:none!important}
+.has-p3d .p3d,.has-p3d .p3d-scene{background:none!important;box-shadow:none!important;border:0!important}

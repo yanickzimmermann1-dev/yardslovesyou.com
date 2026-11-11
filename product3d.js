@@ -382,7 +382,7 @@
           if (stage.clientWidth && stage.clientHeight) {
             if (!build()) return fail();
             stage.classList.add("p3d-ready");
-            if (!S.hidden) el.classList.add("p3d-on");
+            if (!S.hidden) el.classList.add("p3d-on", "has-p3d");
             if (opts.onready) try { opts.onready(); } catch (e) {}
             readyRes(true);
             wake();
@@ -402,7 +402,7 @@
       try { io.disconnect(); } catch (e) {}
       try { ro && ro.disconnect(); } catch (e) {}
       var i = insts.indexOf(inst); if (i >= 0) insts.splice(i, 1);
-      el.classList.remove("p3d-on");
+      el.classList.remove("p3d-on", "has-p3d");
       if (stage.parentNode) stage.parentNode.removeChild(stage);
     }
 
@@ -411,13 +411,13 @@
       ready: ready,
       hide: function () {
         if (S.destroyed) return;
-        S.hidden = true; stage.hidden = true; el.classList.remove("p3d-on");
+        S.hidden = true; stage.hidden = true; el.classList.remove("p3d-on", "has-p3d");
       },
       show: function () {
         if (S.destroyed) return;
         S.hidden = false; stage.hidden = false;
-        if (S.ready && built) el.classList.add("p3d-on");
-        else if (S.ready && S.pendingReady) { S.pendingReady = false; requestAnimationFrame(function () { if (build()) { stage.classList.add("p3d-ready"); el.classList.add("p3d-on"); if (opts.onready) try { opts.onready(); } catch (e) {} readyRes(true); wake(); } }); }
+        if (S.ready && built) el.classList.add("p3d-on", "has-p3d");
+        else if (S.ready && S.pendingReady) { S.pendingReady = false; requestAnimationFrame(function () { if (build()) { stage.classList.add("p3d-ready"); el.classList.add("p3d-on", "has-p3d"); if (opts.onready) try { opts.onready(); } catch (e) {} readyRes(true); wake(); } }); }
         requestAnimationFrame(function () { var W = stage.clientWidth, H = stage.clientHeight; if (S.ready && W && H && (Math.abs(W - S.W) > 2 || Math.abs(H - S.H) > 2)) build(); wake(); });
       }
     };
