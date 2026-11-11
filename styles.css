@@ -1890,3 +1890,27 @@ html.js-motion .hero .hero-actions{animation-delay:.32s}
 @media(prefers-reduced-motion:reduce){
   .nav-dd-panel,.cat-chip,.nav-dd-toggle svg{transition:none !important}
 }
+
+/* ==========================================================
+   FOOTER MOBILE
+   Handy: Legal-Links, dann Social-Links, dann Copyright.
+   Vertikale Liste, 44px Tap-Hoehe, keine Trenner.
+   ========================================================== */
+@media(max-width:720px){
+  footer.site-footer{
+    display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+    gap:0;max-width:100%;overflow-x:clip;
+    padding:16px 16px calc(var(--tabbar-space,64px) + 24px);
+  }
+  footer.site-footer .footer-top{display:contents}
+  footer.site-footer .footer-links{order:1;display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0;font-size:14px}
+  footer.site-footer .footer-social{order:2;display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0;font-size:14px;margin-top:12px;padding-top:12px;border-top:1px solid #ffffff12}
+  footer.site-footer .footer-top>span{order:3;display:block;margin-top:12px;padding-top:16px;border-top:1px solid #ffffff12;font-size:12px}
+  footer.site-footer .footer-links a,
+  footer.site-footer .footer-social a{
+    display:flex;align-items:center;justify-content:flex-start;
+    min-height:44px;padding:0;text-align:left;white-space:normal;overflow-wrap:anywhere;
+  }
+  footer.site-footer .footer-links a::before,footer.site-footer .footer-links a::after,
+  footer.site-footer .footer-social a::before,footer.site-footer .footer-social a::after{content:none!important;display:none!important}
+}
