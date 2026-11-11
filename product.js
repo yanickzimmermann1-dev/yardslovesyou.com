@@ -9,20 +9,22 @@
   const db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
 
   // Dateiname im Bucket "coverart-products" -> öffentliche URL (volle URLs bleiben unverändert)
-  const media=u=>/^https?:\/\//.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
+  const media=u=>/^https:\/\//i.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
   const money=(cents,cur)=>(cents/100).toLocaleString("de-CH",{style:"currency",currency:String(cur||cfg.CURRENCY||"CHF").toUpperCase()});
   const paragraphs=t=>String(t||"").trim().split(/\n\s*\n/).map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
 
   const PLAY='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
   const PAUSE='<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
 
-  // YouTube / Vimeo / MP4 -> eingebettetes Video
+  // Externe Videos (YouTube/Vimeo) werden erst nach Klick geladen (Datenschutz: vorher keine Verbindung zum Anbieter)
+  const ph=(src,name,allow)=>`<button type="button" class="pd-video-ph" data-embed="${esc(src)}" data-allow="${esc(allow)}">Play video<small>Loads from ${name}. By playing it you connect to ${name}.</small></button>`;
+  // YouTube / Vimeo / MP4 -> Video
   const embed=u=>{
     let m;
     if((m=String(u).match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{11})/)))
-      return `<iframe src="https://www.youtube-nocookie.com/embed/${m[1]}" title="Video" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+      return ph("https://www.youtube-nocookie.com/embed/"+m[1]+"?autoplay=1","YouTube","accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen");
     if((m=String(u).match(/vimeo\.com\/(?:video\/)?(\d+)/)))
-      return `<iframe src="https://player.vimeo.com/video/${m[1]}" title="Video" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+      return ph("https://player.vimeo.com/video/"+m[1]+"?autoplay=1","Vimeo","autoplay; fullscreen; picture-in-picture");
     if(/\.(mp4|webm|mov)(\?|$)/i.test(u))
       return `<video src="${esc(media(u))}" controls playsinline preload="metadata"></video>`;
     return "";
@@ -158,6 +160,13 @@
       root.querySelectorAll("[data-img]").forEach(x=>x.classList.toggle("active",x===b));
     });
 
+    root.querySelectorAll(".pd-video-ph").forEach(b=>b.onclick=()=>{
+      const src=b.dataset.embed||"";
+      if(!/^https:\/\/(www\.youtube-nocookie\.com\/embed\/|player\.vimeo\.com\/video\/)/.test(src)) return;
+      const f=document.createElement("iframe");
+      f.src=src; f.title="Video"; f.allow=b.dataset.allow||""; f.allowFullscreen=true; f.referrerPolicy="strict-origin-when-cross-origin";
+      b.replaceWith(f);
+    });
     $("buy-btn").onclick=buy;
     $("sticky-buy-btn").onclick=buy;
     setupSticky();
@@ -274,6 +283,7 @@
       const {data,error}=await db.functions.invoke("create-checkout",{body:{product_id:id}});
       if(error) throw error;
       if(!data?.url) throw new Error(data?.error||"Checkout link missing.");
+      if(!/^https:\/\//i.test(String(data.url))) throw new Error("Invalid checkout link.");
       location.href=data.url;
     }catch(e){alert("Checkout failed: "+(e.message||e));btns.forEach(b=>{b.disabled=false;b.textContent="Buy";});}
   }

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0b12">
   <title>YARDSLOVESYOU – Mixing, Mastering & Production for Hip-Hop & Trap</title>
@@ -56,7 +58,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="beforeafter.css">
   <!-- WICHTIG: UMD-Build für globales window.supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 
@@ -151,11 +153,11 @@
         <p class="muted">Got a question before you book? Just reach out.</p>
       </div>
       <div class="contact-list">
-        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener">
+        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener noreferrer">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"></circle></svg>
           Instagram
         </a>
-        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener">
+        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener noreferrer">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4"></rect><polygon points="10,9 15,12 10,15" fill="currentColor"></polygon></svg>
           YouTube
         </a>

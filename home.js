@@ -33,7 +33,7 @@
       const barsHtml = Array.from({length: 30}, () => '<span class="wave-bar"></span>').join('');
 
       return `
-      <article class="track" data-id="${t.id}">
+      <article class="track" data-id="${esc(t.id)}">
         <div class="track-top">
           <div class="cover">
             ${imageUrl ? `<img src="${esc(imageUrl)}" alt="${esc(t.title)} cover" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : ""}

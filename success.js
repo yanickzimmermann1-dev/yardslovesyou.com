@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
         status.textContent = "Your download is starting…";
+        if (!/^https:\/\//i.test(String(r.data.url))) { status.textContent = "Download not available."; return; }
         location.href = r.data.url;
       };
       return;

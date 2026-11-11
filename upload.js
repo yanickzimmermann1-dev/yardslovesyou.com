@@ -70,6 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Please select a file to upload.");
         return;
       }
+      if (!name || name.length > 100) { alert("Please enter your name (max. 100 characters)."); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 254) { alert("Please enter a valid email address."); return; }
+      if (wishes.length > 2000) { alert("Your notes are too long (max. 2000 characters)."); return; }
 
       // Format validation
       if (wavServices.includes(serviceType) && !file.name.toLowerCase().endsWith(".wav")) {
@@ -94,8 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (statusEl) statusEl.textContent = "Upload started...";
 
       try {
-        const requestId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-          const r = Math.random() * 16 | 0;
+        const requestId = crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+          const r = crypto.getRandomValues(new Uint8Array(1))[0] & 15;
           return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
 
@@ -158,6 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Redirect to Stripe
+        if (!/^https:\/\//i.test(String(checkoutData.url))) throw new Error("Invalid checkout link.");
         window.location.href = checkoutData.url;
 
       } catch (err) {

@@ -4,6 +4,8 @@
   'use strict';
   // iPhone: Web-Audio (Player, Perc Lab, Ear Trainer) auch bei Lautlos-Schalter hörbar machen
   try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+  // Jahreszahl im Footer (frueher Inline-Script, wegen CSP hier)
+  try { var yEl = document.getElementById('year'); if (yEl) yEl.textContent = new Date().getFullYear(); } catch (e) {}
   // Event-Helfer fuer die Statistik (macht nichts, wenn Umami nicht geladen ist; wirft nie)
   window.ylyTrack = function (name, data) {
     try { if (window.umami && typeof window.umami.track === 'function') { if (data) window.umami.track(name, data); else window.umami.track(name); } } catch (e) {}
@@ -63,9 +65,9 @@
       btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
       var panel = document.createElement('div');
       panel.className = 'nav-dd-panel'; panel.id = id;
-      var items = '<a href="shop.html"><span><strong>All products</strong></span><em>' + data.total + '</em></a>';
+      var items = '<a href="shop.html"><span><strong>All products</strong></span><em>' + (+data.total || 0) + '</em></a>';
       data.list.forEach(function (c) {
-        items += '<a href="shop.html?cat=' + encodeURIComponent(c.slug) + '"><span><strong>' + esc(c.name) + '</strong>' + (c.tagline ? '<small>' + esc(c.tagline) + '</small>' : '') + '</span><em>' + c.n + '</em></a>';
+        items += '<a href="shop.html?cat=' + encodeURIComponent(c.slug) + '"><span><strong>' + esc(c.name) + '</strong>' + (c.tagline ? '<small>' + esc(c.tagline) + '</small>' : '') + '</span><em>' + (+c.n || 0) + '</em></a>';
       });
       panel.innerHTML = items;
       wrap.appendChild(btn); wrap.appendChild(panel);

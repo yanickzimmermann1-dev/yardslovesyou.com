@@ -2,13 +2,15 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0b12">
   <meta name="robots" content="noindex, nofollow">
   <title>Moderation · YARDSLOVESYOU Community</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
   <header class="topbar">
@@ -47,52 +49,7 @@
 
   <script src="config.js"></script>
   <script src="community-core.js"></script>
-  <script>
-  (async () => {
-    const { db, $, esc, me, loginUrl, postCard, bindActions, toast, timeAgo, POST_SELECT } = window.YLY;
-    const m = await me();
-    if (!m) { location.href = loginUrl(); return; }
-    if (!m.admin) { $("adm-guard").textContent = "Kein Zugriff. Diese Seite ist nur für Admins."; return; }
-    $("adm-guard").classList.add("hidden"); $("adm-body").classList.remove("hidden");
-
-    async function loadReports() {
-      const { data, error } = await db.from("reports")
-        .select("id,reason,created_at,post_id,profile_id,post:posts(id,title,hidden,type,author:profiles!posts_user_id_fkey(handle)),profile:profiles(id,handle,hidden)")
-        .eq("resolved", false).order("created_at", { ascending: false }).limit(100);
-      if (error) { $("adm-reports").innerHTML = `<li class="danger">${esc(error.message)}</li>`; return; }
-      $("adm-count").textContent = `(${data.length})`;
-      $("adm-reports").innerHTML = data.length ? data.map(r => {
-        const target = r.post ? `Beitrag <a href="community.html?post=${r.post.id}" target="_blank">${esc(r.post.title)}</a> von @${esc(r.post.author?.handle || "?")}${r.post.hidden ? " (ausgeblendet)" : ""}`
-          : r.profile ? `Profil <a href="profile.html?u=${encodeURIComponent(r.profile.handle)}" target="_blank">@${esc(r.profile.handle)}</a>${r.profile.hidden ? " (ausgeblendet)" : ""}`
-          : "Bereits gelöscht";
-        return `<li>
-          <div><strong>${target}</strong><br><span class="muted">„${esc(r.reason || "kein Grund angegeben")}“ · ${timeAgo(r.created_at)}</span></div>
-          <div class="adm-actions">
-            ${r.post ? `<button class="cp-icon danger" data-hidepost="${r.post.id}" data-on="${r.post.hidden}">${r.post.hidden ? "Einblenden" : "Beitrag ausblenden"}</button>` : ""}
-            ${r.profile ? `<button class="cp-icon danger" data-hideprof="${r.profile.id}" data-on="${r.profile.hidden}">${r.profile.hidden ? "Einblenden" : "Profil ausblenden"}</button>` : ""}
-            <button class="cp-icon" data-resolve="${r.id}">Erledigt</button>
-          </div>
-        </li>`;
-      }).join("") : '<li class="muted">Keine offenen Meldungen</li>';
-    }
-    async function loadPosts() {
-      const { data } = await db.from("posts").select(POST_SELECT).order("created_at", { ascending: false }).limit(40);
-      $("adm-posts").innerHTML = (data || []).map(p => postCard(p, { me: m, liked: new Set() })).join("") || '<div class="empty">Noch keine Beiträge.</div>';
-    }
-    const reload = () => { loadReports(); loadPosts(); };
-
-    $("adm-reports").addEventListener("click", async e => {
-      const b = e.target.closest("button"); if (!b) return;
-      let res;
-      if (b.dataset.hidepost) res = await db.from("posts").update({ hidden: b.dataset.on !== "true" }).eq("id", b.dataset.hidepost);
-      else if (b.dataset.hideprof) res = await db.from("profiles").update({ hidden: b.dataset.on !== "true" }).eq("id", b.dataset.hideprof);
-      else if (b.dataset.resolve) res = await db.from("reports").update({ resolved: true }).eq("id", b.dataset.resolve);
-      if (res?.error) toast(res.error.message, true); else reload();
-    });
-    bindActions($("adm-posts"), reload, toast);
-    reload();
-  })();
-  </script>
+  <script src="community-admin.js"></script>
   <script src="nav.js" defer></script>
   <script src="motion.js" defer></script>
 </body>

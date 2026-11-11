@@ -78,10 +78,10 @@
     const { data } = await db.from("posts").select("id,type,title,created_at,like_count,hidden").eq("user_id", uid).order("created_at", { ascending: false }).limit(100);
     $("acc-posts").innerHTML = (data || []).length ? data.map(p => `
       <li>
-        <span class="cp-type ${p.type}">${p.type === "beat" ? "Beat" : "Chords"}</span>
-        <a href="community.html?post=${p.id}">${esc(p.title)}</a>
-        <span class="muted">${timeAgo(p.created_at)} · ${p.like_count} likes${p.hidden ? " · hidden by moderation" : ""}</span>
-        <button type="button" class="cp-icon danger" data-del="${p.id}">Delete</button>
+        <span class="cp-type ${esc(p.type)}">${p.type === "beat" ? "Beat" : "Chords"}</span>
+        <a href="community.html?post=${encodeURIComponent(p.id)}">${esc(p.title)}</a>
+        <span class="muted">${timeAgo(p.created_at)} · ${+p.like_count || 0} likes${p.hidden ? " · hidden by moderation" : ""}</span>
+        <button type="button" class="cp-icon danger" data-del="${esc(p.id)}">Delete</button>
       </li>`).join("") : '<li class="muted">No posts yet. Make something in the <a class="cp-link" href="beatlab.html">Perc Lab</a> or the <a class="cp-link" href="chords.html">Chord Starter</a> and hit Publish.</li>';
   }
   $("acc-posts").addEventListener("click", async e => {

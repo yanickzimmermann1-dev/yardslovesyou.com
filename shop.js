@@ -5,7 +5,7 @@
   if(!ready){$("products").innerHTML='<div class="empty">The shop is not available right now.</div>';return;}
   const db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const img=u=>/^https?:\/\//.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
+  const img=u=>/^https:\/\//i.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
   const link=id=>`product.html?id=${encodeURIComponent(id)}`;
   const money=(cents,cur)=>(cents/100).toLocaleString("de-CH",{style:"currency",currency:String(cur||cfg.CURRENCY||"CHF").toUpperCase()});
 
@@ -119,6 +119,7 @@
       const {data,error}=await db.functions.invoke("create-checkout",{body:{product_id:productId}});
       if(error) throw error;
       if(!data?.url) throw new Error(data?.error||"Checkout link missing.");
+      if(!/^https:\/\//i.test(String(data.url))) throw new Error("Invalid checkout link.");
       location.href=data.url;
     }catch(e){alert("Checkout failed: "+(e.message||e));if(b){b.disabled=false;b.textContent="Buy";}}
   }
@@ -164,7 +165,7 @@
       $("download-status").textContent="Verifying payment...";
       const {data,error}=await db.functions.invoke("download-zip",{body:{session_id:params.get("session_id")}});
       if(error||!data?.url){$("download-status").textContent="Download not available: "+(error?.message||data?.error||"Payment could not be confirmed.");return;}
-      const a=document.createElement("a");a.href=data.url;a.textContent="Start download";a.className="download-link";a.rel="noopener";a.target="_blank";$("download-status").replaceWith(a);
+      const a=document.createElement("a");a.href=/^https:\/\//i.test(String(data.url))?data.url:"#";a.textContent="Start download";a.className="download-link";a.rel="noopener noreferrer";a.target="_blank";$("download-status").replaceWith(a);
     };
   }
   load();

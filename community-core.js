@@ -101,27 +101,27 @@ window.YLY = (() => {
     const mine = ctx.me && ctx.me.user.id === p.user_id;
     const liked = ctx.liked && ctx.liked.has(p.id);
     const by = p.author ? `<a href="profile.html?u=${encodeURIComponent(p.author.handle)}">@${esc(p.author.handle)}</a>` : "unknown";
-    const parent = p.parent ? ` · remix of <a href="community.html?post=${p.parent.id}">${esc(p.parent.title)}</a>${p.parent.author ? ` by @${esc(p.parent.author.handle)}` : ""}` : "";
+    const parent = p.parent ? ` · remix of <a href="community.html?post=${encodeURIComponent(p.parent.id)}">${esc(p.parent.title)}</a>${p.parent.author ? ` by @${esc(p.parent.author.handle)}` : ""}` : "";
     return `
-      <article class="cp ${p.hidden ? "is-hidden" : ""}" data-id="${p.id}">
+      <article class="cp ${p.hidden ? "is-hidden" : ""}" data-id="${esc(p.id)}">
         <div class="cp-head">
-          <span class="cp-type ${p.type}">${p.type === "beat" ? "Beat" : "Chords"}</span>
+          <span class="cp-type ${esc(p.type)}">${p.type === "beat" ? "Beat" : "Chords"}</span>
           ${p.featured ? `<span class="cp-feat">Featured</span>` : ""}
           ${p.hidden ? `<span class="cp-hidden-tag">Hidden</span>` : ""}
           <span class="cp-time">${timeAgo(p.created_at)}</span>
         </div>
-        <h3><a href="community.html?post=${p.id}">${esc(p.title)}</a></h3>
+        <h3><a href="community.html?post=${encodeURIComponent(p.id)}">${esc(p.title)}</a></h3>
         <p class="cp-by">by ${by}${parent}</p>
         ${preview(p)}
         <div class="cp-actions">
-          <a class="button cp-btn" href="${toolUrl(p)}">Play</a>
-          <a class="outline cp-btn" href="${remixUrl(p)}">Remix</a>
-          <button type="button" class="cp-like ${liked ? "liked" : ""}" data-like="${p.id}" aria-pressed="${!!liked}" aria-label="Like"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-2px;margin-right:5px"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 4.8 6.6 4.8c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.6 0 5.7 3.7 4.2 7C19.5 16.4 12 21 12 21z"/></svg><span>${p.like_count}</span></button>
-          <button type="button" class="cp-icon" data-share="${p.id}" title="Copy link">Share</button>
-          ${mine ? `<button type="button" class="cp-icon danger" data-delete="${p.id}">Delete</button>`
-                 : `<button type="button" class="cp-icon" data-report="${p.id}">Report</button>`}
-          ${ctx.me?.admin ? `<button type="button" class="cp-icon" data-feature="${p.id}" data-on="${p.featured}">${p.featured ? "Unfeature" : "Feature"}</button>
-            <button type="button" class="cp-icon danger" data-hide="${p.id}" data-on="${p.hidden}">${p.hidden ? "Unhide" : "Hide"}</button>` : ""}
+          <a class="button cp-btn" href="${esc(toolUrl(p))}">Play</a>
+          <a class="outline cp-btn" href="${esc(remixUrl(p))}">Remix</a>
+          <button type="button" class="cp-like ${liked ? "liked" : ""}" data-like="${esc(p.id)}" aria-pressed="${!!liked}" aria-label="Like"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-2px;margin-right:5px"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 4.8 6.6 4.8c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.6 0 5.7 3.7 4.2 7C19.5 16.4 12 21 12 21z"/></svg><span>${+p.like_count || 0}</span></button>
+          <button type="button" class="cp-icon" data-share="${esc(p.id)}" title="Copy link">Share</button>
+          ${mine ? `<button type="button" class="cp-icon danger" data-delete="${esc(p.id)}">Delete</button>`
+                 : `<button type="button" class="cp-icon" data-report="${esc(p.id)}">Report</button>`}
+          ${ctx.me?.admin ? `<button type="button" class="cp-icon" data-feature="${esc(p.id)}" data-on="${!!p.featured}">${p.featured ? "Unfeature" : "Feature"}</button>
+            <button type="button" class="cp-icon danger" data-hide="${esc(p.id)}" data-on="${!!p.hidden}">${p.hidden ? "Unhide" : "Hide"}</button>` : ""}
         </div>
       </article>`;
   }

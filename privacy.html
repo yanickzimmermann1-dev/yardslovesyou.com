@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0b12">
   <title>Privacy Policy · YARDSLOVESYOU</title>
@@ -28,8 +30,8 @@
       <p class="eyebrow">LEGAL</p>
       <h1>Privacy Policy</h1>
 
-      <p>This privacy policy explains which personal data is processed when you use yardslovesyou.com, in accordance with the Swiss Federal Act on Data Protection (FADP).</p>
-      <p>Last updated: 8 November 2026</p>
+      <p>This privacy policy explains which personal data is processed when you use yardslovesyou.com, in accordance with the Swiss Federal Act on Data Protection (FADP) and, where it applies to visitors from the EU/EEA, the General Data Protection Regulation (GDPR).</p>
+      <p>Last updated: 11 November 2026</p>
 
       <h2>1. Controller</h2>
       <p>
@@ -39,16 +41,16 @@
       </p>
 
       <h2>2. Hosting</h2>
-      <p>This website is hosted on GitHub Pages (GitHub Inc., USA). When you visit the site, technical data such as your IP address, browser type and time of access is processed in server logs to deliver the website and keep it secure.</p>
+      <p>This website is hosted on GitHub Pages (GitHub Inc., USA). When you visit the site, technical data such as your IP address, browser type and time of access is processed in server logs to deliver the website and keep it secure. The legal basis is our legitimate interest in a secure and reliable website.</p>
 
       <h2>3. Fonts and scripts from third parties</h2>
-      <p>The website loads fonts from Google Fonts (Google LLC, USA) and program libraries from the jsDelivr network. Your browser connects to these servers, which transmits your IP address.</p>
+      <p>The fonts are hosted on our own website; there is no connection to Google Fonts. The website loads a program library (the Supabase client) from the jsDelivr content delivery network, and the statistics script from Umami Cloud (see section 10). When your browser loads these files, your IP address is transmitted to the respective provider. Without this connection, the site's features (shop, community, accounts) would not work.</p>
 
       <h2>4. Track submissions</h2>
-      <p>When you book a service, we process your name or artist name, your email address, your notes and the files you upload. We use this data only to carry out your order and to contact you about it. The data is stored with Supabase (Supabase Inc.) in the EU (Ireland).</p>
+      <p>When you book a service, we process your name or artist name, your email address, your notes and the files you upload. We use this data only to carry out your order and to contact you about it. We use Supabase (Supabase Inc.) as our backend for the database, file storage, login and server functions; the project is hosted in the EU (Ireland). Uploaded files and order data are only accessible to us.</p>
 
       <h2>5. Payments</h2>
-      <p>Payments are processed by Stripe (Stripe Payments Europe Ltd., Ireland, and Stripe Inc., USA). Your payment details are entered directly on Stripe's pages; we never see your full card details. Stripe's privacy policy applies: <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a>.</p>
+      <p>Payments are processed by Stripe (Stripe Payments Europe Ltd., Ireland, and Stripe Inc., USA). Your payment details are entered directly on Stripe's pages; we never see your full card details. Depending on the payment method you choose (for example card, TWINT, PayPal, Apple Pay or Google Pay), Stripe passes your payment to the respective provider. Stripe's privacy policy applies: <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">stripe.com/privacy</a>.</p>
 
       <h2>6. Purchases and downloads</h2>
       <p>When you buy a digital product, we process your email address, the product purchased and the payment status, to provide your download and send you a confirmation. Emails are sent via Resend (Resend Inc., USA).</p>
@@ -56,28 +58,37 @@
       <h2>7. Free downloads, Mix Check and email updates</h2>
       <p><strong>Free downloads and Sound Drop:</strong> When you request a free download (e.g. Essentials Lite) or sign up for the monthly Sound Drop, we process your email address to send you the download link. If you sign up for the Sound Drop or tick the box for email updates, we also use your address to send you the monthly Sound Drop, new releases and deals.</p>
       <p><strong>Mix Check:</strong> The audio analysis runs entirely in your browser. Your audio file is not uploaded or stored. If you request the full report, we receive the analysis results (measured values, no audio) and the file name, and use them only to create and send your report by email. They are not stored.</p>
-      <p>Email updates are voluntary. Every email contains an unsubscribe link, and you can also withdraw your consent by replying to any of our emails or by writing to the email address above. We store your email address, how you signed up, whether and when you gave consent, and when you unsubscribed. The data is stored with Supabase, and emails are sent via Resend (Resend Inc., USA).</p>
+      <p>Email updates are voluntary. Every email contains an unsubscribe link, and you can also withdraw your consent by replying to any of our emails or by writing to the email address above. We store your email address, how you signed up, whether and when you gave consent, and when you unsubscribed. The data is stored with Supabase, and emails are sent via Resend (Resend Inc., USA). The legal basis is your consent (Art. 6(1)(a) GDPR), which you can withdraw at any time.</p>
 
       <h2>8. Community accounts</h2>
-      <p>If you create a Community account, we process your email address to send you login links, and the profile information you choose to publish: your handle, display name, bio and links to your music channels. Your profile, your posts (titles and the musical patterns you publish), your likes and who you follow are publicly visible. Reports you submit are only visible to us. You can delete individual posts or your whole account at any time in your account settings; this permanently removes your profile, posts, likes and follows. Login emails are sent via Resend (Resend Inc., USA), the data is stored with Supabase.</p>
+      <p>If you create a Community account, we process your email address to send you login links, and the profile information you choose to publish: your handle, display name, bio and links to your music channels. Your profile, your posts (titles and the musical patterns you publish), your likes and who you follow are publicly visible. Reports you submit are only visible to us. You can delete individual posts or your whole account at any time in your account settings; this permanently removes your profile, posts, likes and follows. Login emails are sent via Resend (Resend Inc., USA), the data is stored with Supabase. You must be at least 16 years old to create an account.</p>
+      <p><strong>Ear Trainer leaderboard:</strong> If you are signed in and submit a daily score in the Ear Trainer, the score is stored together with your account and shown publicly on the leaderboard with your handle.</p>
+      <p><strong>Live counter:</strong> To show how many producers are online, the Perc Lab, Chord Starter, Community and profile pages use Supabase Realtime. Your browser sends a random, anonymous ID and the page you are on; no name, email address or account information is transmitted. The ID is not linked to you and is only used for the counter.</p>
 
       <h2>9. Embedded media</h2>
-      <p>Product pages may contain videos from YouTube (in privacy-enhanced mode) or Vimeo. Data is only transmitted to these services when such a page is opened or the video is played.</p>
+      <p>Product pages may contain videos from YouTube (in privacy-enhanced mode) or Vimeo. These videos are not loaded when you open the page. A connection to YouTube or Vimeo, including the transmission of your IP address, is only made after you click "Play video".</p>
 
       <h2>10. Website analytics</h2>
-      <p>We use Umami Cloud (Umami Software, Inc.) to collect anonymous, cookieless statistics, for example which pages are visited and which features are used. No cookies are set, there is no cross-site tracking and IP addresses are not stored. The data is hosted in the EU. If your browser sends a "Do Not Track" signal, we respect it and do not measure your visit. The legal basis is our legitimate interest in understanding and improving our website (Swiss FADP; Art. 6(1)(f) GDPR). More information: <a href="https://umami.is/privacy" target="_blank" rel="noopener">umami.is/privacy</a>.</p>
+      <p>We use Umami Cloud (Umami Software, Inc.) to collect anonymous, cookieless statistics, for example which pages are visited and which features are used. No cookies are set, there is no cross-site tracking and IP addresses are not stored. The data is hosted in the EU. If your browser sends a "Do Not Track" signal, we respect it and do not measure your visit. The legal basis is our legitimate interest in understanding and improving our website (Swiss FADP; Art. 6(1)(f) GDPR). More information: <a href="https://umami.is/privacy" target="_blank" rel="noopener noreferrer">umami.is/privacy</a>.</p>
 
-      <h2>11. Cookies and tracking</h2>
-      <p>This website does not use advertising cookies and no cookies for analytics. Stripe may set cookies that are necessary for a secure checkout.</p>
+      <h2>11. Cookies and local storage</h2>
+      <p>This website does not use advertising cookies, no tracking cookies and no cookies for analytics. For this reason we do not show a cookie banner. The website only stores the following data in your browser, which is needed for the features you use:</p>
+      <ul>
+        <li><strong>Login session:</strong> If you sign in to a Community account, Supabase stores your login session in your browser's local storage until you sign out.</li>
+        <li><strong>Anonymous ID:</strong> A random ID in local storage (yly_pid), used only for the live counter (see section 8).</li>
+        <li><strong>Tool settings:</strong> The Perc Lab, Chord Starter and Ear Trainer may store your settings, progress and the fact that you unlocked a download in local storage.</li>
+        <li><strong>Temporary cache:</strong> The shop menu is cached in your browser's session storage for a few minutes and is deleted when you close the tab.</li>
+      </ul>
+      <p>This data stays in your browser and is not used for advertising. You can delete it at any time in your browser settings. Stripe may set cookies that are necessary for a secure checkout.</p>
 
       <h2>12. Disclosure abroad</h2>
-      <p>Some of the services named above process data in the USA or the EU. Where required, the transfer is based on the Swiss-US Data Privacy Framework or on standard contractual clauses.</p>
+      <p>Some of the services named above (GitHub, Stripe, Resend, Supabase, Umami, jsDelivr) process data in the USA or the EU. Where required, the transfer is based on the Swiss-US Data Privacy Framework or on standard contractual clauses.</p>
 
       <h2>13. Retention</h2>
-      <p>We keep personal data only as long as necessary for the purpose it was collected for, or as long as required by law (e.g. accounting records). Uploaded files are deleted 6 months after the order has been completed.</p>
+      <p>We keep personal data only as long as necessary for the purpose it was collected for, or as long as required by law (e.g. accounting records). Uploaded files are deleted 6 months after the order has been completed. Community account data is kept until you delete your account.</p>
 
       <h2>14. Your rights</h2>
-      <p>You have the right to request information about your personal data, and to have it corrected or deleted. Send your request to the email address above. You may also file a complaint with the Federal Data Protection and Information Commissioner (FDPIC).</p>
+      <p>You have the right to request information about your personal data, and to have it corrected, deleted or restricted, and to receive it in a common format (data portability). Where processing is based on your consent, you can withdraw it at any time, and you can object to processing based on our legitimate interests. Send your request to the email address above. You may also file a complaint with the Federal Data Protection and Information Commissioner (FDPIC) or, if you live in the EU/EEA, with your local data protection authority.</p>
 
     </section>
   </main>
@@ -86,8 +97,8 @@
     <div class="footer-top">
       <span>© <span id="year">2026</span> YARDSLOVESYOU &lt;3</span>
       <nav class="footer-social" aria-label="Social media">
-        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener noreferrer">YouTube</a>
       </nav>
     </div>
     <nav class="footer-links" aria-label="Legal">
@@ -98,7 +109,6 @@
       <a href="security.html">Security</a>
     </nav>
   </footer>
-  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
   <script src="nav.js" defer></script>
   <script src="motion.js" defer></script>
 </body>

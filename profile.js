@@ -25,7 +25,7 @@
     }
     const links = LINKS.map(([k, label, re]) => {
       const url = p.links && typeof p.links[k] === "string" ? p.links[k] : "";
-      return re.test(url) ? `<a href="${esc(url)}" target="_blank" rel="noopener nofollow ugc">${label}</a>` : "";
+      return re.test(url) ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer nofollow ugc">${label}</a>` : "";
     }).filter(Boolean).join("");
 
     box.innerHTML = `
