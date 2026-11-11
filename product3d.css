@@ -55,7 +55,7 @@
 .p3d-cb{background:
   linear-gradient(115deg,rgba(255,255,255,.07),transparent 40%),
   linear-gradient(160deg,#2a2a2e,#1d1d20)}
-.p3d-pads{position:absolute;left:9%;top:3.4%;width:75%;height:10.5%;display:flex;gap:2.4%}
+.p3d-pads{position:absolute;left:20%;top:3.4%;width:73%;height:10.5%;display:flex;gap:2.4%}
 .p3d-pads b{flex:1;border-radius:6% / 5%;background:linear-gradient(180deg,#ecd58f,#b98f38 55%,#dcbb68);box-shadow:inset 0 0 0 1px rgba(255,235,170,.35),0 0 0 1px rgba(0,0,0,.5)}
 .p3d-bk-emb{position:absolute;left:0;right:0;top:62%;text-align:center;font:700 calc(var(--u)*7.4)/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.2em;padding-left:.2em;
   color:rgba(255,255,255,.07);text-shadow:0 -1px 0 rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.06)}
