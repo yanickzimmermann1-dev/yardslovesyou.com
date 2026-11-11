@@ -75,6 +75,14 @@
     const images=[p.image_url,...(p.gallery||[])].filter(Boolean).map(media);
     setSeo(p,images);
     window.ylyTrack&&ylyTrack("product-view",{id:p.id});
+    // Guides: Spalte "guide" (jsonb) -> eigene Seite ohne Video (guide.js)
+    let guide=p.guide;
+    if(typeof guide==="string"){ try{ guide=JSON.parse(guide); }catch(_){ guide=null; } }
+    if(document.readyState==="loading") await new Promise(r=>document.addEventListener("DOMContentLoaded",r));
+    if(guide&&Array.isArray(guide.chapters)&&guide.chapters.length&&typeof window.renderGuide==="function"){
+      p.guide=guide;
+      return showGuide(p,images);
+    }
     const features=(p.features||[]).filter(Boolean);
     const videos=(p.video_urls||[]).map(embed).filter(Boolean);
     const tracks=getTracks(p);
@@ -171,6 +179,29 @@
     $("sticky-buy-btn").onclick=buy;
     setupSticky();
     if(tracks.length) setupPlayers(tracks);
+  }
+
+  async function showGuide(p,images){
+    const price=money(p.price_cents,p.currency);
+    const was=Number(p.compare_at_cents)>p.price_cents?`<s class="was-price">${money(p.compare_at_cents,p.currency)}</s>`:"";
+    let cat=null;
+    if(p.category){
+      try{ const {data:c,error:ce}=await db.from("shop_categories").select("slug,name").eq("slug",p.category).maybeSingle(); if(!ce&&c) cat=c; }catch(_){}
+    }
+    const SEP='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+    root.innerHTML=`
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="shop.html">Shop</a>${cat?`${SEP}<a href="shop.html?cat=${encodeURIComponent(cat.slug)}">${esc(cat.name)}</a>`:""}${SEP}<span aria-current="page">${esc(p.title)}</span></nav>
+      <a class="back-link" href="shop.html#downloads"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m15 6-6 6 6 6"/></svg> Back to shop</a>
+      <div id="guide-root"></div>
+      <div class="pd-sticky" id="pd-sticky" aria-hidden="true">
+        <div class="pd-sticky-inner">
+          <div class="pd-sticky-info"><strong>${esc(p.title)}</strong><span class="price-wrap">${was}<span class="price">${price}</span></span></div>
+          <button class="button" id="sticky-buy-btn" data-buy type="button" tabindex="-1">Buy</button>
+        </div>
+      </div>`;
+    window.renderGuide(p,{root:$("guide-root"),images,price,was,esc,media,paragraphs,faq:faqFor(p),buy,track:(n,d)=>{ window.ylyTrack&&ylyTrack(n,d); }});
+    root.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",buy));
+    setupSticky();
   }
 
   // Fixierte Kaufleiste: erscheint, sobald der Haupt-Kaufbutton aus dem Bild gescrollt ist,
@@ -276,8 +307,8 @@
   }
 
   async function buy(){
-    const btns=[$("buy-btn"),$("sticky-buy-btn")].filter(Boolean);
-    btns.forEach(b=>{b.disabled=true;b.textContent="Redirecting …";});
+    const btns=[...new Set([$("buy-btn"),$("sticky-buy-btn"),...root.querySelectorAll("[data-buy]")])].filter(Boolean);
+    btns.forEach(b=>{b.dataset.t=b.dataset.t||b.textContent;b.disabled=true;b.textContent="Redirecting …";});
     window.ylyTrack&&ylyTrack("checkout-click",{id});
     try{
       const {data,error}=await db.functions.invoke("create-checkout",{body:{product_id:id}});
@@ -285,7 +316,7 @@
       if(!data?.url) throw new Error(data?.error||"Checkout link missing.");
       if(!/^https:\/\//i.test(String(data.url))) throw new Error("Invalid checkout link.");
       location.href=data.url;
-    }catch(e){alert("Checkout failed: "+(e.message||e));btns.forEach(b=>{b.disabled=false;b.textContent="Buy";});}
+    }catch(e){alert("Checkout failed: "+(e.message||e));btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.t||"Buy";});}
   }
 
   load();
