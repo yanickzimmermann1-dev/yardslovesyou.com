@@ -192,9 +192,31 @@
       setMask(fr.el.style); lit(fr, true);
 
       var bk = face("p3d-cb", w, h, "rotateY(180deg) translateZ(" + f2(d / 2) + "px)", [0, 0, -1]);
-      setMask(bk.el.style);
+      // Rueckseite: horizontal gespiegelte Silhouette (abgeschnittene Ecke erscheint von hinten oben links)
+      var mirrored = null;
+      try {
+        var im = tex.front, cw = im.naturalWidth || im.width, ch = im.naturalHeight || im.height;
+        var cv = document.createElement("canvas"); cv.width = cw; cv.height = ch;
+        var cx = cv.getContext("2d"); cx.translate(cw, 0); cx.scale(-1, 1); cx.drawImage(im, 0, 0, cw, ch);
+        mirrored = 'url("' + cv.toDataURL("image/png") + '")';
+      } catch (e) { mirrored = null; }
+      var bs = bk.el.style, hasMirrorChild = false;
+      if (mirrored) {
+        bs.webkitMaskImage = mirrored; bs.maskImage = mirrored;
+        bs.webkitMaskSize = "100% 100%"; bs.maskSize = "100% 100%";
+        bs.webkitMaskRepeat = "no-repeat"; bs.maskRepeat = "no-repeat";
+      } else {
+        // Fallback: Maske + Hintergrund auf gespiegeltem Kind, Inhalt separat ungespiegelt
+        hasMirrorChild = true;
+        var mc = document.createElement("span");
+        mc.style.cssText = "position:absolute;left:0;top:0;width:100%;height:100%;transform:scaleX(-1);background:" + (getComputedStyle(bk.el).background || "#222");
+        setMask(mc.style);
+        bk.el.style.background = "none";
+        bk.el.appendChild(mc);
+      }
       var pads = ""; for (var k = 0; k < 9; k++) pads += "<b></b>";
-      bk.el.innerHTML = '<span class="p3d-pads">' + pads + '</span><span class="p3d-bk-emb">YARDSLOVESYOU</span>';
+      var inner = '<span class="p3d-pads">' + pads + '</span><span class="p3d-bk-emb">YARDSLOVESYOU</span>';
+      if (hasMirrorChild) bk.el.insertAdjacentHTML("beforeend", inner); else bk.el.innerHTML = inner;
       lit(bk, true);
     }
 
