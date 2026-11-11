@@ -19,10 +19,26 @@
   const CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
   let products=[], cats=[], sel=null; // cats: nur Kategorien mit Produkten
 
+  // 3D-Modell (Spalte model3d, jsonb) – ohne Spalte/Wert bleibt alles wie bisher
+  const model=p=>{
+    let m=p&&p.model3d;
+    if(typeof m==="string"){ try{ m=JSON.parse(m); }catch(_){ m=null; } }
+    return m&&typeof m==="object"&&m.front&&(m.type==="book"||m.type==="card")?m:null;
+  };
+  let handles=[];
+  const mount3d=box=>{
+    handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];
+    if(!window.Product3D) return;
+    box.querySelectorAll(".cover[data-p3d]").forEach(c=>{
+      const p=products.find(x=>String(x.id)===c.dataset.p3d), m=model(p);
+      if(m) handles.push(window.Product3D.mount(c,m,{size:"small",alt:p.title}));
+    });
+  };
+
   const card=p=>`
       <article class="product">
         <a class="product-link" href="${link(p.id)}">
-          <div class="cover">
+          <div class="cover"${model(p)?` data-p3d="${esc(p.id)}"`:""}>
             ${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}
             ${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" loading="lazy">`:esc(p.cover_emoji||"")}
           </div>
@@ -54,7 +70,7 @@
 
   function renderGrid(animate){
     const box=$("products");
-    if(!products.length){box.className="product-grid";box.innerHTML='<div class="empty">No products yet. Check back soon.</div>';return;}
+    if(!products.length){handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];box.className="product-grid";box.innerHTML='<div class="empty">No products yet. Check back soon.</div>';return;}
     const grouped=cats.length>=2&&!sel;
     let list=products;
     if(cats.length>=2&&sel) list=products.filter(p=>p.category===sel);
@@ -74,6 +90,7 @@
       box.innerHTML=list.map(card).join("");
     }
     box.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy));
+    mount3d(box);
     if(animate&&!reduce&&box.animate){
       box.animate([{opacity:0,transform:"scale(.985) translateY(6px)"},{opacity:1,transform:"none"}],{duration:380,easing:"cubic-bezier(.34,1.2,.64,1)"});
       box.querySelectorAll(".rv").forEach(el=>el.classList.add("in"));
@@ -102,6 +119,7 @@
     const {data,error}=await db.from("shop_products").select("*").eq("published",true).order("created_at",{ascending:false});
     if(error){$("products").innerHTML='<div class="empty">Products could not be loaded. Please try again later.</div>';return;}
     products=data;
+    if(document.readyState==="loading") await new Promise(r=>document.addEventListener("DOMContentLoaded",r)); // defer-Skripte (product3d.js) sind danach bereit
     cats=products.length?await loadCategories():[];
     const bar=$("cat-bar");
     if(bar) bar.addEventListener("click",e=>{

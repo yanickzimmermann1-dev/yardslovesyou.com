@@ -65,12 +65,20 @@
   const id=new URLSearchParams(location.search).get("id");
   if(!id) return fail("Product not found.");
 
+  // 3D-Modell (Spalte model3d, jsonb): nur gültig mit Typ + Front-Textur
+  const parseModel=m=>{
+    if(typeof m==="string"){ try{ m=JSON.parse(m); }catch(_){ m=null; } }
+    return m&&typeof m==="object"&&m.front&&(m.type==="book"||m.type==="card")?m:null;
+  };
+  const CUBE='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5"/><path d="M12 12v9"/></svg>';
+
   async function load(){
     // select("*"): neue Spalten (badge, specs, preview_tracks …) werden automatisch mitgeladen
     const {data:p,error}=await db.from("shop_products").select("*").eq("id",id).eq("published",true).maybeSingle();
     if(error) return fail("Product could not be loaded.");
     if(!p) return fail("Product not found.");
 
+    p.model3d=parseModel(p.model3d);
     document.title=`${p.title} · YARDSLOVESYOU`;
     const images=[p.image_url,...(p.gallery||[])].filter(Boolean).map(media);
     setSeo(p,images);
@@ -108,8 +116,8 @@
 
       <section class="product-detail">
         <div class="pd-media">
-          <div class="pd-main">${images.length?`<img id="pd-main-img" src="${esc(images[0])}" alt="${esc(p.title)}">`:esc(p.cover_emoji||"")}</div>
-          ${images.length>1?`<div class="pd-thumbs">${images.map((u,i)=>`<button type="button" class="${i?"":"active"}" data-img="${esc(u)}" aria-label="Image ${i+1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join("")}</div>`:""}
+          <div class="pd-main${p.model3d?" pd-3d":""}" id="pd-main">${images.length?`<img id="pd-main-img" src="${esc(images[0])}" alt="${esc(p.title)}">`:esc(p.cover_emoji||"")}</div>
+          ${images.length>1||p.model3d?`<div class="pd-thumbs">${p.model3d?`<button type="button" class="pd-thumb-3d" id="pd-thumb-3d" hidden aria-label="3D view" title="3D view">${CUBE}</button>`:""}${images.length>1?images.map((u,i)=>`<button type="button" class="${i||p.model3d?"":"active"}" data-img="${esc(u)}" aria-label="Image ${i+1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join(""):""}</div>`:""}
         </div>
 
         <div class="pd-info">
@@ -163,9 +171,22 @@
       </div>`;
 
     // Galerie: Klick auf Vorschaubild wechselt das Hauptbild
-    root.querySelectorAll("[data-img]").forEach(b=>b.onclick=()=>{
+    // 3D-Modell: erster "Slide"; bis die Texturen geladen sind (oder falls sie fehlen) bleibt das normale Bild
+    let m3d=null;
+    const t3d=$("pd-thumb-3d");
+    const thumbs=[...root.querySelectorAll("[data-img]")];
+    const mark=on=>{ if(t3d) t3d.classList.toggle("active",on); thumbs.forEach(x=>x.classList.remove("active")); };
+    if(p.model3d&&window.Product3D&&$("pd-main")){
+      m3d=window.Product3D.mount($("pd-main"),p.model3d,{size:"large",alt:`${p.title} – 3D model, drag to rotate`,
+        onready:()=>{ if(t3d){ t3d.hidden=false; if(!thumbs.some(x=>x.classList.contains("active"))) t3d.classList.add("active"); } },
+        onfail:()=>{ m3d=null; if(t3d) t3d.hidden=true; const first=thumbs[0]; if(first) first.classList.add("active"); }});
+      if(t3d) t3d.onclick=()=>{ if(!m3d) return; m3d.show(); mark(true); };
+    }
+    thumbs.forEach(b=>b.onclick=()=>{
       $("pd-main-img").src=b.dataset.img;
-      root.querySelectorAll("[data-img]").forEach(x=>x.classList.toggle("active",x===b));
+      if(m3d) m3d.hide();
+      if(t3d) t3d.classList.remove("active");
+      thumbs.forEach(x=>x.classList.toggle("active",x===b));
     });
 
     root.querySelectorAll(".pd-video-ph").forEach(b=>b.onclick=()=>{

@@ -243,6 +243,7 @@
             if (active && active !== card) resetCard(active);
             active = card;
             if (!card) return;
+            if (card.querySelector('.p3d')) { resetCard(card); return; } // 3D-Modell dreht selbst: keine doppelte Neigung
             if (e.buttons !== 0) { resetCard(card); return; }
             var r = card.getBoundingClientRect();
             if (!r.width || !r.height) return;

@@ -74,7 +74,7 @@
           (firstFree >= 0 ? '<button class="outline gd-free-btn" type="button" id="gd-free-btn">' + I.book + " Read a free chapter</button>" : "") + "</div>" +
           '<p class="gd-note">' + I.dl + " Instant download after payment. " + esc(g.chapters_note || "") + "</p>" +
         "</div>" +
-        '<div class="gd-scene" id="gd-scene"><div class="gd-float"><div class="gd-book" id="gd-book">' +
+        '<div class="gd-scene' + (p.model3d ? " gd-has3d" : "") + '" id="gd-scene"><div class="gd-float"><div class="gd-book" id="gd-book">' +
           '<div class="gd-face gd-front" role="img" aria-label="Cover of ' + esc(p.title) + '" style="' + coverStyle + '"></div>' +
           '<div class="gd-face gd-spine" aria-hidden="true"><span>' + esc(p.title) + "</span></div>" +
           '<div class="gd-face gd-edge" aria-hidden="true"></div>' +
@@ -144,8 +144,13 @@
       counters.forEach(function (el) { cio.observe(el); });
     }
 
-    /* ---------- Buch: schweben + Neigung per Maus ---------- */
+    /* ---------- 3D-Buch (Product3D); bis geladen / bei Fehler bleibt das einfache CSS-Buch ---------- */
     var scene = q("#gd-scene"), book = q("#gd-book");
+    var m3d = p.model3d;
+    if (typeof m3d === "string") { try { m3d = JSON.parse(m3d); } catch (e) { m3d = null; } }
+    if (m3d && m3d.front && scene && window.Product3D) {
+      window.Product3D.mount(scene, m3d, { size: "large", alt: p.title + " – 3D book, drag to rotate" });
+    }
     if (!reduce && scene && book && window.matchMedia && matchMedia("(hover:hover) and (pointer:fine)").matches) {
       var raf = 0, tx = 0, ty = 0;
       var apply = function () { raf = 0; book.style.setProperty("--ry", (-22 + tx * 16) + "deg"); book.style.setProperty("--rx", (5 - ty * 12) + "deg"); };

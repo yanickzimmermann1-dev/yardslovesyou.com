@@ -1,0 +1,74 @@
+/* product3d.css – 3D-Produktmodelle (Buch, Karte) */
+.p3d{position:absolute;inset:0;z-index:1;overflow:hidden;opacity:0;transition:opacity .45s ease;outline:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.p3d[hidden]{display:none}
+.p3d.p3d-ready{opacity:1}
+.p3d-large{cursor:grab;touch-action:pan-y}
+.p3d-large.p3d-drag{cursor:grabbing}
+.p3d-small{pointer-events:none}
+.p3d:focus-visible{outline:2px solid #9d7bff;outline-offset:-3px;border-radius:inherit}
+.p3d-on > img,.p3d-on > .gd-float{visibility:hidden}
+.p3d-on .badge{z-index:3}
+
+.p3d-glow{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 62% 56% at 50% 46%,rgba(157,123,255,.26),rgba(124,92,230,.10) 48%,transparent 72%)}
+.p3d-shadow{position:absolute;pointer-events:none;border-radius:50%;filter:blur(5px);will-change:transform,opacity;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.85) 0,rgba(0,0,0,.45) 42%,transparent 72%)}
+.p3d-scene{position:absolute;inset:0;pointer-events:none}
+.p3d-obj{position:absolute;transform-style:preserve-3d;will-change:transform;--u:3px;--el:17%}
+.p3d-f{position:absolute;left:50%;top:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.p3d-sh{position:absolute;inset:0;background:#0a0612;opacity:0;pointer-events:none}
+.p3d-sheen{position:absolute;inset:0;pointer-events:none;opacity:0;background-size:300% 100%;background-repeat:no-repeat;
+  background-image:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.12) 45%,rgba(255,255,255,.4) 50%,rgba(255,255,255,.12) 55%,transparent 60%)}
+
+/* ---------- Buch ---------- */
+.p3d-front{box-shadow:inset 0 0 calc(var(--u)*3) rgba(40,20,90,.14)}
+.p3d-back{
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 3px),
+    repeating-linear-gradient(90deg,rgba(60,30,110,.07) 0 1px,transparent 1px 2px),
+    linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,0) 42%,rgba(45,24,100,.24)),
+    var(--bc,#a68fe3)}
+.p3d-bk-mark{position:absolute;left:0;right:0;top:calc(var(--u)*22);text-align:center;font:italic 600 calc(var(--u)*10)/1 Georgia,"Times New Roman",serif;color:rgba(61,46,109,.72);letter-spacing:calc(var(--u)*-.2)}
+.p3d-bk-rule{position:absolute;left:50%;top:calc(var(--u)*38);width:calc(var(--u)*10);height:max(1px,calc(var(--u)*.7));margin-left:calc(var(--u)*-5);background:rgba(61,46,109,.5)}
+.p3d-bk-line{position:absolute;left:12%;right:12%;top:calc(var(--u)*43);text-align:center;font:500 calc(var(--u)*3.6)/1.35 "DM Sans",system-ui,sans-serif;color:rgba(61,46,109,.7)}
+.p3d-bk-code{position:absolute;right:calc(var(--u)*9);bottom:calc(var(--u)*8);width:calc(var(--u)*24);height:calc(var(--u)*14);border-radius:calc(var(--u)*.8);
+  background:
+    repeating-linear-gradient(90deg,#1b1330 0 calc(var(--u)*.3),transparent calc(var(--u)*.3) calc(var(--u)*.7),#1b1330 calc(var(--u)*.7) calc(var(--u)*1.3),transparent calc(var(--u)*1.3) calc(var(--u)*1.6),#1b1330 calc(var(--u)*1.6) calc(var(--u)*1.8),transparent calc(var(--u)*1.8) calc(var(--u)*2.4)) content-box,
+    #f4f0fb;
+  padding:calc(var(--u)*1.6) calc(var(--u)*1.8) calc(var(--u)*3.4)}
+.p3d-spine{display:flex;align-items:center;justify-content:center}
+.p3d-spine::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,8,60,.28),rgba(255,255,255,.14) 30%,rgba(255,255,255,0) 55%,rgba(20,8,60,.3))}
+.p3d-sp-t{position:relative;writing-mode:vertical-rl;white-space:nowrap}
+.p3d-sp-t b{font:600 min(calc(var(--u)*5),90%)/1 Georgia,"Times New Roman",serif;letter-spacing:.08em;color:rgba(55,40,105,.92)}
+.p3d-sp-round{display:none}
+.p3d-pg{background:#f3ecdc}
+.p3d-pg-h{background:
+  linear-gradient(90deg,rgba(60,40,10,.18),transparent 12%,transparent 88%,rgba(60,40,10,.12)),
+  repeating-linear-gradient(180deg,#f3ecdc 0 .7px,#ddd2b8 .7px 1.3px)}
+.p3d-pg-v{background:
+  linear-gradient(180deg,rgba(60,40,10,.16),transparent 10%,transparent 90%,rgba(60,40,10,.16)),
+  repeating-linear-gradient(90deg,#f3ecdc 0 .7px,#ddd2b8 .7px 1.3px)}
+
+/* ---------- Karte ---------- */
+.p3d-edge{background:hsl(240 6% var(--el))}
+.p3d-cf,.p3d-cb{overflow:hidden}
+.p3d-cb{background:
+  linear-gradient(115deg,rgba(255,255,255,.07),transparent 40%),
+  linear-gradient(160deg,#2a2a2e,#1d1d20)}
+.p3d-pads{position:absolute;left:9%;top:3.4%;width:75%;height:10.5%;display:flex;gap:2.4%}
+.p3d-pads b{flex:1;border-radius:6% / 5%;background:linear-gradient(180deg,#ecd58f,#b98f38 55%,#dcbb68);box-shadow:inset 0 0 0 1px rgba(255,235,170,.35),0 0 0 1px rgba(0,0,0,.5)}
+.p3d-bk-emb{position:absolute;left:0;right:0;top:62%;text-align:center;font:700 calc(var(--u)*7.4)/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.2em;padding-left:.2em;
+  color:rgba(255,255,255,.07);text-shadow:0 -1px 0 rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.06)}
+
+@media(prefers-reduced-motion:reduce){.p3d{transition:none}}
+
+/* ---------- Einbindung: Produktseite, Guide, Galerie ---------- */
+.pd-main.pd-3d{position:relative}
+.pd-thumbs .pd-thumb-3d{display:flex;align-items:center;justify-content:center;color:var(--text,#f3effa);background:radial-gradient(circle at 50% 40%,rgba(157,123,255,.28),rgba(255,255,255,.04))}
+.pd-thumbs .pd-thumb-3d[hidden]{display:none}
+@media(max-width:860px){.pd-main.pd-3d{aspect-ratio:auto;height:440px}}
+@media(max-width:600px){.pd-main.pd-3d{height:400px}}
+.gd-scene.gd-has3d{position:relative;min-height:500px;padding:0}
+.gd-scene.gd-has3d .p3d{opacity:0}
+.gd-scene.gd-has3d .p3d.p3d-ready{opacity:1}
+@media(max-width:860px){.gd-scene.gd-has3d{min-height:400px;padding:0}}
