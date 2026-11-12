@@ -1,0 +1,60 @@
+/* reviews.css – Sterne, Bewertungsliste, Bewertungs-Widget (Erfolgsseite), Admin-Tab */
+.rv-stars{position:relative;display:inline-block;line-height:0;vertical-align:middle;white-space:nowrap}
+.rv-stars-bg,.rv-stars-fg{display:inline-flex;gap:2px}
+.rv-stars-bg{color:rgba(170,160,183,.28)}
+.rv-stars-fg{position:absolute;left:0;top:0;overflow:hidden;color:#ffcf8a}
+.rv-stars svg{display:block;flex:none}
+
+.rv-sum{display:inline-flex;align-items:center;gap:8px;margin:10px 0 0;padding:4px 0;background:none;border:0;color:var(--muted);font:600 14px 'DM Sans',sans-serif;cursor:pointer}
+.rv-sum:hover{color:var(--text)}
+.rv-sum:focus-visible{outline:2px solid var(--purple);outline-offset:3px;border-radius:6px}
+.rv-sum b{color:var(--text)}
+
+.rv-section{scroll-margin-top:90px}
+.rv-top{display:grid;gap:22px;max-width:760px;margin-bottom:22px}
+.rv-avg{display:flex;align-items:center;gap:14px}
+.rv-avg-num{font:700 44px/1 'Space Grotesk',sans-serif;letter-spacing:-1px}
+.rv-avg-meta{display:grid;gap:6px;color:var(--muted);font-size:13px}
+.rv-dist{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.rv-dist li{display:grid;grid-template-columns:26px 1fr 34px;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.rv-bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.rv-bar i{display:block;height:100%;border-radius:99px;background:#ffcf8a}
+.rv-dist em{font-style:normal;text-align:right}
+@media(min-width:700px){.rv-top{grid-template-columns:240px 1fr;align-items:center;gap:36px}}
+
+.rv-list{display:grid;gap:12px;max-width:760px;margin:0;padding:0;list-style:none}
+.rv-item{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.rv-item-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.rv-item h3{margin:8px 0 0;font:600 16px 'Space Grotesk',sans-serif}
+.rv-item p{margin:6px 0 0;color:var(--muted);line-height:1.65;font-size:14px;overflow-wrap:anywhere}
+.rv-item-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:10px;font-size:12px;color:var(--muted)}
+.rv-item-meta strong{color:var(--text);font-weight:600}
+.rv-verified{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:99px;background:rgba(158,240,206,.12);color:var(--green);font-size:11px;font-weight:700}
+.rv-more{margin-top:14px}
+
+/* Bewertungs-Widget */
+.rv-w{margin-top:14px;padding:14px 16px;border:1px dashed var(--line);border-radius:16px;background:rgba(23,19,31,.6);max-width:560px;flex-basis:100%;width:100%;box-sizing:border-box}
+.rv-w-h{margin:0 0 8px;font-size:14px;color:var(--muted)}
+.rv-w-h strong{color:var(--text);overflow-wrap:anywhere}
+.rv-pick{display:inline-flex;gap:4px}
+.rv-pick button{display:block;padding:4px;border:0;background:none;color:rgba(170,160,183,.35);cursor:pointer;border-radius:10px;line-height:0;transition:transform .12s,color .12s}
+.rv-pick button.on{color:#ffcf8a}
+.rv-pick button:hover{transform:scale(1.12)}
+.rv-pick button:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+.rv-pick svg{width:34px;height:34px;display:block}
+.rv-form{display:grid;gap:10px;margin-top:12px}
+.rv-form[hidden]{display:none}
+.rv-form input,.rv-form textarea{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:11px 12px;font:15px 'DM Sans',sans-serif;resize:vertical}
+.rv-form input:focus,.rv-form textarea:focus{outline:2px solid var(--purple);outline-offset:1px}
+.rv-msg{margin:10px 0 0;min-height:0}
+.rv-msg:empty{display:none}
+.rv-msg.danger{color:#ffb8c7}
+.rv-thanks{margin:0;color:var(--green);font-size:14px}
+
+/* Admin */
+.oa-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.oa-tabs .active{border-color:var(--purple);color:var(--purple)}
+.rv-count{display:inline-block;min-width:18px;margin-left:6px;padding:0 6px;border-radius:99px;background:var(--purple);color:#180e23;font-size:11px;font-weight:700;line-height:18px;text-align:center}
+.st-badge.bad{background:rgba(255,184,199,.15);color:#ffb8c7}
+.rv-adm-body{margin:10px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text);font-size:14px;line-height:1.6}
+.rv-adm-body strong{display:block;margin-bottom:2px}

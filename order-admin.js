@@ -99,5 +99,69 @@
     inp.value = "";
   });
 
+    // ---------- Reviews ----------
+  let reviews = [], rvFilter = "pending", rvLoaded = false;
+  const rvStatus = (t, bad) => { const el = $("rv-status"); el.textContent = t; el.classList.toggle("danger", !!bad); };
+  const RV_LABEL = { pending: "Pending", approved: "Approved", rejected: "Rejected" };
+  const RV_CLASS = { pending: "", approved: "done", rejected: "bad" };
+
+  function rvCount() {
+    const n = reviews.filter(r => r.status === "pending").length, el = $("rv-pending");
+    el.textContent = n; el.hidden = !n;
+  }
+  function renderReviews() {
+    const list = reviews.filter(r => r.status === rvFilter);
+    $("rv-list").innerHTML = list.length ? list.map(r => `
+      <article class="oa-card" data-id="${esc(r.id)}">
+        <div class="oa-head"><span>${window.YLYReviews.stars(r.rating, 18)}</span>
+          <span class="st-badge ${RV_CLASS[r.status] || ""}">${esc(RV_LABEL[r.status] || r.status)}</span></div>
+        <p class="oa-sub">${esc(r.product_title)}<br>${esc(r.display_name)} · ${esc(fmt(r.created_at))}</p>
+        ${r.title || r.body ? `<div class="rv-adm-body">${r.title ? `<strong>${esc(r.title)}</strong>` : ""}${esc(r.body || "")}</div>` : '<p class="oa-sub">No text, rating only.</p>'}
+        <div class="oa-acts">
+          <button type="button" class="button" data-r="approved"${r.status === "approved" ? " disabled" : ""}>Approve</button>
+          <button type="button" class="outline" data-r="rejected"${r.status === "rejected" ? " disabled" : ""}>Reject</button>
+        </div>
+        <p class="status oa-msg" role="status"></p>
+      </article>`).join("") : '<div class="empty">No ' + esc(RV_LABEL[rvFilter].toLowerCase()) + " reviews.</div>";
+  }
+  async function loadReviews() {
+    rvStatus("Loading …");
+    try { reviews = (await call({ action: "reviews-list" })).reviews || []; rvLoaded = true; rvStatus(""); rvCount(); renderReviews(); }
+    catch (e) { rvStatus(e.message, true); }
+  }
+  function tab(name) {
+    const rv = name === "reviews";
+    $("oa-orders").classList.toggle("hidden", rv);
+    $("oa-reviews").classList.toggle("hidden", !rv);
+    document.querySelectorAll("#oa-tabs button").forEach(b => {
+      const on = b.dataset.tab === name; b.classList.toggle("active", on); b.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    if (rv && !rvLoaded) loadReviews();
+  }
+  $("oa-tabs").addEventListener("click", e => {
+    const b = e.target.closest("[data-tab]"); if (!b) return;
+    tab(b.dataset.tab);
+    try { history.replaceState(null, "", b.dataset.tab === "reviews" ? "#reviews" : location.pathname + location.search); } catch (_) {}
+  });
+  $("rv-filters").addEventListener("click", e => {
+    const b = e.target.closest("[data-f]"); if (!b) return;
+    rvFilter = b.dataset.f;
+    document.querySelectorAll("#rv-filters button").forEach(x => x.classList.toggle("active", x === b));
+    renderReviews();
+  });
+  $("rv-reload").addEventListener("click", loadReviews);
+  $("rv-list").addEventListener("click", async e => {
+    const b = e.target.closest("[data-r]"); if (!b) return;
+    const card = b.closest(".oa-card"), id = Number(card.dataset.id), msg = card.querySelector(".oa-msg");
+    b.disabled = true; msg.textContent = "Saving …"; msg.classList.remove("danger");
+    try {
+      await call({ action: "review-set", id, status: b.dataset.r });
+      const r = reviews.find(x => x.id === id); if (r) r.status = b.dataset.r;
+      rvCount(); renderReviews();
+    } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); b.disabled = false; }
+  });
+  window.addEventListener("hashchange", () => { if (location.hash === "#reviews") tab("reviews"); });
+  if (location.hash === "#reviews") tab("reviews"); else loadReviews();
+
   load();
 })();

@@ -206,6 +206,7 @@
     $("sticky-buy-btn").onclick=buy;
     setupSticky(); promoNote();
     if(tracks.length) setupPlayers(tracks);
+    loadReviews(p);
   }
 
   async function showGuide(p,images){
@@ -229,6 +230,12 @@
     window.renderGuide(p,{root:$("guide-root"),images,price,was,esc,media,paragraphs,faq:faqFor(p),buy,cartAttrs:cartAttrs(p,images),track:(n,d)=>{ window.ylyTrack&&ylyTrack(n,d); }});
     root.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",buy));
     setupSticky(); promoNote();
+    loadReviews(p);
+  }
+
+  // Bewertungen (reviews.js): Zusammenfassung + Sektion nur, wenn freigegebene Bewertungen existieren
+  function loadReviews(p){
+    if(window.YLYReviews) window.YLYReviews.mountProduct({db,productId:p.id,root,esc}).catch(()=>{});
   }
 
   // Fixierte Kaufleiste: erscheint, sobald der Haupt-Kaufbutton aus dem Bild gescrollt ist,

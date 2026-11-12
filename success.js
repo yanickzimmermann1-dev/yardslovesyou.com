@@ -52,11 +52,13 @@ document.addEventListener("DOMContentLoaded", () => {
         ${multi ? `
         <ul class="dl-list" style="list-style:none;margin:0 0 18px;padding:0;display:grid;gap:10px;max-width:560px">
           ${items.map(it => `
-          <li style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:16px;background:var(--panel)">
+          <li style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:16px;background:var(--panel)">
             <strong style="min-width:0;overflow-wrap:anywhere">${esc(it.title)}</strong>
             <button class="button dl-item" type="button" data-pid="${esc(it.product_id)}">${dlIcon} Download</button>
+            <div class="rv-slot" data-pid="${esc(it.product_id)}" data-title="${esc(it.title)}"></div>
           </li>`).join("")}
-        </ul>` : `<button class="button" id="get-download" type="button">Download ZIP</button>`}
+        </ul>` : `<button class="button" id="get-download" type="button">Download ZIP</button>
+        ${items[0] ? `<div class="rv-slot" data-pid="${esc(items[0].product_id)}" data-title="${esc(items[0].title || data.product)}"></div>` : ""}`}
         <p id="download-status" class="status" role="status"></p>
         <p class="muted">A confirmation with your download link has been sent to <strong style="color:var(--text)">${esc(data.email)}</strong>.<br>
         You can come back to this page any time to download your files again.</p>
@@ -79,6 +81,20 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       if (multi) box.querySelectorAll(".dl-item").forEach(b => { b.onclick = () => download(b, b.dataset.pid); });
       else $("get-download").onclick = () => download($("get-download"), null);
+
+      // Bewertungs-Widgets (ausgeblendet fuer bereits bewertete Produkte)
+      const slots = [...box.querySelectorAll(".rv-slot")];
+      if (slots.length && window.YLYReviews) {
+        let reviewed = [];
+        try {
+          const c = await db.functions.invoke("submit-review", { body: { session_id: sessionId, check: true } });
+          if (Array.isArray(c.data?.reviewed)) reviewed = c.data.reviewed;
+        } catch (_) {}
+        slots.forEach(s => {
+          if (reviewed.includes(s.dataset.pid)) { s.remove(); return; }
+          window.YLYReviews.widget(s, { db, sessionId, productId: s.dataset.pid, title: s.dataset.title });
+        });
+      }
       return;
     }
 
