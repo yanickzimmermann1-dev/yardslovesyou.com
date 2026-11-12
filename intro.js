@@ -27,14 +27,12 @@
     var swap = function () {
       try { ov.style.display = 'none'; } catch (e) {}
       done();
-      try { body.style.transformOrigin = '50% 0'; body.style.animation = 'yiArrive .5s cubic-bezier(.22,1,.36,1) both'; } catch (e) {}
-      setTimeout(function () { try { body.style.animation = ''; } catch (e) {} }, 600);
     };
     if (window.YLYFX && window.YLYFX.blackout) {
-      try { window.YLYFX.blackout({ inMs: 180, holdMs: 200, outMs: 320, onBlack: swap }); setTimeout(swap, 900); return; } catch (e) {}
+      try { window.YLYFX.blackout({ inMs: 260, holdMs: 160, outMs: 380, onBlack: swap }); setTimeout(swap, 900); return; } catch (e) {}
     }
-    try { ov.style.transition = 'opacity .3s'; ov.style.opacity = '0'; } catch (e) {}
-    setTimeout(swap, 320);
+    try { ov.style.transition = 'opacity .38s cubic-bezier(.42,0,.58,1)'; ov.style.opacity = '0'; } catch (e) {}
+    setTimeout(swap, 400);
   }
 
   function build() {

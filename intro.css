@@ -28,7 +28,6 @@ html.intro-on .hero .muted,html.intro-on .hero .hero-actions{animation:none!impo
 .yi-skip{position:absolute;right:16px;bottom:16px;z-index:2;background:none;border:0;color:#aaa0b7;font:500 13px 'DM Sans',sans-serif;
   padding:10px 12px;cursor:pointer;letter-spacing:.04em}
 .yi-skip:hover,.yi-skip:focus-visible{color:#fff;outline:1px solid rgba(182,138,255,.6);outline-offset:2px;border-radius:8px}
-@keyframes yiArrive{from{opacity:.4;transform:scale(1.04)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){
   .yi-l{animation:none;opacity:1}.yi-word{animation:none}.yi-sweep,.yi-p{display:none}
   .yi-glow{animation:none;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(143,31,224,.5),rgba(91,17,153,.2) 50%,transparent 75%)}

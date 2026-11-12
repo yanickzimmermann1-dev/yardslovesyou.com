@@ -25,6 +25,11 @@
 @keyframes cartBump{0%{transform:scale(1)}35%{transform:scale(1.65)}100%{transform:scale(1)}}
 @keyframes cartPulse{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
 
+/* Desktop: Button liegt absolut rechts in der Kopfzeile, ::after reserviert den Platz von Anfang an (kein Verrutschen der Navigation) */
+@media(min-width:721px){
+  .topbar::after{content:"";flex:0 0 44px;height:44px;order:99}
+  .topbar>.cart-btn:not(.cart-float){position:absolute;right:clamp(20px,6vw,90px);top:17px;margin:0}
+}
 /* schwebend: Phone (rechts ueber der Tab-Leiste, nur mit Inhalt) oder Seiten ohne Topbar */
 .cart-btn.cart-float{
   position:fixed;z-index:39;right:16px;top:14px;

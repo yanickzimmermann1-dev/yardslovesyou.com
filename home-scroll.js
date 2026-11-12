@@ -28,7 +28,7 @@
        ausgeschnittene Sprites (hero-chain.png, hero-gem.png) auf einem Hintergrund ohne Diamant (bg-clean-*.jpg).
        Sprite-Koordinaten = Pixel des 1920x1080-Hintergrunds, verschoben um (1237,0). */
     var hero = $('.hero'), dia = null, pend = null, chainEl = null, gemEl = null, gemBright = null, glowEl = null, spkHost = null;
-    var theta = 0, omega = 0, heroLanded = false, gemVisible = false, lastMoveT = 0, heroKey = '', heroHidden = false;
+    var theta = 0, omega = 0, gemVisible = false, lastMoveT = 0, heroKey = '', heroHidden = false;
     var PX = 453, GX = 158, GY = 595, GBOX_Y = 448, GLX = 158, GLY = 147;   // Drehpunkt Kette, Mitte des Diamanten
     var SPK_COLS = ['#c2eee2', '#84cdbd', '#58a797', '#ffffff', '#ffffff', '#e8fbf6'];
     var SPK_PTS = [[158, 107], [113, 112], [208, 112], [153, 152], [123, 142], [193, 147], [168, 192], [98, 127], [150, 130]];
@@ -43,40 +43,40 @@
       pend = dia.firstChild; chainEl = dia.querySelector('.hs-chain'); gemEl = dia.querySelector('.hs-gem');
       gemBright = dia.querySelector('.hs-bright'); glowEl = dia.querySelector('.hs-glow'); spkHost = dia.querySelector('.hs-spk-host');
     }
-    function land(u) {
-      if (u <= 0) return 0;
-      if (u < 0.7) { var a = u / 0.7; return a * a; }
-      if (u < 0.86) return 1 - 0.07 * Math.sin(Math.PI * (u - 0.7) / 0.16);
-      return 1 - 0.02 * Math.sin(Math.PI * (u - 0.86) / 0.14);
+    /* Kein Landen mehr: Der Diamant schwingt, solange der Hero im Bild ist. Beim Hinausscrollen sinkt er ein Stück,
+       blendet aus (Opacity -> 0), wird leicht unscharf und kleiner und ist komplett unsichtbar, bevor er die
+       „Hear the difference“-Sektion erreicht. Vollständig umkehrbar (alles wird aus dem Scrollstand berechnet). */
+    function fadeRange() {
+      var yEnd = Math.max(200, G.nextTop - (G.by + 90 * G.s) + 10);
+      var span = clamp(yEnd, 200, 520);
+      return [yEnd - span, yEnd];
     }
     function heroFrame(dt, dy, force) {
       if (!dia || !G.s) return false;
-      var t = (y - G.heroTop) / Math.max(1, G.heroH);
-      var u = reduce ? 0 : clamp((t - 0.12) / 0.6, 0, 1), k = 1 - u;
-      var offY = G.nextTop - y;                       // Abschnitt unter dem Hero, Bildschirmposition
-      var gone = u >= 1 && offY + G.ty0 + 90 < 0;     // gelandet und nach oben aus dem Bild gescrollt
-      if (gone) { if (!heroHidden) { heroHidden = true; dia.style.visibility = 'hidden'; setLive(dia, false); } return false; }
+      var fr = fadeRange(), u = clamp((y - fr[0]) / Math.max(1, fr[1] - fr[0]), 0, 1), us = smooth(u);
+      if (u >= 1) { if (!heroHidden) { heroHidden = true; dia.style.visibility = 'hidden'; dia.style.opacity = '0'; setLive(dia, false); } return false; }
       if (heroHidden) { heroHidden = false; dia.style.visibility = ''; heroKey = ''; }
+      var k = 1 - 0.6 * us;
       var th0 = reduce ? 0 : 4 * Math.sin(y / 120) * k;
       if (!reduce) {
         omega += (-40 * (theta - th0) - 2.4 * omega) * dt - dy * 1.0 * (0.3 + 0.7 * k);
         theta = clamp(theta + omega * dt, -26, 26);
       }
-      var L = land(u), sc = G.s + (G.sl - G.s) * L;
-      var gx = G.bx + (G.tx - G.bx) * L, gy = G.by + (G.ty0 + offY - G.by) * L;
+      var sc = G.s * (1 - 0.18 * us), gx = G.bx, gy = G.by + 60 * us;
       var ry = reduce ? 0 : 24 * Math.sin(y / 230) * k;
-      var sq = (u > 0.68 && u < 0.8) ? 0.07 * Math.sin(Math.PI * (u - 0.68) / 0.12) : 0;
-      var key = gx.toFixed(1) + '|' + gy.toFixed(1) + '|' + sc.toFixed(3) + '|' + (theta * k).toFixed(2) + '|' + ry.toFixed(1) + '|' + sq.toFixed(3) + '|' + u.toFixed(3);
+      var op = 1 - us, bl = 6 * us;
+      var key = gx.toFixed(1) + '|' + gy.toFixed(1) + '|' + sc.toFixed(3) + '|' + (theta * k).toFixed(2) + '|' + ry.toFixed(1) + '|' + op.toFixed(3);
       if (key !== heroKey || force) {
         heroKey = key;
         dia.style.transform = 'translate3d(' + (gx - GX * sc).toFixed(1) + 'px,' + (gy - GY * sc).toFixed(1) + 'px,0) scale(' + sc.toFixed(4) + ')';
+        dia.style.opacity = op.toFixed(3);
+        dia.style.filter = bl > 0.05 ? 'blur(' + bl.toFixed(2) + 'px)' : '';
         pend.style.transform = 'rotate(' + (theta * k).toFixed(2) + 'deg)';
-        gemEl.style.transform = 'perspective(520px) rotateY(' + ry.toFixed(1) + 'deg) rotate(' + (14 * u).toFixed(2) + 'deg) scale(' + (1 + sq * 0.6).toFixed(3) + ',' + (1 - sq).toFixed(3) + ')';
-        chainEl.style.opacity = clamp(1 - u * 1.6, 0, 1).toFixed(2);
-        gemBright.style.opacity = clamp(L, 0, 1).toFixed(2);
-        glowEl.style.opacity = (0.55 - 0.3 * clamp(L, 0, 1)).toFixed(2);
+        gemEl.style.transform = 'perspective(520px) rotateY(' + ry.toFixed(1) + 'deg)';
+        chainEl.style.opacity = '1';
+        gemBright.style.opacity = (0.35 * (0.5 + 0.5 * Math.sin(y / 160))).toFixed(2);
+        glowEl.style.opacity = '0.55';
       }
-      heroLanded = u >= 1;
       setLive(dia, !reduce);
       return !reduce && (Math.abs(omega) > 0.08 || Math.abs(theta - th0) > 0.05);
     }
@@ -217,7 +217,7 @@
         flashFired = true;
         var fast = Math.abs(vel) > 3000 || root.classList.contains('intro-on');
         if (window.YLYFX && YLYFX.blackout && !fast) {
-          try { YLYFX.blackout({ inMs: 140, holdMs: 180, outMs: 260 }).then(burstAbout, burstAbout); } catch (e) { burstAbout(); }
+          try { YLYFX.blackout({ inMs: 220, holdMs: 120, outMs: 380 }).then(burstAbout, burstAbout); } catch (e) { burstAbout(); }
         } else burstAbout();
       } else if (y > G.aboutTop + vh) flashFired = true;
     }
@@ -274,7 +274,7 @@
     function init() {
       buildHero();
       if (reduce) {
-        if (dia) { measure(); heroFrame(0.016, 0, true); window.addEventListener('resize', function () { measure(); heroFrame(0.016, 0, true); }, { passive: true }); }
+        if (dia) { measure(); heroFrame(0.016, 0, true); var rr = 0, rf = function () { if (rr) return; rr = requestAnimationFrame(function () { rr = 0; y = window.pageYOffset || 0; measure(); heroFrame(0.016, 0, true); }); }; window.addEventListener('resize', rf, { passive: true }); window.addEventListener('scroll', rf, { passive: true }); window.addEventListener('load', rf); }
         return;
       }
       if ('IntersectionObserver' in window) {

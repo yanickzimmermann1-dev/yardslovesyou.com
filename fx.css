@@ -1,8 +1,12 @@
 /* fx.css – Blackout-Layer (schwarz + violette Partikel), Seitenübergänge */
-#ylyfx{position:fixed;inset:0;z-index:100004;background:#07040c;opacity:0;pointer-events:none;overflow:hidden;contain:strict}
+#ylyfx{position:fixed;inset:0;z-index:100004;background:#07040c;opacity:0;pointer-events:none;overflow:hidden;contain:strict;will-change:opacity}
 #ylyfx canvas{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
 html.fx-arrive::before{content:"";position:fixed;inset:0;z-index:100003;background:#07040c;pointer-events:none;
-  animation:fxArriveSafe .25s .8s forwards}
+  animation:fxArriveSafe .3s 1.3s forwards}
 @keyframes fxArriveSafe{to{opacity:0;visibility:hidden}}
+/* Ankunft: Seite bleibt unsichtbar (kein Layout-Shift sichtbar/zählbar), bis alles final steht */
+html.fx-hold body>*:not(#ylyfx){visibility:hidden}
+/* Ankunft: Hero-Einblendung überspringen, Elemente starten im Endzustand */
+html.fx-arrived .hero h1,html.fx-arrived .hero .eyebrow,html.fx-arrived .hero .muted,html.fx-arrived .hero .hero-actions{animation:none!important}
 .fx-burst{position:fixed;left:0;top:0;width:0;height:0;z-index:100003;pointer-events:none}
 .fx-burst i{position:absolute;left:0;top:0;border-radius:50%;opacity:0;will-change:transform,opacity}

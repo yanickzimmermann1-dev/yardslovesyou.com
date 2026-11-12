@@ -80,6 +80,7 @@
 
       /* ---------- Einblenden beim Scrollen ---------- */
       var RV_SEL = '.section-head, .product, .service-card, .track, .cp, .free-nav a, .pd-section, .product-detail, .mc, .drop, .free-kit, .acc-card, .steps li, .upload-card, .bl, .cm, .bl-cta, .about-box, .legal, .pf-head, .fineprint, .home-section > .section-head, .service-grid > *, .mc-tiles > *';
+      var arrived = root.classList.contains('fx-arrived');
       var RV_SKIP = '.pd-sticky, .live-pill, dialog, .cm-roll, .bl-grid';
 
       if (!reduce && 'IntersectionObserver' in window) {
@@ -108,6 +109,11 @@
               if (el.classList.contains('hero')) continue;
               if (el.hasAttribute('data-hs')) continue; // home-scroll.js animiert dieses Element selbst
               if (el.closest(RV_SKIP)) continue;
+              // Ankunft per Seitenübergang: Elemente im ersten Viewport starten im Endzustand (kein Einblenden/Verschieben)
+              if (arrived && performance.now() < 3000) {
+                var br = el.getBoundingClientRect();
+                if (br.bottom > 0 && br.top < window.innerHeight) { el.dataset.rv = '1'; continue; }
+              }
               found.push(el);
             }
             // Gruppen je Elternelement für die Staffelung

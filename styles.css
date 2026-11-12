@@ -1515,8 +1515,8 @@ body::before{
    ===================================================================== */
 main.wrap{position:relative}
 .live-pill{
-  position:relative;top:auto;right:auto;z-index:3;
-  width:fit-content;margin:12px 0 12px auto;
+  position:absolute;top:10px;right:0;z-index:3;
+  width:fit-content;margin:0;
   display:none;align-items:center;gap:7px;
   padding:7px 12px;border-radius:999px;
   background:#0f0c15cc;border:1px solid #ff5d7a55;backdrop-filter:blur(8px);
@@ -1772,7 +1772,7 @@ html.js-motion .hero .hero-actions{animation-delay:.32s}
   .footer-links a,.footer-social a{display:inline-flex;align-items:center;min-height:32px}
 
   /* LIVE-Pill: im Fluss statt absolut, ueberlappt nie Kopfzeile oder Anmeldung */
-  .live-pill{position:relative;top:auto;right:auto;margin:12px 0 0 auto;width:fit-content}
+  .live-pill{position:absolute;top:6px;right:0;margin:0;width:fit-content}
   .cm-subbar{padding-top:0}
   .cm-hero .cm-auth{margin-top:12px}
 }
