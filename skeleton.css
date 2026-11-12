@@ -1,0 +1,47 @@
+/* skeleton.css – Platzhalter beim Laden (.sk) + Blur-up für Bilder (.bu). Kein Inline-Code (strikte CSP). */
+.sk{position:relative;overflow:hidden;background:rgba(182,138,255,.07);border-radius:8px;color:transparent!important;pointer-events:none;user-select:none}
+.sk::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(182,138,255,.16) 50%,transparent 80%);transform:translateX(-100%);animation:sk-shimmer 1.5s ease-in-out infinite}
+@keyframes sk-shimmer{to{transform:translateX(100%)}}
+.sk-line{display:block;height:12px;margin:0 0 10px;width:100%}
+.sk-line.w60{width:60%}.sk-line.w40{width:40%}.sk-line.w80{width:80%}
+.sk-title{height:22px;width:70%;margin:0 0 14px}
+.sk-h1{height:40px;width:80%;margin:0 0 18px}
+.sk-btn{display:inline-block;height:40px;width:110px;border-radius:999px}
+.sk-card{display:flex;flex-direction:column;background:linear-gradient(145deg,#1b1624,#131019);border:1px solid var(--line,rgba(255,255,255,.08));border-radius:16px;padding:18px;min-width:0;pointer-events:none}
+.sk-card.product,.sk-card.track{min-height:420px}
+.sk-card .sk-cover{aspect-ratio:1/1;width:100%;border-radius:14px;margin:0 0 18px}
+.sk-card .sk-price{margin-top:auto;height:32px;width:50%;border-radius:8px}
+.sk-track{min-height:178px}
+.sk-track .sk-row{display:flex;gap:13px;margin-bottom:16px}
+.sk-track .sk-cover{width:60px;height:60px;flex:0 0 60px;border-radius:6px}
+.sk-track .sk-col{flex:1}
+.sk-track .sk-player{height:44px;border-radius:999px;margin-top:auto}
+.sk-cp{min-height:150px;gap:10px}
+.sk-pf{min-height:150px;display:flex;gap:20px;align-items:center}
+.sk-pf .sk-avatar{width:88px;height:88px;border-radius:50%;flex:0 0 88px}
+.sk-pf .sk-col{flex:1}
+.sk-pd{min-height:560px}
+.sk-pd .pd-main{border-color:transparent}
+.sk-rv{min-height:240px}
+.sk-wrap{display:block}
+@media (prefers-reduced-motion:reduce){.sk::after{animation:none;transform:none;background:none}}
+
+/* Blur-up: nur aktiv, wenn reveal.js läuft (html.bu-on); ohne JS bleibt das Bild scharf */
+html.bu-on img.bu:not(.bu-in){filter:blur(14px);transform:scale(1.04);background:#150f1f}
+html.bu-on img.bu{transition:filter .4s ease,transform .4s ease,opacity .4s ease}
+html.bu-on img.bu.bu-in{filter:none}
+html.bu-on :is(.cover,.pd-main,.pd-thumbs button):has(> img.bu:not(.bu-in)){background:#150f1f}
+@media (prefers-reduced-motion:reduce){html.bu-on img.bu{transition:none}}
+
+/* Text-Reveal (reveal.js) */
+.rvl-line{display:block;overflow:hidden;padding-bottom:.12em;margin-bottom:-.12em}
+.rvl-in{display:inline-block;transform:translateY(105%);will-change:transform}
+.rvl-go .rvl-in{transform:none;transition:transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0)*70ms)}
+.rvl-eb{opacity:0;letter-spacing:.14em;transition:opacity .7s cubic-bezier(.2,.8,.2,1),letter-spacing .9s cubic-bezier(.2,.8,.2,1)}
+.rvl-eb.rvl-go{opacity:1;letter-spacing:inherit}
+.rvl-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.rvl-roll{display:inline-flex;vertical-align:bottom;overflow:hidden;height:1.2em;line-height:1.2}
+.rvl-d{display:inline-block;height:1.2em;overflow:hidden;vertical-align:top;line-height:1.2}
+.rvl-d>span{display:flex;flex-direction:column;transform:translateY(0);transition:transform .9s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0)*60ms)}
+.rvl-d>span>i{font-style:normal;display:block;height:1.2em}
+.rvl-d.rvl-hold>span{transition:none}

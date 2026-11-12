@@ -1591,7 +1591,7 @@ html{scroll-behavior:smooth}
 /* ---------- Buttons: rund, federnd, mit Glow ---------- */
 .button,.outline,.cm-pill,.cm-tab,.cp-like,.cp-icon,.bl-sound,.mc-toggle button{
   position:relative;overflow:hidden;
-  transition:transform .35s var(--spring), box-shadow .3s ease, background .25s ease, border-color .25s ease, color .2s ease;
+  transition:transform .35s var(--spring), box-shadow .3s ease, background .25s ease, border-color .25s ease, color .2s ease, translate .3s var(--smooth);
   -webkit-tap-highlight-color:transparent;
 }
 .button,.outline{border-radius:999px;padding:12px 20px}
@@ -1917,3 +1917,31 @@ footer.site-footer .footer-social svg{display:block;width:22px;height:22px}
   footer.site-footer .footer-links a{min-height:44px}
   footer.site-footer .footer-social{gap:4px}
 }
+
+/* =====================================================================
+   BUTTONS+ – Glow, Shine-Sweep, Pressed (Magnetik: cursor.js)
+   ===================================================================== */
+.button{
+  box-shadow:0 0 0 1px rgba(182,138,255,.25),0 8px 22px -8px rgba(182,138,255,.6),0 0 26px -8px rgba(229,165,255,.4);
+}
+.button:hover{
+  box-shadow:0 0 0 1px rgba(229,165,255,.5),0 14px 34px -10px rgba(182,138,255,.85),0 0 40px -6px rgba(229,165,255,.6);
+}
+.button:active{
+  box-shadow:0 0 0 1px rgba(182,138,255,.4),0 3px 10px -4px rgba(182,138,255,.6),inset 0 2px 8px rgba(24,14,35,.35);
+}
+.button::after{
+  content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;pointer-events:none;
+  background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.5) 50%,transparent 100%);
+  transform:skewX(-20deg) translateX(0);opacity:0;
+}
+.button:hover::after{animation:btnShine .9s var(--smooth) 1}
+@keyframes btnShine{0%{opacity:0;transform:skewX(-20deg) translateX(0)}20%{opacity:1}100%{opacity:0;transform:skewX(-20deg) translateX(520%)}}
+.outline{transition:transform .35s var(--spring), box-shadow .3s ease, background .25s ease, border-color .25s ease, color .2s ease, translate .3s var(--smooth)}
+.outline:hover{
+  background:rgba(182,138,255,.07);
+  box-shadow:inset 0 0 18px -4px rgba(182,138,255,.35),0 10px 26px -14px rgba(182,138,255,.6);
+}
+.outline:active{box-shadow:inset 0 0 14px rgba(182,138,255,.4)}
+.button:disabled::after{display:none}
+@media(prefers-reduced-motion:reduce){.button:hover::after{animation:none}}
