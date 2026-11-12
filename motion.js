@@ -243,6 +243,7 @@
             if (active && active !== card) resetCard(active);
             active = card;
             if (!card) return;
+            if (card.hasAttribute('data-holo')) { return; } // holo.js übernimmt die Neigung dieser Karte
             if (card.querySelector('.p3d')) { resetCard(card); return; } // 3D-Modell dreht selbst: keine doppelte Neigung
             if (e.buttons !== 0) { resetCard(card); return; }
             var r = card.getBoundingClientRect();

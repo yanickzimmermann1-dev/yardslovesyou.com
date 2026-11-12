@@ -1,0 +1,56 @@
+/* holo.css - subtle layered depth + holographic sheen for shop cards (shop.html only) */
+.product[data-holo]{--hx:0;--hy:0;--sx:50%;--sy:50%;--sa:200deg}
+/* cover is no longer clipped so its children can sit on their own depth plane; image keeps the rounded corners itself */
+.product[data-holo] .cover{overflow:visible}
+.product[data-holo] .cover .badge{z-index:3}
+.product[data-holo] .cover img{border-radius:inherit;transform:none!important}
+
+/* sheen layers (cover only), invisible at rest */
+.product[data-holo] .cover>.holo-sh,.product[data-holo] .cover>.holo-sp{
+  display:block;position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;z-index:2;
+  transition:opacity .2s ease}
+.product[data-holo] .cover>.holo-sh{
+  background:conic-gradient(from var(--sa) at var(--sx) var(--sy),#c9a4ff,#8fe3ff,#ff9bd8,#b68aff,#c9a4ff);
+  mix-blend-mode:color-dodge}
+.product[data-holo] .cover>.holo-sp{
+  background:radial-gradient(circle at var(--sx) var(--sy),rgba(255,255,255,.12),rgba(255,255,255,0) 52%)}
+/* 3D model covers have no box: fade the sheen out softly instead of showing a rectangle */
+.product[data-holo] .cover.has-p3d>.holo-sh,.product[data-holo] .cover.has-p3d>.holo-sp{
+  -webkit-mask-image:radial-gradient(closest-side,#000 35%,transparent);mask-image:radial-gradient(closest-side,#000 35%,transparent)}
+
+@media (hover:hover) and (pointer:fine){
+  .product[data-holo].holo-hover:not(.holo-pause) .cover>.holo-sh{opacity:.15}
+  .product[data-holo].holo-hover:not(.holo-pause) .cover>.holo-sp{opacity:1}
+  .product[data-holo].holo-hover{box-shadow:0 26px 56px -28px rgba(0,0,0,.95),0 0 0 1px rgba(182,138,255,.14)}
+
+  /* while live: JS drives the transform, so no competing CSS transition on it */
+  html .product[data-holo].holo-live{
+    transform-style:preserve-3d;will-change:transform;
+    transition:border-color .3s,box-shadow .35s,opacity .7s!important}
+  .product[data-holo].holo-live .product-link{transform-style:preserve-3d}
+  .product[data-holo].holo-live .cover{
+    transform-style:preserve-3d;will-change:transform;
+    transform:translate3d(calc(var(--hx)*-2px),calc(var(--hy)*-2px),18px)}
+  .product[data-holo].holo-live .cover .badge{
+    transform:translate3d(calc(var(--hx)*-3px),calc(var(--hy)*-3px),10px)}
+  .product[data-holo].holo-live .product-link h3{transform:translate3d(calc(var(--hx)*-1px),calc(var(--hy)*-1px),10px)}
+  .product[data-holo].holo-live .price-row{transform:translate3d(calc(var(--hx)*-1px),0,8px)}
+  .product[data-holo].holo-live .sp-layer{transform:translateZ(20px)}
+}
+
+/* touch: calm one-time sweep when a card scrolls into view */
+@media (hover:none) and (prefers-reduced-motion:no-preference),(pointer:coarse) and (prefers-reduced-motion:no-preference){
+  .product[data-holo].holo-sweep .cover>.holo-sh{
+    background:linear-gradient(105deg,transparent 35%,#c9a4ff 45%,#8fe3ff 50%,#ff9bd8 55%,transparent 65%);
+    background-size:260% 100%;background-repeat:no-repeat;
+    animation:holoSweep .9s ease-in-out 1 both}
+}
+@keyframes holoSweep{
+  0%{opacity:0;background-position:110% 0}
+  35%{opacity:.14}
+  100%{opacity:0;background-position:-10% 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .product[data-holo] .cover>.holo-sh,.product[data-holo] .cover>.holo-sp{transition:none}
+  .product[data-holo].holo-sweep .cover>.holo-sh{animation:none}
+}
