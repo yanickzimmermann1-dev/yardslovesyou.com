@@ -1,30 +1,26 @@
-/* home-work.css – "Selected work" showcase (home-work.js). Helix (desktop), swipe carousel (phones / reduced motion), centered (1-2 tracks). */
-
-/* Shared card look inside the showcase: big cover on top, then title, then player */
-#work.hx-helix .track,#work.hx-carousel .track,#work.hx-simple .track{display:flex;flex-direction:column;padding:16px;transition:none;transform-style:flat;backface-visibility:hidden}
-#work.hx-helix .track-top,#work.hx-carousel .track-top,#work.hx-simple .track-top{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:0}
-#work.hx-helix .cover,#work.hx-carousel .cover,#work.hx-simple .cover{width:100%;height:auto;aspect-ratio:1/1;border-radius:12px}
-#work.hx-helix .track h3,#work.hx-carousel .track h3,#work.hx-simple .track h3{font:600 17px 'Space Grotesk';margin:0 0 4px}
-#work.hx-helix .track p,#work.hx-carousel .track p,#work.hx-simple .track p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* home-work.css – "Recent mixes" gallery (home-work.js). Vertical gallery: 2 columns (second one offset) on desktop, 1 column on phones.
+   Cards are rotated into place by home-work.js with scroll (transform/opacity/filter only). */
+#work{--wg-off:clamp(48px,7vw,110px)}
 #work .status:empty{display:none}
+#work #tracks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(22px,4.5vw,64px);row-gap:clamp(26px,4vw,52px);align-items:start;
+  max-width:960px;margin:0 auto;padding-bottom:var(--wg-off)}
+#work #tracks>.empty{grid-column:1/-1}
+#work .track{position:relative;display:flex;flex-direction:column;padding:16px;transition:border-color .3s,box-shadow .35s;transform-style:flat;transform-origin:50% 55%;backface-visibility:hidden}
+#work .track:nth-child(even){top:var(--wg-off)}
+#work .track-top{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:0}
+#work .cover{width:100%;height:auto;aspect-ratio:1/1;border-radius:12px}
+#work .track h3{font:600 18px 'Space Grotesk';margin:0 0 4px}
+#work .track p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#work .track:hover{border-color:#5a4775;box-shadow:0 30px 70px -34px rgba(182,138,255,.45)}
+#work .track.wg-live{will-change:transform,opacity}
 
-/* 1-2 tracks: simple centered layout */
-#work.hx-simple #tracks{display:flex;flex-wrap:wrap;justify-content:center;gap:20px}
-#work.hx-simple .track{width:min(100%,340px)}
+/* One track: a single centered card */
+#work.wg-one #tracks{grid-template-columns:minmax(0,420px);justify-content:center;padding-bottom:0}
+#work.wg-one .track:nth-child(even){top:0}
 
-/* Helix: sticky stage, cards positioned and transformed only by home-work.js */
-#work.hx-helix .hx-pin{position:sticky;top:78px;height:calc(100vh - 78px);height:calc(100svh - 78px);display:flex;flex-direction:column;padding-top:18px;box-sizing:border-box}
-#work.hx-helix .section-head{margin-bottom:0;flex:none}
-#work.hx-helix #tracks{--hx-w:clamp(200px,calc((100vh - 78px - 130px) * .62),320px);--hx-w:clamp(200px,calc((100svh - 78px - 130px) * .62),320px);
-  position:relative;display:block;flex:1 1 auto;min-height:0;perspective:1600px;perspective-origin:50% 50%}
-#work.hx-helix .track{position:absolute;left:50%;top:50%;width:var(--hx-w);margin:0;translate:-50% -50%;will-change:transform,opacity;cursor:default}
-#work.hx-helix .track.hx-off{cursor:pointer}
-#work.hx-helix .track.hx-off *{pointer-events:none}
-#work.hx-helix .track.hx-front{border-color:#5a4775;box-shadow:0 30px 70px -34px rgba(182,138,255,.55)}
-
-/* Carousel: native swipe with scroll-snap, side cards tilt a little (JS) */
-#work.hx-carousel #tracks{--cw:clamp(210px,62vw,320px);display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
-  padding:14px calc(50% - var(--cw) / 2) 22px;scrollbar-width:thin;perspective:900px}
-@media(max-width:720px){#work.hx-carousel #tracks{margin:0 -16px;padding-inline:calc(50% - var(--cw) / 2 + 16px);scrollbar-width:none}}
-#work.hx-carousel .track{flex:0 0 var(--cw);scroll-snap-align:center;scroll-snap-stop:always;margin:0}
-@media(prefers-reduced-motion:reduce){#work.hx-carousel #tracks{scroll-behavior:auto}}
+/* Phones: single column, no stagger */
+@media(max-width:720px){
+  #work #tracks{grid-template-columns:minmax(0,1fr);max-width:440px;padding-bottom:0}
+  #work .track:nth-child(even){top:0}
+}
+@media(prefers-reduced-motion:reduce){#work .track{transform:none!important;opacity:1!important;filter:none!important}}

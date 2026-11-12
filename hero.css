@@ -1,0 +1,81 @@
+/* hero.css – interactive home hero (hero.js). Words assemble, scroll/pointer-linked headline, wave line, CTA row.
+   Everything is static in the markup (no layout shift). JS only writes CSS variables on #hero:
+   --hp scroll progress 0..1, --gp gradient shift, --ls tracking, --sc scale, --rx/--ry tilt, --amp parallax strength. */
+.hero.hx{position:relative;padding:clamp(56px,9vh,96px) 0 clamp(56px,8vh,84px);min-height:clamp(520px,calc(100vh - 150px),780px);min-height:clamp(520px,calc(100svh - 150px),780px);
+  display:flex;flex-direction:column;justify-content:center;--hp:0;--gp:0;--ls:-.04em;--sc:1;--rx:0deg;--ry:0deg;--amp:1}
+.hx-persp{position:relative;z-index:1;perspective:1100px;max-width:min(100%,820px)}
+.hx-tilt{transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry));will-change:transform}
+.hx-tilt .eyebrow{margin:0}
+
+/* Headline: large, split into words (markup), each word is its own gradient-text layer */
+.hero.hx .hx-h1{font:600 clamp(48px,8.4vw,112px)/.98 'Space Grotesk';letter-spacing:var(--ls);margin:22px 0 26px;transform-style:preserve-3d;
+  scale:var(--sc);transform-origin:0 60%}
+.hero.hx .hx-h1 .hl{display:block;white-space:nowrap;transform-style:preserve-3d;color:inherit}
+.hero.hx .hx-h1 .hw{display:inline-block;--spot:#b68aff;--sx:-999px;--sy:-999px;--base:linear-gradient(#f5f0fb,#f5f0fb);
+  color:var(--text);
+  translate:calc(var(--hp) * var(--dx) * 1px * var(--amp)) calc(var(--hp) * var(--dy) * 1px * var(--amp)) calc(var(--hp) * var(--dz) * 1px * var(--amp));
+  animation:hxWord .95s var(--smooth,cubic-bezier(.22,1,.36,1)) backwards;animation-delay:calc(.12s + var(--i) * .085s)}
+.hero.hx .hx-h1 .hl-b .hw{--spot:#ffffff;
+  --base:linear-gradient(100deg,#9b6bff 0%,#b68aff 22%,#e5a5ff 45%,#b68aff 62%,#8f6cff 80%,#b68aff 100%)}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .hero.hx .hx-h1 .hw{color:transparent;-webkit-background-clip:text;background-clip:text;
+    background-image:radial-gradient(circle 150px at var(--sx) var(--sy),var(--spot),transparent 72%),var(--base);
+    background-size:100% 100%,300% 100%;background-repeat:no-repeat;
+    background-position:0 0,calc(var(--gp) * 1% + var(--i) * 9%) 0}
+  .hero.hx .hx-h1 .hl-b .hw{background-image:radial-gradient(circle 150px at var(--sx) var(--sy),var(--spot),transparent 72%),var(--base)}
+}
+@keyframes hxWord{from{opacity:0;transform:translate3d(0,.45em,-90px) rotateX(38deg);filter:blur(7px)}}
+
+.hero.hx .muted{max-width:520px;margin:0 0 26px;font-size:clamp(15px,1.4vw,17px)}
+
+/* CTA row */
+.hx-cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px}
+.hx-cta>*{animation:hxUp .8s var(--smooth,cubic-bezier(.22,1,.36,1)) backwards}
+.hx-cta>:nth-child(1){animation-delay:.55s}.hx-cta>:nth-child(2){animation-delay:.68s}.hx-cta>:nth-child(3){animation-delay:.81s}
+@keyframes hxUp{from{opacity:0;transform:translateY(18px) scale(.96)}}
+.hero.hx .hx-primary{padding:15px 28px;font-size:14px;color:#180e23;
+  box-shadow:0 0 0 1px rgba(229,165,255,.35),0 12px 34px -8px rgba(182,138,255,.75),0 0 38px -6px rgba(182,138,255,.45)}
+.hx-primary::after{content:"";position:absolute;top:0;left:0;width:45%;height:100%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-140%) skewX(-18deg);animation:hxShine 5.2s 2.2s ease-in-out infinite}
+@keyframes hxShine{0%,62%{transform:translateX(-140%) skewX(-18deg)}100%{transform:translateX(330%) skewX(-18deg)}}
+.hero.hx .hx-ghost{padding:14px 24px;font-size:14px;background:rgba(255,255,255,.04);border-color:rgba(182,138,255,.35);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.hx-ghost::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(100deg,transparent 35%,rgba(182,138,255,.16) 50%,transparent 65%);background-size:260% 100%;animation:hxGhost 6.5s 3s ease-in-out infinite}
+@keyframes hxGhost{0%{background-position:130% 0}55%,100%{background-position:-60% 0}}
+.hx-hear{display:inline-flex;align-items:center;gap:8px;padding:10px 6px;font:600 14px 'DM Sans';color:var(--muted);transition:color .25s}
+.hx-hear:hover,.hx-hear:focus-visible{color:var(--text)}
+.hx-hear svg{animation:hxBob 1.9s ease-in-out infinite}
+.hx-hear:hover svg{animation-duration:.9s}
+@keyframes hxBob{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
+#hear{scroll-margin-top:84px}#services{scroll-margin-top:84px}
+
+/* Sound-wave line (hero.js draws the path) */
+.hx-wave{position:absolute;left:0;right:0;top:50%;width:100%;height:200px;margin-top:-100px;z-index:0;pointer-events:none;overflow:visible;opacity:.6;
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 62%,transparent 96%);mask-image:linear-gradient(90deg,#000 0,#000 62%,transparent 96%);
+  animation:hxFade 1.6s .5s ease both}
+@keyframes hxFade{from{opacity:0}}
+
+/* Intro running / arrival via page transition: no entrance animations, intro hides the hero until it is over */
+html.intro-on .hero.hx .hw,html.intro-on .hx-cta>*,html.intro-on .hx-wave{animation:none!important;opacity:0}
+html.fx-arrived .hero.hx .hw,html.fx-arrived .hx-cta>*,html.fx-arrived .hx-wave{animation:none!important}
+html.fx-arrived .hx-wave{opacity:.6}
+html.fx-arrived .hx-primary::after{animation-delay:2.2s}
+
+/* Phones: no tilt/spotlight (JS), text stays clear of the tab bar and the diamond */
+@media(max-width:720px){
+  .hero.hx{padding:calc(min(231px,max(204px,61.8vw)) - 40px) 0 40px;min-height:0;display:block}
+  .hx-persp{max-width:100%;perspective:none}
+  .hx-tilt{transform:none;will-change:auto}
+  .hero.hx .hx-h1{font-size:clamp(44px,13.4vw,64px);margin:16px 0 18px;letter-spacing:-.035em}
+  .hero.hx .muted{font-size:15px;margin-bottom:22px}
+  .hx-wave{height:120px;margin-top:-60px;opacity:.45}
+  .hero.hx .hx-primary{padding:15px 24px}
+}
+/* Portrait tablets: keep the text column left of the diamond */
+@media(min-width:721px) and (max-width:1000px){.hx-persp{max-width:480px}}
+@media(prefers-reduced-motion:reduce){
+  .hero.hx .hw,.hx-cta>*,.hx-wave{animation:none!important}
+  .hx-primary::after,.hx-ghost::after,.hx-hear svg{animation:none!important}
+  .hx-tilt{transform:none}
+}

@@ -65,8 +65,9 @@
   <link rel="stylesheet" href="fx.css?v=20261113g">
   <link rel="stylesheet" href="styles.css?v=20261113m">
   <link rel="stylesheet" href="beforeafter.css?v=20261113l">
-  <link rel="stylesheet" href="home-scroll.css?v=20261113l">
-  <link rel="stylesheet" href="home-work.css?v=20261113l">
+  <link rel="stylesheet" href="home-scroll.css?v=20261113o">
+  <link rel="stylesheet" href="home-work.css?v=20261113o">
+  <link rel="stylesheet" href="hero.css?v=20261113o">
   <link rel="stylesheet" href="cart.css?v=20261113m">
   <!-- WICHTIG: UMD-Build für globales window.supabase -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -90,13 +91,22 @@
 </header>
 
 <main class="wrap">
-  <section class="hero">
-    <p class="eyebrow">MIXING · MASTERING · PRODUCTION</p>
-    <h1>Sounds that<br><span>stay with you.</span></h1>
-    <p class="muted">Hip-hop and trap mixing, mastering and production by yards, from Switzerland. Upload your track online, or grab hand-crafted percussion and guides for your own productions.</p>
-    <div class="hero-actions">
-      <a class="button" href="upload.html">Submit your track</a>
-      <a class="outline" href="shop.html">Shop</a>
+  <section class="hero hx" id="hero" aria-labelledby="hero-title">
+    <svg class="hx-wave" aria-hidden="true" focusable="false" preserveAspectRatio="none" viewBox="0 0 1000 200"><defs><linearGradient id="hxg" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#b68aff" stop-opacity="0"/><stop offset=".18" stop-color="#b68aff" stop-opacity=".9"/><stop offset=".6" stop-color="#e5a5ff"/><stop offset="1" stop-color="#b68aff" stop-opacity="0"/></linearGradient></defs><path d="M0 100H1000" fill="none" stroke="url(#hxg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+    <div class="hx-persp">
+      <div class="hx-tilt">
+        <p class="eyebrow">MIXING · MASTERING · PRODUCTION</p>
+        <h1 id="hero-title" class="hx-h1">
+          <span class="hl hl-a"><span class="hw" style="--i:0;--dx:-26;--dy:-16;--dz:40">Sounds</span> <span class="hw" style="--i:1;--dx:-8;--dy:-26;--dz:-20">that</span></span>
+          <span class="hl hl-b"><span class="hw" style="--i:2;--dx:10;--dy:12;--dz:-30">stay</span> <span class="hw" style="--i:3;--dx:24;--dy:22;--dz:20">with</span> <span class="hw" style="--i:4;--dx:36;--dy:30;--dz:50">you.</span></span>
+        </h1>
+        <p class="muted">Hip-hop and trap mixing, mastering and production by yards, from Switzerland. Upload your track online, or grab hand-crafted percussion and guides for your own productions.</p>
+        <div class="hero-actions hx-cta">
+          <a class="button hx-primary" href="upload.html">Submit your track</a>
+          <a class="outline hx-ghost" href="shop.html">Browse sounds</a>
+          <a class="hx-hear" href="#hear">Hear the difference <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6"/></svg></a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -145,22 +155,12 @@
     </div>
   </section>
 
-  <!-- Work showcase: scroll-driven 3D helix (home-work.js) -->
-  <section class="home-section" id="work" aria-labelledby="work-title">
-    <div class="hx-stack" id="hx-stack">
-      <div class="hx-pin" id="hx-pin">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">SELECTED WORK</p>
-            <h2 id="work-title">Recent mixes</h2>
-          </div>
-        </div>
-        <div id="tracks" class="track-grid">
-          <div class="empty">Loading tracks …</div>
-        </div>
-        <p id="status" class="status" role="status"></p>
-      </div>
+  <!-- Work gallery: vertical gallery, cards rotate into place with scroll (home-work.js) -->
+  <section class="home-section" id="work" aria-label="Recent mixes">
+    <div id="tracks" class="track-grid">
+      <div class="empty">Loading tracks …</div>
     </div>
+    <p id="status" class="status" role="status"></p>
   </section>
 
   <!-- About & Kontakt -->
@@ -207,8 +207,9 @@
 
 <script defer src="config.js"></script>
 <script defer src="home.js?v=20261113l"></script>
-<script defer src="home-scroll.js?v=20261113l"></script>
-<script defer src="home-work.js?v=20261113l"></script>
+<script defer src="home-scroll.js?v=20261113o"></script>
+<script defer src="home-work.js?v=20261113o"></script>
+<script defer src="hero.js?v=20261113o"></script>
 <script src="beforeafter.js?v=20261113l" defer></script>
   <script src="cart.js?v=20261113h" defer></script>
   <script src="nav.js" defer></script>

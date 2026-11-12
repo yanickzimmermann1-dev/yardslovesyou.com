@@ -210,6 +210,7 @@
         var vw = window.innerWidth || 1280, s, X0, Y0;
         G.heroTop = rect0(hero); G.heroH = hero.offsetHeight || 600;
         if (vw / vh >= 1.15) { s = Math.max(vw / 1920, vh / 1080); X0 = (vw - 1920 * s) / 2 + 1237 * s; Y0 = (vh - 1080 * s) / 2; }
+        else if (vw <= 720) { s = clamp(vw / 1100, 0.3, 0.34); X0 = vw - 18 - PX * s; Y0 = 10; }   // phones: small diamond above the hero text (hero.css reserves the space)
         else { s = clamp(vw / 820, 0.36, 0.6); X0 = vw - 18 - PX * s; Y0 = 44; }
         G.s = s; G.sl = s * 0.8; G.bx = X0 + GX * s; G.by = Y0 + GY * s;
         var nx = hero.nextElementSibling;
