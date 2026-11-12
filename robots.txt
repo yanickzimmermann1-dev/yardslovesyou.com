@@ -6,5 +6,7 @@ Disallow: /unsubscribe.html
 Disallow: /drop-admin.html
 Disallow: /account.html
 Disallow: /community-admin.html
+Disallow: /order-admin.html
+Disallow: /status.html
 
 Sitemap: https://yardslovesyou.com/sitemap.xml

@@ -119,6 +119,7 @@
     $("acc-bio").value = p.bio || ""; $("acc-bio-count").textContent = `${(p.bio || "").length}/160`;
     for (const [k] of LINKS) $("acc-link-" + k).value = (p.links && p.links[k]) || "";
     $("acc-admin").classList.toggle("hidden", !m.admin);
+    $("acc-orders").classList.toggle("hidden", !m.admin);
     myPosts(m.user.id);
   }
 

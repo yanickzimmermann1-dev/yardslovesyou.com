@@ -65,6 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ---------- Dienstleistung (Upload) ----------
+    // Status-Link holen (nur fuer bezahlte Service-Bestellungen; bei Fehler einfach ohne Karte)
+    let statusUrl = "";
+    try {
+      const t = await db.functions.invoke("order-status", { body: { session_id: sessionId } });
+      if (t.data?.token) statusUrl = `${location.origin}/status.html?t=${encodeURIComponent(t.data.token)}`;
+    } catch (_) {}
     box.innerHTML = `
       <p class="eyebrow">ORDER CONFIRMED</p>
       <h1>Thank <span>you!</span></h1>
@@ -75,6 +81,23 @@ document.addEventListener("DOMContentLoaded", () => {
       </p>
       <p class="muted">Thank you very much – we're looking forward to working with you!</p>
       <p class="muted">A confirmation has been sent to <strong style="color:var(--text)">${esc(data.email)}</strong>.</p>
-      <a class="button" href="index.html">Back to home</a>`;
+      ${statusUrl ? `
+      <div class="tr-card">
+        <h2>Track your order</h2>
+        <p class="muted" style="margin:0">Follow the progress of your order any time and get your files here. Save this link; we'll also email you at each step.</p>
+        <div class="tr-link">
+          <input id="tr-url" type="text" readonly value="${esc(statusUrl)}" aria-label="Order status link">
+          <button class="outline" id="tr-copy" type="button">Copy</button>
+        </div>
+        <div class="st-actions"><a class="button" href="${esc(statusUrl)}">Open order status</a></div>
+      </div>` : ""}
+      <a class="outline" href="index.html">Back to home</a>`;
+    if (statusUrl) {
+      $("tr-copy").onclick = async () => {
+        const b = $("tr-copy");
+        try { await navigator.clipboard.writeText(statusUrl); } catch (_) { $("tr-url").select(); document.execCommand("copy"); }
+        b.textContent = "Copied"; setTimeout(() => { b.textContent = "Copy"; }, 2000);
+      };
+    }
   })();
 });
