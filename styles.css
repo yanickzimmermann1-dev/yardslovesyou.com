@@ -1578,12 +1578,9 @@ html{scroll-behavior:smooth}
   filter:blur(22px) saturate(1.15);
   will-change:opacity;
 }
-/* Scroll-Fortschritt oben */
-.scroll-progress{
-  position:fixed;top:0;left:0;right:0;height:3px;z-index:30;pointer-events:none;
-  background:linear-gradient(90deg,var(--purple),var(--pink),var(--green));
-  transform-origin:0 50%;transform:scaleX(0);
-}
+/* Schallwellen-Leiste oben (Scroll-Fortschritt) */
+.wavebar{position:fixed;top:0;left:0;width:100%;height:12px;z-index:100;pointer-events:none;background:#000;display:block}
+@media (max-width:720px){.wavebar{height:10px}}
 
 /* Kopfzeile wird beim Scrollen kompakter und gläserner */
 .topbar{transition:background .35s, box-shadow .35s}

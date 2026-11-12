@@ -11,6 +11,87 @@
     // CSS blendet .rv nur aus, wenn diese Klasse existiert
     root.classList.add('js-motion');
 
+    /* ---------- Schallwellen-Leiste oben (ersetzt den Scroll-Balken) ---------- */
+    function makeWave(body) {
+      var cv, ctx;
+      try {
+        cv = doc.createElement('canvas');
+        cv.className = 'wavebar';
+        cv.setAttribute('aria-hidden', 'true');
+        ctx = cv.getContext('2d');
+        if (!ctx) return null;
+        body.appendChild(cv);
+      } catch (e) { return null; }
+      var W = 0, H = 12, dpr = 1, prog = 0, shown = false, lastY = null, vel = 0, raf = 0, last = 0, phase = 0, T = 0;
+      function size() {
+        var r = cv.getBoundingClientRect();
+        W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height));
+        dpr = Math.min(2, window.devicePixelRatio || 1);
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      function yAt(x, t, amp, headX) {
+        var env = 0.8 + 0.2 * (Math.sin(x * 0.006 + t * 0.35) * 0.5 + Math.sin(x * 0.0137 - t * 0.23 + 1.3) * 0.3 + Math.sin(x * 0.0031 + t * 0.11 + 2.1) * 0.2) * 1.0;
+        env = Math.max(0.6, Math.min(1, env));
+        var k = 2 * Math.PI / 17;
+        var taper = 1;
+        if (headX != null) taper = Math.max(0, Math.min(1, (headX - x) / 30));
+        // sanfter Auslauf zu den Rändern (flache Enden)
+        var edge = Math.min(1, x / 30, (W - x) / 30);
+        return (H / 2) + amp * env * taper * edge * Math.sin(k * x + phase);
+      }
+      function path(x0, x1, t, amp, headX) {
+        ctx.beginPath();
+        for (var x = x0; x <= x1; x += 1.5) {
+          var y = yAt(x, t, amp, headX);
+          if (x === x0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        var maxA = W < 720 ? 3 : 3.5;
+        var amp = maxA * (1 + Math.min(0.25, vel)) * (reduce ? 0.8 : 1 + 0.04 * Math.sin(T * 17));
+        amp = Math.min(maxA * 1.25, amp);
+        var headX = prog * W;
+        ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(182,138,255,.18)'; ctx.lineWidth = 1;
+        path(Math.max(0, headX - 1), W, T, amp * 0.35, null);
+        if (headX > 1) {
+          ctx.strokeStyle = '#b68aff'; ctx.lineWidth = 1.75;
+          ctx.shadowColor = '#8f1fe0'; ctx.shadowBlur = 6;
+          path(0, headX, T, amp, headX);
+          ctx.shadowBlur = 0;
+        }
+      }
+      function frame(now) {
+        raf = 0;
+        if (!shown || doc.hidden) return;
+        var dt = last ? Math.min(0.1, (now - last) / 1000) : 0.016; last = now;
+        vel *= Math.exp(-dt * 3);
+        T += dt; phase += dt * (1.2 + vel * 6);
+        draw();
+        raf = requestAnimationFrame(frame);
+      }
+      function kick() { if (!reduce && !raf && shown && !doc.hidden) { last = 0; raf = requestAnimationFrame(frame); } }
+      doc.addEventListener('visibilitychange', function () {
+        if (doc.hidden) { if (raf) { cancelAnimationFrame(raf); raf = 0; } } else kick();
+      });
+      window.addEventListener('resize', function () { size(); if (shown) draw(); }, { passive: true });
+      size();
+      return {
+        set: function (p, y) {
+          if (p < 0) { shown = false; cv.style.display = 'none'; if (raf) { cancelAnimationFrame(raf); raf = 0; } return; }
+          if (!shown) { shown = true; cv.style.display = ''; size(); }
+          prog = p;
+          if (lastY !== null) vel = Math.min(1, vel + Math.min(1, Math.abs(y - lastY) / 120) * 0.25);
+          lastY = y;
+          if (reduce) { phase = 0.6; draw(); } else kick();
+        }
+      };
+    }
+
     function init() {
       var body = doc.body;
       if (!body) return;
@@ -22,11 +103,8 @@
         bgBlur.className = 'bg-blur';
         bgBlur.setAttribute('aria-hidden', 'true');
         body.insertBefore(bgBlur, body.firstChild);
-        bar = doc.createElement('div');
-        bar.className = 'scroll-progress';
-        bar.setAttribute('aria-hidden', 'true');
-        body.appendChild(bar);
       } catch (e) {}
+      bar = makeWave(body);
 
       /* ---------- Handy: Navigation aus der Kopfzeile lösen ----------
          iOS Safari zeigt eine fixierte Leiste innerhalb des (sticky) Headers
@@ -56,13 +134,7 @@
             bgBlur.style.opacity = p.toFixed(3);
           }
           // Fortschrittsbalken oben
-          if (bar) {
-            if (max < 40) { bar.style.opacity = '0'; }
-            else {
-              bar.style.opacity = '';
-              bar.style.transform = 'scaleX(' + Math.min(1, y / max) + ')';
-            }
-          }
+          if (bar) bar.set(max < 40 ? -1 : Math.min(1, y / max), y);
           // Kopfzeile wird kompakter
           if (!topbar || !topbar.isConnected) topbar = doc.querySelector('.topbar');
           if (topbar) topbar.classList.toggle('scrolled', y > 12);
