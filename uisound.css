@@ -9,7 +9,7 @@
 .uis-btn:focus-visible{outline:2px solid var(--purple,#b68aff);outline-offset:2px}
 .uis-float{position:fixed;z-index:39;right:16px;top:14px}
 @media(min-width:721px){
-  .topbar>.uis-btn:not(.uis-float){position:absolute;top:17px;right:calc(clamp(20px,6vw,90px) + 54px);margin:0}
+  .topbar>.uis-btn:not(.uis-float){position:absolute;top:17px;right:clamp(20px,6vw,90px);margin:0}
 }
 @media(max-width:720px){
   .topbar>.uis-btn{margin-left:auto;width:40px;height:40px}
