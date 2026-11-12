@@ -1,0 +1,16 @@
+/* uisound.css - Lautsprecher-Schalter (UI-Sounds, standardmaessig aus) */
+.uis-btn{position:relative;flex-shrink:0;width:44px;height:44px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted,#a79fb8);background:rgba(22,17,32,.62);border:1px solid #ffffff1a;-webkit-tap-highlight-color:transparent;transition:border-color .2s,color .2s,transform .3s}
+.uis-btn svg{width:20px;height:20px;display:block}
+.uis-btn .uis-on{display:none}
+.uis-btn[aria-pressed="true"]{color:var(--purple,#b68aff)}
+.uis-btn[aria-pressed="true"] .uis-on{display:block}
+.uis-btn[aria-pressed="true"] .uis-off{display:none}
+.uis-btn:hover{border-color:var(--purple,#b68aff);color:var(--purple,#b68aff)}
+.uis-btn:focus-visible{outline:2px solid var(--purple,#b68aff);outline-offset:2px}
+.uis-float{position:fixed;z-index:39;right:16px;top:14px}
+@media(min-width:721px){
+  .topbar>.uis-btn:not(.uis-float){position:absolute;top:17px;right:calc(clamp(20px,6vw,90px) + 54px);margin:0}
+}
+@media(max-width:720px){
+  .topbar>.uis-btn{margin-left:auto;width:40px;height:40px}
+}
