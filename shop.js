@@ -16,6 +16,7 @@
   };
 
   const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const CART_IC='<svg class="ic-add" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.3l2.1 11h10.4l2.1-8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/><path d="M12.5 8.5v4M10.5 10.5h4"/></svg><svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>';
   const CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
   let products=[], cats=[], sel=null; // cats: nur Kategorien mit Produkten
 
@@ -49,6 +50,7 @@
         <div class="price-row">
           ${priceHtml(p)}
           <div class="row-actions">
+            <button class="cart-add-ic" type="button" data-cart-add="${esc(p.id)}" data-cart-icon data-cart-title="${esc(p.title)}" data-cart-price="${esc(p.price_cents)}" data-cart-currency="${esc(String(p.currency||cfg.CURRENCY||"chf").toLowerCase())}" data-cart-cover="${p.image_url?esc(img(p.image_url)):""}" aria-label="Add ${esc(p.title)} to cart" title="Add to cart">${CART_IC}</button>
             <a class="outline" href="${link(p.id)}">Details</a>
             <button class="button" data-buy="${esc(p.id)}">Buy</button>
           </div>

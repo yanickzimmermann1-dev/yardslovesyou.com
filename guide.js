@@ -58,6 +58,11 @@
     var gallery = ctx.images && ctx.images.length > 1 ? '<section class="gd-sec gd-rv"><p class="eyebrow">Gallery</p><h2>A closer look</h2><div class="gd-gallery">' +
       ctx.images.slice(1).map(function (u) { return '<img src="' + esc(u) + '" alt="" loading="lazy">'; }).join("") + "</div></section>" : "";
 
+    var cartLink = function () {
+      return ctx.cartAttrs ? '<button type="button" class="gd-addcart" ' + ctx.cartAttrs + ">" +
+        '<svg class="ic-add" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.3l2.1 11h10.4l2.1-8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/><path d="M12.5 8.5v4M10.5 10.5h4"/></svg>' +
+        '<svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg><span class="cart-lbl">Add to cart</span></button>' : "";
+    };
     var buyBtn = function (label, id) {
       return '<button class="button gd-buy" type="button" data-buy' + (id ? ' id="' + id + '"' : "") + ">" + label + "</button>";
     };
@@ -70,7 +75,7 @@
           '<p class="gd-tagline">' + esc(g.tagline || p.description || "") + "</p>" +
           (stats ? '<ul class="gd-stats">' + stats + "</ul>" : "") +
           '<div class="gd-buyrow"><span class="price-wrap">' + (ctx.was || "") + '<span class="price">' + ctx.price + "</span></span>" +
-          buyBtn("Get the guide", "buy-btn") +
+          buyBtn("Get the guide", "buy-btn") + cartLink() +
           (firstFree >= 0 ? '<button class="outline gd-free-btn" type="button" id="gd-free-btn">' + I.book + " Read a free chapter</button>" : "") + "</div>" +
           '<p class="gd-note">' + I.dl + " Instant download after payment. " + esc(g.chapters_note || "") + "</p>" +
         "</div>" +
@@ -94,7 +99,7 @@
          (ctx.faq || []).filter(function (f) { return /payment|question/i.test(f[0]); }).map(function (f) { return "<details><summary>" + esc(f[0]) + "</summary><p>" + f[1] + "</p></details>"; }).join("")) +
       "</div>" + (g.guarantee ? '<p class="gd-guarantee">' + I.bolt + "<span>" + esc(g.guarantee) + "</span></p>" : "") + "</section>" +
       '<section class="gd-final gd-rv"><h2>Finish the record.</h2><p>' + esc(p.description || "") + "</p><div>" +
-        '<span class="price-wrap">' + (ctx.was || "") + '<span class="price">' + ctx.price + "</span></span>" + buyBtn("Get the guide") + "</div>" +
+        '<span class="price-wrap">' + (ctx.was || "") + '<span class="price">' + ctx.price + "</span></span>" + buyBtn("Get the guide") + cartLink() + "</div>" +
         '<p class="gd-note">' + I.dl + " Instant download after payment.</p></section>" +
     "</div>" +
     '<div class="gd-panel" id="gd-panel" hidden><div class="gd-backdrop" data-close></div>' +

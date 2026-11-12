@@ -39,6 +39,11 @@
     return list;
   };
 
+  // Warenkorb: Daten-Attribute fuer cart.js (Klick, Status-Sync und Fly-Animation laufen dort)
+  const CART_IC='<svg class="ic-add" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.3l2.1 11h10.4l2.1-8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/><path d="M12.5 8.5v4M10.5 10.5h4"/></svg><svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>';
+  const cartAttrs=(p,images)=>`data-cart-add="${esc(p.id)}" data-cart-title="${esc(p.title)}" data-cart-price="${esc(p.price_cents)}" data-cart-currency="${esc(String(p.currency||cfg.CURRENCY||"chf").toLowerCase())}" data-cart-cover="${esc(images[0]||"")}"`;
+  const cartBtn=(cls,idAttr,p,images,extra)=>`<button class="${cls}" ${idAttr?`id="${idAttr}" `:""}type="button" ${cartAttrs(p,images)}${extra||""}>${CART_IC}<span class="cart-lbl">Add to cart</span></button>`;
+
   // Info-Zeile: "120 sounds · 24-bit WAV · 350 MB" -> einzelne Chips
   const specChips=s=>String(s||"").split(/[·|•]/).map(x=>x.trim()).filter(Boolean);
 
@@ -127,7 +132,8 @@
           ${chips.length?`<ul class="pd-specs">${chips.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>`:""}
           <div class="pd-buy">
             <span class="price-wrap">${was}<span class="price">${price}</span></span>
-            <button class="button" id="buy-btn" type="button">Buy</button>
+            ${cartBtn("button","add-cart-btn",p,images)}
+            <button class="outline" id="buy-btn" type="button">Buy now</button>
           </div>
           <p class="fineprint">Instant ZIP download after payment.</p>
           ${p.royalty_free?`<p class="license-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m5 12.5 4.5 4.5L19 7"/></svg> 100% royalty-free – use in your beats, releases &amp; placements. <a href="license.html">License</a></p>`:""}
@@ -166,7 +172,7 @@
             <strong>${esc(p.title)}</strong>
             <span class="price-wrap">${was}<span class="price">${price}</span></span>
           </div>
-          <button class="button" id="sticky-buy-btn" type="button" tabindex="-1">Buy</button>
+          <div class="cart-actions">${cartBtn("outline","sticky-cart-btn",p,images,' tabindex="-1"')}<button class="button" id="sticky-buy-btn" type="button" tabindex="-1">Buy now</button></div>
         </div>
       </div>`;
 
@@ -217,10 +223,10 @@
       <div class="pd-sticky" id="pd-sticky" aria-hidden="true">
         <div class="pd-sticky-inner">
           <div class="pd-sticky-info"><strong>${esc(p.title)}</strong><span class="price-wrap">${was}<span class="price">${price}</span></span></div>
-          <button class="button" id="sticky-buy-btn" data-buy type="button" tabindex="-1">Buy</button>
+          <div class="cart-actions">${cartBtn("outline","sticky-cart-btn",p,images,' tabindex="-1"')}<button class="button" id="sticky-buy-btn" data-buy type="button" tabindex="-1">Buy now</button></div>
         </div>
       </div>`;
-    window.renderGuide(p,{root:$("guide-root"),images,price,was,esc,media,paragraphs,faq:faqFor(p),buy,track:(n,d)=>{ window.ylyTrack&&ylyTrack(n,d); }});
+    window.renderGuide(p,{root:$("guide-root"),images,price,was,esc,media,paragraphs,faq:faqFor(p),buy,cartAttrs:cartAttrs(p,images),track:(n,d)=>{ window.ylyTrack&&ylyTrack(n,d); }});
     root.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",buy));
     setupSticky();
   }
@@ -236,6 +242,7 @@
       bar.classList.toggle("visible",show);
       bar.setAttribute("aria-hidden",show?"false":"true");
       $("sticky-buy-btn").tabIndex=show?0:-1;
+      const sc=$("sticky-cart-btn"); if(sc) sc.tabIndex=show?0:-1;
     };
     new IntersectionObserver(([e])=>{ pastBuy=!e.isIntersecting&&e.boundingClientRect.top<0; update(); }).observe(main);
     if(footer) new IntersectionObserver(([e])=>{ footerVisible=e.isIntersecting; update(); }).observe(footer);
@@ -337,7 +344,7 @@
       if(!data?.url) throw new Error(data?.error||"Checkout link missing.");
       if(!/^https:\/\//i.test(String(data.url))) throw new Error("Invalid checkout link.");
       location.href=data.url;
-    }catch(e){alert("Checkout failed: "+(e.message||e));btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.t||"Buy";});}
+    }catch(e){alert("Checkout failed: "+(e.message||e));btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.t||"Buy now";});}
   }
 
   load();
