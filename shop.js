@@ -93,6 +93,7 @@
     }
     box.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy));
     mount3d(box);
+    if(window.SoundPads) SoundPads.attach(box,products,{db});
     if(animate&&!reduce&&box.animate){
       box.animate([{opacity:0,transform:"scale(.985) translateY(6px)"},{opacity:1,transform:"none"}],{duration:380,easing:"cubic-bezier(.34,1.2,.64,1)"});
       box.querySelectorAll(".rv").forEach(el=>el.classList.add("in"));
