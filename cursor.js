@@ -6,45 +6,54 @@
 
   /* Configurable maps (first match wins) */
   var HIDE = "input:not([type=button]):not([type=submit]):not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=color]),textarea,select,[contenteditable='true'],[contenteditable='']";
-  var LABELS = [
-    [".p3d", "Drag"],
-    [".play-btn,[data-player],.bl-play,.ba-play,.ba-i-play,.sp-pad,.pl-play,#drop-play", "Play"],
-    [".product", "View"]
+  var KINDS = [
+    [".p3d", "drag"],
+    [".play-btn,[data-player],.bl-play,.ba-play,.ba-i-play,.sp-pad,.pl-play,#drop-play", "play"],
+    [".product", "card"]
   ];
   var LINKS = "a[href],button,[role=button],label[for],summary,.cm-pill,.cm-tab,.outline,.button";
   var MAGNET = ".button,[data-buy],.cart-checkout,.gen-btn";
   var MAG_RANGE = 60, MAG_BTN = 6, MAG_LBL = 3;
 
   var root = document.documentElement;
-  var dot = document.createElement("div"), ring = document.createElement("div"), inner = document.createElement("div"), lbl = document.createElement("span");
-  dot.className = "yc-dot"; ring.className = "yc-ring"; inner.className = "yc-ring-in";
-  inner.appendChild(lbl); ring.appendChild(inner);
+  var dot = document.createElement("div"), ring = document.createElement("div"), inner = document.createElement("div"), burst = document.createElement("span");
+  dot.className = "yc-dot"; ring.className = "yc-ring"; inner.className = "yc-ring-in"; burst.className = "yc-burst";
+  ring.appendChild(inner); ring.appendChild(burst);
   dot.setAttribute("aria-hidden", "true"); ring.setAttribute("aria-hidden", "true");
   (document.body || root).appendChild(dot); (document.body || root).appendChild(ring);
 
-  var tx = -100, ty = -100, rx = -100, ry = -100, running = false, shown = false, lastLabel = "";
+  var tx = -100, ty = -100, rx = -100, ry = -100, running = false, shown = false, last = 0, kind = "";
+  var BASE = 0.4; /* per-frame lerp at 60fps */
+  var KCLS = ["yc-link", "yc-card", "yc-play", "yc-drag"];
 
-  function loop() {
-    rx += (tx - rx) * 0.18; ry += (ty - ry) * 0.18;
-    ring.style.transform = "translate3d(" + rx.toFixed(1) + "px," + ry.toFixed(1) + "px,0)";
-    if (Math.abs(tx - rx) < 0.1 && Math.abs(ty - ry) < 0.1) { running = false; return; }
+  function loop(now) {
+    var dt = last ? Math.min((now - last) / 1000, 0.1) : 1 / 60; last = now;
+    var a = 1 - Math.pow(1 - BASE, dt * 60);
+    rx += (tx - rx) * a; ry += (ty - ry) * a;
+    ring.style.transform = "translate3d(" + rx.toFixed(2) + "px," + ry.toFixed(2) + "px,0)";
+    if (Math.abs(tx - rx) < 0.1 && Math.abs(ty - ry) < 0.1) {
+      rx = tx; ry = ty;
+      ring.style.transform = "translate3d(" + rx.toFixed(2) + "px," + ry.toFixed(2) + "px,0)";
+      running = false; last = 0; return;
+    }
     requestAnimationFrame(loop);
   }
-  function kick() { if (!running && !document.hidden) { running = true; requestAnimationFrame(loop); } }
+  function kick() { if (!running && !document.hidden) { running = true; last = 0; requestAnimationFrame(loop); } }
 
   function state(t) {
-    var hide = false, link = false, label = "";
+    var hide = false, k = "";
     if (t && t.closest) {
       if (t.closest(HIDE)) hide = true;
       else {
-        for (var i = 0; i < LABELS.length; i++) if (t.closest(LABELS[i][0])) { label = LABELS[i][1]; break; }
-        if (!label && t.closest(LINKS)) link = true;
+        for (var i = 0; i < KINDS.length; i++) if (t.closest(KINDS[i][0])) { k = KINDS[i][1]; break; }
+        if (!k && t.closest(LINKS)) k = "link";
       }
     }
     root.classList.toggle("yc-hide", hide);
-    root.classList.toggle("yc-link", link);
-    root.classList.toggle("yc-label", !!label);
-    if (label !== lastLabel) { lastLabel = label; if (label) lbl.textContent = label; }
+    if (k !== kind) {
+      kind = k;
+      for (var j = 0; j < KCLS.length; j++) root.classList.toggle(KCLS[j], KCLS[j] === "yc-" + k);
+    }
   }
 
   document.addEventListener("pointermove", function (e) {
@@ -56,11 +65,16 @@
     magnet(e);
     kick();
   }, { passive: true });
-  document.addEventListener("pointerdown", function () { root.classList.add("yc-down"); }, true);
+  document.addEventListener("pointerdown", function (e) {
+    if (e.pointerType && e.pointerType !== "mouse") return;
+    root.classList.add("yc-down");
+    root.classList.remove("yc-burst-on"); void burst.offsetWidth; root.classList.add("yc-burst-on");
+  }, true);
+  burst.addEventListener("animationend", function () { root.classList.remove("yc-burst-on"); });
   document.addEventListener("pointerup", function () { root.classList.remove("yc-down"); }, true);
   document.addEventListener("pointerleave", off); document.documentElement.addEventListener("mouseleave", off);
   window.addEventListener("blur", off);
-  function off() { shown = false; root.classList.remove("yc-on", "yc-down"); resetMag(); }
+  function off() { shown = false; root.classList.remove("yc-on", "yc-down", "yc-burst-on"); resetMag(); }
   document.addEventListener("visibilitychange", function () { if (document.hidden) running = false; });
 
   /* ---------- Magnetic buttons ---------- */
