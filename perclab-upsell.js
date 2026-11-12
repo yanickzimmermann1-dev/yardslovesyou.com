@@ -31,7 +31,7 @@
       : `<button type="button" class="button" data-up="add">Add to cart</button>${small ? "" : `<a class="outline" href="${link}">View kit</a>`}`;
   }
   function renderCard() {
-    card.innerHTML = `<div class="pl-up-cover" id="pl-up-cover">${p.image_url ? `<img src="${esc(coverUrl())}" alt="${esc(p.title)}" loading="lazy">` : esc(p.cover_emoji || "")}</div>
+    card.innerHTML = `<div class="pl-up-cover" id="pl-up-cover">${p.image_url ? `<img src="${esc(coverUrl())}" alt="${esc(p.title)}" width="96" height="96" loading="lazy" decoding="async">` : esc(p.cover_emoji || "")}</div>
       <div class="pl-up-body"><h3>${esc(p.title)}</h3><p>Like these sounds? Get 96 hand-crafted percussion one-shots in Essentials.</p>
       <div class="pl-up-row"><span class="pl-up-price">${money(p.price_cents, p.currency)}</span>${btns(false)}</div></div>`;
     const m = model();

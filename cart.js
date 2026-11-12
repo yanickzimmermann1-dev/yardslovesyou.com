@@ -159,7 +159,7 @@
 
   /* ---------- Rendering ---------- */
   function thumb(i) {
-    return '<span class="cart-thumb">' + (i.cover ? '<img src="' + esc(i.cover) + '" alt="" loading="lazy">' : I.cart) + '</span>';
+    return '<span class="cart-thumb">' + (i.cover ? '<img src="' + esc(i.cover) + '" alt="" width="64" height="64" loading="lazy" decoding="async">' : I.cart) + '</span>';
   }
   function render() {
     var n = items.length;

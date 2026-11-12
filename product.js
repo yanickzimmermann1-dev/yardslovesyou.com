@@ -121,8 +121,8 @@
 
       <section class="product-detail">
         <div class="pd-media">
-          <div class="pd-main${p.model3d?" pd-3d":""}" id="pd-main">${images.length?`<img id="pd-main-img" src="${esc(images[0])}" alt="${esc(p.title)}">`:esc(p.cover_emoji||"")}</div>
-          ${images.length>1||p.model3d?`<div class="pd-thumbs">${p.model3d?`<button type="button" class="pd-thumb-3d" id="pd-thumb-3d" hidden aria-label="3D view" title="3D view">${CUBE}</button>`:""}${images.length>1?images.map((u,i)=>`<button type="button" class="${i||p.model3d?"":"active"}" data-img="${esc(u)}" aria-label="Image ${i+1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join(""):""}</div>`:""}
+          <div class="pd-main${p.model3d?" pd-3d":""}" id="pd-main">${images.length?`<img id="pd-main-img" src="${esc(images[0])}" alt="${esc(p.title)}" width="800" height="800" fetchpriority="high" decoding="async">`:esc(p.cover_emoji||"")}</div>
+          ${images.length>1||p.model3d?`<div class="pd-thumbs">${p.model3d?`<button type="button" class="pd-thumb-3d" id="pd-thumb-3d" hidden aria-label="3D view" title="3D view">${CUBE}</button>`:""}${images.length>1?images.map((u,i)=>`<button type="button" class="${i||p.model3d?"":"active"}" data-img="${esc(u)}" aria-label="Image ${i+1}"><img src="${esc(u)}" alt="" width="80" height="80" loading="lazy" decoding="async"></button>`).join(""):""}</div>`:""}
           ${p.sound_preview?`<div id="pd-sounds"></div>`:""}
         </div>
 

@@ -55,11 +55,15 @@
   }
   </script>
 
-  <link rel="stylesheet" href="styles.css?v=20261111c">
+  <link rel="preload" href="font-dmsans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="font-spacegrotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://kmekgjllklwrxizqbrac.supabase.co" crossorigin>
+  <link rel="dns-prefetch" href="https://kmekgjllklwrxizqbrac.supabase.co">
+  <link rel="stylesheet" href="styles.css?v=20261112g">
   <link rel="stylesheet" href="beforeafter.css?v=20261111c">
   <link rel="stylesheet" href="cart.css?v=20261112d">
   <!-- WICHTIG: UMD-Build für globales window.supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 
@@ -186,10 +190,10 @@
   </nav>
 </footer>
 
-<script src="config.js"></script>
-<script src="home.js"></script>
-<script src="beforeafter.js" defer></script>
-  <script src="cart.js?v=20261112d" defer></script>
+<script defer src="config.js"></script>
+<script defer src="home.js?v=20261112g"></script>
+<script src="beforeafter.js?v=20261112g" defer></script>
+  <script src="cart.js?v=20261112g" defer></script>
   <script src="nav.js" defer></script>
   <script src="motion.js" defer></script>
 </body>

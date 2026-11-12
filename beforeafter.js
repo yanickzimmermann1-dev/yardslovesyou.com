@@ -1,9 +1,12 @@
 /* =====================================================================
    BEFORE / AFTER PLAYER ("Hear the difference")
    - Liest die Tabelle before_after (nur veroeffentlichte Zeilen) per REST
-   - Beide Dateien werden mit Web Audio dekodiert und exakt gleichzeitig gestartet;
-     Umschalten ueberblendet zwei GainNodes in ~20 ms (nahtlos, auch waehrend der Wiedergabe)
-   - Schlaegt die Abfrage fehl oder gibt es keine Zeilen, bleibt der Bereich versteckt
+   - Beide Dateien werden gestreamt (zwei <audio>-Elemente -> MediaElementSource -> Gain pro Seite);
+     Wiedergabe startet, sobald beide spielbereit sind. Umschalten ueberblendet zwei GainNodes in ~20 ms
+     (nahtlos, auch waehrend der Wiedergabe); alle 250 ms wird die versteckte Seite nachgefuehrt.
+   - Wellenform + Lautheit kommen vorberechnet aus der Spalte before_after.peaks (ohne Dekodieren);
+     fehlt sie, werden die Dateien im Hintergrund dekodiert (Fallback)
+   -    - Schlaegt die Abfrage fehl oder gibt es keine Zeilen, bleibt der Bereich versteckt
    ===================================================================== */
 (function () {
   'use strict';
@@ -34,26 +37,9 @@
       .then(function (d) { return Array.isArray(d) ? d.filter(function (x) { return x && x.before_path && x.after_path; }) : []; });
   }
 
-  // ---------- Dateien laden + dekodieren ----------
-  function readWithProgress(url, onProgress) {
-    return fetch(url).then(function (res) {
-      if (!res.ok) throw new Error(res.status);
-      var total = +res.headers.get('content-length') || 0;
-      if (!res.body || !res.body.getReader) return res.arrayBuffer().then(function (b) { onProgress(b.byteLength, b.byteLength); return b; });
-      var reader = res.body.getReader(), chunks = [], got = 0;
-      function pump() {
-        return reader.read().then(function (r) {
-          if (r.done) {
-            var out = new Uint8Array(got), o = 0;
-            chunks.forEach(function (c) { out.set(c, o); o += c.length; });
-            return out.buffer;
-          }
-          chunks.push(r.value); got += r.value.length; onProgress(got, total);
-          return pump();
-        });
-      }
-      return pump();
-    });
+  // ---------- Fallback: Dateien im Hintergrund dekodieren (nur wenn keine vorberechneten Peaks da sind) ----------
+  function fetchBuf(url) {
+    return fetch(url).then(function (res) { if (!res.ok) throw new Error(res.status); return res.arrayBuffer(); });
   }
   var decodeCtx = null;
   function decode(ab) {
@@ -141,8 +127,8 @@
     var cx = cv.getContext('2d'), sx = sp.getContext('2d');
 
     // Zustand
-    var idx = 0, bufs = null, peaks = null, dur = 0, loadState = 'idle', loadTok = 0, pendingPlay = false;
-    var ctx = null, bus = null, analyser = null, voice = null, playing = false, startCtx = 0, offset = 0;
+    var idx = 0, ch = null, peaks = null, dur = 0, loadState = 'idle', loadTok = 0, pendingPlay = false;
+    var ctx = null, bus = null, analyser = null, playing = false, offset = 0, syncTimer = 0;
     var side = 'before', match = false, rms = null, raf = 0, drag = null, lastDraw = '', freq = null;
 
     // ----- Meta / Tabs -----
@@ -174,8 +160,8 @@
     function bar(c, x, y, w, h) { if (c.roundRect) { c.beginPath(); c.roundRect(x, y, w, h, Math.min(w / 2, 2)); c.fill(); } else c.fillRect(x, y, w, h); }
     function pos() {
       if (drag) return drag.t;
-      if (!playing || !ctx) return offset;
-      return Math.max(offset > 0 ? 0 : 0, Math.min(dur, ctx.currentTime - startCtx));
+      if (!playing || !ch) return offset;
+      return Math.max(0, Math.min(dur, ch[side].el.currentTime));
     }
     function draw() {
       size();
@@ -231,7 +217,7 @@
     }
     function loop() {
       raf = 0;
-      if (playing && ctx && ctx.currentTime - startCtx >= dur - 0.02) { finish(); return; }
+      if (playing && ch && dur && pos() >= dur - 0.03) { finish(); return; }
       updateTime(); draw(); drawSpectrum();
       if (playing || drag) raf = requestAnimationFrame(loop);
     }
@@ -254,26 +240,34 @@
       return rms[k] > q ? q / rms[k] : 1;
     }
     function ramp(param, v, t, d) { param.cancelScheduledValues(t); param.setValueAtTime(param.value, t); param.linearRampToValueAtTime(v, t + d); }
-    function startVoice(from) {
-      var t0 = ctx.currentTime + 0.015, v = {};
-      from = Math.max(0, Math.min(from, dur - 0.05));
-      v.out = ctx.createGain(); v.out.gain.setValueAtTime(0, t0); v.out.gain.linearRampToValueAtTime(1, t0 + 0.012); v.out.connect(bus);
+    // Audio-Element -> MediaElementSource -> trim -> fade -> bus (einmal pro Element, erst beim ersten Play)
+    function routeEls() {
+      if (!ch || ch.routed || !ctx) return;
       ['before', 'after'].forEach(function (k) {
-        var s = ctx.createBufferSource(), trim = ctx.createGain(), fade = ctx.createGain();
-        s.buffer = bufs[k]; trim.gain.value = trimFor(k); fade.gain.value = side === k ? 1 : 0;
-        s.connect(trim); trim.connect(fade); fade.connect(v.out);
-        v[k] = { s: s, trim: trim, fade: fade };
+        var c = ch[k]; c.src = ctx.createMediaElementSource(c.el); c.trim = ctx.createGain(); c.fade = ctx.createGain();
+        c.trim.gain.value = trimFor(k); c.fade.gain.value = side === k ? 1 : 0;
+        c.src.connect(c.trim); c.trim.connect(c.fade); c.fade.connect(bus);
       });
-      // beide im selben Aufruf mit identischer Startzeit, damit sie sample-genau parallel laufen
-      v.before.s.start(t0, from); v.after.s.start(t0, from);
-      v.after.s.onended = function () { try { v.out.disconnect(); } catch (e) {} };
-      voice = v; startCtx = t0 - from; playing = true;
+      ch.routed = true;
     }
-    function stopVoice(v) {
-      if (!v) return;
-      var t = ctx.currentTime;
-      ramp(v.out.gain, 0, t, 0.012);
-      try { v.before.s.stop(t + 0.02); v.after.s.stop(t + 0.02); } catch (e) {}
+    function hidden() { return ch[side === 'before' ? 'after' : 'before']; }
+    function syncNow() {
+      if (!ch || !playing) return;
+      var a = ch[side].el, h = hidden().el, d = Math.abs(a.currentTime - h.currentTime);
+      root._baDiff = d; updateTime();
+      if (d > 0.03) { try { h.currentTime = a.currentTime; } catch (e) {} }
+    }
+    function startSync() { stopSync(); syncTimer = setInterval(syncNow, 250); }
+    function stopSync() { if (syncTimer) { clearInterval(syncTimer); syncTimer = 0; } }
+    function teardown() {
+      stopSync();
+      if (!ch) return;
+      ['before', 'after'].forEach(function (k) {
+        var c = ch[k];
+        try { c.el.pause(); c.el.removeAttribute('src'); c.el.load(); } catch (e) {}
+        try { if (c.src) { c.src.disconnect(); c.trim.disconnect(); c.fade.disconnect(); } } catch (e) {}
+      });
+      ch = null;
     }
     function setPlayUi() {
       playBtn.classList.toggle('playing', playing);
@@ -285,21 +279,30 @@
       var ready = ensureCtx();
       if (loadState !== 'ready') { pendingPlay = true; load(); tState.textContent = 'Loading'; return; }
       ready.then(function () {
-        if (!bufs || playing) return;
-        startVoice(offset); setPlayUi(); kick(); track('beforeafter-play');
+        if (!ch || playing) return;
+        // Browser hat den AudioContext nicht freigegeben (keine Nutzergeste): nicht starten, sonst steht das Audio still
+        if (ctx.state !== 'running') { pendingPlay = false; tState.textContent = 'Press play again'; return; }
+        tState.textContent = ''; routeEls();
+        ch.before.el.currentTime = offset; ch.after.el.currentTime = offset;
+        playing = true; setPlayUi(); kick(); startSync();
+        var p1 = ch.before.el.play(), p2 = ch.after.el.play();
+        [p1, p2].forEach(function (p) { if (p && p.catch) p.catch(function () { if (playing) pause(); }); });
+        track('beforeafter-play');
       });
     }
     function pause() {
-      pendingPlay = false;
-      if (playing) { offset = pos(); stopVoice(voice); voice = null; playing = false; }
+      pendingPlay = false; tState.textContent = '';
+      if (playing && ch) { offset = pos(); ch.before.el.pause(); ch.after.el.pause(); }
+      playing = false; stopSync();
       setPlayUi(); repaint();
     }
     function finish() {
-      stopVoice(voice); voice = null; playing = false; offset = 0; setPlayUi(); repaint();
+      if (ch) { ch.before.el.pause(); ch.after.el.pause(); }
+      playing = false; stopSync(); offset = 0; setPlayUi(); repaint();
     }
     function seek(t) {
       t = Math.max(0, Math.min(dur, t)); offset = t;
-      if (playing) { stopVoice(voice); startVoice(t); }
+      if (ch) { try { ch.before.el.currentTime = t; ch.after.el.currentTime = t; } catch (e) {} }
       repaint();
     }
     function setSide(s, user) {
@@ -308,54 +311,99 @@
       sw.classList.toggle('is-before', s === 'before'); sw.classList.toggle('is-after', s === 'after');
       Array.prototype.forEach.call(sw.querySelectorAll('button'), function (b) { b.setAttribute('aria-checked', String(b.dataset.side === s)); });
       if (!reduced) { sw.classList.remove('morph'); void sw.offsetWidth; sw.classList.add('morph'); }
-      if (voice && ctx) {
+      if (ch && ch.routed && ctx) {
         var t = ctx.currentTime;
-        ramp(voice.before.fade.gain, s === 'before' ? 1 : 0, t, 0.02);
-        ramp(voice.after.fade.gain, s === 'after' ? 1 : 0, t, 0.02);
+        ramp(ch.before.fade.gain, s === 'before' ? 1 : 0, t, 0.02);
+        ramp(ch.after.fade.gain, s === 'after' ? 1 : 0, t, 0.02);
       }
       if (user) track('beforeafter-toggle');
       repaint();
     }
+    function applyTrim() {
+      if (ch && ch.routed && ctx) { var t = ctx.currentTime; ['before', 'after'].forEach(function (k) { ch[k].trim.gain.setTargetAtTime(trimFor(k), t, 0.015); }); }
+    }
     function applyMatch() {
-      if (!rms && bufs) rms = { before: rmsOf(bufs.before), after: rmsOf(bufs.after) };
-      if (voice && ctx) { var t = ctx.currentTime; ['before', 'after'].forEach(function (k) { voice[k].trim.gain.setTargetAtTime(trimFor(k), t, 0.015); }); }
+      if (match && !rms) { decodeFallback(); return; }   // keine vorberechnete Lautheit: im Hintergrund messen
+      applyTrim();
+    }
+    // Fallback ohne vorberechnete Peaks/Lautheit: beide Dateien einmal dekodieren (nicht blockierend)
+    var decoding = 0;
+    function decodeFallback() {
+      if (decoding || !rows[idx]) return;
+      var tok = loadTok, r = rows[idx]; decoding = 1;
+      Promise.all([fetchBuf(pubUrl(r.before_path)), fetchBuf(pubUrl(r.after_path))])
+        .then(function (abs) { return Promise.all([decode(abs[0]), decode(abs[1])]); })
+        .then(function (b) {
+          decoding = 0; if (tok !== loadTok) return;
+          if (!peaks) {
+            var pb = peaksOf(b[0], 900), pa = peaksOf(b[1], 900), m = 0.0001, i;
+            for (i = 0; i < 900; i++) { if (pb[i] > m) m = pb[i]; if (pa[i] > m) m = pa[i]; }
+            for (i = 0; i < 900; i++) { pb[i] /= m; pa[i] /= m; }
+            peaks = { before: pb, after: pa };
+          }
+          if (!rms) rms = { before: rmsOf(b[0]), after: rmsOf(b[1]) };
+          applyTrim(); repaint();
+        })
+        .catch(function () { decoding = 0; });
     }
 
-    // ----- Laden -----
+    // ----- Laden (Streaming) -----
     function setRing(f, indeterminate) {
       playBtn.classList.toggle('loading', f !== null);
       playBtn.classList.toggle('indet', !!indeterminate);
       if (f !== null) ring.style.strokeDashoffset = String(RING * (1 - Math.max(0.03, Math.min(1, f))));
     }
+    function validPeaks(p) {
+      return p && Array.isArray(p.before) && Array.isArray(p.after) && p.before.length > 8 && p.before.length === p.after.length;
+    }
     function load() {
       if (loadState === 'loading' || loadState === 'ready') return;
-      var tok = ++loadTok, r = rows[idx];
-      loadState = 'loading'; errEl.hidden = true; setRing(0.03, false);
-      var got = [0, 0], tot = [0, 0];
-      function prog(i) { return function (g, t) { got[i] = g; tot[i] = t; var T = tot[0] + tot[1]; if (T && tot[0] && tot[1]) setRing(0.9 * (got[0] + got[1]) / T, false); else setRing(0.3, true); }; }
-      Promise.all([readWithProgress(pubUrl(r.before_path), prog(0)), readWithProgress(pubUrl(r.after_path), prog(1))])
-        .then(function (abs) { if (tok !== loadTok) throw 'stale'; setRing(0.93, false); return Promise.all([decode(abs[0]), decode(abs[1])]); })
-        .then(function (b) {
-          if (tok !== loadTok) throw 'stale';
-          bufs = { before: b[0], after: b[1] };
-          dur = Math.min(b[0].duration, b[1].duration);
-          var pb = peaksOf(b[0], 900), pa = peaksOf(b[1], 900), m = 0.0001, i;
-          for (i = 0; i < 900; i++) { if (pb[i] > m) m = pb[i]; if (pa[i] > m) m = pa[i]; }
-          for (i = 0; i < 900; i++) { pb[i] /= m; pa[i] /= m; }
-          peaks = { before: pb, after: pa }; rms = null;
-          loadState = 'ready'; setRing(null); tState.textContent = '';
-          if (match) applyMatch();
-          repaint();
-          if (pendingPlay) { pendingPlay = false; play(); }
-        })
-        .catch(function (e) {
-          if (e === 'stale') return;
-          loadState = 'error'; setRing(null); pendingPlay = false; tState.textContent = ''; errEl.hidden = false;
+      var tok = ++loadTok, r = rows[idx], pk = r.peaks;
+      if (typeof pk === 'string') { try { pk = JSON.parse(pk); } catch (e) { pk = null; } }
+      loadState = 'loading'; errEl.hidden = true; setRing(0.3, true);
+      if (validPeaks(pk)) {
+        var m = 0.0001, i;
+        for (i = 0; i < pk.before.length; i++) { if (pk.before[i] > m) m = pk.before[i]; if (pk.after[i] > m) m = pk.after[i]; }
+        peaks = { before: pk.before.map(function (v) { return v / m; }), after: pk.after.map(function (v) { return v / m; }) };
+        if (pk.rms && pk.rms.before > 0 && pk.rms.after > 0) rms = { before: +pk.rms.before, after: +pk.rms.after };
+      }
+      teardown();
+      var made = {}, ready = { before: false, after: false };
+      ch = made;
+      ['before', 'after'].forEach(function (k) {
+        var el = new Audio();
+        el.crossOrigin = 'anonymous'; el.preload = 'auto';
+        el.addEventListener('canplay', function () {
+          if (tok !== loadTok) return;
+          ready[k] = true;
+          if (ready.before && ready.after && loadState === 'loading') {
+            dur = Math.min(made.before.el.duration || 0, made.after.el.duration || 0);
+            if (!isFinite(dur) || dur <= 0) dur = Math.max(made.before.el.duration || 0, made.after.el.duration || 0) || 0;
+            loadState = 'ready'; setRing(null); if (!pendingPlay) tState.textContent = '';
+            if (!peaks || !rms) decodeFallback();
+            repaint();
+            if (pendingPlay) { pendingPlay = false; tState.textContent = ''; play(); }
+          }
         });
+        el.addEventListener('loadedmetadata', function () {
+          if (tok !== loadTok) return;
+          var d = Math.min(made.before.el.duration || 0, made.after.el.duration || 0);
+          if (d > 0 && isFinite(d) && !dur) { dur = d; repaint(); }
+        });
+        el.addEventListener('waiting', function () { if (tok === loadTok && playing && k === side) setRing(0.3, true); });
+        el.addEventListener('playing', function () { if (tok === loadTok && k === side) setRing(null); });
+        el.addEventListener('ended', function () { if (tok === loadTok && playing && k === side) finish(); });
+        el.addEventListener('error', function () {
+          if (tok !== loadTok) return;
+          loadState = 'error'; setRing(null); pendingPlay = false; playing = false; stopSync(); setPlayUi(); tState.textContent = ''; errEl.hidden = false;
+        });
+        el.src = pubUrl(k === 'before' ? r.before_path : r.after_path);
+        made[k] = { el: el };
+      });
     }
     function selectRow(i) {
       if (i === idx && loadState !== 'idle') return;
-      pause(); loadTok++; idx = i; bufs = null; peaks = null; rms = null; dur = 0; offset = 0; loadState = 'idle'; errEl.hidden = true; setRing(null);
+      pause(); loadTok++; teardown(); idx = i; peaks = null; rms = null; dur = 0; offset = 0; decoding = 0; loadState = 'idle'; errEl.hidden = true; setRing(null);
       renderTabs(); renderMeta(); repaint();
       if (near) load();
     }
@@ -401,7 +449,7 @@
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (es, o) {
         if (es.some(function (x) { return x.isIntersecting; })) { near = true; load(); o.disconnect(); }
-      }, { rootMargin: '400px 0px' }).observe(root);
+      }, { rootMargin: '600px 0px' }).observe(root);
     }
 
     renderTabs(); renderMeta(); repaint();

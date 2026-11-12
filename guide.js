@@ -56,7 +56,7 @@
       return (arr || []).map(function (t) { return '<li><span class="gd-ic ' + (ok ? "ok" : "no") + '">' + (ok ? I.check : I.x) + "</span><span>" + esc(t) + "</span></li>"; }).join("");
     };
     var gallery = ctx.images && ctx.images.length > 1 ? '<section class="gd-sec gd-rv"><p class="eyebrow">Gallery</p><h2>A closer look</h2><div class="gd-gallery">' +
-      ctx.images.slice(1).map(function (u) { return '<img src="' + esc(u) + '" alt="" loading="lazy">'; }).join("") + "</div></section>" : "";
+      ctx.images.slice(1).map(function (u) { return '<img src="' + esc(u) + '" alt="" width="800" height="600" loading="lazy" decoding="async">'; }).join("") + "</div></section>" : "";
 
     var cartLink = function () {
       return ctx.cartAttrs ? '<button type="button" class="gd-addcart" ' + ctx.cartAttrs + ">" +

@@ -41,7 +41,7 @@
         <a class="product-link" href="${link(p.id)}">
           <div class="cover"${model(p)?` data-p3d="${esc(p.id)}"`:""}>
             ${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}
-            ${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" loading="lazy">`:esc(p.cover_emoji||"")}
+            ${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" width="600" height="600" loading="lazy" decoding="async">`:esc(p.cover_emoji||"")}
           </div>
           <h3>${esc(p.title)}</h3>
           <p>${esc(p.description||"Digital download as ZIP file.")}</p>

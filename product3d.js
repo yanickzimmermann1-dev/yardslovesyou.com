@@ -19,6 +19,7 @@
     if (texCache[url]) return texCache[url];
     texCache[url] = new Promise(function (res, rej) {
       var i = new Image();
+      i.decoding = "async";
       i.onload = function () { res(i); };
       i.onerror = function () { delete texCache[url]; rej(new Error("texture")); };
       i.src = url;
