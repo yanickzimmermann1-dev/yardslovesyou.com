@@ -28,7 +28,26 @@ html.intro-on:not(.intro-portal) .hero .muted,html.intro-on:not(.intro-portal) .
 .yi-skip{position:absolute;right:16px;bottom:16px;z-index:2;background:none;border:0;color:#aaa0b7;font:500 13px 'DM Sans',sans-serif;
   padding:10px 12px;cursor:pointer;letter-spacing:.04em}
 .yi-skip:hover,.yi-skip:focus-visible{color:#fff;outline:1px solid rgba(182,138,255,.6);outline-offset:2px;border-radius:8px}
+/* Portal: sitzt ueber der Overlay-Maske (Geschwister), skaliert per transform mit dem Reveal-Kreis */
+.yi-portal,.yi-sparks{display:none}
+html.intro-on .yi-portal{display:block;position:fixed;left:0;top:0;width:200px;height:200px;z-index:100000;pointer-events:none;will-change:transform,opacity}
+html.intro-on .yi-sparks{display:block;position:fixed;inset:0;z-index:100001;pointer-events:none;overflow:hidden}
+.yi-sparks i{position:absolute;left:0;top:0;width:4px;height:4px;margin:-2px;border-radius:50%;background:#fff;box-shadow:0 0 6px 2px #d9c6ff;opacity:0;will-change:transform,opacity}
+.yi-pt-fill{position:absolute;inset:0;border-radius:50%;overflow:hidden;isolation:isolate;will-change:opacity;
+  background:radial-gradient(circle,#a47bff 0,#7a4ce6 50%,#4a2a9e 100%)}
+.yi-pt-fill i{position:absolute;inset:0;mix-blend-mode:screen;will-change:transform}
+.yi-pt-a{background:conic-gradient(from 0deg,#b68aff,rgba(138,92,255,0) 18%,#6fe3ff 32%,rgba(217,198,255,0) 48%,#ff8fd8 62%,rgba(138,92,255,0) 78%,#b68aff);animation:yiSpin 7s linear infinite}
+.yi-pt-b{background:conic-gradient(from 90deg,rgba(217,198,255,.9),rgba(138,92,255,0) 22%,#ff8fd8 40%,rgba(138,92,255,0) 55%,#8a5cff 72%,rgba(111,227,255,.7) 88%,rgba(217,198,255,.9));opacity:.8;animation:yiSpin 11s linear infinite reverse}
+.yi-pt-c{background:radial-gradient(circle,#fff 0,rgba(217,198,255,.9) 7%,rgba(182,138,255,.5) 30%,rgba(182,138,255,0) 62%);animation:yiCore 1.8s ease-in-out infinite alternate}
+.yi-pt-sh{background:conic-gradient(from 0deg,rgba(255,255,255,0) 0 86%,rgba(255,255,255,.55) 94%,rgba(255,255,255,0) 100%);animation:yiSpin 2.6s linear infinite reverse}
+.yi-pt-ring{position:absolute;inset:0;border-radius:50%;will-change:opacity;
+  background:radial-gradient(circle,rgba(217,198,255,0) 76%,rgba(217,198,255,.8) 94%,rgba(255,255,255,.95) 98.5%,rgba(182,138,255,0) 100%);
+  box-shadow:0 0 16px 4px rgba(182,138,255,.75),inset 0 0 22px 6px rgba(217,198,255,.55),0 0 56px 14px rgba(138,92,255,.45)}
+@keyframes yiSpin{to{transform:rotate(360deg)}}
+@keyframes yiCore{from{opacity:.65;transform:scale(.92)}to{opacity:1;transform:scale(1.06)}}
 @media (prefers-reduced-motion:reduce){
-  .yi-l{animation:none;opacity:1}.yi-word{animation:none}.yi-sweep,.yi-p,.yi-glow{display:none}
+  .yi-l{animation:none;opacity:1}.yi-word{animation:none}.yi-sweep,.yi-p{display:none}
+  .yi-glow{animation:none;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(182,138,255,.5),rgba(138,92,255,.2) 50%,transparent 75%)}
+  html.intro-on .yi-portal,html.intro-on .yi-sparks{display:none}
   html.intro-on .yi{animation:yiSafe .4s .6s forwards}
 }

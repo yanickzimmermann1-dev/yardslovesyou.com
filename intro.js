@@ -7,11 +7,12 @@
   var scale = 1;
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var ov, body, finished = false, started = false;
+  var ov, pt, sp, body, finished = false, started = false;
 
   function done() {
     if (finished) return; finished = true;
     try { if (ov && ov.parentNode) ov.parentNode.removeChild(ov); } catch (e) {}
+    try { if (pt && pt.parentNode) pt.parentNode.removeChild(pt); if (sp && sp.parentNode) sp.parentNode.removeChild(sp); } catch (e) {}
     try { body.style.cssText = body.getAttribute('data-yi-style') || ''; body.removeAttribute('data-yi-style'); } catch (e) {}
     root.classList.remove('intro-on', 'intro-portal');
     window.removeEventListener('keydown', skip, true);
@@ -40,6 +41,12 @@
     h += '<div class="yi-sweep"></div></div></div><button type="button" class="yi-skip" aria-label="Skip intro">Skip</button>';
     ov.innerHTML = h;
     root.appendChild(ov);
+    pt = document.createElement('div'); pt.className = 'yi-portal'; pt.setAttribute('aria-hidden', 'true'); pt.style.opacity = '0';
+    pt.innerHTML = '<div class="yi-pt-fill"><i class="yi-pt-a"></i><i class="yi-pt-b"></i><i class="yi-pt-c"></i><i class="yi-pt-sh"></i></div><div class="yi-pt-ring"></div>';
+    root.appendChild(pt);
+    sp = document.createElement('div'); sp.className = 'yi-sparks'; sp.setAttribute('aria-hidden', 'true');
+    var sh = ''; for (i = 0; i < 14; i++) sh += '<i></i>';
+    sp.innerHTML = sh; root.appendChild(sp);
     ov.addEventListener('click', skip);
     ov.addEventListener('wheel', skip, { passive: true });
     ov.addEventListener('touchmove', skip, { passive: true });
@@ -52,7 +59,8 @@
     var word = ov.querySelector('.yi-word'), letters = ov.querySelectorAll('.yi-l');
     if (reduce) { setTimeout(function () { ov.style.transition = 'opacity .4s'; ov.style.opacity = '0'; setTimeout(done, 400); }, 600 * scale); return; }
     var O = letters[6]; // O in LOVESYOU
-    var cx = 0, cy = 0, r0 = 20, measured = false, pageEls = body;
+    var cx = 0, cy = 0, r0 = 20, measured = false, sparks = sp.children, fill = pt.firstChild, ring = pt.lastChild;
+    function sm(x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
     function measure() {
       var wr = word.getBoundingClientRect(), fs = parseFloat(getComputedStyle(word).fontSize) || 100;
       var ox = O.offsetLeft + O.offsetWidth / 2, oy = O.offsetTop + O.offsetHeight / 2;
@@ -77,6 +85,14 @@
         word.style.opacity = (1 - Math.max(0, (e - 0.8) / 0.2)).toFixed(3);
         var mk = 'radial-gradient(circle at ' + cx.toFixed(1) + 'px ' + cy.toFixed(1) + 'px,transparent ' + R.toFixed(1) + 'px,#000 ' + (R + 1.5).toFixed(1) + 'px)';
         ov.style.webkitMaskImage = ov.style.maskImage = mk;
+        var k = R / 100, fa = 1 - sm((e - 0.25) / 0.55), ra = 1 - sm((e - 0.75) / 0.25), fi = Math.min(1, p / 0.12);
+        pt.style.transform = 'translate3d(' + (cx - 100).toFixed(1) + 'px,' + (cy - 100).toFixed(1) + 'px,0) scale(' + k.toFixed(4) + ')';
+        pt.style.opacity = fi.toFixed(3); fill.style.opacity = fa.toFixed(3); ring.style.opacity = ra.toFixed(3);
+        for (var j = 0; j < sparks.length; j++) {
+          var f = (t * 0.7 + j / sparks.length) % 1, an = j * 2.399 + f * 1.8 + t * 0.5, rd = R * (1 - f * 0.92);
+          sparks[j].style.transform = 'translate3d(' + (cx + Math.cos(an) * rd).toFixed(1) + 'px,' + (cy + Math.sin(an) * rd).toFixed(1) + 'px,0)';
+          sparks[j].style.opacity = (Math.sin(Math.PI * f) * (0.25 + 0.75 * fa) * ra * fi).toFixed(3);
+        }
         var pe = ease(Math.min(1, p * 1.05));
         body.style.transform = 'scale(' + (1.12 - 0.12 * pe).toFixed(4) + ')';
         body.style.filter = 'blur(' + (10 * (1 - pe)).toFixed(2) + 'px) brightness(' + (0.6 + 0.4 * pe).toFixed(3) + ')';
