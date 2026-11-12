@@ -138,7 +138,7 @@
     window.ylyTrack&&ylyTrack("checkout-click",{id:productId});
     try{
       const {data,error}=await db.functions.invoke("create-checkout",{body:{product_id:productId}});
-      if(error) throw error;
+      if(error){ let m=error.message; try{ const j=await error.context.json(); if(j&&j.error) m=j.error; }catch(_){} throw new Error(m); }
       if(!data?.url) throw new Error(data?.error||"Checkout link missing.");
       if(!/^https:\/\//i.test(String(data.url))) throw new Error("Invalid checkout link.");
       location.href=data.url;

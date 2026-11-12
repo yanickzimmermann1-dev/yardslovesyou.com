@@ -186,7 +186,7 @@
     }
 
     /* ---------- Kapitel-Seite (Dialog) ---------- */
-    var panel = q("#gd-panel"), sheet = q(".gd-sheet", panel), cur = -1, lastFocus = null;
+    var panel = q("#gd-panel"), sheet = q(".gd-sheet", panel), cur = -1, lastFocus = null, closeT = 0;
     var elK = q("#gd-p-kicker"), elT = q("#gd-p-title"), elX = q("#gd-p-text"), elTip = q("#gd-p-tip"), elLock = q("#gd-lockbar");
     var elCount = q("#gd-count"), btnPrev = q("#gd-prev"), btnNext = q("#gd-next"), unlock = q("#gd-unlock");
 
@@ -231,7 +231,8 @@
     };
     var open = function (i, trigger) {
       lastFocus = trigger || document.activeElement;
-      var wasOpen = !panel.hidden;
+      var wasOpen = !panel.hidden && panel.classList.contains("open");
+      clearTimeout(closeT);
       panel.hidden = false;
       render(i, 0);
       if (!wasOpen) {
@@ -244,7 +245,8 @@
       panel.classList.remove("open");
       document.documentElement.classList.remove("gd-lock");
       var done = function () { panel.hidden = true; };
-      if (reduce) done(); else setTimeout(done, 220);
+      clearTimeout(closeT);
+      if (reduce) done(); else closeT = setTimeout(done, 220);
       if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
     };
     var go = function (d) { var n = cur + d; if (n >= 0 && n < chapters.length) render(n, d); };

@@ -107,6 +107,7 @@
   async function render() {
     resetMe();
     const m = await me();
+    shownUid = m ? m.user.id : null;
     if (!m) { show("acc-login"); return; }
     $("acc-signed-as").textContent = m.user.email;
     if (!m.profile) { show("acc-create"); return; }
@@ -124,6 +125,11 @@
   }
 
   // Nach dem Klick auf den Login-Link setzt Supabase die Sitzung selbst
-  db.auth.onAuthStateChange(ev => { if (ev === "SIGNED_IN" || ev === "SIGNED_OUT") render(); });
+  // supabase-js feuert SIGNED_IN auch beim Zurueckkehren in den Tab: nur bei echtem Wechsel neu rendern (sonst gehen Eingaben im Formular verloren)
+  let shownUid;
+  db.auth.onAuthStateChange((ev, session) => {
+    const uid = session && session.user ? session.user.id : null;
+    if ((ev === "SIGNED_IN" && uid !== shownUid) || ev === "SIGNED_OUT") render();
+  });
   render();
 })();

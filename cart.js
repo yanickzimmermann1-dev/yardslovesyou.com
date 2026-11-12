@@ -368,7 +368,7 @@
   /* ---------- Drawer auf/zu ---------- */
   function open() {
     build();
-    if (!root.hidden) return;
+    if (!root.hidden && root.classList.contains('open')) return;
     clearTimeout(closeTimer);
     lastFocus = document.activeElement;
     render();

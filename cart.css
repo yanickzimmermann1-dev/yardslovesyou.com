@@ -44,6 +44,8 @@
   .cart-btn.cart-float.is-empty{display:none}
   /* Kaufleiste der Produktseite nicht ueberdecken */
   body:has(.pd-sticky.visible) .cart-btn.cart-float{bottom:calc(var(--tabbar-space,64px) + 82px)}
+  /* Toast / Perc-Lab-Hinweis nicht ueber dem schwebenden Warenkorb-Button */
+  body:has(.cart-btn.cart-float.has-items) .yly-toast,body:has(.cart-btn.cart-float.has-items) .pl-nudge{bottom:calc(var(--tabbar-space,64px) + 78px)}
 }
 
 /* ---------- Drawer ---------- */

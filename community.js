@@ -28,26 +28,30 @@
     return { data };
   }
 
+  let seq = 0;
   async function load(reset) {
-    if (loading) return; loading = true;
+    if (loading && !reset) return;
+    const my = ++seq; loading = true;
     if (reset) { page = 0; done = false; feed.innerHTML = '<div class="empty">Loading …</div>'; }
     try {
       const res = await query(page * PAGE);
+      if (my !== seq) return; // a newer tab/filter request took over
       if (reset) feed.innerHTML = "";
       if (res.needLogin) { feed.innerHTML = `<div class="empty">Sign in to see posts from people you follow. <a class="cp-link" href="${window.YLY.loginUrl()}">Sign in</a></div>`; done = true; }
       else if (res.empty) { feed.innerHTML = `<div class="empty">${res.empty}</div>`; done = true; }
       else {
         const posts = res.data.filter(p => p.id !== sharedId);
         const m = await me(), liked = await likedSet(posts.map(p => p.id));
+        if (my !== seq) return;
         if (reset && !posts.length) feed.innerHTML = '<div class="empty">Nothing here yet. Be the first – make a beat or chords and hit Publish!</div>';
         feed.insertAdjacentHTML("beforeend", posts.map(p => postCard(p, { me: m, liked })).join(""));
         done = res.data.length < PAGE; page++;
       }
     } catch (err) {
+      if (my !== seq) return;
       feed.innerHTML = '<div class="empty">The feed could not be loaded. Please try again later.</div>';
     } finally {
-      loading = false;
-      $("cm-more").classList.toggle("hidden", done);
+      if (my === seq) { loading = false; $("cm-more").classList.toggle("hidden", done); }
     }
   }
 

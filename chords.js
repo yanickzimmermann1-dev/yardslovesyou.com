@@ -360,6 +360,7 @@
   }
   async function play() {
     ensureAudio(); if (ctx.state === "suspended") await ctx.resume();
+    if (playing) return;
     indexEvents();
     playing = true; cur = 0; visQ.length = 0; nextTime = ctx.currentTime + 0.06;
     tick(); timer = setInterval(tick, 25);
