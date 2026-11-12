@@ -201,27 +201,6 @@
       }
     }
 
-    /* ================= 4) Übergang: Flash + Partikel ================= */
-    var about = $('#about'), flashFired = false;
-    function burstAbout() {
-      try {
-        var h = $('#about-title'); if (!h || !window.YLYFX || !YLYFX.particlesBurst) return;
-        var r = h.getBoundingClientRect(); if (r.bottom < 0 || r.top > vh) return;
-        YLYFX.particlesBurst(r.left + Math.min(r.width, 160) / 2, r.top + r.height / 2, { count: 16, spread: 80, life: 800 });
-      } catch (e) {}
-    }
-    function aboutFrame(dy) {
-      if (flashFired || !about || reduce || !G.aboutTop) return;
-      var edge = G.aboutTop - vh * 0.55;
-      if (dy > 0 && lastY - dy < edge && y >= edge) {
-        flashFired = true;
-        var fast = Math.abs(vel) > 3000 || root.classList.contains('intro-on');
-        if (window.YLYFX && YLYFX.blackout && !fast) {
-          try { YLYFX.blackout({ inMs: 220, holdMs: 120, outMs: 380 }).then(burstAbout, burstAbout); } catch (e) { burstAbout(); }
-        } else burstAbout();
-      } else if (y > G.aboutTop + vh) flashFired = true;
-    }
-
     /* ================= Messen + Hauptschleife ================= */
     function measure() {
       vh = window.innerHeight || 800;
@@ -245,7 +224,6 @@
         slots = cards.map(function (c) { return { x: c.offsetLeft + c.offsetWidth / 2, y: c.offsetTop + c.offsetHeight / 2 }; });
       }
       if (!stackOn && grid && !reduce) G.cardTops = cards.map(rect0);
-      if (about) G.aboutTop = rect0(about);
     }
     var lastFrameT = 0;
     function frame(now) {
@@ -263,7 +241,6 @@
           if (hearFrame(now)) more = true;
           stackFrame();
           mobileFrame();
-          aboutFrame(dy);
         }
       } catch (e) {}
       lastY = y; lastFrameT = now;

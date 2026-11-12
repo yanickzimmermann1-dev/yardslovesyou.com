@@ -1,9 +1,8 @@
 (function () {
   'use strict';
   var host = document.querySelector('main') || document.body;
-  var anchor = document.getElementById('hear');
-  var services = document.getElementById('services');
-  if (!document.querySelector('.hero') || !services) return;
+  var about = document.getElementById('about');
+  if (!document.querySelector('.hero') || !about || !document.getElementById('services')) return;
   var WORDS = ['HIP-HOP', 'TRAP', 'DRILL', 'AFROBEATS', 'R&B', 'MIXING', 'MASTERING', 'VOCAL HOOKS', 'PERCUSSION'];
   var NS = 'http://www.w3.org/2000/svg';
   var reduce = false;
@@ -34,7 +33,7 @@
     band.appendChild(row);
     rows.push({ el: row, x: 0, w: 0, dir: r ? 1 : -1, mult: r ? 0.7 : 1 });
   });
-  services.parentNode.insertBefore(band, services);
+  about.parentNode.insertBefore(band, about); // divider between the work showcase and About
 
   function measure() {
     band.style.marginLeft = '0'; band.style.width = '';

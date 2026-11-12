@@ -14,20 +14,26 @@
   wrap.appendChild(word); footer.appendChild(wrap);
 
   var fs = 100, W = 0;
+  /* Never cropped: the wrap is taller than the glyph box. Top room = wave lift (16%) + scale (12%) + margin, bottom room for the baseline. */
+  var PAD_T = 0.34, PAD_B = 0.08, PAD_X = 0.018;
   function fit() {
     var w = wrap.clientWidth; if (!w) return;
+    var px = Math.round(w * PAD_X), inner = w - 2 * px;
     word.style.fontSize = '100px';
     var nat = word.getBoundingClientRect().width; if (!nat) return;
-    fs = 100 * w / nat; W = w;
+    fs = 100 * inner / nat; W = w;
     word.style.fontSize = fs.toFixed(2) + 'px';
-    // bottom-crop ~14% of glyph box
-    wrap.style.height = (fs * 0.80).toFixed(1) + 'px';
-    var wr = word.getBoundingClientRect();
+    word.style.left = px + 'px';
+    word.style.top = (fs * PAD_T).toFixed(1) + 'px';
+    wrap.style.height = Math.ceil(fs * (1 + PAD_T + PAD_B)) + 'px';
+    var wr = wrap.getBoundingClientRect();
     letters.forEach(function (l) { var r = l.el.getBoundingClientRect(); l.cx = r.left - wr.left + r.width / 2; });
   }
   fit();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   addEventListener('resize', fit);
+  addEventListener('load', fit);
+  try { if (window.ResizeObserver) new ResizeObserver(function () { if (wrap.clientWidth !== W) fit(); }).observe(wrap); } catch (e) {}
 
   var mx = null, raf = 0, idle = 0, idleStart = 0;
   function frame(t) {

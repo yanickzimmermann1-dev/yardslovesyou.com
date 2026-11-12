@@ -308,7 +308,7 @@
       var fine = false;
       try { fine = !!matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (e) {}
       if (fine && !reduce) {
-        var CARD_SEL = '.product, .service-card, .cp, .free-nav a';
+        var CARD_SEL = '.product, .service-card:not([data-hs]), .cp, .free-nav a'; // Home-Services ([data-hs]) reagieren nur auf Scroll
         var active = null, lastEv = null, tiltQueued = false;
 
         var resetCard = function (c) { if (c) c.style.transform = ''; };

@@ -63,16 +63,17 @@
   <link rel="stylesheet" href="intro.css?v=20261113g">
   <script src="fx-gate.js?v=20261113g"></script>
   <link rel="stylesheet" href="fx.css?v=20261113g">
-  <link rel="stylesheet" href="styles.css?v=20261113j">
-  <link rel="stylesheet" href="beforeafter.css?v=20261111c">
-  <link rel="stylesheet" href="home-scroll.css?v=20261113g">
+  <link rel="stylesheet" href="styles.css?v=20261113l">
+  <link rel="stylesheet" href="beforeafter.css?v=20261113l">
+  <link rel="stylesheet" href="home-scroll.css?v=20261113l">
+  <link rel="stylesheet" href="home-work.css?v=20261113l">
   <link rel="stylesheet" href="cart.css?v=20261113h">
   <!-- WICHTIG: UMD-Build für globales window.supabase -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <link rel="stylesheet" href="cursor.css?v=20261113j">
   <link rel="stylesheet" href="skeleton.css?v=20261113j">
-  <link rel="stylesheet" href="footerword.css?v=20261113j">
-  <link rel="stylesheet" href="marquee.css?v=20261113j">
+  <link rel="stylesheet" href="footerword.css?v=20261113l">
+  <link rel="stylesheet" href="marquee.css?v=20261113l">
   <link rel="stylesheet" href="uisound.css?v=20261113k">
 </head>
 <body>
@@ -102,59 +103,63 @@
   <!-- Before / After (versteckt, bis Daten da sind) -->
   <section class="home-section ba-section" id="hear" data-beforeafter data-cta="upload.html" hidden></section>
 
-  <!-- Tracks -->
-  <section class="home-section" aria-labelledby="work-title">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">LISTEN</p>
-        <h2 id="work-title">Latest work</h2>
-      </div>
-    </div>
-    <div id="tracks" class="track-grid">
-      <div class="empty">Loading tracks …</div>
-    </div>
-    <p id="status" class="status" role="status"></p>
-  </section>
-
   <!-- Services -->
   <section class="home-section" id="services" aria-labelledby="services-title">
     <div class="section-head">
       <div>
         <p class="eyebrow">SERVICES</p>
-        <h2 id="services-title">Let's work together</h2>
+        <h2 id="services-title">What you can book</h2>
       </div>
       <a class="outline" href="upload.html">All services</a>
     </div>
 
     <div class="service-grid">
-      <a class="service-card" data-hs href="upload.html?service=stem-mastering">
+      <a class="service-card" data-hs data-nomagnet href="upload.html?service=stem-mastering">
         <span class="service-meta">ZIP upload</span>
         <h3>Stem Mastering</h3>
         <p>Send your stems and get a release-ready master with the punch and loudness your track deserves.</p>
         <span class="price">CHF 200</span>
         <span class="service-cta">Book now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-      <a class="service-card" data-hs href="upload.html?service=mixing">
+      <a class="service-card" data-hs data-nomagnet href="upload.html?service=mixing">
         <span class="service-meta">ZIP upload</span>
         <h3>Mixing</h3>
         <p>Balance, depth and clarity: your stems mixed into a cohesive, professional sounding track.</p>
         <span class="price">CHF 300</span>
         <span class="service-cta">Book now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-      <a class="service-card" data-hs href="upload.html?service=vocal-hook">
+      <a class="service-card" data-hs data-nomagnet href="upload.html?service=vocal-hook">
         <span class="service-meta">Single WAV</span>
         <h3>Vocal Hook</h3>
         <p>Send your instrumental and get a custom vocal hook written and recorded for it.</p>
         <span class="price">CHF 500</span>
         <span class="service-cta">Book now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
-      <a class="service-card" data-hs href="upload.html?service=vocal-mix">
+      <a class="service-card" data-hs data-nomagnet href="upload.html?service=vocal-mix">
         <span class="service-meta">ZIP upload · 2-track beat</span>
         <h3>Vocal Mix</h3>
         <p>Bought or leased a beat? Send the 2-track beat together with your vocal stems and get your vocals mixed to sit perfectly on it.</p>
         <span class="price">CHF 150</span>
         <span class="service-cta">Book now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </a>
+    </div>
+  </section>
+
+  <!-- Work showcase: scroll-driven 3D helix (home-work.js) -->
+  <section class="home-section" id="work" aria-labelledby="work-title">
+    <div class="hx-stack" id="hx-stack">
+      <div class="hx-pin" id="hx-pin">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">SELECTED WORK</p>
+            <h2 id="work-title">Recent mixes</h2>
+          </div>
+        </div>
+        <div id="tracks" class="track-grid">
+          <div class="empty">Loading tracks …</div>
+        </div>
+        <p id="status" class="status" role="status"></p>
+      </div>
     </div>
   </section>
 
@@ -201,18 +206,19 @@
 </footer>
 
 <script defer src="config.js"></script>
-<script defer src="home.js?v=20261113j"></script>
-<script defer src="home-scroll.js?v=20261113g"></script>
-<script src="beforeafter.js?v=20261112g" defer></script>
+<script defer src="home.js?v=20261113l"></script>
+<script defer src="home-scroll.js?v=20261113l"></script>
+<script defer src="home-work.js?v=20261113l"></script>
+<script src="beforeafter.js?v=20261113l" defer></script>
   <script src="cart.js?v=20261113h" defer></script>
   <script src="nav.js" defer></script>
   <script src="fx.js?v=20261113g" defer></script>
   <script src="uisound.js?v=20261113k" defer></script>
   <script src="intro.js?v=20261113g" defer></script>
-  <script src="motion.js?v=20261113i" defer></script>
+  <script src="motion.js?v=20261113l" defer></script>
   <script src="cursor.js?v=20261113j" defer></script>
   <script src="reveal.js?v=20261113j" defer></script>
-  <script src="footerword.js?v=20261113j" defer></script>
-  <script src="marquee.js?v=20261113j" defer></script>
+  <script src="footerword.js?v=20261113l" defer></script>
+  <script src="marquee.js?v=20261113l" defer></script>
 </body>
 </html>

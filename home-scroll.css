@@ -45,8 +45,9 @@ body::before{
 .hs-pin{position:sticky;top:78px;height:calc(100vh - 78px);height:calc(100svh - 78px);display:flex;flex-direction:column;justify-content:center}
 .hs-pin .section-head{margin-bottom:26px}
 .hs-pin .service-grid{position:relative;padding-right:26px}
-.hs-pin .service-card{backface-visibility:hidden;transform-origin:50% 60%}
-.hs-live .service-card{transition:border-color .2s!important}
+/* Services reagieren NUR auf Scroll: home-scroll.js ist die einzige Instanz, die transform schreibt. Kein Hover, keine Transition. */
+.service-card[data-hs]{transition:none;transform-style:flat;backface-visibility:hidden;transform-origin:50% 60%}
+.service-card[data-hs]:focus-visible{outline:2px solid var(--purple,#b68aff);outline-offset:3px}
 .hs-live .service-card{will-change:transform}
 .hs-dots{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;pointer-events:none}
 .hs-dots i{display:block;width:8px;height:8px;border-radius:50%;background:#ffffff30;transition:transform .3s,background .3s}

@@ -1,4 +1,4 @@
-.mq-band{position:relative;width:100%;overflow:hidden;padding:clamp(18px,3vw,36px) 0;margin:clamp(16px,3vw,40px) 0;border-block:1px solid rgba(182,138,255,.18);background:linear-gradient(180deg,rgba(182,138,255,.05),transparent 60%);contain:layout paint;user-select:none;-webkit-user-select:none}
+.mq-band{position:relative;width:100%;overflow:hidden;padding:clamp(18px,3vw,36px) 0;margin:0 0 var(--sec-gap,64px);border-block:1px solid rgba(182,138,255,.18);background:linear-gradient(180deg,rgba(182,138,255,.05),transparent 60%);contain:layout paint;user-select:none;-webkit-user-select:none}
 .mq-row{display:flex;width:max-content;white-space:nowrap;will-change:transform;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;font-size:clamp(28px,6vw,64px);line-height:1.1;letter-spacing:.01em;text-transform:uppercase;transform:translate3d(0,0,0)}
 .mq-row+.mq-row{margin-top:clamp(6px,1.2vw,14px);font-size:clamp(20px,3.6vw,38px);font-weight:500;opacity:.4}
 .mq-set{display:flex;align-items:center;flex:none}

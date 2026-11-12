@@ -413,10 +413,6 @@ footer.site-footer{
 .download-link{display:inline-flex;margin-top:14px;color:var(--green);font-weight:600}
 .danger{color:#ffb8c7}
 
-#tracks{
-  margin-bottom:80px;
-}
-
 .tracks-container, main{
   padding-bottom:80px;
 }
@@ -718,8 +714,12 @@ body::before{
 .hero.compact .muted{margin-bottom:0}
 
 /* Abschnitte auf der Startseite */
-.home-section{margin:0 0 90px}
-.home-section .section-head{margin-bottom:22px}
+:root{--sec-gap:clamp(64px,9vw,104px)}
+.home-section{margin:0 0 var(--sec-gap)}
+.home-section:last-child{margin-bottom:0}
+.home-section .section-head{margin-bottom:28px}
+.home-section .section-head h2,.about-box h2{font:600 clamp(26px,3.4vw,34px)/1.15 'Space Grotesk';letter-spacing:-.5px;margin:8px 0 0}
+.about-box .eyebrow{margin:0}
 
 /* Service-Karten */
 .service-grid{
@@ -735,9 +735,7 @@ body::before{
   border:1px solid var(--line);
   border-radius:16px;
   padding:20px;
-  transition:border-color .2s, transform .2s;
 }
-.service-card:hover{border-color:var(--purple);transform:translateY(-2px)}
 .service-card h3{font:600 18px 'Space Grotesk';margin:0}
 .service-card p{color:var(--muted);font-size:13px;line-height:1.6;margin:0;flex-grow:1}
 .service-card .service-meta{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--purple);font-weight:700}
@@ -754,7 +752,7 @@ body::before{
   border-radius:16px;
   padding:28px;
 }
-.about-box h2{font:600 30px 'Space Grotesk';margin:8px 0 14px}
+.about-box h2{margin-bottom:14px}
 .about-box .muted{margin:0 0 12px}
 .contact-list{display:flex;flex-direction:column;gap:10px;align-self:center}
 .contact-list a{
@@ -1624,19 +1622,19 @@ html{scroll-behavior:smooth}
 .product,.track,.service-card,.cp,.free-nav a,.mc,.drop,.free-kit,.bl,.cm,.bl-cta,.about-box,.upload-card,.acc-card,.pf-head,.steps li,.admin-panel,.pd-preview,.pd-features li,.mc-tile,.cm-chord{
   border-radius:var(--r-card);
 }
-.product,.service-card,.cp,.free-nav a,.track{
+.product,.cp,.free-nav a,.track{
   --mx:50%;--my:50%;
   transition:transform .45s var(--spring), border-color .3s, box-shadow .35s;
   transform-style:preserve-3d;
 }
-.product::after,.service-card::after,.cp::after,.free-nav a::after{
+.product::after,.cp::after,.free-nav a::after{
   content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
   background:radial-gradient(420px circle at var(--mx) var(--my),rgba(182,138,255,.14),transparent 45%);
   transition:opacity .3s;
 }
-.product,.service-card,.cp,.free-nav a{position:relative}
-.product:hover::after,.service-card:hover::after,.cp:hover::after,.free-nav a:hover::after{opacity:1}
-.product:hover,.service-card:hover,.cp:hover{border-color:#5a4775;box-shadow:0 22px 50px -28px rgba(0,0,0,.9),0 0 0 1px rgba(182,138,255,.12)}
+.product,.cp,.free-nav a,.service-card{position:relative}
+.product:hover::after,.cp:hover::after,.free-nav a:hover::after{opacity:1}
+.product:hover,.cp:hover{border-color:#5a4775;box-shadow:0 22px 50px -28px rgba(0,0,0,.9),0 0 0 1px rgba(182,138,255,.12)}
 .product .cover{border-radius:16px}
 .product .cover img,.pd-main img{transition:transform .6s var(--smooth)}
 .product:hover .cover img{transform:scale(1.06)}

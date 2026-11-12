@@ -90,14 +90,13 @@
       '<div class="section-head"><div>' +
       '<p class="eyebrow">BEFORE / AFTER</p>' +
       '<h2 id="' + tid + '">Hear the difference</h2>' +
-      '<p class="ba-sub">Flip between the rough mix and the final version. Same song, same moment.</p>' +
+      '<p class="ba-sub">Press play, then flip between Before and After.</p>' +
       '</div></div>' +
       '<div class="ba-card" tabindex="0" role="group" aria-label="Before and after player. Space plays or pauses, B and A or the left and right arrow keys switch.">' +
         (rows.length > 1 ? '<div class="ba-tabs" role="tablist" aria-label="Choose a song"></div>' : '') +
         '<div class="ba-meta"></div>' +
         '<canvas class="ba-spectrum" aria-hidden="true"></canvas>' +
         '<div class="ba-wave" role="slider" tabindex="-1" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><canvas class="ba-canvas"></canvas></div>' +
-        '<div class="ba-times"><span class="ba-t-cur">0:00</span><span class="ba-t-state" aria-live="polite"></span><span class="ba-t-dur">0:00</span></div>' +
         '<div class="ba-controls">' +
           '<button class="ba-play" type="button" aria-label="Play">' +
             '<svg class="ba-ring" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="36" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="' + RING + '" stroke-dashoffset="' + RING + '" transform="rotate(-90 40 40)"/></svg>' +
@@ -105,16 +104,17 @@
           '</button>' +
           '<div class="ba-switch is-before" role="radiogroup" aria-label="Version">' +
             '<span class="ba-thumb" aria-hidden="true"></span>' +
-            '<button type="button" role="radio" aria-checked="true" data-side="before">Before</button>' +
-            '<button type="button" role="radio" aria-checked="false" data-side="after">After</button>' +
+            '<button type="button" role="radio" aria-checked="true" data-side="before"><b>Before</b><small>(rough mix)</small></button>' +
+            '<button type="button" role="radio" aria-checked="false" data-side="after"><b>After</b><small>(yards mix &amp; master)</small></button>' +
           '</div>' +
+          '<span class="ba-ctl-gap" aria-hidden="true"></span>' +
         '</div>' +
-        '<div class="ba-opts">' +
-          '<label class="ba-match"><input type="checkbox"><span class="ba-box" aria-hidden="true"></span><span>Match loudness</span></label>' +
-          '<p class="ba-hint">Louder often sounds better. Turn this on for a fair comparison.</p>' +
+        '<div class="ba-sec">' +
+          '<div class="ba-times"><span class="ba-t-cur">0:00</span><span class="ba-t-dur">0:00</span><span class="ba-t-state" aria-live="polite"></span></div>' +
+          '<label class="ba-match" title="Louder often sounds better. Turn this on for a fair comparison."><input type="checkbox"><span class="ba-box" aria-hidden="true"></span><span>Match loudness</span></label>' +
         '</div>' +
         '<p class="ba-err" role="alert" hidden>The audio could not be loaded. Please try again later.</p>' +
-        (cta ? '<div class="ba-cta"><a class="button" href="' + esc(cta) + '">Get your track mixed ' + ICON_ARROW + '</a></div>' : '') +
+        (cta ? '<div class="ba-cta"><a class="outline" href="' + esc(cta) + '">Get your track mixed ' + ICON_ARROW + '</a></div>' : '') +
       '</div>';
     root.setAttribute('aria-labelledby', tid);
     root.hidden = false;
