@@ -5,6 +5,10 @@
   let profile = null;
 
   async function load() {
+    if (!profile) {
+      box.innerHTML = '<div class="sk-pf" aria-hidden="true"><div class="sk sk-avatar"></div><div class="sk-col"><div class="sk sk-h1"></div><div class="sk sk-line w60"></div><div class="sk sk-line w40"></div></div></div>';
+      list.innerHTML = '<article class="cp sk-card sk-cp" aria-hidden="true"><div class="sk sk-line w40"></div><div class="sk sk-title"></div><div class="sk sk-line"></div></article>'.repeat(2);
+    }
     if (!/^[a-z0-9_]{3,20}$/.test(handle)) { box.innerHTML = '<div class="empty">Profile not found.</div>'; return; }
     const { data: p } = await db.from("profiles").select("id,handle,display_name,bio,links,hidden,created_at").eq("handle", handle).maybeSingle();
     if (!p) { box.innerHTML = '<div class="empty">Profile not found.</div>'; list.innerHTML = ""; return; }

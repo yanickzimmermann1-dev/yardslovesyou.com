@@ -1,0 +1,5 @@
+.fw-wrap{position:relative;width:100%;overflow:hidden;margin-top:clamp(16px,3vw,40px);pointer-events:none;user-select:none;-webkit-user-select:none;height:0;contain:layout paint}
+.fw-word{position:absolute;left:0;top:0;display:block;white-space:nowrap;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:700;line-height:1;letter-spacing:-.02em;text-transform:uppercase}
+.fw-l{display:inline-block;will-change:transform;transform-origin:50% 100%}
+.fw-y{color:rgba(245,240,251,.16)}
+.fw-p{background:linear-gradient(90deg,#e5a5ff,#b68aff 55%,#7a4fd6);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}

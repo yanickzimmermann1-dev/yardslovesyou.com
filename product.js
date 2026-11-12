@@ -77,6 +77,7 @@
   };
   const CUBE='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5"/><path d="M12 12v9"/></svg>';
 
+  root.innerHTML='<section class="product-detail sk-pd" aria-hidden="true"><div class="pd-media"><div class="pd-main sk"></div></div><div class="pd-info"><div class="sk sk-line w40"></div><div class="sk sk-h1"></div><div class="sk sk-line"></div><div class="sk sk-line w80"></div><div class="sk sk-line w60"></div><div class="sk sk-btn" style="margin-top:18px"></div></div></section>';
   async function load(){
     // select("*"): neue Spalten (badge, specs, preview_tracks …) werden automatisch mitgeladen
     const {data:p,error}=await db.from("shop_products").select("*").eq("id",id).eq("published",true).maybeSingle();
@@ -121,8 +122,8 @@
 
       <section class="product-detail">
         <div class="pd-media">
-          <div class="pd-main${p.model3d?" pd-3d":""}" id="pd-main">${images.length?`<img id="pd-main-img" src="${esc(images[0])}" alt="${esc(p.title)}" width="800" height="800" fetchpriority="high" decoding="async">`:esc(p.cover_emoji||"")}</div>
-          ${images.length>1||p.model3d?`<div class="pd-thumbs">${p.model3d?`<button type="button" class="pd-thumb-3d" id="pd-thumb-3d" hidden aria-label="3D view" title="3D view">${CUBE}</button>`:""}${images.length>1?images.map((u,i)=>`<button type="button" class="${i||p.model3d?"":"active"}" data-img="${esc(u)}" aria-label="Image ${i+1}"><img src="${esc(u)}" alt="" width="80" height="80" loading="lazy" decoding="async"></button>`).join(""):""}</div>`:""}
+          <div class="pd-main${p.model3d?" pd-3d":""}" id="pd-main">${images.length?`<img id="pd-main-img" class="bu" src="${esc(images[0])}" alt="${esc(p.title)}" width="800" height="800" fetchpriority="high" decoding="async">`:esc(p.cover_emoji||"")}</div>
+          ${images.length>1||p.model3d?`<div class="pd-thumbs">${p.model3d?`<button type="button" class="pd-thumb-3d" id="pd-thumb-3d" hidden aria-label="3D view" title="3D view">${CUBE}</button>`:""}${images.length>1?images.map((u,i)=>`<button type="button" class="${i||p.model3d?"":"active"}" data-img="${esc(u)}" aria-label="Image ${i+1}"><img class="bu" src="${esc(u)}" alt="" width="80" height="80" loading="lazy" decoding="async"></button>`).join(""):""}</div>`:""}
           ${p.sound_preview?`<div id="pd-sounds"></div>`:""}
         </div>
 

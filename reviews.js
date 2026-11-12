@@ -38,11 +38,19 @@
   // ---------- Produktseite ----------
   async function mountProduct(o) {
     var db = o.db, root = o.root, esc = o.esc || escFn;
-    var res;
+    var res, ph = document.createElement("section");
+    ph.className = "pd-section rv-section sk-rv"; ph.setAttribute("aria-hidden", "true");
+    ph.innerHTML = '<div class="sk sk-title"></div><div class="sk sk-line"></div><div class="sk sk-line w80"></div>';
+    var f0 = root.querySelector(".pd-faq"), f0s = f0 && f0.closest("section"), s0 = root.querySelector("#pd-sticky");
+    if (f0s && f0s.parentNode) f0s.parentNode.insertBefore(ph, f0s);
+    else if (s0 && s0.parentNode) s0.parentNode.insertBefore(ph, s0);
+    else root.appendChild(ph);
+    var rm = function () { if (ph.parentNode) ph.parentNode.removeChild(ph); };
     try {
       res = await db.from("product_reviews").select(COLS).eq("product_id", o.productId).eq("status", "approved")
         .order("created_at", { ascending: false }).limit(500);
-    } catch (_) { return; }
+    } catch (_) { rm(); return; }
+    rm();
     if (!res || res.error || !res.data || !res.data.length) return;
     var list = res.data, n = list.length;
     var sum = 0, dist = [0, 0, 0, 0, 0, 0];

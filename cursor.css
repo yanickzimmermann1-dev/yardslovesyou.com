@@ -1,0 +1,16 @@
+/* Custom cursor (cursor.js) – Akzent, natives Cursor bleibt sichtbar */
+.yc-dot,.yc-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9000;opacity:0;will-change:transform;transition:opacity .2s}
+.yc-dot{width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#b68aff;box-shadow:0 0 8px rgba(182,138,255,.8)}
+.yc-ring{width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:1.5px solid #b68aff;
+  box-shadow:0 0 14px rgba(182,138,255,.35),inset 0 0 10px rgba(182,138,255,.15)}
+.yc-ring-in{position:absolute;inset:-1.5px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(182,138,255,0);font:700 11px/1 'DM Sans',sans-serif;letter-spacing:.04em;color:#180e23;
+  transform:scale(1);transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .25s,color .2s}
+.yc-ring-in span{opacity:0;transition:opacity .2s}
+html.yc-on .yc-dot,html.yc-on .yc-ring{opacity:1}
+html.yc-hide .yc-dot,html.yc-hide .yc-ring{opacity:0}
+html.yc-link .yc-ring-in{transform:scale(1.59);background:rgba(182,138,255,.14)}
+html.yc-label .yc-ring-in{transform:scale(1.7);background:rgba(182,138,255,.92)}
+html.yc-label .yc-ring-in span{opacity:1}
+html.yc-down .yc-ring-in{transform:scale(.7)}
+@media (hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){.yc-dot,.yc-ring{display:none!important}}

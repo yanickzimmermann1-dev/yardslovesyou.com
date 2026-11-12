@@ -18,6 +18,8 @@
   const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   const CART_IC='<svg class="ic-add" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.3l2.1 11h10.4l2.1-8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/><path d="M12.5 8.5v4M10.5 10.5h4"/></svg><svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>';
   const CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+  const skCard='<article class="product sk-card" aria-hidden="true"><div class="sk sk-cover"></div><div class="sk sk-title"></div><div class="sk sk-line"></div><div class="sk sk-line w60"></div><div class="sk sk-price"></div></article>';
+  $("products").innerHTML=skCard.repeat(2); $("products").setAttribute("aria-busy","true");
   let products=[], cats=[], sel=null; // cats: nur Kategorien mit Produkten
 
   // 3D-Modell (Spalte model3d, jsonb) – ohne Spalte/Wert bleibt alles wie bisher
@@ -41,7 +43,7 @@
         <a class="product-link" href="${link(p.id)}">
           <div class="cover"${model(p)?` data-p3d="${esc(p.id)}"`:""}>
             ${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}
-            ${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" width="600" height="600" loading="lazy" decoding="async">`:esc(p.cover_emoji||"")}
+            ${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" width="600" height="600" class="bu" loading="lazy" decoding="async">`:esc(p.cover_emoji||"")}
           </div>
           <h3>${esc(p.title)}</h3>
           <p>${esc(p.description||"Digital download as ZIP file.")}</p>
@@ -71,7 +73,7 @@
   }
 
   function renderGrid(animate){
-    const box=$("products");
+    const box=$("products"); box.removeAttribute("aria-busy");
     if(!products.length){handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];box.className="product-grid";box.innerHTML='<div class="empty">No products yet. Check back soon.</div>';return;}
     const grouped=cats.length>=2&&!sel;
     let list=products;
@@ -120,7 +122,7 @@
   async function load() {
     // select("*"): neue Spalten (badge, compare_at_cents, category …) werden automatisch mitgeladen
     const {data,error}=await db.from("shop_products").select("*").eq("published",true).order("created_at",{ascending:false});
-    if(error){$("products").innerHTML='<div class="empty">Products could not be loaded. Please try again later.</div>';return;}
+    if(error){$("products").removeAttribute("aria-busy");$("products").className="product-grid";$("products").innerHTML='<div class="empty">Products could not be loaded. Please try again later.</div>';return;}
     products=data;
     if(document.readyState==="loading") await new Promise(r=>document.addEventListener("DOMContentLoaded",r)); // defer-Skripte (product3d.js) sind danach bereit
     cats=products.length?await loadCategories():[];

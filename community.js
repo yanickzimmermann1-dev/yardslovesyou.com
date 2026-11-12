@@ -32,7 +32,7 @@
   async function load(reset) {
     if (loading && !reset) return;
     const my = ++seq; loading = true;
-    if (reset) { page = 0; done = false; feed.innerHTML = '<div class="empty">Loading …</div>'; }
+    if (reset) { page = 0; done = false; feed.innerHTML = '<article class="cp sk-card sk-cp" aria-hidden="true"><div class="sk sk-line w40"></div><div class="sk sk-title"></div><div class="sk sk-line"></div><div class="sk sk-line w80"></div></article>'.repeat(3); }
     try {
       const res = await query(page * PAGE);
       if (my !== seq) return; // a newer tab/filter request took over

@@ -24,6 +24,7 @@
     const tracksContainer = $("tracks");
     if (!tracksContainer) return;
 
+    if (!tracksContainer.querySelector(".track")) tracksContainer.innerHTML = '<article class="track sk-card sk-track" aria-hidden="true"><div class="sk-row"><div class="sk sk-cover"></div><div class="sk-col"><div class="sk sk-title"></div><div class="sk sk-line"></div></div></div><div class="sk sk-player"></div></article>'.repeat(3);
     const {data,error} = await db.from("audio_tracks").select("*").order("created_at",{ascending:false});
     if (error) { tracksContainer.innerHTML = '<div class="empty">Tracks could not be loaded. Please try again later.</div>'; return; }
     
@@ -36,7 +37,7 @@
       <article class="track" data-id="${esc(t.id)}">
         <div class="track-top">
           <div class="cover">
-            ${imageUrl ? `<img src="${esc(imageUrl)}" alt="${esc(t.title)} cover" width="400" height="400" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : ""}
+            ${imageUrl ? `<img src="${esc(imageUrl)}" alt="${esc(t.title)} cover" width="400" height="400" class="bu" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : ""}
           </div>
           <div>
             <h3>${esc(t.title)}</h3>
