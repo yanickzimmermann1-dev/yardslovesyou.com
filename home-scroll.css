@@ -1,0 +1,63 @@
+/* home-scroll.css – scrollgesteuerte Animationen der Startseite (home-scroll.js). Nur transform/opacity. */
+
+/* ---------- 1) Hero: Diamant an der Kette ----------
+   Auf der Startseite zeigt der Hintergrund kein Diamant-Bild mehr (bg-clean-*.jpg): der Diamant ist ein eigenes, animiertes Sprite. */
+body::before{
+  background:
+    radial-gradient(ellipse 70% 60% at 25% 35%, rgba(13,11,18,.55), rgba(13,11,18,0) 70%),
+    linear-gradient(rgba(13,11,18,.68),rgba(13,11,18,.88)),
+    url("bg-clean-1920.jpg") center / cover no-repeat;
+}
+@media(max-width:760px){
+  body::before{
+    background:
+      linear-gradient(rgba(13,11,18,.80),rgba(13,11,18,.92)),
+      url("bg-clean-1920.jpg") center / cover no-repeat;
+  }
+}
+.bg-blur{
+  background:
+    linear-gradient(rgba(13,11,18,.62),rgba(13,11,18,.86)),
+    url("bg-clean-960.jpg") center / cover no-repeat;
+}
+.hs-dia{position:fixed;left:0;top:0;width:464px;height:680px;z-index:-1;pointer-events:none;transform-origin:0 0;contain:layout style}
+.hs-pend{position:absolute;left:0;top:0;width:464px;height:680px;transform-origin:453px 0}
+.hs-dia img{position:absolute;display:block;max-width:none;user-select:none;-webkit-user-drag:none}
+.hs-chain{left:0;top:0;width:464px;height:500px;filter:brightness(.42)}
+.hs-glow{position:absolute;left:-52px;top:437px;width:420px;height:316px;border-radius:50%;background:radial-gradient(closest-side,rgba(226,220,255,.34),rgba(226,220,255,0));opacity:.55}
+.hs-gem{position:absolute;left:0;top:448px;width:264px;height:232px;transform-origin:158px 147px;backface-visibility:hidden}
+.hs-gem .hs-gimg{left:0;top:0;width:264px;height:232px;filter:brightness(.42)}
+.hs-gem .hs-bright{filter:brightness(.8);opacity:0}
+.hs-spk-host{position:absolute;inset:0;pointer-events:none}
+.hs-spk{position:absolute;left:0;top:0;width:var(--s,30px);height:var(--s,30px);margin:calc(var(--s,30px) / -2) 0 0 calc(var(--s,30px) / -2);background:var(--c,#fff);opacity:0;
+  clip-path:polygon(50% 0,59% 41%,100% 50%,59% 59%,50% 100%,41% 59%,0 50%,41% 41%);animation:hsSpk .75s ease-out forwards;pointer-events:none}
+@keyframes hsSpk{0%{opacity:0;transform:scale(0) rotate(0)}35%{opacity:1;transform:scale(1) rotate(35deg)}100%{opacity:0;transform:scale(.1) rotate(90deg)}}
+.hs-dia.hs-live{will-change:transform}
+.hs-dia.hs-live .hs-pend,.hs-dia.hs-live .hs-gem{will-change:transform}
+
+/* ---------- 2) Player-Karte: Neigung aus der Tiefe ---------- */
+.ba-card.hs-tilt{transform-origin:50% 100%;backface-visibility:hidden}
+.ba-card.hs-live{will-change:transform,opacity}
+.ba-wave.hs-wave canvas.ba-canvas{-webkit-mask-image:linear-gradient(90deg,#000 calc(var(--hs-r,0) * 1%),transparent calc(var(--hs-r,0) * 1% + 14%));mask-image:linear-gradient(90deg,#000 calc(var(--hs-r,0) * 1%),transparent calc(var(--hs-r,0) * 1% + 14%));transform-origin:50% 50%}
+
+/* ---------- 3) Services: 3D-Stapel ---------- */
+.hs-stack{position:relative}
+.hs-pin{position:sticky;top:78px;height:calc(100vh - 78px);height:calc(100svh - 78px);display:flex;flex-direction:column;justify-content:center}
+.hs-pin .section-head{margin-bottom:26px}
+.hs-pin .service-grid{position:relative;padding-right:26px}
+.hs-pin .service-card{backface-visibility:hidden;transform-origin:50% 60%}
+.hs-live .service-card{transition:border-color .2s!important}
+.hs-live .service-card{will-change:transform}
+.hs-dots{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.hs-dots i{display:block;width:8px;height:8px;border-radius:50%;background:#ffffff30;transition:transform .3s,background .3s}
+.hs-dots i.on{background:var(--purple,#b68aff);transform:scale(1.35)}
+@media(max-width:720px){
+  .service-grid .service-card.hs-m{transform-origin:50% 100%;backface-visibility:hidden}
+  .service-grid.hs-live .service-card{will-change:transform,opacity}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hs-spk{display:none}
+  .ba-card.hs-tilt{transform:none!important;opacity:1!important}
+  .ba-wave.hs-wave canvas.ba-canvas{-webkit-mask-image:none;mask-image:none}
+}

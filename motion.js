@@ -106,6 +106,7 @@
               var el = list[i];
               if (el.dataset.rv === '1') continue;
               if (el.classList.contains('hero')) continue;
+              if (el.hasAttribute('data-hs')) continue; // home-scroll.js animiert dieses Element selbst
               if (el.closest(RV_SKIP)) continue;
               found.push(el);
             }

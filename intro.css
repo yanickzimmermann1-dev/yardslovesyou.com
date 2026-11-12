@@ -5,8 +5,8 @@ html.intro-on .yi{display:block;position:fixed;inset:0;z-index:99999;overflow:hi
   animation:yiSafe .5s 4s forwards;will-change:opacity}
 @keyframes yiSafe{to{opacity:0;visibility:hidden}}
 @keyframes yiUnlock{to{overflow:visible}}
-html.intro-on:not(.intro-portal) .hero h1,html.intro-on:not(.intro-portal) .hero .eyebrow,
-html.intro-on:not(.intro-portal) .hero .muted,html.intro-on:not(.intro-portal) .hero .hero-actions{animation:none!important;opacity:0}
+html.intro-on .hero h1,html.intro-on .hero .eyebrow,
+html.intro-on .hero .muted,html.intro-on .hero .hero-actions{animation:none!important;opacity:0}
 .yi-glow{position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 50% 50%,rgba(143,31,224,.3),rgba(91,17,153,.1) 45%,transparent 70%);
   animation:yiBreath 1.6s ease-in-out infinite alternate}
 @keyframes yiBreath{from{opacity:.7;transform:scale(.96)}to{opacity:1;transform:scale(1.04)}}
@@ -28,23 +28,9 @@ html.intro-on:not(.intro-portal) .hero .muted,html.intro-on:not(.intro-portal) .
 .yi-skip{position:absolute;right:16px;bottom:16px;z-index:2;background:none;border:0;color:#aaa0b7;font:500 13px 'DM Sans',sans-serif;
   padding:10px 12px;cursor:pointer;letter-spacing:.04em}
 .yi-skip:hover,.yi-skip:focus-visible{color:#fff;outline:1px solid rgba(182,138,255,.6);outline-offset:2px;border-radius:8px}
-/* Portal: Canvas liegt IM O-Span (gleicher transformierter Container), per clip-path exakt auf den Innenraum des O zugeschnitten */
-.yi-portal{display:none;position:absolute;left:0;top:0;pointer-events:none;opacity:0}
-html.intro-on .yi-portal{display:block}
-.yi-portal canvas{display:block;width:100%;height:100%}
-.yi-fx{display:none}
-/* Dunkelviolett-Frame: voll aufloesend, nicht pixelig (reine CSS-Verlaeufe) */
-.yi-violet{display:none}
-html.intro-on .yi-violet{display:block;position:fixed;inset:0;z-index:100002;pointer-events:none;opacity:0;overflow:hidden;
-  background:radial-gradient(ellipse 75% 75% at 50% 50%,rgba(0,0,0,0) 55%,rgba(5,1,10,.45) 100%),radial-gradient(circle at 50% 50%,#1a0630 0%,#140524 45%,#0b0414 100%)}
-.yi-violet i{position:absolute;border-radius:50%;filter:blur(60px)}
-.yi-violet .g1{width:55vmax;height:55vmax;left:-12vmax;top:-18vmax;background:radial-gradient(circle,rgba(143,31,224,.28),transparent 65%)}
-.yi-violet .g2{width:50vmax;height:50vmax;right:-14vmax;bottom:-20vmax;background:radial-gradient(circle,rgba(179,60,255,.22),transparent 65%)}
-.yi-violet .g3{width:40vmax;height:40vmax;left:30%;top:30%;background:radial-gradient(circle,rgba(91,17,153,.4),transparent 65%)}
-html.intro-on .yi-fx{display:block;position:fixed;left:0;top:0;width:100%;height:100%;z-index:100001;pointer-events:none}
+@keyframes yiArrive{from{opacity:.4;transform:scale(1.04)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){
   .yi-l{animation:none;opacity:1}.yi-word{animation:none}.yi-sweep,.yi-p{display:none}
   .yi-glow{animation:none;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(143,31,224,.5),rgba(91,17,153,.2) 50%,transparent 75%)}
-  html.intro-on .yi-fx{display:none}
   html.intro-on .yi{animation:yiSafe .4s .6s forwards}
 }

@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const setProgress = p => {
         if (progressBarFill) progressBarFill.style.width = p + "%";
         if (progressPercent) progressPercent.textContent = p + "%";
+        if (window.YLYUploadFX) window.YLYUploadFX.progress(p);
       };
 
       if (btn) {
@@ -95,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (progressContainer) progressContainer.classList.remove("hidden");
       if (statusEl) statusEl.textContent = "Upload started...";
+      if (window.YLYUploadFX) window.YLYUploadFX.open(file.name);
 
       try {
         const requestId = crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -162,10 +164,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Redirect to Stripe
         if (!/^https:\/\//i.test(String(checkoutData.url))) throw new Error("Invalid checkout link.");
-        window.location.href = checkoutData.url;
+        const checkoutUrl = checkoutData.url;
+        const goCheckout = () => { window.location.href = checkoutUrl; };
+        if (window.YLYUploadFX) window.YLYUploadFX.finish(goCheckout); else goCheckout();
 
       } catch (err) {
         console.error("Upload process aborted:", err);
+        if (window.YLYUploadFX) window.YLYUploadFX.close();
         if (statusEl) statusEl.textContent = "Error: " + err.message;
         if (btn) {
           btn.disabled = false;
