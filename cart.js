@@ -4,7 +4,9 @@
    Buttons: <button data-cart-add="ID" data-cart-title data-cart-price data-cart-currency data-cart-cover> (Delegation + Status-Sync). */
 (function () {
   'use strict';
-  var KEY = 'yly_cart', BUNDLE = 15, MAX = 10;
+  var KEY = 'yly_cart', PKEY = 'yly_promo', PSRC = 'yly_promo_src', BUNDLE = 15, MAX = 10;
+  var ESSENTIALS = '11f558ea-9332-4bf3-ad2f-d8327c489445', URL_PERCENT = 15;
+  var PROMO_ERR = 'This code is invalid or expired.';
   var cfg = window.APP_CONFIG || {};
   var reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   var phoneMq = window.matchMedia ? matchMedia('(max-width: 720px)') : null;
@@ -53,8 +55,37 @@
     return { rows: rows, sub: sub, total: tot, saved: sub - tot, bundle: bundle, cur: items[0] ? items[0].currency : String(cfg.CURRENCY || 'chf').toLowerCase() };
   }
 
+  /* ---------- Rabattcode (nur clientseitig gemerkt, Pruefung passiert in create-checkout) ---------- */
+  function normCode(v) { return String(v == null ? '' : v).trim().toUpperCase(); }
+  function validCode(c) { return /^[A-Z0-9][A-Z0-9-]{2,31}$/.test(c); }
+  function getPromo() { try { var c = normCode(sessionStorage.getItem(PKEY)); return validCode(c) ? c : ''; } catch (e) { return ''; } }
+  function promoFromUrl() { try { return sessionStorage.getItem(PSRC) === 'url'; } catch (e) { return false; } }
+  function setPromo(c, src) {
+    c = normCode(c);
+    try {
+      if (c && validCode(c)) { sessionStorage.setItem(PKEY, c); sessionStorage.setItem(PSRC, src || 'manual'); }
+      else { sessionStorage.removeItem(PKEY); sessionStorage.removeItem(PSRC); }
+    } catch (e) {}
+    promoErr = '';
+    if (built) { renderPromo(); render(); }
+    try { window.dispatchEvent(new CustomEvent('yly-promo')); } catch (e) {}
+  }
+  var promoErr = '', promoOpen = false, promoSig = null, urlPromoNew = '';
+  // ?promo=CODE in der URL: sofort merken (vor DOMContentLoaded), Hinweis kommt in start()
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search), c = normCode(q.get('promo'));
+      if (c && validCode(c)) {
+        sessionStorage.setItem(PKEY, c); sessionStorage.setItem(PSRC, 'url'); urlPromoNew = c;
+        q.delete('promo');
+        var qs = q.toString();
+        try { history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); } catch (e) {}
+      }
+    } catch (e) {}
+  })();
+
   /* ---------- Elemente ---------- */
-  var btn, badge, root, drawer, listEl, emptyEl, upsellEl, footEl, titleSmall, toastEl, toastTimer, lastFocus = null, built = false, busy = false;
+  var btn, badge, root, drawer, listEl, emptyEl, upsellEl, footEl, promoEl, titleSmall, toastEl, toastTimer, lastFocus = null, built = false, busy = false;
   var products = null, productsP = null, reconciled = false, closeTimer = null;
 
   function mountBtn() {
@@ -83,6 +114,7 @@
       '<aside class="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" tabindex="-1">' +
         '<div class="cart-head"><h2 id="cart-title">Your cart<small></small></h2><button type="button" class="cart-x" data-cart-close aria-label="Close cart">' + I.x + '</button></div>' +
         '<div class="cart-body"><ul class="cart-list"></ul><div class="cart-empty" hidden>' + I.cart + '<p>Your cart is empty.<br>Add a product and it will show up here.</p><a class="outline" href="shop.html">Browse the shop</a></div><section class="cart-upsell" hidden></section></div>' +
+        '<div class="cart-promo" hidden></div>' +
         '<div class="cart-foot" hidden></div>' +
       '</aside>';
     document.body.appendChild(root);
@@ -91,6 +123,7 @@
     emptyEl = root.querySelector('.cart-empty');
     upsellEl = root.querySelector('.cart-upsell');
     footEl = root.querySelector('.cart-foot');
+    promoEl = root.querySelector('.cart-promo');
     titleSmall = root.querySelector('.cart-head small');
 
     root.addEventListener('click', function (e) {
@@ -104,14 +137,18 @@
         if (p) { add(p, up); if (!drawer.contains(document.activeElement)) drawer.focus({ preventScroll: true }); }
         return;
       }
+      if (t.closest && t.closest('[data-promo-toggle]')) { promoOpen = !promoOpen; renderPromo(); if (promoOpen) { var pi = promoEl.querySelector('input'); if (pi) pi.focus(); } return; }
+      if (t.closest && t.closest('[data-promo-apply]')) { applyPromoInput(); return; }
+      if (t.closest && t.closest('[data-promo-rm]')) { setPromo(''); promoOpen = false; renderPromo(); return; }
       if (t.closest && t.closest('.cart-checkout')) { checkout(); return; }
       var a = t.closest && t.closest('a[href]');
       if (a) close(true);
     });
     root.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && e.target && e.target.hasAttribute && e.target.hasAttribute('data-promo-input')) { e.preventDefault(); applyPromoInput(); return; }
       if (e.key === 'Escape') { e.preventDefault(); close(); return; }
       if (e.key !== 'Tab') return;
-      var f = Array.prototype.slice.call(drawer.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(function (el) { return el.offsetParent !== null || el === document.activeElement; });
+      var f = Array.prototype.slice.call(drawer.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(function (el) { return el.offsetParent !== null || el === document.activeElement; });
       if (!f.length) { e.preventDefault(); drawer.focus(); return; }
       var first = f[0], last = f[f.length - 1], cur = document.activeElement;
       if (e.shiftKey && (cur === first || cur === drawer)) { e.preventDefault(); last.focus(); }
@@ -143,6 +180,7 @@
         '<div class="cart-info"><a href="product.html?id=' + encodeURIComponent(i.id) + '">' + esc(i.title) + '</a><div class="cart-price">' + price + '</div></div>' +
         '<button type="button" class="cart-rm" data-cart-rm="' + esc(i.id) + '" aria-label="Remove ' + esc(i.title) + ' from cart">' + I.trash + '</button></li>';
     }).join('');
+    renderPromo();
     emptyEl.hidden = n > 0;
     listEl.hidden = n === 0;
     footEl.hidden = n === 0;
@@ -153,10 +191,39 @@
         '<div class="cart-sum total"><span>Total</span><span>' + money(c.total, c.cur) + '</span></div>' +
         '<button type="button" class="button cart-checkout">' + (busy ? 'Redirecting …' : 'Checkout') + '</button>' +
         '<button type="button" class="outline cart-continue" data-cart-close>Continue shopping</button>' +
-        '<p class="cart-note">Secure payment with Stripe. Instant ZIP download.</p>';
+        '<p class="cart-note">' + (getPromo() ? 'Your code is checked and applied at checkout. ' : '') + 'Secure payment with Stripe. Instant ZIP download.</p>';
       var cb = footEl.querySelector('.cart-checkout'); if (busy) cb.disabled = true;
     } else { footEl.innerHTML = ''; }
     renderUpsell();
+  }
+
+  function applyPromoInput() {
+    var inp = promoEl && promoEl.querySelector('input'); if (!inp) return;
+    var c = normCode(inp.value);
+    if (!validCode(c)) { promoErr = 'Please enter a valid code.'; promoSig = null; renderPromo(); var i2 = promoEl.querySelector('input'); if (i2) { i2.value = inp.value; i2.focus(); } return; }
+    promoOpen = false;
+    setPromo(c, 'manual');
+    track('promo-apply', {});
+  }
+  function renderPromo() {
+    if (!built) return;
+    var code = getPromo(), n = items.length;
+    var sig = [n > 0, code, promoOpen, promoErr].join('|');
+    if (sig === promoSig) return;
+    promoSig = sig;
+    promoEl.hidden = n === 0;
+    if (!n) { promoEl.innerHTML = ''; return; }
+    var html = '';
+    if (code) {
+      var est = promoFromUrl() && has(ESSENTIALS) ? '<span class="cart-promo-est">-' + URL_PERCENT + '% on Essentials</span>' : '';
+      html = '<div class="cart-chip"><span class="cart-chip-code">' + esc(code) + '</span><span class="cart-chip-txt">Code applied at checkout</span>' +
+        '<button type="button" class="cart-chip-x" data-promo-rm aria-label="Remove code ' + esc(code) + '">' + I.x + '</button></div>' + est;
+    } else {
+      html = '<button type="button" class="cart-promo-toggle" data-promo-toggle aria-expanded="' + (promoOpen ? 'true' : 'false') + '">Have a code?</button>';
+      if (promoOpen) html += '<div class="cart-promo-form"><input type="text" data-promo-input maxlength="32" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Enter code" aria-label="Discount code"><button type="button" class="outline" data-promo-apply>Apply</button></div>';
+    }
+    if (promoErr) html += '<p class="cart-promo-err" role="alert">' + esc(promoErr) + '</p>';
+    promoEl.innerHTML = html;
   }
 
   function renderUpsell() {
@@ -333,9 +400,10 @@
     return sbClient;
   }
   function invokeCheckout(ids) {
-    var c = client();
+    var c = client(), payload = { items: ids }, pc = getPromo();
+    if (pc) payload.promo = pc;
     if (c) {
-      return c.functions.invoke('create-checkout', { body: { items: ids } }).then(function (r) {
+      return c.functions.invoke('create-checkout', { body: payload }).then(function (r) {
         if (!r.error) return r.data;
         var ctx = r.error.context;
         if (ctx && typeof ctx.json === 'function') return ctx.json().then(function (j) { throw new Error((j && j.error) || r.error.message); }, function () { throw new Error(r.error.message); });
@@ -343,7 +411,7 @@
       });
     }
     var h = headers(); h['Content-Type'] = 'application/json';
-    return fetch(cfg.SUPABASE_URL + '/functions/v1/create-checkout', { method: 'POST', headers: h, body: JSON.stringify({ items: ids }) })
+    return fetch(cfg.SUPABASE_URL + '/functions/v1/create-checkout', { method: 'POST', headers: h, body: JSON.stringify(payload) })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || 'Checkout failed.'); return j; }); });
   }
   function checkout() {
@@ -357,7 +425,9 @@
       if (!/^https:\/\//i.test(String(data.url))) throw new Error('Invalid checkout link.');
       location.href = data.url;
     }).catch(function (e) {
-      busy = false; render();
+      busy = false;
+      if (e && e.message === PROMO_ERR) { promoErr = PROMO_ERR; promoSig = null; render(); try { promoEl.scrollIntoView({ block: 'nearest' }); } catch (x) {} return; }
+      render();
       toast('Checkout failed: ' + ((e && e.message) || e), true);
     });
   }
@@ -403,6 +473,7 @@
       if (e.key !== KEY && e.key !== null) return;
       load(); render();
     });
+    if (urlPromoNew) toast('Code ' + urlPromoNew + ' will be applied at checkout');
     try {
       var q = new URLSearchParams(location.search);
       if (q.get('cart') === 'open') {
@@ -416,7 +487,8 @@
 
   window.ylyCart = {
     add: add, remove: remove, has: has, clear: clear, open: open, close: close,
-    items: function () { return items.slice(); }, count: count
+    items: function () { return items.slice(); }, count: count,
+    promo: getPromo, setPromo: setPromo
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

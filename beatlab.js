@@ -722,7 +722,7 @@
   $("pl-swing").oninput = e => { state.swing = +e.target.value; touched.swing = true; $("pl-swing-val").textContent = state.swing + "%"; saveHash(); };
   $("pl-hum").oninput = e => { state.humanize = +e.target.value; $("pl-hum-val").textContent = state.humanize + "%"; saveHash(); };
   $("bl-play").onclick = toggle;
-  $("pl-gen").onclick = () => { if (!ready) return; window.ylyTrack && ylyTrack("perclab-generate"); generateAll(true); renderAll(); setStatus(""); };
+  $("pl-gen").onclick = () => { if (!ready) return; window.ylyTrack && ylyTrack("perclab-generate"); document.dispatchEvent(new CustomEvent("perclab:generate")); generateAll(true); renderAll(); setStatus(""); };
   $("pl-shuffle").onclick = shuffleSounds;
   $("pl-clear").onclick = () => { tracks.forEach(t => { if (!t.lock) t.steps = blankSteps(); }); renderGrid(); saveHash(); };
   document.addEventListener("keydown", e => {
@@ -778,7 +778,7 @@
   $("bl-midi").onclick = () => {
     if (!tracks.length) return;
     download(midiFile(), fileBase() + ".mid");
-    window.ylyTrack && ylyTrack("perclab-export-midi");
+    window.ylyTrack && ylyTrack("perclab-export-midi"); document.dispatchEvent(new CustomEvent("perclab:export"));
     setStatus("MIDI downloaded – 2 bars, one note per row (GM percussion, channel 10: kick 36, clap 39, timeline 75, steady 70, accent 56).");
   };
 
@@ -859,7 +859,7 @@
       }
       files.push({ name: "license.txt", data: new TextEncoder().encode("Made with the YARDSLOVESYOU Perc Lab (yardslovesyou.com/beatlab.html).\nThe sounds are royalty-free for use in your own music. You may not resell or share the sounds on their own.\nGet the full Essentials kit: https://yardslovesyou.com/shop.html\n") });
       download(zip(files), fileBase() + ".zip");
-      window.ylyTrack && ylyTrack("perclab-export-wav");
+      window.ylyTrack && ylyTrack("perclab-export-wav"); document.dispatchEvent(new CustomEvent("perclab:export"));
       setStatus("Done! Your loop and stems are downloading (2 bars, WAV, seamless loop).");
     } catch (e) {
       setStatus("Export failed. Please try again.", true);

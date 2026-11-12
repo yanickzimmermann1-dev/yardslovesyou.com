@@ -204,7 +204,7 @@
     });
     $("buy-btn").onclick=buy;
     $("sticky-buy-btn").onclick=buy;
-    setupSticky();
+    setupSticky(); promoNote();
     if(tracks.length) setupPlayers(tracks);
   }
 
@@ -228,7 +228,7 @@
       </div>`;
     window.renderGuide(p,{root:$("guide-root"),images,price,was,esc,media,paragraphs,faq:faqFor(p),buy,cartAttrs:cartAttrs(p,images),track:(n,d)=>{ window.ylyTrack&&ylyTrack(n,d); }});
     root.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",buy));
-    setupSticky();
+    setupSticky(); promoNote();
   }
 
   // Fixierte Kaufleiste: erscheint, sobald der Haupt-Kaufbutton aus dem Bild gescrollt ist,
@@ -334,12 +334,27 @@
     document.head.appendChild(ld);
   }
 
+  // Rabattcode (sessionStorage, von cart.js gesetzt); echte Pruefung passiert in create-checkout
+  const promoCode=()=>{try{const c=String(sessionStorage.getItem("yly_promo")||"").trim().toUpperCase();return /^[A-Z0-9][A-Z0-9-]{2,31}$/.test(c)?c:"";}catch(_){return "";}};
+  const promoBody=()=>{const b={product_id:id},c=promoCode();if(c)b.promo=c;return b;};
+  function promoNote(){
+    const old=document.getElementById("promo-note"); if(old) old.remove();
+    const c=promoCode(), buyRow=root.querySelector(".pd-buy")||root.querySelector(".gd-buyrow");
+    if(!c||!buyRow) return;
+    let fromUrl=false; try{fromUrl=sessionStorage.getItem("yly_promo_src")==="url";}catch(_){}
+    const n=document.createElement("p"); n.id="promo-note"; n.className="promo-note"; n.setAttribute("role","status");
+    const strong=document.createElement("strong"); strong.textContent=c;
+    n.append("Your code ",strong,fromUrl&&id==="11f558ea-9332-4bf3-ad2f-d8327c489445"?": 15% off at checkout":" will be applied at checkout");
+    buyRow.insertAdjacentElement("afterend",n);
+  }
+  window.addEventListener("yly-promo",()=>{if(root.querySelector(".pd-buy, .gd-buyrow")) promoNote();});
+
   async function buy(){
     const btns=[...new Set([$("buy-btn"),$("sticky-buy-btn"),...root.querySelectorAll("[data-buy]")])].filter(Boolean);
     btns.forEach(b=>{b.dataset.t=b.dataset.t||b.textContent;b.disabled=true;b.textContent="Redirecting …";});
     window.ylyTrack&&ylyTrack("checkout-click",{id});
     try{
-      const {data,error}=await db.functions.invoke("create-checkout",{body:{product_id:id}});
+      const {data,error}=await db.functions.invoke("create-checkout",{body:promoBody()});
       if(error) throw error;
       if(!data?.url) throw new Error(data?.error||"Checkout link missing.");
       if(!/^https:\/\//i.test(String(data.url))) throw new Error("Invalid checkout link.");

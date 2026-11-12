@@ -170,3 +170,27 @@ html.cart-lock{overflow:hidden}
   .cart-drawer,.cart-overlay,.cart-toast,.cart-btn,.cart-x{transition:none}
   .cart-badge.bump,.cart-btn.pulse{animation:none}
 }
+
+/* ---------- Rabattcode ---------- */
+.cart-promo{flex-shrink:0;padding:10px 20px;border-top:1px solid var(--line);background:var(--panel2)}
+.cart-promo[hidden]{display:none}
+.cart-promo-toggle{background:none;border:0;padding:6px 0;cursor:pointer;color:var(--purple);font:600 14px 'DM Sans',sans-serif;text-decoration:underline;text-underline-offset:4px}
+.cart-promo-toggle:hover{color:var(--pink)}
+.cart-promo-toggle:focus-visible,.cart-chip-x:focus-visible{outline:2px solid var(--purple);outline-offset:2px;border-radius:6px}
+.cart-promo-form{display:flex;gap:8px;margin-top:6px}
+.cart-promo-form input{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:600 14px 'Space Grotesk',sans-serif;letter-spacing:1px;text-transform:uppercase}
+.cart-promo-form input:focus{outline:2px solid var(--purple);outline-offset:1px}
+.cart-promo-form .outline{padding:10px 16px;white-space:nowrap}
+.cart-chip{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border:1px solid var(--purple);border-radius:999px;background:rgba(182,138,255,.12)}
+.cart-chip-code{font:700 13px 'Space Grotesk',sans-serif;letter-spacing:1px;color:var(--text);overflow-wrap:anywhere}
+.cart-chip-txt{flex:1;font-size:12px;color:var(--muted)}
+.cart-chip-x{width:26px;height:26px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.cart-chip-x:hover{color:var(--text)}
+.cart-chip-x svg{width:14px;height:14px}
+.cart-promo-est{display:block;margin:6px 0 0 12px;font-size:12px;color:var(--green)}
+.cart-promo-err{margin:8px 0 0;font-size:13px;color:#ffb8c7}
+@media(max-width:720px){.cart-promo{padding:10px 16px}}
+
+/* Hinweis auf der Produktseite */
+.promo-note{margin:12px 0 0;padding:10px 14px;border-radius:12px;border:1px solid var(--purple);background:rgba(182,138,255,.12);color:var(--text);font-size:14px;line-height:1.5}
+.promo-note strong{font-family:'Space Grotesk',sans-serif;letter-spacing:1px;color:var(--purple)}

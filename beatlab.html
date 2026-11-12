@@ -22,8 +22,9 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="stylesheet" href="styles.css?v=20261111c">
-  <link rel="stylesheet" href="perclab.css?v=20261111c">
-  <link rel="stylesheet" href="cart.css?v=20261112c">
+  <link rel="stylesheet" href="perclab.css?v=20261112d">
+  <link rel="stylesheet" href="product3d.css?v=20261111f">
+  <link rel="stylesheet" href="cart.css?v=20261112d">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
@@ -88,6 +89,7 @@
         <button type="button" class="outline locked" id="bl-wav">Download WAV + stems</button>
       </div>
       <p class="status" id="bl-status" role="status"></p>
+      <aside class="pl-upsell hidden" id="pl-upsell" aria-label="Essentials percussion kit"></aside>
       <p class="bl-hint">Need chords for your loop? Try the <a href="chords.html" style="color:var(--purple)">Chord Starter</a>.</p>
 
       <!-- Freischalten -->
@@ -164,8 +166,10 @@
   <script src="community-core.js"></script>
   <script src="beatlab.js"></script>
   <script src="publish.js"></script>
+  <script src="perclab-upsell.js?v=20261112d" defer></script>
+  <script src="product3d.js?v=20261111f" defer></script>
   <script src="presence.js"></script>
-  <script src="cart.js?v=20261112c" defer></script>
+  <script src="cart.js?v=20261112d" defer></script>
   <script src="nav.js" defer></script>
   <script src="motion.js" defer></script>
 </body>

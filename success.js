@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (data.kind === "shop") {
       // Bezahlte Shop-Bestellung: Warenkorb leeren
       try { if (window.ylyCart) window.ylyCart.clear(); else localStorage.removeItem("yly_cart"); } catch (_) {}
+      try { sessionStorage.removeItem("yly_promo"); sessionStorage.removeItem("yly_promo_src"); } catch (_) {}
       const items = Array.isArray(data.items) ? data.items : [];
       const multi = items.length > 1;
       const dlIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>';
