@@ -3,11 +3,11 @@
   'use strict';
   var root = document.documentElement;
   if (!root.classList.contains('intro-on')) return;
-  var T_PULL = 1.3, D_PULL = 1.1, TOTAL = T_PULL + D_PULL;
+  var T_PULL = 1.3, D_PULL = 1.2, TOTAL = T_PULL + D_PULL;
   var scale = 1;
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var ov, pt, fx, body, finished = false, started = false;
+  var ov, pt, fx, vi, body, finished = false, started = false;
   var K = 120, TAU = Math.PI * 2;
   var dprC = Math.min(window.devicePixelRatio || 1, 2);
 
@@ -15,6 +15,7 @@
     if (finished) return; finished = true;
     try { if (ov && ov.parentNode) ov.parentNode.removeChild(ov); } catch (e) {}
     try { if (fx && fx.parentNode) fx.parentNode.removeChild(fx); } catch (e) {}
+    try { if (vi && vi.parentNode) vi.parentNode.removeChild(vi); } catch (e) {}
     try { body.style.cssText = body.getAttribute('data-yi-style') || ''; body.removeAttribute('data-yi-style'); } catch (e) {}
     root.classList.remove('intro-on', 'intro-portal');
     window.removeEventListener('keydown', skip, true);
@@ -166,6 +167,9 @@
     root.appendChild(ov);
     fx = document.createElement('canvas'); fx.className = 'yi-fx'; fx.setAttribute('aria-hidden', 'true');
     root.appendChild(fx);
+    vi = document.createElement('div'); vi.className = 'yi-violet'; vi.setAttribute('aria-hidden', 'true');
+    vi.innerHTML = '<i class="g1"></i><i class="g2"></i><i class="g3"></i>';
+    root.appendChild(vi);
     ov.addEventListener('click', skip);
     ov.addEventListener('wheel', skip, { passive: true });
     ov.addEventListener('touchmove', skip, { passive: true });
@@ -190,7 +194,7 @@
       setClip(1); curQ = 0; return true;
     }
     function sizeCanvas(sNow) {
-      var q = Math.min(dprC * Math.max(1, sNow), 900 / Math.max(G.adv, G.oh));
+      var q = Math.min(Math.max(dprC, 2) * Math.max(1, sNow), 1024 / Math.max(G.adv, G.oh));
       if (curQ && Math.abs(q / curQ - 1) < 0.25) return;
       curQ = q; cv.width = Math.max(2, Math.round(G.adv * q)); cv.height = Math.max(2, Math.round(G.oh * q));
       pc.setTransform(cv.width / G.adv, 0, 0, cv.height / G.oh, 0, 0);
@@ -223,7 +227,7 @@
     }
     var drops = [], j;
     for (j = 0; j < 12; j++) drops.push({ a: j * 2.399 + 0.4, life: 0.9 + (j % 4) * 0.15, tb: 0.85 + j * 0.07, sp: fs * (0.9 + (j % 3) * 0.35), r: Math.max(1.5, fs * (0.02 + (j % 3) * 0.008)), col: PCOL[j % 4] });
-    function drawFx(Cx, Cy, sNow, hole, q) {
+    function drawFx(Cx, Cy, sNow) {
       fctx.setTransform(dpr, 0, 0, dpr, 0, 0); fctx.clearRect(0, 0, innerWidth, innerHeight);
       fctx.globalCompositeOperation = 'lighter';
       var fade = 1 - sm((t - T_PULL - 0.25) / 0.55), d, f, age, ang, ux, uy, dist, hx, hy, L, col, al;
@@ -240,42 +244,47 @@
         }
       }
       fctx.globalAlpha = 1;
-      if (q > 0 && q < 1) { // Ringe expandieren ueber die Raender und verblassen
-        var front = hole + 6, i, ra = 1 - sm(q * 1.05);
-        fctx.lineWidth = 3; fctx.shadowColor = '#b33cff'; fctx.shadowBlur = 16;
-        for (i = 0; i < 4; i++) {
-          fctx.strokeStyle = i ? 'rgba(179,60,255,' + (0.7 * ra - i * 0.1).toFixed(3) + ')' : 'rgba(212,123,255,' + (0.95 * ra).toFixed(3) + ')';
-          fctx.beginPath(); fctx.arc(Vx, Vy, Math.max(0.5, front * (1 - i * 0.12) + i * 0), 0, TAU); fctx.stroke();
-        }
-        fctx.shadowBlur = 0;
-      }
       fctx.globalCompositeOperation = 'source-over';
     }
-    var last = performance.now();
+    var last = performance.now(), tc = -1, cfade = 0, swapped = false;
     function frame(now) {
       if (finished) return;
       t += Math.min(0.05, (now - last) / 1000) * rate / scale; last = now;
       if (skipped && t < T_PULL) t = T_PULL;
       if (t >= T_PULL && !prepped) prep();
-      var s = 1, m = 0, q = 0, hole = 0, p = 0;
-      if (t >= T_PULL) {
-        p = Math.min(1, (t - T_PULL) / D_PULL);
-        var p0 = 0.78, e = ease(Math.min(1, p / p0)); s = Math.exp(lnSf * e); m = e; q = Math.max(0, (p - p0) / (1 - p0));
-        word.style.transform = 'translate(' + (m * (Vx - C0x)).toFixed(2) + 'px,' + (m * (Vy - C0y)).toFixed(2) + 'px) scale(' + s.toFixed(4) + ')';
-        if (q > 0) {
-          hole = Math.pow(sm(q), 1.4) * diag * 0.56;
-          ov.style.webkitMaskImage = ov.style.maskImage = 'radial-gradient(circle at ' + Vx.toFixed(1) + 'px ' + Vy.toFixed(1) + 'px,transparent ' + hole.toFixed(1) + 'px,#000 ' + (hole + 2).toFixed(1) + 'px)';
-        }
-        var pe = sm(q);
+      var s = 1, m = 0, z = t - T_PULL, fin = false;
+      if (z >= 0) {
+        var Zd = 0.85, e = ease(Math.min(1, z / Zd)); s = Math.exp(lnSf * e); m = e;
+        if (!swapped) word.style.transform = 'translate(' + (m * (Vx - C0x)).toFixed(2) + 'px,' + (m * (Vy - C0y)).toFixed(2) + 'px) scale(' + s.toFixed(4) + ')';
+        if (tc < 0 && (s > 2.5 || z >= 0.6 || skipped)) tc = z; // Crossfade in das Violett, bevor das Portal-Canvas sichtbar verpixelt
+        var fc = tc >= 0 ? sm((z - tc) / 0.2) : 0, rq = tc >= 0 ? Math.max(0, Math.min(1, (z - tc - 0.3) / 0.35)) : 0;
+        var pe = tc >= 0 ? sm((z - tc - 0.2) / 0.45) : 0;
         body.style.transform = 'scale(' + (1.12 - 0.12 * pe).toFixed(4) + ')';
         body.style.filter = 'blur(' + (10 * (1 - pe)).toFixed(2) + 'px) brightness(' + (0.6 + 0.4 * pe).toFixed(3) + ')';
+        if (fc > 0 && !swapped) {
+          vi.style.opacity = fc.toFixed(3);
+          if (fc >= 1) { swapped = true; ov.style.display = 'none'; fx.style.display = 'none'; }
+        }
+        if (swapped) { // kurzes volles Violett, dann Iris aus der Mitte
+          if (rq > 0) {
+            var hole = sm(rq) * diag * 0.6, edge = hole + diag * (0.02 + 0.1 * rq);
+            vi.style.webkitMaskImage = vi.style.maskImage = 'radial-gradient(circle at ' + Vx.toFixed(1) + 'px ' + Vy.toFixed(1) + 'px,transparent ' + hole.toFixed(1) + 'px,#000 ' + edge.toFixed(1) + 'px)';
+          }
+          vi.style.opacity = (1 - sm(rq)).toFixed(3);
+          if (rq >= 1) fin = true;
+        }
+        cfade = fc;
       }
-      pt.style.opacity = sm((t - 0.8) / 0.3).toFixed(3);
-      setClip(s); sizeCanvas(s); drawPortal(pc, G, t, true);
-      var Cx = C0x + m * (Vx - C0x), Cy = C0y + m * (Vy - C0y);
-      if (!prepped) { var wr = word.getBoundingClientRect(); Cx = wr.left + O.offsetLeft + G.cx; Cy = wr.top + O.offsetTop + G.cy; }
-      drawFx(Cx, Cy, s, hole, q);
-      if (p >= 1) { done(); return; }
+      if (!swapped) {
+        pt.style.opacity = (sm((t - 0.8) / 0.3) * (1 - cfade)).toFixed(3);
+        if (cfade < 1) {
+          setClip(s); sizeCanvas(s); drawPortal(pc, G, t, true);
+          var Cx = C0x + m * (Vx - C0x), Cy = C0y + m * (Vy - C0y);
+          if (!prepped) { var wr = word.getBoundingClientRect(); Cx = wr.left + O.offsetLeft + G.cx; Cy = wr.top + O.offsetTop + G.cy; }
+          drawFx(Cx, Cy, s);
+        }
+      }
+      if (fin) { done(); return; }
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);

@@ -33,6 +33,14 @@ html.intro-on:not(.intro-portal) .hero .muted,html.intro-on:not(.intro-portal) .
 html.intro-on .yi-portal{display:block}
 .yi-portal canvas{display:block;width:100%;height:100%}
 .yi-fx{display:none}
+/* Dunkelviolett-Frame: voll aufloesend, nicht pixelig (reine CSS-Verlaeufe) */
+.yi-violet{display:none}
+html.intro-on .yi-violet{display:block;position:fixed;inset:0;z-index:100002;pointer-events:none;opacity:0;overflow:hidden;
+  background:radial-gradient(ellipse 75% 75% at 50% 50%,rgba(0,0,0,0) 55%,rgba(5,1,10,.45) 100%),radial-gradient(circle at 50% 50%,#1a0630 0%,#140524 45%,#0b0414 100%)}
+.yi-violet i{position:absolute;border-radius:50%;filter:blur(60px)}
+.yi-violet .g1{width:55vmax;height:55vmax;left:-12vmax;top:-18vmax;background:radial-gradient(circle,rgba(143,31,224,.28),transparent 65%)}
+.yi-violet .g2{width:50vmax;height:50vmax;right:-14vmax;bottom:-20vmax;background:radial-gradient(circle,rgba(179,60,255,.22),transparent 65%)}
+.yi-violet .g3{width:40vmax;height:40vmax;left:30%;top:30%;background:radial-gradient(circle,rgba(91,17,153,.4),transparent 65%)}
 html.intro-on .yi-fx{display:block;position:fixed;left:0;top:0;width:100%;height:100%;z-index:100001;pointer-events:none}
 @media (prefers-reduced-motion:reduce){
   .yi-l{animation:none;opacity:1}.yi-word{animation:none}.yi-sweep,.yi-p{display:none}
