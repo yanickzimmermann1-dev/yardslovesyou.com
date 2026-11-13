@@ -1,6 +1,7 @@
 /* guide.js – "Look inside" Produktseite für Guides. product.js ruft window.renderGuide(product, ctx) auf,
    wenn product.guide vorhanden ist. Keine Inline-Skripte, kein innerHTML mit ungeprüften Daten (alles per esc()). */
 (function () {
+  var TI = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3Z"/><path d="m9 12 2.2 2.2L15 10.4"/></svg>';
   "use strict";
   var ICON = function (d, s) {
     return '<svg width="' + (s || 18) + '" height="' + (s || 18) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + d + "</svg>";
@@ -77,6 +78,7 @@
           '<div class="gd-buyrow"><span class="price-wrap">' + (ctx.was || "") + '<span class="price">' + ctx.price + "</span></span>" +
           buyBtn("Get the guide", "buy-btn") + cartLink() +
           (firstFree >= 0 ? '<button class="outline gd-free-btn" type="button" id="gd-free-btn">' + I.book + " Read a free chapter</button>" : "") + "</div>" +
+          '<p class="trust left">' + TI + "<span>Instant PDF download · Secure checkout</span></p>" +
           '<p class="gd-note">' + I.dl + " Instant download after payment. " + esc(g.chapters_note || "") + "</p>" +
         "</div>" +
         '<div class="gd-scene' + (p.model3d ? " gd-has3d" : "") + '" id="gd-scene"><div class="gd-float"><div class="gd-book" id="gd-book">' +

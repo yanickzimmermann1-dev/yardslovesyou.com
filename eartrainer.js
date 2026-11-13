@@ -915,18 +915,19 @@
   }
   async function renderBoard(el) {
     if (!el) return;
-    if (!hasLb()) { el.innerHTML = '<p class="et-empty">Leaderboard is unavailable right now.</p>'; return; }
+    const ST = o => { if (window.YLYState) window.YLYState.render(el, Object.assign({ compact: true }, o)); else el.innerHTML = '<p class="et-empty">' + esc(o.title) + "</p>"; };
+    if (!hasLb()) { ST({ icon: "trophy", error: true, title: "Leaderboard unavailable", text: "We couldn't reach the leaderboard. Your daily challenge still works.", actions: [{ label: "Retry", onClick: () => renderBoard(el) }] }); return; }
     el.innerHTML = '<p class="et-empty">Loading ...</p>';
     try {
       const rows = await fetchBoard();
       const m = await window.YLY.me().catch(() => null), mine = m && m.user && m.user.id;
-      if (!rows.length) { el.innerHTML = '<p class="et-empty">No scores yet today. Be the first.</p>'; return; }
+      if (!rows.length) { ST({ icon: "trophy", title: "Be the first today", text: "No scores yet. Play the Daily Challenge and take the top spot.", actions: [{ label: "Play the Daily Challenge", onClick: () => { const g = $("et-daily-go"); if (g) { g.scrollIntoView && g.scrollIntoView({ block: "center" }); g.click(); } } }] }); return; }
       el.innerHTML = "<ol>" + rows.map((r, i) => {
         const who = r.handle ? `<a href="profile.html?u=${encodeURIComponent(r.handle)}">@${esc(r.handle)}</a>` : "<span>anonymous</span>";
         return `<li class="${r.user_id === mine ? "me" : ""}"><span class="rk">${i + 1}</span><span class="who">${who}</span><span class="cr">${+r.correct}/5</span><span class="sc">${+r.score}</span></li>`;
       }).join("") + "</ol>";
     } catch (e) {
-      el.innerHTML = '<p class="et-empty">Leaderboard is not available yet.</p>';
+      ST({ icon: "trophy", error: true, title: "Leaderboard couldn't load", text: "Something went wrong. Please try again, or play the Daily Challenge meanwhile.", actions: [{ label: "Retry", onClick: () => renderBoard(el) }] });
     }
   }
 

@@ -2,6 +2,8 @@
    State: localStorage "yly_cart" = [{id,title,price_cents,currency,cover}], Sync ueber Tabs per storage-Event.
    API: window.ylyCart = { add(item, fromEl), remove(id), has(id), items(), count(), clear(), open(), close() }
    Buttons: <button data-cart-add="ID" data-cart-title data-cart-price data-cart-currency data-cart-cover> (Delegation + Status-Sync). */
+var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3Z"/><path d="m9 12 2.2 2.2L15 10.4"/></svg>';
+(function(){if(!document.querySelector('link[href^="trust.css"]')){var l=document.createElement('link');l.rel='stylesheet';l.href='trust.css?v=20261113q';document.head.appendChild(l);}})();
 (function () {
   'use strict';
   var KEY = 'yly_cart', PKEY = 'yly_promo', PSRC = 'yly_promo_src', BUNDLE = 15, MAX = 10;
@@ -189,9 +191,10 @@
         '<div class="cart-sum"><span>Subtotal</span><span>' + money(c.sub, c.cur) + '</span></div>' +
         (c.bundle ? '<div class="cart-sum disc"><span>Bundle -' + BUNDLE + '%</span><span>-' + money(c.saved, c.cur) + '</span></div>' : '') +
         '<div class="cart-sum total"><span>Total</span><span>' + money(c.total, c.cur) + '</span></div>' +
+        '<p class="trust compact">' + TRUST_ICON + '<span>Secure checkout · TWINT, PayPal, card · Instant download</span></p>' +
         '<button type="button" class="button cart-checkout">' + (busy ? 'Redirecting …' : 'Checkout') + '</button>' +
         '<button type="button" class="outline cart-continue" data-cart-close>Continue shopping</button>' +
-        '<p class="cart-note">' + (getPromo() ? 'Your code is checked and applied at checkout. ' : '') + 'Secure payment with Stripe. Instant ZIP download.</p>';
+        (getPromo() ? '<p class="cart-note">Your code is checked and applied at checkout.</p>' : '');
       var cb = footEl.querySelector('.cart-checkout'); if (busy) cb.disabled = true;
     } else { footEl.innerHTML = ''; }
     renderUpsell();

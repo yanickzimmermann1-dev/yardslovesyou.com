@@ -11,7 +11,7 @@
 
   if (!ready) { 
     const tracksEl = $("tracks");
-    if (tracksEl) tracksEl.innerHTML = '<div class="empty">Tracks are not available right now.</div>'; 
+    const w0 = $("work"); if (w0) { w0.hidden = true; w0.style.display = "none"; }
     return; 
   }
   
@@ -26,7 +26,16 @@
 
     if (!tracksContainer.querySelector(".track")) tracksContainer.innerHTML = '<article class="track sk-card sk-track" aria-hidden="true"><div class="sk-row"><div class="sk sk-cover"></div><div class="sk-col"><div class="sk sk-title"></div><div class="sk sk-line"></div></div></div><div class="sk sk-player"></div></article>'.repeat(3);
     const {data,error} = await db.from("audio_tracks").select("*").order("created_at",{ascending:false});
-    if (error) { tracksContainer.innerHTML = '<div class="empty">Tracks could not be loaded. Please try again later.</div>'; return; }
+    const workSec = $("work");
+    if (error) {
+      if (workSec) { workSec.hidden = false; workSec.style.display = ""; }
+      if (window.YLYState) window.YLYState.render(tracksContainer, { icon: "wave", error: true, title: "Tracks could not be loaded", text: "Something went wrong or your connection dropped. Please try again.", actions: [{ label: "Retry", onClick: () => loadTracks() }] });
+      else tracksContainer.textContent = "Tracks could not be loaded. Please try again.";
+      return;
+    }
+    // no tracks: hide the whole section (no empty box)
+    if (workSec) { const none = !data || !data.length; workSec.hidden = none; workSec.style.display = none ? "none" : ""; }
+    if (!data || !data.length) { tracksContainer.innerHTML = ""; return; }
     
     tracksContainer.innerHTML = data.length ? data.map(t => {
       const imageUrl = t.image_path ? db.storage.from("coverart-portolio").getPublicUrl(t.image_path).data.publicUrl : null;

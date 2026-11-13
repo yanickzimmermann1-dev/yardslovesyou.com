@@ -3,15 +3,21 @@
   const handle = (new URLSearchParams(location.search).get("u") || "").toLowerCase();
   const box = $("pf-box"), list = $("pf-posts");
   let profile = null;
+  const S = (el, o) => { if (window.YLYState) window.YLYState.render(el, o); else if (el) el.textContent = (o.title || "") + " " + (o.text || ""); };
+  const notFound = () => { S(box, { icon: "users", title: "Profile not found", text: "We couldn't find anyone with that handle. Check the link or browse the community.", actions: [{ label: "Explore the community", href: "community.html" }, { label: "Back to home", href: "index.html" }] }); list.innerHTML = ""; };
+  const failed = () => { S(box, { icon: "alert", error: true, title: "The profile could not be loaded", text: "Something went wrong or your connection dropped. Please try again.", actions: [{ label: "Retry", onClick: () => load() }, { label: "Explore the community", href: "community.html" }] }); list.innerHTML = ""; };
 
   async function load() {
     if (!profile) {
       box.innerHTML = '<div class="sk-pf" aria-hidden="true"><div class="sk sk-avatar"></div><div class="sk-col"><div class="sk sk-h1"></div><div class="sk sk-line w60"></div><div class="sk sk-line w40"></div></div></div>';
       list.innerHTML = '<article class="cp sk-card sk-cp" aria-hidden="true"><div class="sk sk-line w40"></div><div class="sk sk-title"></div><div class="sk sk-line"></div></article>'.repeat(2);
     }
-    if (!/^[a-z0-9_]{3,20}$/.test(handle)) { box.innerHTML = '<div class="empty">Profile not found.</div>'; return; }
-    const { data: p } = await db.from("profiles").select("id,handle,display_name,bio,links,hidden,created_at").eq("handle", handle).maybeSingle();
-    if (!p) { box.innerHTML = '<div class="empty">Profile not found.</div>'; list.innerHTML = ""; return; }
+    if (!/^[a-z0-9_]{3,20}$/.test(handle)) { notFound(); return; }
+    let pr;
+    try { pr = await db.from("profiles").select("id,handle,display_name,bio,links,hidden,created_at").eq("handle", handle).maybeSingle(); } catch (_) { failed(); return; }
+    const p = pr.data;
+    if (pr.error && !p) { failed(); return; }
+    if (!p) { notFound(); return; }
     profile = p;
     document.title = `${p.display_name || "@" + p.handle} (@${p.handle}) · YARDSLOVESYOU Community`;
 
@@ -53,7 +59,10 @@
     const liked = await likedSet((posts.data || []).map(x => x.id));
     list.innerHTML = (posts.data || []).length
       ? posts.data.map(x => postCard(x, { me: m, liked })).join("")
-      : `<div class="empty">${mine ? "You haven't published anything yet. Make a beat or chords and hit Publish!" : "No posts yet."}</div>`;
+      : "";
+    if (!(posts.data || []).length) S(list, mine
+      ? { icon: "wave", title: "No posts yet", text: "Make a beat or chords and hit Publish to share your first post.", actions: [{ label: "Create your first post", href: "beatlab.html" }, { label: "Write chords", href: "chords.html" }] }
+      : { icon: "wave", title: "No posts yet", text: "This producer hasn't published anything yet. See what the community is making.", actions: [{ label: "Explore the community", href: "community.html" }] });
 
     $("pf-follow")?.addEventListener("click", follow);
     $("pf-report")?.addEventListener("click", report);

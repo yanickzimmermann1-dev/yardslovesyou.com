@@ -14,6 +14,17 @@
   const show = id => ["acc-login", "acc-create", "acc-edit"].forEach(x => $(x).classList.toggle("hidden", x !== id));
   const status = (id, msg, bad) => { const el = $(id); el.textContent = msg; el.classList.toggle("danger", !!bad); };
 
+  // ---------- Login-Link fehlgeschlagen (abgelaufen / schon benutzt) ----------
+  const hp = new URLSearchParams((location.hash || "").replace(/^#/, ""));
+  const linkErr = hp.get("error_code") || hp.get("error") || params.get("error_code") || params.get("error");
+  if (linkErr) {
+    const host = document.createElement("div");
+    $("acc-login").insertBefore(host, $("acc-login").firstChild);
+    const expired = /expired|otp/i.test(linkErr + " " + (hp.get("error_description") || ""));
+    if (window.YLYState) window.YLYState.render(host, { icon: "link", error: true, title: expired ? "That login link has expired" : "The login link didn't work", text: "Login links work once and only for a short time. Enter your email below and we'll send you a fresh one.", actions: [{ label: "Send a new link", onClick: () => { host.remove(); $("acc-email").focus(); } }] });
+    try { history.replaceState(null, "", location.pathname + (next ? "?next=" + encodeURIComponent(next) : "")); } catch (_) {}
+  }
+
   // ---------- Login per Magic Link ----------
   $("acc-login-form").addEventListener("submit", async e => {
     e.preventDefault();
@@ -24,7 +35,14 @@
     const redirect = `${location.origin}/account.html${next ? "?next=" + encodeURIComponent(next) : ""}`;
     const { error } = await db.auth.signInWithOtp({ email, options: { emailRedirectTo: redirect, shouldCreateUser: true } });
     btn.disabled = false; btn.textContent = "Send me a login link";
-    if (error) return status("acc-login-status", /rate/i.test(error.message) ? "Too many attempts. Please wait a minute and try again." : error.message, true);
+    if (error) {
+      if (/rate|too many|seconds/i.test(error.message)) {
+        let left = 60; btn.disabled = true;
+        const tick = () => { if (left <= 0) { btn.disabled = false; btn.textContent = "Send me a login link"; status("acc-login-status", "You can try again now."); return; } btn.textContent = "Try again in " + left + "s"; status("acc-login-status", "Too many attempts. Please wait a minute, then press the button again.", true); left--; setTimeout(tick, 1000); };
+        return tick();
+      }
+      return status("acc-login-status", /try again/i.test(error.message) ? error.message : error.message.replace(/[.!?\s]*$/, "") + ". Please check your connection and try again.", true);
+    }
     $("acc-login-form").classList.add("hidden");
     $("acc-sent").classList.remove("hidden");
     $("acc-sent-email").textContent = email;

@@ -14,8 +14,9 @@
   <link rel="preload" href="font-spacegrotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://kmekgjllklwrxizqbrac.supabase.co" crossorigin>
   <link rel="dns-prefetch" href="https://kmekgjllklwrxizqbrac.supabase.co">
-  <link rel="stylesheet" href="styles.css?v=20261113m">
-  <link rel="stylesheet" href="cart.css?v=20261113m">
+  <link rel="stylesheet" href="styles.css?v=20261113q">
+  <link rel="stylesheet" href="states.css?v=20261113q">
+  <link rel="stylesheet" href="cart.css?v=20261113q">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="fx-gate.js?v=20261113g"></script>
   <link rel="stylesheet" href="fx.css?v=20261113g">
@@ -23,8 +24,11 @@
   <link rel="stylesheet" href="skeleton.css?v=20261113j">
   <link rel="stylesheet" href="footerword.css?v=20261113l">
   <link rel="stylesheet" href="uisound.css?v=20261113m">
+  <link rel="stylesheet" href="sections.css?v=20261113q">
+  <link rel="stylesheet" href="thread.css?v=20261113r">
+  <link rel="stylesheet" href="nextstep.css?v=20261113r">
 </head>
-<body>
+<body data-area="lab">
 
   <header class="topbar">
     <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
@@ -42,7 +46,7 @@
     <!-- 1) Anmelden -->
     <section id="acc-login" class="hidden">
       <div class="hero compact">
-        <p class="eyebrow">COMMUNITY</p>
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>COMMUNITY</p>
         <h1>Join the <span>community.</span></h1>
         <p class="muted">Publish your beats and chords, follow other producers and get likes on your ideas. No password – we'll send you a login link.</p>
       </div>
@@ -66,7 +70,7 @@
     <!-- 2) Profil anlegen -->
     <section id="acc-create" class="hidden">
       <div class="hero compact">
-        <p class="eyebrow">ALMOST THERE</p>
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>ALMOST THERE</p>
         <h1>Pick your <span>handle.</span></h1>
         <p class="muted">Signed in as <span id="acc-signed-as"></span>. Your handle is how people find you, e.g. <strong>@yourname</strong>.</p>
       </div>
@@ -87,7 +91,7 @@
     <section id="acc-edit" class="hidden">
       <div class="hero compact acc-head">
         <div>
-          <p class="eyebrow">YOUR ACCOUNT</p>
+          <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>YOUR ACCOUNT</p>
           <h1 id="acc-title-handle">@you</h1>
         </div>
         <div class="hero-actions">
@@ -141,14 +145,18 @@
     </nav>
   </footer>
 
+  <script defer src="states.js?v=20261113q"></script>
+
   <script defer src="config.js"></script>
   <script defer src="community-core.js"></script>
-  <script defer src="account.js?v=20261113h"></script>
-  <script src="cart.js?v=20261113h" defer></script>
+  <script defer src="account.js?v=20261113q"></script>
+  <script src="cart.js?v=20261113q" defer></script>
   <script src="nav.js" defer></script>
   <script src="fx.js?v=20261113g" defer></script>
   <script src="uisound.js?v=20261113m" defer></script>
   <script src="motion.js?v=20261113l" defer></script>
+  <script src="thread.js?v=20261113r" defer></script>
+  <script src="nextstep.js?v=20261113r" defer></script>
   <script src="cursor.js?v=20261113n" defer></script>
   <script src="reveal.js?v=20261113j" defer></script>
   <script src="footerword.js?v=20261113l" defer></script>

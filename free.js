@@ -2,6 +2,7 @@
   const cfg = window.APP_CONFIG || {}, $ = id => document.getElementById(id);
   $("year").textContent = new Date().getFullYear();
   const db = window.supabase ? window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY) : null;
+  const hint=(m,t)=>{ m=String(m||"Something went wrong."); return /try again|try another/i.test(m)?m:m.replace(/[.!?\s]*$/,"")+". "+(t||"Please try again."); };
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const media = u => /^https?:\/\//.test(u) ? u : db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
@@ -35,7 +36,7 @@
         status.textContent = done(data);
         email.value = ""; consent.checked = false;
       } catch (err) {
-        status.textContent = err.message || "Something went wrong. Please try again."; status.classList.add("danger");
+        status.textContent = hint(err.message); status.classList.add("danger");
       } finally {
         button.disabled = false; button.textContent = label;
       }
@@ -131,7 +132,7 @@
       $("mc-result").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (err) {
       metrics = null;
-      $("mc-error").textContent = err.message || "This file could not be analysed.";
+      $("mc-error").textContent = hint(err.message || "This file could not be analysed", "Please try another file or try again.");
       $("mc-error").classList.remove("hidden");
       drop.classList.remove("hidden");
     } finally {

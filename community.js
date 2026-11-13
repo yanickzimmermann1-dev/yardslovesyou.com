@@ -3,6 +3,9 @@
   const PAGE = 20;
   let tab = "new", filter = "all", page = 0, done = false, loading = false;
   const feed = $("cm-feed");
+  const S = (el, o) => { if (window.YLYState) window.YLYState.render(el, o); else if (el) el.textContent = (o.title || "") + " " + (o.text || ""); };
+  const goTab = t => { const b = document.querySelector('[data-tab="' + t + '"]'); if (b) b.click(); };
+  const goFilter = f => { const b = document.querySelector('[data-filter="' + f + '"]'); if (b) b.click(); };
 
   // Einzelner geteilter Beitrag (community.html?post=…)
   const sharedId = new URLSearchParams(location.search).get("post");
@@ -18,7 +21,7 @@
       if (!m || !m.profile) return { needLogin: true };
       const { data: f } = await db.from("follows").select("followee_id").eq("follower_id", m.user.id).limit(500);
       const ids = (f || []).map(r => r.followee_id);
-      if (!ids.length) return { empty: "You don't follow anyone yet. Open a profile and hit Follow." };
+      if (!ids.length) return { following: true };
       q = q.in("user_id", ids).order("created_at", { ascending: false });
     } else {
       q = q.order("featured", { ascending: false }).order("created_at", { ascending: false });
@@ -37,19 +40,23 @@
       const res = await query(page * PAGE);
       if (my !== seq) return; // a newer tab/filter request took over
       if (reset) feed.innerHTML = "";
-      if (res.needLogin) { feed.innerHTML = `<div class="empty">Sign in to see posts from people you follow. <a class="cp-link" href="${window.YLY.loginUrl()}">Sign in</a></div>`; done = true; }
-      else if (res.empty) { feed.innerHTML = `<div class="empty">${res.empty}</div>`; done = true; }
+      if (res.needLogin) { S(feed, { icon: "lock", title: "Sign in to see your feed", text: "Posts from people you follow show up here once you are signed in.", actions: [{ label: "Sign in", href: window.YLY.loginUrl() }, { label: "Explore all posts", onClick: () => goTab("new") }] }); done = true; }
+      else if (res.following) { S(feed, { icon: "users", title: "You don't follow anyone yet", text: "Open a profile and hit Follow, and their new posts will land here.", actions: [{ label: "Explore the community", onClick: () => goTab("new") }, { label: "Make a loop", href: "beatlab.html" }] }); done = true; }
       else {
         const posts = res.data.filter(p => p.id !== sharedId);
         const m = await me(), liked = await likedSet(posts.map(p => p.id));
         if (my !== seq) return;
-        if (reset && !posts.length) feed.innerHTML = '<div class="empty">Nothing here yet. Be the first – make a beat or chords and hit Publish!</div>';
+        if (reset && !posts.length) {
+          if (filter !== "all") S(feed, { icon: "wave", title: filter === "beat" ? "No beats here yet" : "No chord ideas here yet", text: "Nothing matches this filter yet. Be the first to publish one.", actions: [filter === "beat" ? { label: "Make a loop in the Perc Lab", href: "beatlab.html" } : { label: "Write chords", href: "chords.html" }, { label: "Show all posts", onClick: () => goFilter("all") }] });
+          else S(feed, { icon: "wave", title: "Nothing here yet", text: "Be the first: make a beat or chords, then hit Publish to share it with the community.", actions: [{ label: "Make a loop in the Perc Lab", href: "beatlab.html" }, { label: "Write chords", href: "chords.html" }] });
+        }
         feed.insertAdjacentHTML("beforeend", posts.map(p => postCard(p, { me: m, liked })).join(""));
         done = res.data.length < PAGE; page++;
       }
     } catch (err) {
       if (my !== seq) return;
-      feed.innerHTML = '<div class="empty">The feed could not be loaded. Please try again later.</div>';
+      if (reset) S(feed, { icon: "alert", error: true, title: "The feed could not be loaded", text: "Something went wrong or your connection dropped. Please try again.", actions: [{ label: "Retry", onClick: () => load(true) }] });
+      else toast("Could not load more posts. Please try again.", true);
     } finally {
       if (my === seq) { loading = false; $("cm-more").classList.toggle("hidden", done); }
     }
@@ -58,7 +65,7 @@
   async function loadShared() {
     if (!sharedId || !/^[0-9a-f-]{36}$/i.test(sharedId)) return;
     const { data } = await db.from("posts").select(POST_SELECT).eq("id", sharedId).maybeSingle();
-    if (!data) { $("cm-shared").innerHTML = '<div class="empty">This post is no longer available.</div>'; $("cm-shared-wrap").classList.remove("hidden"); return; }
+    if (!data) { S($("cm-shared"), { icon: "box", title: "This post is no longer available", text: "It may have been deleted or hidden. The latest posts are just below.", actions: [{ label: "Back to the feed", href: "community.html" }] }); $("cm-shared-wrap").classList.remove("hidden"); return; }
     const m = await me(), liked = await likedSet([data.id]);
     $("cm-shared").innerHTML = postCard(data, { me: m, liked });
     $("cm-shared-wrap").classList.remove("hidden");

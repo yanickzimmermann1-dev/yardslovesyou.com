@@ -6,6 +6,7 @@
   $("oa-guard").classList.add("hidden"); $("oa-body").classList.remove("hidden");
 
   const LABEL = { received: "Received", in_progress: "In progress", revision: "Revision", delivered: "Delivered", completed: "Completed" };
+  const S = (el, o) => { if (window.YLYState) window.YLYState.render(el, Object.assign({ compact: true }, o)); else el.textContent = (o.title || "") + " " + (o.text || ""); };
   let orders = [], filter = "open";
   const status = (t, bad) => { const el = $("oa-status"); el.textContent = t; el.classList.toggle("danger", !!bad); };
   const fmt = iso => iso ? new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "-";
@@ -43,13 +44,14 @@
           <button type="button" class="outline" data-a="copy" data-link="${esc(o.status_link)}">Copy status link</button>
         </div>
         <p class="status oa-msg" role="status"></p>
-      </article>`).join("") : '<div class="empty">No orders in this view.</div>';
+      </article>`).join("") : "";
+    if (!list.length) S($("oa-list"), { icon: "box", title: "No orders in this view", text: "Nothing matches this filter right now.", actions: filter === "all" ? [{ label: "Reload", onClick: () => load() }] : [{ label: "Show all orders", onClick: () => { const b = document.querySelector('#oa-filters [data-f="all"]'); if (b) b.click(); } }, { label: "Reload", onClick: () => load() }] });
   }
 
   async function load() {
     status("Loading …");
     try { orders = (await call({ action: "list" })).orders || []; status(""); render(); }
-    catch (e) { status(e.message, true); }
+    catch (e) { status(e.message, true); S($("oa-list"), { icon: "alert", error: true, title: "Orders could not be loaded", text: e.message || "Please try again.", actions: [{ label: "Retry", onClick: () => load() }] }); }
   }
 
   $("oa-filters").addEventListener("click", e => {
@@ -122,12 +124,13 @@
           <button type="button" class="outline" data-r="rejected"${r.status === "rejected" ? " disabled" : ""}>Reject</button>
         </div>
         <p class="status oa-msg" role="status"></p>
-      </article>`).join("") : '<div class="empty">No ' + esc(RV_LABEL[rvFilter].toLowerCase()) + " reviews.</div>";
+      </article>`).join("") : "";
+    if (!list.length) S($("rv-list"), { icon: "star", title: "No " + RV_LABEL[rvFilter].toLowerCase() + " reviews", text: "Nothing to show in this view right now.", actions: [{ label: "Reload", onClick: () => loadReviews() }] });
   }
   async function loadReviews() {
     rvStatus("Loading …");
     try { reviews = (await call({ action: "reviews-list" })).reviews || []; rvLoaded = true; rvStatus(""); rvCount(); renderReviews(); }
-    catch (e) { rvStatus(e.message, true); }
+    catch (e) { rvStatus(e.message, true); S($("rv-list"), { icon: "alert", error: true, title: "Reviews could not be loaded", text: e.message || "Please try again.", actions: [{ label: "Retry", onClick: () => loadReviews() }] }); }
   }
   function tab(name) {
     const rv = name === "reviews";

@@ -1,0 +1,44 @@
+/* nextstep.css – home "entry paths" (three area cards) + "Next step" block before every footer (nextstep.js). */
+.next-step{max-width:1120px;width:calc(100% - 40px);margin-left:auto;margin-right:auto}
+.entry-paths{margin-top:calc(var(--sec-gap,80px) * -.25);margin-bottom:var(--sec-gap,80px)}
+.entry-paths .section-head{margin-bottom:var(--sec-head-gap,24px)}
+.ep-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,22px)}
+.ep-card{position:relative;display:flex;flex-direction:column;gap:10px;padding:clamp(22px,2.6vw,30px);min-height:260px;border-radius:var(--sec-radius,16px);
+  background:linear-gradient(160deg,rgba(var(--ep-rgb),.14),var(--panel,#17131f) 62%);border:1px solid var(--line,#2a2336);
+  box-shadow:inset 0 1px 0 rgba(var(--ep-rgb),.55);color:var(--text,#f3edff);
+  transition:border-color .25s ease,box-shadow .3s ease,transform .3s var(--smooth,ease),background .3s ease}
+.ep-mix{--ep-rgb:182,138,255;--ep-c:#b68aff}
+.ep-shop{--ep-rgb:224,112,255;--ep-c:#e070ff}
+.ep-free{--ep-rgb:95,224,208;--ep-c:#5fe0d0}
+.ep-ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:var(--ep-c);background:rgba(var(--ep-rgb),.14);border:1px solid rgba(var(--ep-rgb),.35)}
+.ep-ico svg{width:24px;height:24px;display:block}
+.ep-card h3{margin:6px 0 0;font:600 var(--h3-size,22px)/1.2 'Space Grotesk';letter-spacing:-.3px}
+.ep-card p{margin:0;color:var(--muted,#a89fbb);font-size:15px;line-height:1.55}
+.ep-go{margin-top:auto;padding-top:8px;display:inline-flex;align-items:center;gap:8px;font:600 14px 'DM Sans';color:var(--ep-c);text-decoration:none}
+.ep-go svg{transition:transform .3s var(--smooth,ease)}
+.ep-go::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:1}
+.ep-go:focus-visible{outline:none}
+.ep-go:focus-visible::after{outline:2px solid var(--ep-c);outline-offset:3px}
+.ep-sub{position:relative;z-index:2;align-self:flex-start;font:600 13px 'DM Sans';color:var(--muted,#a89fbb);text-decoration:underline;text-underline-offset:3px;padding:6px 0}
+.ep-sub:hover,.ep-sub:focus-visible{color:var(--text,#f3edff)}
+@media(hover:hover) and (pointer:fine){
+  .ep-card:hover,.ep-card:focus-within{border-color:rgba(var(--ep-rgb),.6);transform:translateY(-4px);
+    box-shadow:inset 0 1px 0 rgba(var(--ep-rgb),.7),0 22px 50px -22px rgba(var(--ep-rgb),.7),0 0 0 1px rgba(var(--ep-rgb),.12)}
+  .ep-card:hover .ep-go svg{transform:translateX(5px)}
+}
+@media(max-width:860px){.ep-grid{grid-template-columns:1fr}.ep-card{min-height:0}}
+
+/* next step */
+.next-step{margin-top:clamp(48px,7vw,84px);margin-bottom:clamp(28px,4vw,44px)}
+.ns-box{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 28px;padding:clamp(20px,2.4vw,28px);
+  background:linear-gradient(135deg,rgba(var(--area-rgb,182,138,255),.1),var(--panel,#17131f) 65%);
+  border:1px solid var(--line,#2a2336);border-radius:var(--sec-radius,16px);box-shadow:inset 0 1px 0 var(--area-line,rgba(182,138,255,.55))}
+.ns-text{min-width:0;flex:1 1 280px}
+.ns-line{margin:8px 0 0;font:600 var(--h3-size,20px)/1.3 'Space Grotesk';letter-spacing:-.3px}
+.ns-actions{display:flex;flex-wrap:wrap;gap:10px}
+@media(max-width:720px){.ns-actions{flex-direction:column;width:100%}.ns-actions .button,.ns-actions .outline{width:100%}}
+
+/* scroll reveal (only active when nextstep.js adds .ns-rv) */
+.ns-rv{opacity:0;transform:translateY(22px);transition:opacity .7s var(--smooth,ease),transform .7s var(--smooth,ease);transition-delay:calc(var(--i,0) * 90ms)}
+.ns-rv.ns-in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.ns-rv{opacity:1;transform:none;transition:none}.ep-card,.ep-go svg{transition:none}.ep-card:hover{transform:none}}

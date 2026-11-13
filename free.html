@@ -25,8 +25,9 @@
   <link rel="preload" href="font-spacegrotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://kmekgjllklwrxizqbrac.supabase.co" crossorigin>
   <link rel="dns-prefetch" href="https://kmekgjllklwrxizqbrac.supabase.co">
-  <link rel="stylesheet" href="styles.css?v=20261113m">
-  <link rel="stylesheet" href="cart.css?v=20261113m">
+  <link rel="stylesheet" href="styles.css?v=20261113q">
+  <link rel="stylesheet" href="states.css?v=20261113q">
+  <link rel="stylesheet" href="cart.css?v=20261113q">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <style>@media(min-width:901px){.free-nav{grid-template-columns:repeat(3,minmax(0,1fr))}}</style>
   <script src="fx-gate.js?v=20261113g"></script>
@@ -35,8 +36,11 @@
   <link rel="stylesheet" href="skeleton.css?v=20261113j">
   <link rel="stylesheet" href="footerword.css?v=20261113l">
   <link rel="stylesheet" href="uisound.css?v=20261113m">
+  <link rel="stylesheet" href="sections.css?v=20261113q">
+  <link rel="stylesheet" href="thread.css?v=20261113r">
+  <link rel="stylesheet" href="nextstep.css?v=20261113r">
 </head>
-<body>
+<body data-area="free">
 
   <header class="topbar">
     <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
@@ -52,7 +56,7 @@
   <main class="wrap">
 
     <section class="hero compact">
-      <p class="eyebrow">FREE FOR PRODUCERS</p>
+      <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>FREE FOR PRODUCERS</p>
       <h1>Free tools &amp; sounds, <span>no strings attached.</span></h1>
       <p class="muted">Check your mix in seconds, get a fresh sound every month and grab a free percussion kit.</p>
     </section>
@@ -69,7 +73,7 @@
     <!-- ================= MIX CHECK ================= -->
     <section class="mc" id="mix-check" aria-labelledby="mc-title">
       <div class="mc-head">
-        <p class="eyebrow">FREE TOOL</p>
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>FREE TOOL</p>
         <h2 id="mc-title">Mix Check</h2>
         <p class="muted">Drop your track and get an instant check of loudness, peaks, dynamics, tonal balance and stereo image.</p>
       </div>
@@ -141,7 +145,7 @@
     <!-- ================= SOUND DROP ================= -->
     <section class="drop" id="sound-drop" aria-labelledby="drop-title">
       <div class="drop-info">
-        <p class="eyebrow">MONTHLY SOUND DROP</p>
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>MONTHLY SOUND DROP</p>
         <h2 id="drop-title">A free sound, every month.</h2>
         <p class="muted" id="drop-desc">Sign up once and get a fresh, royalty-free sound from YARDSLOVESYOU in your inbox every month – starting with this month's drop.</p>
         <div class="drop-preview hidden" id="drop-preview">
@@ -168,7 +172,7 @@
     <!-- ================= FREE KIT ================= -->
     <section class="free-kit" id="free-kit" aria-labelledby="free-kit-title">
       <div class="free-kit-text">
-        <p class="eyebrow">FREE DOWNLOAD</p>
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>FREE DOWNLOAD</p>
         <h2 id="free-kit-title">Essentials Lite</h2>
         <p class="muted">20 hand-crafted percussion one-shots, straight from Essentials. 100% royalty-free. Enter your email and the download link lands in your inbox.</p>
       </div>
@@ -204,14 +208,18 @@
     </nav>
   </footer>
 
+  <script defer src="states.js?v=20261113q"></script>
+
   <script defer src="config.js"></script>
   <script defer src="mixcheck.js"></script>
-  <script defer src="free.js"></script>
-  <script src="cart.js?v=20261113h" defer></script>
+  <script defer src="free.js?v=20261113q"></script>
+  <script src="cart.js?v=20261113q" defer></script>
   <script src="nav.js" defer></script>
   <script src="fx.js?v=20261113g" defer></script>
   <script src="uisound.js?v=20261113m" defer></script>
   <script src="motion.js?v=20261113l" defer></script>
+  <script src="thread.js?v=20261113r" defer></script>
+  <script src="nextstep.js?v=20261113r" defer></script>
   <script src="cursor.js?v=20261113n" defer></script>
   <script src="reveal.js?v=20261113j" defer></script>
   <script src="footerword.js?v=20261113l" defer></script>
