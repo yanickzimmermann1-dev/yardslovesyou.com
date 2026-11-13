@@ -1956,3 +1956,12 @@ footer.site-footer .footer-social svg{display:block;width:22px;height:22px}
 /* Shop: quadratische Produktbilder (wie im UI-Entwurf) */
 .product-grid .product .cover{height:auto;aspect-ratio:1/1}
 .product-grid .product .cover img{width:100%;height:100%;object-fit:cover}
+
+/* Shop: Produkte ohne Karte – Produkt schwebt, Text darunter, kein Glow beim Hover */
+.product-grid .product{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transform:none!important}
+.product-grid .product::before,.product-grid .product::after{display:none!important}
+.product-grid .product:hover{background:none!important;border:0!important;box-shadow:none!important}
+.product-grid .product .cover{background:none!important;border:0!important;box-shadow:none!important}
+.product-grid .product .cover::before,.product-grid .product .cover::after{display:none!important}
+.product-grid .product:hover .cover img{transform:none!important}
+.product-grid .product .p3d-glow{display:none!important}
