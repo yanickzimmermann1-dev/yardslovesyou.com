@@ -70,7 +70,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
     return items;
   };
 
-  const id=new URLSearchParams(location.search).get("id");
+  const id=new URLSearchParams(location.search).get("id")||document.body.dataset.productId;
   if(!id) return fail("Product not found.");
 
   // 3D-Modell (Spalte model3d, jsonb): nur gültig mit Typ + Front-Textur
@@ -80,7 +80,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
   };
   const CUBE='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5"/><path d="M12 12v9"/></svg>';
 
-  root.innerHTML='<section class="product-detail sk-pd" aria-hidden="true"><div class="pd-media"><div class="pd-main sk"></div></div><div class="pd-info"><div class="sk sk-line w40"></div><div class="sk sk-h1"></div><div class="sk sk-line"></div><div class="sk sk-line w80"></div><div class="sk sk-line w60"></div><div class="sk sk-btn" style="margin-top:18px"></div></div></section>';
+  if(!root.querySelector("[data-static]")) root.innerHTML='<section class="product-detail sk-pd" aria-hidden="true"><div class="pd-media"><div class="pd-main sk"></div></div><div class="pd-info"><div class="sk sk-line w40"></div><div class="sk sk-h1"></div><div class="sk sk-line"></div><div class="sk sk-line w80"></div><div class="sk sk-line w60"></div><div class="sk sk-btn" style="margin-top:18px"></div></div></section>';
   async function load(){
     // select("*"): neue Spalten (badge, specs, preview_tracks …) werden automatisch mitgeladen
     const {data:p,error}=await db.from("shop_products").select("*").eq("id",id).eq("published",true).maybeSingle();
@@ -307,7 +307,8 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
   // SEO: Beschreibung, Canonical, Teilen-Vorschau und Produktdaten für Google
   function setSeo(p,images){
     images=images.map(u=>{ try{ return new URL(u,location.href).href; }catch(_){ return u; } }); // gespiegelte media/-Pfade -> absolut
-    const url=`https://yardslovesyou.com/product.html?id=${encodeURIComponent(p.id)}`;
+    const slug=window.YLYProducts&&YLYProducts.slugs[p.id];
+    const url=slug?`https://yardslovesyou.com/${slug}.html`:`https://yardslovesyou.com/product.html?id=${encodeURIComponent(p.id)}`;
     let desc=String(p.description||"Digital download as ZIP file.").replace(/\s+/g," ").trim();
     if(desc.length>155){desc=desc.slice(0,155);const sp=desc.lastIndexOf(" ");if(sp>100)desc=desc.slice(0,sp);desc=desc.replace(/[\s,.;:\-]+$/,"")+"…";}
     const meta=(attr,key,val)=>{
@@ -337,6 +338,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
       "name":p.title,
       "description":desc,
       "image":images,
+      "sku":p.id,
       "url":url,
       "brand":{"@type":"Brand","name":"YARDSLOVESYOU"},
       "offers":{

@@ -57,6 +57,7 @@
 
   /* ---------- eye buttons ---------- */
   const idOf = card => {
+    if (card.dataset && card.dataset.pid) return card.dataset.pid;
     const a = card.querySelector('a.product-link[href*="id="]') || card.querySelector('a[href*="product.html"]');
     if (!a) return null;
     try { return new URL(a.getAttribute("href"), location.href).searchParams.get("id"); } catch (_) { return null; }
@@ -146,7 +147,7 @@
     if (!p) { body.innerHTML = '<div class="qv-load">This product could not be loaded.</div>'; return; }
     track("quickview-open", { id: String(id) });
     ctl = new AbortController();
-    const m = model(p), href = "product.html?id=" + encodeURIComponent(p.id);
+    const m = model(p), href = window.YLYProducts ? YLYProducts.url(p.id) : "product.html?id=" + encodeURIComponent(p.id);
     const desc = String(p.description || "Digital download as ZIP file.").replace(/\s+/g, " ").trim();
     const short = desc.length > 220 ? desc.slice(0, 220).replace(/\s+\S*$/, "") + "…" : desc;
     const cur = String(p.currency || cfg.CURRENCY || "chf").toLowerCase();

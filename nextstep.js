@@ -31,6 +31,7 @@
     function track(from, to) { try { window.ylyTrack && window.ylyTrack('nextstep-click', { from: from, to: to }); } catch (e) {} }
 
     var page = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '') || 'index';
+    if (body.hasAttribute('data-product-id')) page = 'product';
 
     // entry cards on home
     var ep = doc.querySelector('.entry-paths');
@@ -96,7 +97,7 @@
       var apply = function () {
         if (done || !pr) return;
         var guide = !!doc.getElementById('guide-root');
-        if (!guide && !pr.querySelector('h1')) return;
+        if (!guide && !pr.querySelector('#add-cart-btn')) return;
         done = true;
         var c = guide ? { line: 'Train your ears with the free Ear Trainer.', btns: [['Open the Ear Trainer', 'eartrainer.html'], SHOP] }
                       : { line: 'Make loops with these sounds in the Perc Lab.', btns: [['Open the Perc Lab', 'beatlab.html'], SHOP] };

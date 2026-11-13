@@ -7,7 +7,7 @@
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const DISMISS = "yly_perclab_upsell_dismiss", SHOWN = "yly_perclab_upsell_shown", WEEK = 7 * 864e5;
   let p = null, nudge = null, gens = 0, viewed = false, handle = null;
-  const link = `product.html?id=${encodeURIComponent(PID)}`;
+  const link = window.YLYProducts ? YLYProducts.url(PID) : `product.html?id=${encodeURIComponent(PID)}`;
   const inCart = () => { try { return !!(window.ylyCart && window.ylyCart.has(PID)); } catch (_) { return false; } };
   const money = (c, cur) => (c / 100).toLocaleString("de-CH", { style: "currency", currency: String(cur || cfg.CURRENCY || "CHF").toUpperCase() });
   const model = () => {

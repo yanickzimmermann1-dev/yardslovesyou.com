@@ -8,7 +8,7 @@
   const db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const img=u=>{ const r=/^https:\/\//i.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl; return window.YLYMedia?YLYMedia.url(r):r; };
-  const link=id=>`product.html?id=${encodeURIComponent(id)}`;
+  const link=id=>window.YLYProducts?YLYProducts.url(id):`product.html?id=${encodeURIComponent(id)}`;
   const money=(cents,cur)=>(cents/100).toLocaleString("de-CH",{style:"currency",currency:String(cur||cfg.CURRENCY||"CHF").toUpperCase()});
 
   // Preis, optional mit durchgestrichenem Originalpreis (nur wenn höher als der aktuelle Preis)
@@ -41,7 +41,7 @@
   };
 
   const card=p=>`
-      <article class="product">
+      <article class="product" data-pid="${esc(p.id)}">
         <a class="product-link cover-link" href="${link(p.id)}" aria-label="${esc(p.title)}">
           <div class="cover"${model(p)?` data-p3d="${esc(p.id)}"`:""}>
             ${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" width="600" height="600" class="bu" loading="lazy" decoding="async">`:esc(p.cover_emoji||"")}

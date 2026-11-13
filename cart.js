@@ -179,7 +179,7 @@ var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
       var i = r.item;
       var price = c.bundle ? '<s>' + money(i.price_cents, i.currency) + '</s><span class="off">' + money(r.unit, i.currency) + '</span>' : '<span>' + money(i.price_cents, i.currency) + '</span>';
       return '<li class="cart-item">' + thumb(i) +
-        '<div class="cart-info"><a href="product.html?id=' + encodeURIComponent(i.id) + '">' + esc(i.title) + '</a><div class="cart-price">' + price + '</div></div>' +
+        '<div class="cart-info"><a href="' + esc(window.YLYProducts ? window.YLYProducts.url(i.id) : 'product.html?id=' + encodeURIComponent(i.id)) + '">' + esc(i.title) + '</a><div class="cart-price">' + price + '</div></div>' +
         '<button type="button" class="cart-rm" data-cart-rm="' + esc(i.id) + '" aria-label="Remove ' + esc(i.title) + ' from cart">' + I.trash + '</button></li>';
     }).join('');
     renderPromo();
