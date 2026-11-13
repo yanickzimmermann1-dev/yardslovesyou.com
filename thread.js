@@ -1,9 +1,9 @@
 /* thread.js – "the red thread": one thin, glowing purple line that runs down the left gutter of every page,
    weaves in soft S-curves, draws itself with the scroll (stroke-dashoffset), ends in a glowing tip and makes a node at each section eyebrow.
    Home: starts at the left end of the hero wave line and ends at the footer wordmark. Tinted by body[data-area] via CSS (thread.css).
-   Home: the line leaves the hero wave's left end (fillet into the gutter) and the segment down to the FIRST node keeps moving like the wave
+   Home: the line leaves the hero wave (one big cubic arc, hero.js hands the wave's left end over at x = window.__hxCut) and the segment down to the FIRST node keeps moving like the wave
    (damped to exactly still at node 1, only that segment is rewritten per frame, loop runs only while it is on screen); everything after is static.
-   One SVG, two path pairs (A animated, B static) + glow duplicates + one faint ghost route. Reduced motion: fully drawn, static, connected.
+   One SVG, two path pairs (A animated, B static) + glow duplicates; NO preview/ghost route (the thread only exists where it has been drawn). Reduced motion: fully drawn, static, connected.
    Never throws into the page. */
 (function () {
   'use strict';
@@ -18,11 +18,11 @@
     var host = doc.createElement('div'); host.className = 'thread'; host.setAttribute('aria-hidden', 'true'); host.hidden = true;
     var svg = doc.createElementNS(NS, 'svg');
     function mk(tag, cls, par) { var n = doc.createElementNS(NS, tag); if (cls) n.setAttribute('class', cls); (par || svg).appendChild(n); return n; }
-    var ghost = mk('path', 'th-ghost');
     /* two path pairs share ONE group opacity each (no doubled alpha where they meet): A = hero→first node (animated, home only), B = rest (static) */
     var glowG = mk('g', 'th-glows'), lineG = mk('g', 'th-lines');
     var glowA = mk('path', 'th-glow', glowG), glowB = mk('path', 'th-glow', glowG);
     var lineA = mk('path', 'th-line', lineG), lineB = mk('path', 'th-line', lineG);
+    glowA.style.strokeLinecap = lineA.style.strokeLinecap = 'butt';   /* A abuts the hero wave exactly at the junction: no overlapping round caps (double alpha) */
     [glowA, glowB, lineA, lineB].forEach(function (p) { p.setAttribute('pathLength', '1000'); p.style.strokeDasharray = '1000 1000'; });
     var nodesG = mk('g', 'th-nodes');
     var halo = mk('circle', 'th-halo'); halo.setAttribute('r', '7');
@@ -32,7 +32,7 @@
     var xs = [], ys = [], cum = [], total = 1, nodes = [];
     var W = 0, H = 0, gx = 12, amp = 2, startY = 0, endY = 0, ok = false, frac = 0, raf = 0, wlG = 40;
     /* segment A (generated per frame): static points, arclength, unit normals, current (animated) points */
-    var seg = null, LA = 0, arcLen = 0, aMax = 8, tA = 0, lastFr = 0, velA = 0, lastSY = 0, pOn = false, pAct = 0, mx = -1e4, my = -1e4, lastD = '';
+    var seg = null, LA = 0, arcLen = 0, arcEy = 0, aMax = 8, tA = 0, spA = 0.45, lastFr = 0, velA = 0, lastSY = 0, pOn = false, pAct = 0, mx = -1e4, my = -1e4, lastD = '';
     var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
     var smooth = function (u) { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); };
     var sy = function () { return win.pageYOffset || 0; };
@@ -69,7 +69,7 @@
       var wave = doc.querySelector('.hx-wave'), startX = null;
       if (wave) {
         var wr = wave.getBoundingClientRect();
-        startY = wr.top + scrollY + wr.height / 2; startX = Math.round(wr.left);
+        startY = wr.top + scrollY + wr.height / 2; startX = wr.left;
       } else startY = Math.max(96, (picked.length ? picked[0] : 140) - 70);
       var fw = doc.querySelector('.fw-wrap') || doc.querySelector('.site-footer'), fr = fw ? fw.getBoundingClientRect() : null;
       endY = fr ? fr.top + scrollY + (fw.classList.contains('fw-wrap') ? Math.max(fr.height, 40) * 0.5 : 36) : H - 60;
@@ -82,15 +82,39 @@
 
       // sample the route (monotone in y). With the hero wave: a fillet leaves the wave's left end heading left, turns down into the gutter.
       xs = []; ys = []; cum = [];
-      var step = 14, y, u, x, w, eb, c = 0, y0 = startY, x0 = startX, R = 0, j;
+      var step = 14, y, u, x, w, eb, c = 0, y0 = startY, x0 = startX, arcEy = 0;
       function push(px, py) { if (xs.length) c += Math.hypot(px - xs[xs.length - 1], py - ys[ys.length - 1]); xs.push(px); ys.push(py); cum.push(c); }
       arcLen = 0;
       if (startX !== null) {
-        R = Math.min(small ? 12 : 22, Math.max(0, startX - 4));
-        if (R >= 6) {
-          for (j = 0; j <= 8; j++) { var th = j / 8 * Math.PI / 2; push(startX - R * Math.sin(th), startY + R * (1 - Math.cos(th))); }
-          arcLen = c; y0 = startY + R; x0 = startX - R;
-        } else { push(startX, startY); R = 0; }
+        /* ONE cubic Bezier from the wave (heading left, flat) into the gutter (heading down): generous radius, starts early along the wave.
+           hero.js draws the wave from x = cut rightwards, so wave and arc share exactly one point + tangent. */
+        var vw2 = vw, Rt = small ? clamp(vw2 * 0.17, 56, 90) : clamp(vw2 * 0.15, 120, 190);
+        var ex = Math.min(Rt * 1.05, Math.max(30, W * 0.4)), ey = Rt, ax0 = gx + ex, h1 = ex * 0.78, h2, ok2 = false, k, tt, bx, by, mu = doc.querySelector('.hero .muted');
+        var limY = mu ? mu.getBoundingClientRect().top + scrollY - 10 : 1e9;
+        /* keep the bend clear of the subline: where the gutter is narrow (<= ~1100px) the drop is limited to what fits above it,
+           the curve then stays a long, gentle sweep (rx >> ry); with room (wide screens) it is the full round arc */
+        for (; ; ey = Math.max(44, ey * 0.88)) {
+          for (h2 = ey * 0.55; h2 >= ey * 0.2; h2 -= ey * 0.05) {
+            ok2 = true;
+            for (k = 1; k <= 28; k++) {
+              tt = k / 28; var mt = 1 - tt;
+              bx = mt * mt * mt * ax0 + 3 * mt * mt * tt * (ax0 - h1) + 3 * mt * tt * tt * gx + tt * tt * tt * gx;
+              by = mt * mt * mt * startY + 3 * mt * mt * tt * startY + 3 * mt * tt * tt * (startY + ey - h2) + tt * tt * tt * (startY + ey);
+              if (bx > wl + 3 && by > limY) { ok2 = false; break; }
+            }
+            if (ok2) break;
+          }
+          if (ok2 || ey <= 44) break;
+        }
+        if (!ok2) h2 = ey * 0.2;
+        for (k = 0; k <= 28; k++) {
+          tt = k / 28; var mt2 = 1 - tt;
+          push(mt2 * mt2 * mt2 * ax0 + 3 * mt2 * mt2 * tt * (ax0 - h1) + 3 * mt2 * tt * tt * gx + tt * tt * tt * gx,
+               mt2 * mt2 * mt2 * startY + 3 * mt2 * mt2 * tt * startY + 3 * mt2 * tt * tt * (startY + ey - h2) + tt * tt * tt * (startY + ey));
+        }
+        arcLen = c; y0 = startY + ey; x0 = gx; arcEy = ey;
+        var cutNow = ax0 - startX;
+        if (Math.abs((win.__hxCut || 0) - cutNow) > 0.4) { win.__hxCut = cutNow; try { win.dispatchEvent(new Event('hx-cut')); } catch (e2) {} }
       }
       for (y = (xs.length ? y0 + step : startY); ; y += step) {
         if (y > endY) y = endY;
@@ -107,7 +131,7 @@
       while (nodesG.firstChild) nodesG.removeChild(nodesG.firstChild);
       nodes = [];
       for (i = 0; i < picked.length; i++) {
-        y = picked[i]; if (y < startY + 20 || y > endY - 20) continue;
+        y = picked[i]; if (y < startY + arcEy + 24 || y > endY - 20) continue;
         x = xAt(y);
         var g = mk('g', 'th-node', nodesG);
         var tick = mk('line', 'th-tick', g), ring = mk('circle', 'th-ring', g), dot = mk('circle', 'th-dot', g);
@@ -135,7 +159,7 @@
         if (m >= 3 && ps[m - 1] > 30) {
           LA = ps[m - 1];
           seg = { px: px, py: py, s: ps, nx: nx, ny: ny, cx: px.slice(), cy: py.slice(), n: m };
-          aMax = clamp(Math.min(gx - 5, wl - gx - r - 6), 3, small ? 7 : 20);
+          aMax = clamp(Math.min(gx - 5, wl - gx - r - 6), 2, small ? 3.5 : 9);
           var dB = 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1);
           for (i = n; i < xs.length; i++) dB += 'L' + xs[i].toFixed(1) + ' ' + ys[i].toFixed(1);
           glowB.setAttribute('d', dB); lineB.setAttribute('d', dB);
@@ -146,7 +170,6 @@
         var dW = pathD(); glowB.setAttribute('d', dW); lineB.setAttribute('d', dW);
         glowA.setAttribute('d', ''); lineA.setAttribute('d', '');
       }
-      ghost.setAttribute('d', pathD());
     }
 
     function xAt(y) {
@@ -171,17 +194,17 @@
        A short ramp-in (first ~50px) keeps it glued to the wave's end (the wave itself has zero amplitude there). */
     function drawA(t, act) {
       if (!seg) return;
-      var n = seg.n, i, s, env, k, a, dx, xx, yy, near, sp = 0.9 + Math.min(4, Math.abs(velA) * 0.12), d = '';
+      var n = seg.n, i, s, env, k, a, dx, xx, yy, near, d = '';
       var vAmp = clamp(Math.abs(velA) / 28, 0, 1), sc = sy();
       var maxX = wlG - 4;
       for (i = 0; i < n; i++) {
         s = seg.s[i];
-        env = (1 - smooth(s / LA)) * smooth(s / 50);
+        env = (1 - smooth(s / LA)) * smooth((s - arcLen * 0.7) / (arcLen * 0.5 + 60));   /* arc itself stays put, motion fades in below it */
         xx = seg.px[i]; yy = seg.py[i];
         if (env > 0 && act > 0) {
           near = pAct > 0.01 ? pAct * Math.exp(-Math.pow((xx - mx) / 200, 2)) * Math.exp(-Math.pow((yy - (my + sc)) / 200, 2)) : 0;
-          k = Math.sin(s * 0.012 + t * sp) * 0.55 + Math.sin(s * 0.028 - t * sp * 1.7) * 0.3 + Math.sin(s * 0.06 + t * sp * 2.6) * 0.15 * (0.4 + 0.6 * Math.abs(Math.sin(s * 0.006 + t * 0.7)));
-          a = aMax * (0.5 + 0.5 * clamp(vAmp * 1.3 + near, 0, 1)) * env * act;
+          k = Math.sin(s * 0.012 + t) * 0.55 + Math.sin(s * 0.028 - t * 1.7) * 0.3 + Math.sin(s * 0.06 + t * 2.6) * 0.15 * (0.4 + 0.6 * Math.abs(Math.sin(s * 0.006 + t * 0.7)));
+          a = aMax * (0.7 + 0.3 * clamp(vAmp * 0.6 + near * 0.5, 0, 1)) * env * act;
           dx = a * k;
           xx += seg.nx[i] * dx; yy += seg.ny[i] * dx;
           if (s > arcLen) xx = clamp(xx, 3, maxX);
@@ -239,9 +262,9 @@
       var sc = sy(), vis = segVisible();
       var dt = lastFr ? Math.min(0.05, (now - lastFr) / 1000) : 0.016; lastFr = now;
       if (vis) {
-        tA += dt;
-        velA += ((sc - lastSY) / Math.max(dt, 0.008) / 60 - velA) * 0.18;
-        pAct += ((pOn ? 1 : 0) - pAct) * (1 - Math.exp(-dt * 5));
+        spA += ((0.45 + Math.min(1.2, Math.abs(velA) * 0.03)) - spA) * (1 - Math.exp(-dt * 1.5)); tA += dt * spA;
+        velA += ((sc - lastSY) / Math.max(dt, 0.008) / 60 - velA) * 0.06;
+        pAct += ((pOn ? 1 : 0) - pAct) * (1 - Math.exp(-dt * 2));
         drawA(tA, 1);
       }
       lastSY = sc;

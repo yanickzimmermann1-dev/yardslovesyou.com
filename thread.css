@@ -7,7 +7,6 @@
 .thread .th-lines{opacity:.85}
 .thread .th-glows{opacity:.16}
 .thread .th-glow{fill:none;stroke:var(--thread-c);stroke-width:7px;stroke-linecap:round;stroke-linejoin:round}
-.thread .th-ghost{fill:none;stroke:var(--thread-c);stroke-width:1px;opacity:.1;stroke-linecap:round}
 .thread .th-ring{fill:#0d0b12;stroke:var(--thread-c);stroke-width:1.5;opacity:.35;transition:opacity .5s ease}
 .thread .th-dot{fill:var(--thread-c);opacity:0;transition:opacity .5s ease}
 .thread .th-tick{stroke:var(--thread-c);stroke-width:1;stroke-linecap:round;opacity:0;transition:opacity .5s ease}
