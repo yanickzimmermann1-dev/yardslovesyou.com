@@ -48,8 +48,10 @@
     }
 
     /* ---------- Rendering ---------- */
+    var lastT = 0;
     function render(force) {
       raf = 0;
+      var nowT = win.performance ? performance.now() : 0, dt = lastT && nowT - lastT < 120 ? Math.max(0.004, (nowT - lastT) / 1000) : 0.016; lastT = nowT;
       if (!cards.length) return;
       var y = win.pageYOffset || 0, more = false, i, s, c, tv, e, k, dir, small = mqM.matches, key;
       var fresh = arrived && (win.performance ? performance.now() - T0 : 0) < 3000;
@@ -65,7 +67,7 @@
         }
         if (s.locked) { if (tv - c.offsetHeight / 2 > vh) s.locked = false; else s.tgt = 1; }
         if (force || Math.abs(tv) > vh * 2.2) s.p = s.tgt;      // far away or first paint: no easing
-        else { s.p += (s.tgt - s.p) * 0.2; if (Math.abs(s.tgt - s.p) < 0.002) s.p = s.tgt; }
+        else { s.p += (s.tgt - s.p) * (1 - Math.exp(-dt * 14)); if (Math.abs(s.tgt - s.p) < 0.001) s.p = s.tgt; }
         if (s.p !== s.tgt) more = true;
         e = smooth(s.p); k = 1 - e;
         if (k < 0.003) { if (s.key !== 'f') { s.key = 'f'; clear(c); } continue; }
@@ -78,7 +80,7 @@
         c.style.opacity = (0.2 + 0.8 * e).toFixed(3);
         c.style.filter = k > 0.04 ? 'blur(' + (3 * k).toFixed(2) + 'px)' : '';
       }
-      if (more) raf = requestAnimationFrame(function () { render(false); });
+      if (more) raf = requestAnimationFrame(function () { render(false); }); else lastT = 0;
     }
     function schedule() { if (!raf) raf = requestAnimationFrame(function () { render(false); }); }
 

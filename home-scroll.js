@@ -107,20 +107,30 @@
       if (waveEl && cvEl) { waveEl.classList.add('hs-wave'); waveEl.style.setProperty('--hs-r', '-16'); cvEl.style.transform = 'scaleY(.35)'; watch(waveEl); }
       watch(card); measure(); schedule();
     }
-    function hearFrame(now) {
+    var hp = 0, hTgt = 0, hKey = '', hInit = false, hRel = 0, hLast = 0;
+    function hearFrame(now, dt) {
       var more = false;
       if (!card) return false;
-      if (isNear(card) || !tiltDone) {
-        var p = clamp((vh * 0.95 - (G.cardTop - y)) / (vh * 0.5), 0, 1), e = ease(p);
-        if (e >= 0.999) {
-          if (!tiltDone) { card.style.transform = ''; card.style.opacity = ''; setLive(card, false); tiltDone = true; }
-        } else {
-          tiltDone = false; setLive(card, true);
-          card.style.transform = 'perspective(1100px) translate3d(0,' + ((1 - e) * 30).toFixed(1) + 'px,' + (-70 * (1 - e)).toFixed(1) + 'px) rotateX(' + (18 * (1 - e)).toFixed(2) + 'deg) scale(' + (0.92 + 0.08 * e).toFixed(3) + ')';
-          card.style.opacity = (0.15 + 0.85 * e).toFixed(3);
+      /* Einziger Schreiber der Karte. Ziel aus dem UNtransformierten Dokument-Offset (G.cardTop = offsetTop-Summe),
+         der angezeigte Wert folgt dem Ziel zeitbasiert (exponentiell) und rastet bei |delta| < 0.001 ein. */
+      hTgt = clamp((vh * 0.95 - (G.cardTop - y)) / (vh * 0.5), 0, 1);
+      if (!hInit) { hInit = true; hp = hTgt; }
+      var d = hTgt - hp;
+      if (Math.abs(d) < 0.001) hp = hTgt; else { hp += d * (1 - Math.exp(-Math.max(dt, 0.001) * 16)); more = true; }
+      var e = ease(hp);
+      if (e >= 0.999 && hTgt >= 0.995) {                    /* Ruhezustand: Hysterese gegen Flackern an der Schwelle */
+        if (!tiltDone) {
+          tiltDone = true; hKey = '';
+          card.style.transform = ''; card.style.opacity = '';
+          clearTimeout(hRel); hRel = setTimeout(function () { if (tiltDone) setLive(card, false); }, 180);
         }
+      } else if (e < 0.999) {
+        if (tiltDone) { tiltDone = false; clearTimeout(hRel); }
+        setLive(card, true);
+        var tr = 'perspective(1100px) translate3d(0,' + ((1 - e) * 30).toFixed(2) + 'px,' + (-70 * (1 - e)).toFixed(2) + 'px) rotateX(' + (18 * (1 - e)).toFixed(3) + 'deg) scale(' + (0.92 + 0.08 * e).toFixed(3) + ')';
+        if (tr !== hKey) { hKey = tr; card.style.transform = tr; card.style.opacity = (0.15 + 0.85 * e).toFixed(3); }
       }
-      if (waveState === 0 && waveEl && isNear(waveEl) && waveEl.getBoundingClientRect().top < vh * 0.85) { waveState = 1; waveT0 = now; }
+      if (waveState === 0 && waveEl && isNear(waveEl) && G.waveTop - y < vh * 0.85) { waveState = 1; waveT0 = now; }
       if (waveState === 1) {
         var q = clamp((now - waveT0) / 1300, 0, 1), s = smooth(q);
         waveEl.style.setProperty('--hs-r', (-16 + 116 * s).toFixed(1));
@@ -219,7 +229,7 @@
         var wr = $('.wrap'); var wrR = wr ? wr.getBoundingClientRect().right : vw - 20;
         G.tx = Math.min(vw - 14 - 80 * G.sl, wrR - 80 * G.sl - 6); G.ty0 = (vw / vh >= 1.15 ? 10 : -22) + 74 * G.sl;
       }
-      if (card) G.cardTop = rect0(card);
+      if (card) { G.cardTop = rect0(card); if (waveEl) G.waveTop = rect0(waveEl); }
       if (stackOn) {
         G.stackTop = rect0(stackEl); G.range = Math.max(1, stackEl.offsetHeight - pinEl.offsetHeight);
         slots = cards.map(function (c) { return { x: c.offsetLeft + c.offsetWidth / 2, y: c.offsetTop + c.offsetHeight / 2 }; });
@@ -239,7 +249,7 @@
       try {
         if (!reduce) {
           if (heroFrame(dt, dy)) more = true;
-          if (hearFrame(now)) more = true;
+          if (hearFrame(now, dt)) more = true;
           stackFrame();
           mobileFrame();
         }
@@ -260,7 +270,6 @@
           es.forEach(function (en) {
             near.set(en.target, en.isIntersecting);
             if (en.target === gemEl) gemVisible = en.isIntersecting;
-            if (en.target === card) setLive(card, en.isIntersecting && !tiltDone);
           });
           schedule();
         }, { rootMargin: '25% 0px 25% 0px', threshold: 0 });
