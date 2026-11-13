@@ -1952,3 +1952,7 @@ footer.site-footer .footer-social svg{display:block;width:22px;height:22px}
 .outline:active{box-shadow:inset 0 0 14px rgba(182,138,255,.4)}
 .button:disabled::after{display:none}
 @media(prefers-reduced-motion:reduce){.button:hover::after{animation:none}}
+
+/* Shop: quadratische Produktbilder (wie im UI-Entwurf) */
+.product-grid .product .cover{height:auto;aspect-ratio:1/1}
+.product-grid .product .cover img{width:100%;height:100%;object-fit:cover}
