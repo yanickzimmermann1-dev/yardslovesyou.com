@@ -17,19 +17,20 @@
     var y = 0, vel = 0, lastY = win.pageYOffset || 0;
     var px = 0, py = 0, cx = 0, cy = 0, pOn = false, pAct = 0, mx = -1e4, my = -1e4;   // pointer: normalised, smoothed, active level, client px
     var rx = 0, ry = 0, spot = 0;
-    var W = 1000, H = 200, hh = 600, N = 80, keyV = '';
+    var W = 1000, H = 200, hh = 600, N = 80, keyV = '', sL = 0, sTopDoc = 0, glow = null;
+    if (path) { glow = path.cloneNode(false); glow.setAttribute('class', 'hx-glow'); glow.removeAttribute('d'); path.parentNode.insertBefore(glow, path); }
 
     function measure() {
       var r = hero.getBoundingClientRect();
       hh = Math.max(300, hero.offsetHeight);
-      if (svg) { var sr = svg.getBoundingClientRect(); W = Math.max(200, Math.round(sr.width)); H = Math.max(60, Math.round(sr.height)); N = clamp(Math.round(W / 9), 40, 140); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); }
+      if (svg) { var sr = svg.getBoundingClientRect(); W = Math.max(200, Math.round(sr.width)); H = Math.max(60, Math.round(sr.height)); N = clamp(Math.round(W / 9), 40, 140); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); sL = sr.left; sTopDoc = sr.top + (win.pageYOffset || 0); }
     }
 
     /* ---- wave path ---- */
     function drawWave(now, amp) {
       if (!path) return;
-      var sr = svg.getBoundingClientRect(), d = '', i, x, u, env, a, yy, near = 0, k;
-      var pxl = mx - sr.left, pyl = my - sr.top;
+      var d = '', i, x, u, env, a, yy, near = 0, k;
+      var pxl = mx - sL, pyl = my - (sTopDoc - (win.pageYOffset || 0));   // cached layout (measure()), no per-frame layout read
       var base = H * (mqM.matches ? 0.1 : 0.12), sp = 0.9 + Math.min(4, Math.abs(vel) * 0.12);
       for (i = 0; i <= N; i++) {
         u = i / N; x = u * W;
@@ -40,7 +41,7 @@
         yy = H / 2 + a * k;
         d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + yy.toFixed(1);
       }
-      path.setAttribute('d', d);
+      path.setAttribute('d', d); if (glow) glow.setAttribute('d', d);
     }
 
     /* ---- frame ---- */

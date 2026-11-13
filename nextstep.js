@@ -12,9 +12,16 @@
     function reveal(els) {
       if (reduce || !window.IntersectionObserver) return;
       io = io || new IntersectionObserver(function (es) {
-        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('ns-in'); io.unobserve(e.target); } });
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var el = e.target; el.classList.add('ns-in'); io.unobserve(el);
+          /* One-shot reveal: when it has finished, drop the reveal classes so the element's own CSS (hover lift) is the only
+             writer of transform/transition from then on (the reveal transition + stagger delay used to leak into :hover). */
+          setTimeout(function () { el.classList.remove('ns-rv', 'ns-in'); el.style.removeProperty('--i'); }, 700 + (+el.style.getPropertyValue('--i') || 0) * 90 + 160);
+        });
       }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
       els.forEach(function (el, i) {
+        if (el.classList.contains('rv') || el.matches('.section-head,[data-hs]')) return;   /* motion.js owns these reveals (no second writer) */
         var r = el.getBoundingClientRect();
         if (arrived && performance.now() - T0 < 3000 && r.bottom > 0 && r.top < window.innerHeight) return;
         el.style.setProperty('--i', i);

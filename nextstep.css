@@ -7,6 +7,7 @@
   background:linear-gradient(160deg,rgba(var(--ep-rgb),.14),var(--panel,#17131f) 62%);border:1px solid var(--line,#2a2336);
   box-shadow:inset 0 1px 0 rgba(var(--ep-rgb),.55);color:var(--text,#f3edff);
   transition:border-color .25s ease,box-shadow .3s ease,transform .3s var(--smooth,ease),background .3s ease}
+.ep-card::before{content:"";position:absolute;left:0;right:0;top:-6px;bottom:-6px;pointer-events:auto}  /* hover hit area follows the lifted card: no enter/leave flicker at the card edge */
 .ep-mix{--ep-rgb:182,138,255;--ep-c:#b68aff}
 .ep-shop{--ep-rgb:224,112,255;--ep-c:#e070ff}
 .ep-free{--ep-rgb:95,224,208;--ep-c:#5fe0d0}
