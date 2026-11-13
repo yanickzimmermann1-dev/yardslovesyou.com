@@ -1976,3 +1976,7 @@ footer.site-footer .footer-social svg{display:block;width:22px;height:22px}
 .product-grid .product .sp-layer .sp-pads{position:static;display:none;opacity:1;transform:none;pointer-events:auto;justify-content:flex-start}
 .product-grid .product .sp-layer.sp-open .sp-pads{display:flex}
 .product-grid .product .cover-link{display:block}
+
+/* Shop: Sound-Pads unter dem Produkt grösser */
+.product-grid .product .sp-layer .sp-pads{gap:6px;flex-wrap:nowrap}
+.product-grid .product .sp-layer .sp-pad{flex:0 0 36px;width:36px;height:36px;max-width:none;font-size:13px}
