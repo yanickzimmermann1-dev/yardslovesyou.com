@@ -38,8 +38,10 @@
     if (!data || !data.length) { tracksContainer.innerHTML = ""; return; }
     
     tracksContainer.innerHTML = data.length ? data.map(t => {
-      const imageUrl = t.image_path ? db.storage.from("coverart-portolio").getPublicUrl(t.image_path).data.publicUrl : null;
-      const audioUrl = db.storage.from("audio-files").getPublicUrl(t.storage_path).data.publicUrl;
+      const imageUrl0 = t.image_path ? db.storage.from("coverart-portolio").getPublicUrl(t.image_path).data.publicUrl : null;
+      const ylyM = u => (window.YLYMedia && u ? window.YLYMedia.url(u) : u);
+      const imageUrl = ylyM(imageUrl0);
+      const audioUrl = ylyM(db.storage.from("audio-files").getPublicUrl(t.storage_path).data.publicUrl);
       const barsHtml = Array.from({length: 30}, () => '<span class="wave-bar"></span>').join('');
 
       return `

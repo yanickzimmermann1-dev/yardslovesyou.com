@@ -7,7 +7,7 @@
   if(!ready){S($("products"),{icon:"box",title:"The shop is unavailable",text:"We could not reach the shop right now. Please try again in a moment.",error:true,actions:[{label:"Back to home",href:"index.html"}]});return;}
   const db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const img=u=>/^https:\/\//i.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
+  const img=u=>{ const r=/^https:\/\//i.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl; return window.YLYMedia?YLYMedia.url(r):r; };
   const link=id=>`product.html?id=${encodeURIComponent(id)}`;
   const money=(cents,cur)=>(cents/100).toLocaleString("de-CH",{style:"currency",currency:String(cur||cfg.CURRENCY||"CHF").toUpperCase()});
 

@@ -18,7 +18,7 @@
     return db;
   };
   const money = (c, cur) => { try { return (Number(c) / 100).toLocaleString("de-CH", { style: "currency", currency: String(cur || cfg.CURRENCY || "CHF").toUpperCase() }); } catch (_) { return String(c / 100); } };
-  const img = u => /^https:\/\//i.test(u) ? u : (getDb() ? getDb().storage.from("coverart-products").getPublicUrl(u).data.publicUrl : "");
+  const img = u => { const r = /^https:\/\//i.test(u) ? u : (getDb() ? getDb().storage.from("coverart-products").getPublicUrl(u).data.publicUrl : ""); return window.YLYMedia ? window.YLYMedia.url(r) : r; };
   const model = p => {
     let m = p && p.model3d;
     if (typeof m === "string") { try { m = JSON.parse(m); } catch (_) { m = null; } }

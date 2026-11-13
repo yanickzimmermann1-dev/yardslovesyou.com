@@ -52,7 +52,7 @@
     const s = cfgOf(p), key = String(p.id) + ":" + k;
     if (listCache.has(key)) return listCache.get(key);
     const bucket = s.bucket || "coverart-products", folder = String(s.folder || "").replace(/^\/+|\/+$/g, "");
-    const urlOf = n => db.storage.from(bucket).getPublicUrl((folder ? folder + "/" : "") + n).data.publicUrl;
+    const urlOf = n => { const u = db.storage.from(bucket).getPublicUrl((folder ? folder + "/" : "") + n).data.publicUrl; return window.YLYMedia ? window.YLYMedia.url(u) : u; };
     const pr = (async () => {
       let names;
       if (Array.isArray(s.files) && s.files.length) names = s.files.filter(n => typeof n === "string" && AUDIO_RE.test(n));

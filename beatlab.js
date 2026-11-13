@@ -319,7 +319,7 @@
     n = n.toLowerCase().replace(/(^|\s)(\S)/g, (m, a, b) => a + b.toUpperCase());
     return (n.length > 18 ? n.slice(0, 18).trim() : n) || f.slice(0, 18);
   }
-  const mkEntry = (f, base, strip) => ({ file: f, name: niceName(f, strip), h: fnv(f), url: base + encodeURIComponent(f) });
+  const mkEntry = (f, base, strip) => ({ file: f, name: niceName(f, strip), h: fnv(f), url: (window.YLYMedia ? window.YLYMedia.url(base + encodeURIComponent(f)) : base + encodeURIComponent(f)) });
   const poolFor = i => i === 0 ? kickPool : i === 1 ? clapPool : percPool;
   const poolName = i => i === 0 ? "kick" : i === 1 ? "clap" : "perc";
   const FB_KICK = f => /^kick/i.test(f), FB_CLAP = f => /^(clap|snare)/i.test(f), FB_PERC = f => !/^(kick|clap|snare)/i.test(f) && !/808/.test(f);

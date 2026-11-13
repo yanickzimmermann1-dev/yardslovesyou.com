@@ -247,8 +247,8 @@ var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
   /* ---------- Produkte (Upsell + Abgleich) ---------- */
   function coverUrl(u) {
     if (!u) return '';
-    if (/^https:\/\//i.test(u)) return u;
-    return String(cfg.SUPABASE_URL || '').replace(/\/$/, '') + '/storage/v1/object/public/coverart-products/' + String(u).split('/').map(encodeURIComponent).join('/');
+    var r = /^https:\/\//i.test(u) ? u : String(cfg.SUPABASE_URL || '').replace(/\/$/, '') + '/storage/v1/object/public/coverart-products/' + String(u).split('/').map(encodeURIComponent).join('/');
+    return window.YLYMedia ? window.YLYMedia.url(r) : r;
   }
   function headers() {
     var h = { apikey: cfg.SUPABASE_PUBLISHABLE_KEY };

@@ -191,7 +191,7 @@
         try {
           const { data, error } = await db.storage.from("coverart-products").list(path, { limit: 1000, sortBy: { column: "name", order: "asc" } });
           if (error) throw error;
-          return (data || []).map(x => x.name).filter(n => n && AUDIO_RE.test(n) && !/808/i.test(n)).map(n => BUCKET + path + "/" + encodeURIComponent(n));
+          return (data || []).map(x => x.name).filter(n => n && AUDIO_RE.test(n) && !/808/i.test(n)).map(n => { const u = BUCKET + path + "/" + encodeURIComponent(n); return window.YLYMedia ? window.YLYMedia.url(u) : u; });
         } catch (_) { return []; }
       };
       const [k, c, p] = await Promise.all([list("perclab/kick"), list("perclab/clap"), list("perclab")]);

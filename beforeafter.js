@@ -23,8 +23,10 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function track(name) { try { window.ylyTrack && window.ylyTrack(name); } catch (e) {} }
   function pubUrl(p) {
-    if (String(p).indexOf(cfg.SUPABASE_URL + '/') === 0) return p;   // volle URL nur von der eigenen Supabase-Instanz
-    return cfg.SUPABASE_URL + '/storage/v1/object/public/' + BUCKET + '/' + String(p).split('/').map(encodeURIComponent).join('/');
+    var u;
+    if (String(p).indexOf(cfg.SUPABASE_URL + '/') === 0) u = p;   // volle URL nur von der eigenen Supabase-Instanz
+    else u = cfg.SUPABASE_URL + '/storage/v1/object/public/' + BUCKET + '/' + String(p).split('/').map(encodeURIComponent).join('/');
+    return window.YLYMedia ? window.YLYMedia.url(u) : u;   // gespiegelte Datei -> media/
   }
   function fmt(t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2); }
 

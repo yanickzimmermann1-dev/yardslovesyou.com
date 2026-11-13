@@ -21,7 +21,7 @@
   function addToCart(from) {
     if (!window.ylyCart || !p) { location.href = link; return; }
     if (inCart()) { window.ylyCart.open(); return; }
-    const img = p.image_url ? (/^https:\/\//i.test(p.image_url) ? p.image_url : window.__plDb.storage.from("coverart-products").getPublicUrl(p.image_url).data.publicUrl) : "";
+    const img = p.image_url ? ylyMedia(/^https:\/\//i.test(p.image_url) ? p.image_url : window.__plDb.storage.from("coverart-products").getPublicUrl(p.image_url).data.publicUrl) : "";
     if (window.ylyCart.add({ id: PID, title: p.title, price_cents: p.price_cents, currency: String(p.currency || cfg.CURRENCY || "chf").toLowerCase(), cover: img }, from)) track("perclab-upsell-add");
     sync();
   }
@@ -37,7 +37,8 @@
     const m = model();
     if (m && window.Product3D) { try { if (handle) handle.destroy(); handle = window.Product3D.mount(document.getElementById("pl-up-cover"), m, { size: "small", alt: p.title }); } catch (_) {} }
   }
-  function coverUrl() { return /^https:\/\//i.test(p.image_url) ? p.image_url : window.__plDb.storage.from("coverart-products").getPublicUrl(p.image_url).data.publicUrl; }
+  function coverUrl() { return ylyMedia(/^https:\/\//i.test(p.image_url) ? p.image_url : window.__plDb.storage.from("coverart-products").getPublicUrl(p.image_url).data.publicUrl); }
+  function ylyMedia(u) { return window.YLYMedia ? window.YLYMedia.url(u) : u; }
   function sync() {
     if (!p) return;
     const row = card.querySelector(".pl-up-row");

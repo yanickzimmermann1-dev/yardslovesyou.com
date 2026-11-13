@@ -5,7 +5,7 @@
   const hint=(m,t)=>{ m=String(m||"Something went wrong."); return /try again|try another/i.test(m)?m:m.replace(/[.!?\s]*$/,"")+". "+(t||"Please try again."); };
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const media = u => /^https?:\/\//.test(u) ? u : db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
+  const media = u => { const r = /^https?:\/\//.test(u) ? u : db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl; return window.YLYMedia ? window.YLYMedia.url(r) : r; };
 
   // Edge Function aufrufen und die Fehlermeldung der Function anzeigen
   async function callFn(name, body) {

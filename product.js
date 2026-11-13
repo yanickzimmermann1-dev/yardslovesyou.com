@@ -12,7 +12,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
   const db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
 
   // Dateiname im Bucket "coverart-products" -> öffentliche URL (volle URLs bleiben unverändert)
-  const media=u=>/^https:\/\//i.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
+  const media=u=>{ const r=/^https:\/\//i.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl; return window.YLYMedia?YLYMedia.url(r):r; };
   const money=(cents,cur)=>(cents/100).toLocaleString("de-CH",{style:"currency",currency:String(cur||cfg.CURRENCY||"CHF").toUpperCase()});
   const paragraphs=t=>String(t||"").trim().split(/\n\s*\n/).map(p=>`<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
 
@@ -306,6 +306,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
 
   // SEO: Beschreibung, Canonical, Teilen-Vorschau und Produktdaten für Google
   function setSeo(p,images){
+    images=images.map(u=>{ try{ return new URL(u,location.href).href; }catch(_){ return u; } }); // gespiegelte media/-Pfade -> absolut
     const url=`https://yardslovesyou.com/product.html?id=${encodeURIComponent(p.id)}`;
     let desc=String(p.description||"Digital download as ZIP file.").replace(/\s+/g," ").trim();
     if(desc.length>155){desc=desc.slice(0,155);const sp=desc.lastIndexOf(" ");if(sp>100)desc=desc.slice(0,sp);desc=desc.replace(/[\s,.;:\-]+$/,"")+"…";}
