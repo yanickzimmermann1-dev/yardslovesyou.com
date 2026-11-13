@@ -20,7 +20,7 @@
   --area-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4v5M6 13v7M12 4v9M12 17v3M18 4v3M18 11v9'/%3E%3Ccircle cx='6' cy='11' r='2'/%3E%3Ccircle cx='12' cy='15' r='2'/%3E%3Ccircle cx='18' cy='9' r='2'/%3E%3C/svg%3E");
 }
 body[data-area="mix"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255}
-body[data-area="service"]{--area-hue:335;--area-c:#f3a9c9;--area-rgb:243,169,201}
+body[data-area="service"]{--area-hue:335;--area-c:#e665dd;--area-rgb:230,101,221}
 body[data-area="shop"]{--area-hue:40;--area-c:#D4B46E;--area-rgb:212,180,110;
   --area-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 8h14l-1 12H6L5 8Z'/%3E%3Cpath d='M9 8V6.5a3 3 0 0 1 6 0V8'/%3E%3C/svg%3E")}
 body[data-area="free"]{--area-hue:172;--area-c:#5fe0d0;--area-rgb:95,224,208;

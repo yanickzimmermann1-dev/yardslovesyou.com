@@ -52,7 +52,7 @@
           if (!window.Product3D) return;
           [].forEach.call(prods.querySelectorAll('.ar-cover[data-p3d]'), function (c) {
             var p = list.filter(function (x) { return String(x.id) === c.dataset.p3d; })[0], m = model(p);
-            if (m) { try { window.Product3D.mount(c, m, { size: 'small', still: true, alt: p.title }); } catch (e) {} }
+            if (m) { try { window.Product3D.mount(c, m, { size: 'small', alt: p.title }); } catch (e) {} }
           });
         };
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();
