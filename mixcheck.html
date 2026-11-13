@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Mix Check: Free Online Mix & Master Analyzer · YARDSLOVESYOU</title>
+  <meta name="description" content="Free mix and master check in your browser: loudness (LUFS), true peak, dynamics, tonal balance and stereo image in seconds. Your file never leaves your device.">
+  <link rel="canonical" href="https://yardslovesyou.com/mixcheck.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="YARDSLOVESYOU">
+  <meta property="og:title" content="Mix Check: free mix & master analyzer · YARDSLOVESYOU">
+  <meta property="og:description" content="Check loudness, peaks, dynamics, balance and stereo image of your track. Free, private, in your browser.">
+  <meta property="og:url" content="https://yardslovesyou.com/mixcheck.html">
+  <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preload" href="font-dmsans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="font-spacegrotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://kmekgjllklwrxizqbrac.supabase.co" crossorigin>
+  <link rel="dns-prefetch" href="https://kmekgjllklwrxizqbrac.supabase.co">
+  <link rel="stylesheet" href="styles.css?v=20261114i">
+  <link rel="stylesheet" href="states.css?v=20261113q">
+  <link rel="stylesheet" href="cart.css?v=20261113q">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="fx-gate.js?v=20261113g"></script>
+  <link rel="stylesheet" href="fx.css?v=20261113g">
+  <link rel="stylesheet" href="cursor.css?v=20261113n">
+  <link rel="stylesheet" href="skeleton.css?v=20261113j">
+  <link rel="stylesheet" href="footerword.css?v=20261113l">
+  <link rel="stylesheet" href="uisound.css?v=20261113m">
+  <link rel="stylesheet" href="sections.css?v=20261114g">
+  <link rel="stylesheet" href="thread.css?v=20261113t">
+  <link rel="stylesheet" href="nextstep.css?v=20261114n">
+</head>
+<body data-area="lab">
+
+  <header class="topbar">
+    <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
+    <nav aria-label="Main">
+      <a href="/"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span>Home</span></a>
+      <a href="shop.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span>Shop</span></a>
+      <a href="upload.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg><span>Upload</span></a>
+      <a href="free.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18v-3H3zM12 6v14"/><path d="M12 6c-1-3-5-3.5-5-1.2C7 6.2 9 6 12 6Zm0 0c1-3 5-3.5 5-1.2 0 1.4-2 1.2-5 1.2Z"/></svg><span>Free</span></a>
+      <a class="active" aria-current="page" href="community.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5h5"/><path d="M10.5 3.5v6L5 19a1.5 1.5 0 0 0 1.3 2.2h11.4A1.5 1.5 0 0 0 19 19l-5.5-9.5v-6"/><path d="M7.5 15h9"/></svg><span>Lab</span></a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero compact">
+      <a class="back-link" href="community.html#tools" style="margin-top:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m15 6-6 6 6 6"/></svg> Lab</a>
+      <p class="eyebrow" style="margin-top:18px"><span class="area-ico" aria-hidden="true"></span>LAB · FREE TOOL</p>
+      <h1>Mix Check</h1>
+      <p class="muted">Drop your track and get an instant check of loudness, peaks, dynamics, tonal balance and stereo image.</p>
+    </section>
+
+    <section class="mc" id="mix-check" aria-label="Mix Check">
+      <!-- Schritt 1: Mix oder Master? -->
+      <div class="mc-mode" role="radiogroup" aria-label="What are you checking?">
+        <span class="mc-step">1</span>
+        <span class="mc-mode-label">What are you checking?</span>
+        <div class="mc-toggle">
+          <button type="button" class="active" data-mode="master" role="radio" aria-checked="true">Master</button>
+          <button type="button" data-mode="mix" role="radio" aria-checked="false">Mix <small>(before mastering)</small></button>
+        </div>
+      </div>
+
+      <!-- Schritt 2: Datei -->
+      <label class="mc-drop" id="mc-drop" for="mc-file">
+        <input id="mc-file" type="file" accept="audio/*,.wav,.mp3,.aif,.aiff,.flac,.m4a">
+        <span class="mc-step">2</span>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+        <strong>Drop your track here</strong>
+        <span>or click to choose a file · WAV, MP3, AIFF, FLAC · max. 12 min</span>
+        <span class="mc-private">Your file never leaves your device. The analysis runs in your browser.</span>
+      </label>
+
+      <!-- Fortschritt -->
+      <div class="mc-progress hidden" id="mc-progress" aria-live="polite">
+        <div class="progress-head"><span id="mc-progress-text">Reading your file …</span><span id="mc-progress-pct">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="mc-progress-fill"></div></div>
+      </div>
+      <p class="mc-error hidden" id="mc-error" role="alert"></p>
+
+      <!-- Schritt 3: Ergebnis -->
+      <div class="mc-result hidden" id="mc-result">
+        <div class="mc-score">
+          <div class="mc-ring" id="mc-ring"><span id="mc-score-num">0</span><small>/100</small></div>
+          <div>
+            <p class="eyebrow" id="mc-file-name">Your track</p>
+            <h3 id="mc-verdict">Great shape</h3>
+            <p class="muted" id="mc-verdict-text"></p>
+            <button type="button" class="outline" id="mc-again">Check another track</button>
+          </div>
+        </div>
+
+        <div class="mc-tiles" id="mc-tiles"></div>
+
+        <!-- Schritt 4: Report per E-Mail -->
+        <form class="mc-mail" id="mc-mail" novalidate>
+          <div>
+            <h3>Get your full report <span>– free</span></h3>
+            <p class="muted">Every value explained, plus clear tips on what to fix first. Straight to your inbox.</p>
+          </div>
+          <div class="free-kit-form">
+            <label class="sr-only" for="mc-email">Email address</label>
+            <div class="free-kit-row">
+              <input id="mc-email" type="email" placeholder="your@email.com" autocomplete="email" required>
+              <button id="mc-send" class="button" type="submit">Send me the report</button>
+            </div>
+            <label class="consent">
+              <input id="mc-consent" type="checkbox">
+              <span>Yes, also send me the monthly Sound Drop, new releases and deals. I can unsubscribe at any time.</span>
+            </label>
+            <p class="hint">We use your email to send you the report. See our <a href="privacy.html">privacy policy</a>.</p>
+            <p id="mc-status" class="status" role="status"></p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-copy">© <span id="year">2026</span> YARDSLOVESYOU &lt;3</p>
+    <nav class="footer-links" aria-label="Legal">
+    <a href="imprint.html">Imprint</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="license.html">License</a>
+    <a href="code-of-conduct.html">Code of Conduct</a>
+    <a href="security.html">Security</a>
+    </nav>
+    <nav class="footer-social" aria-label="Social media">
+      <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></a>
+      <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.2v5.6l5-2.8z" fill="currentColor" stroke="none"/></svg></a>
+    </nav>
+  </footer>
+
+  <script defer src="states.js?v=20261113q"></script>
+
+  <script defer src="config.js"></script>
+  <script defer src="products-map.js?v=20261114m"></script>
+  <script defer src="media.js?v=20261114k"></script>
+  <script defer src="mixcheck.js?v=20261114n"></script>
+  <script defer src="mixcheck-page.js?v=20261114n"></script>
+  <script src="cart.js?v=20261114m" defer></script>
+  <script src="nav.js?v=20261114n" defer></script>
+  <script src="fx.js?v=20261113g" defer></script>
+  <script src="uisound.js?v=20261113m" defer></script>
+  <script src="motion.js?v=20261113l" defer></script>
+  <script src="thread.js?v=20261113t" defer></script>
+  <script src="nextstep.js?v=20261114n" defer></script>
+  <script src="cursor.js?v=20261113n" defer></script>
+  <script src="reveal.js?v=20261113j" defer></script>
+  <script src="footerword.js?v=20261113l" defer></script>
+</body>
+</html>

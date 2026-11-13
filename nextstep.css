@@ -43,3 +43,19 @@
 .ns-rv{opacity:0;transform:translateY(22px);transition:opacity .7s var(--smooth,ease),transform .7s var(--smooth,ease);transition-delay:calc(var(--i,0) * 90ms)}
 .ns-rv.ns-in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.ns-rv{opacity:1;transform:none;transition:none}.ep-card,.ep-go svg{transition:none}.ep-card:hover{transform:none}}
+
+/* Lab hub: tool cards + section heads (community.html), "more tools" note (free.html) */
+.ep-lab{--ep-rgb:143,162,255;--ep-c:#8fa2ff}
+.ep-grid.ep-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ep-grid.ep-4 .ep-card{min-height:0}
+.ep-grid.ep-4 .ep-go{margin-top:auto}
+@media(max-width:700px){.ep-grid.ep-4{grid-template-columns:1fr}}
+.lab-tools{margin:0 0 56px;scroll-margin-top:80px}
+.lab-head{margin:0 0 22px}
+.lab-head h2{margin:4px 0 8px;font:700 clamp(26px,3.6vw,36px)/1.1 'Space Grotesk',sans-serif;letter-spacing:-.5px}
+.lab-head p.muted{margin:0;max-width:60ch}
+.lab-community{margin:0 0 18px;scroll-margin-top:80px}
+.free-more{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:40px 0 0;padding:20px 24px;border-radius:var(--sec-radius,16px);border:1px solid var(--line,#2a2336);background:var(--panel,#17131f)}
+.free-more p{margin:0;color:var(--muted,#a89fbb);font-size:15px;line-height:1.5;flex:1 1 280px}
+.free-more strong{color:var(--text,#f3edff)}
+.free-more .outline{display:inline-flex;align-items:center;gap:8px}

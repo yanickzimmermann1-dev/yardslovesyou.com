@@ -6,8 +6,8 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0b12">
-  <title>Community: Beats & Chords by Producers · YARDSLOVESYOU</title>
-  <meta name="description" content="Listen to beats and chord ideas made by producers in the YARDSLOVESYOU Perc Lab and Chord Starter. Like, follow and remix them.">
+  <title>Lab: Free Music Tools & Community · YARDSLOVESYOU</title>
+  <meta name="description" content="The YARDSLOVESYOU Lab: free music tools for producers (Perc Lab, Chord Starter, Ear Trainer, Mix Check) plus a community feed of loops and chord ideas.">
   <link rel="canonical" href="https://yardslovesyou.com/community.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.png" type="image/png" sizes="512x512">
@@ -15,8 +15,8 @@
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="YARDSLOVESYOU">
-  <meta property="og:title" content="YARDSLOVESYOU Community">
-  <meta property="og:description" content="Beats and chord ideas by producers. Press play and remix them.">
+  <meta property="og:title" content="YARDSLOVESYOU Lab: free music tools & community">
+  <meta property="og:description" content="Make loops, chords and mixes with free tools, then share them with the community.">
   <meta property="og:url" content="https://yardslovesyou.com/community.html">
   <meta property="og:image" content="https://yardslovesyou.com/og-image.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="uisound.css?v=20261113m">
   <link rel="stylesheet" href="sections.css?v=20261114g">
   <link rel="stylesheet" href="thread.css?v=20261113t">
-  <link rel="stylesheet" href="nextstep.css?v=20261114g">
+  <link rel="stylesheet" href="nextstep.css?v=20261114n">
 </head>
 <body data-area="lab">
 
@@ -56,15 +56,53 @@
 
     <section class="hero compact cm-hero">
       <div>
-        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>COMMUNITY</p>
-        <h1>Share your beats. <span>Find your people.</span></h1>
-        <p class="muted">Beats and chord ideas made by producers in the Perc Lab and the Chord Starter. Press play, leave a like, follow and remix.</p>
-        <div class="hero-actions" style="margin-top:20px">
-          <a class="button" href="beatlab.html">Make a loop</a>
-          <a class="outline" href="chords.html">Make chords</a>
-        </div>
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>LAB</p>
+        <h1>Make it. <span>Share it.</span></h1>
+        <p class="muted">Free music tools to make loops, write chords and check your mix, plus a community to share them with.</p>
       </div>
       <div class="cm-auth" id="cm-auth"></div>
+    </section>
+
+    <section class="lab-tools" id="tools" aria-labelledby="tools-title">
+      <div class="lab-head">
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>LAB</p>
+        <h2 id="tools-title">Make something</h2>
+        <p class="muted">Four free tools, no sign-up needed. Make a loop, write chords, train your ears or check your mix.</p>
+      </div>
+      <div class="ep-grid ep-4">
+        <div class="ep-card ep-lab">
+          <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h2M7 8v8M11 5v14M15 8v8M19 10v4M21 12h0"/></svg></span>
+          <h3>Perc Lab</h3>
+          <p>Generate percussion loops by genre and mood. Lock what you like, export MIDI or WAV.</p>
+          <a class="ep-go" href="beatlab.html">Make a loop <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="ep-card ep-lab">
+          <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17V7l8 3v10l-8-3ZM12 10l8-3v10l-8 3"/></svg></span>
+          <h3>Chord Starter</h3>
+          <p>Chord progressions in one click. Shape them in the piano roll and take the MIDI to your DAW.</p>
+          <a class="ep-go" href="chords.html">Make chords <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="ep-card ep-lab">
+          <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg></span>
+          <h3>Ear Trainer</h3>
+          <p>A daily A/B ear training game: spot EQ, compression, reverb and more.</p>
+          <a class="ep-go" href="eartrainer.html">Train your ears <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="ep-card ep-lab">
+          <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v5M6 13v7M12 4v9M12 17v3M18 4v3M18 11v9"/><circle cx="6" cy="11" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="18" cy="9" r="2"/></svg></span>
+          <h3>Mix Check</h3>
+          <p>Drop a track and check loudness, peaks, dynamics, balance and stereo. Runs in your browser.</p>
+          <a class="ep-go" href="mixcheck.html">Check a mix <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="lab-community" id="community" aria-labelledby="community-title">
+      <div class="lab-head">
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>COMMUNITY</p>
+        <h2 id="community-title">Community</h2>
+        <p class="muted">Loops and chord ideas shared from the tools. Press play, leave a like, follow and remix.</p>
+      </div>
     </section>
 
     <section class="cm-shared-wrap hidden" id="cm-shared-wrap" aria-label="Shared post">
@@ -118,12 +156,12 @@
   <script defer src="community.js?v=20261113q"></script>
   <script defer src="presence.js"></script>
   <script src="cart.js?v=20261114m" defer></script>
-  <script src="nav.js" defer></script>
+  <script src="nav.js?v=20261114n" defer></script>
   <script src="fx.js?v=20261113g" defer></script>
   <script src="uisound.js?v=20261113m" defer></script>
   <script src="motion.js?v=20261113l" defer></script>
   <script src="thread.js?v=20261113t" defer></script>
-  <script src="nextstep.js?v=20261114m" defer></script>
+  <script src="nextstep.js?v=20261114n" defer></script>
   <script src="cursor.js?v=20261113n" defer></script>
   <script src="reveal.js?v=20261113j" defer></script>
   <script src="footerword.js?v=20261113l" defer></script>

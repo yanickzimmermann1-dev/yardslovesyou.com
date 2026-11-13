@@ -16,8 +16,8 @@
       const { data, error } = await db.functions.invoke("sound-drop", { body: { action: "unsubscribe", token } });
       if (error || !data?.ok) throw new Error(data?.error || "Something went wrong.");
       document.querySelector("#unsub h1").innerHTML = "You're <span>unsubscribed.</span>";
-      document.querySelector("#unsub .muted").textContent = "You won't receive any more Sound Drops or news. Changed your mind? You can sign up again any time on the Free page.";
-      document.querySelector("#unsub .hero-actions").innerHTML = '<a class="outline" href="free.html">Go to the Free page</a>';
+      document.querySelector("#unsub .muted").textContent = "You won't receive any more Sound Drops or news. Changed your mind? You can sign up again any time on the Free sounds page.";
+      document.querySelector("#unsub .hero-actions").innerHTML = '<a class="outline" href="free.html">Go to Free sounds</a>';
     } catch (e) {
       btn.disabled = false; btn.textContent = "Yes, unsubscribe me";
       status.classList.add("danger");

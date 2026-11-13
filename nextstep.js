@@ -42,8 +42,8 @@
 
     if (!footer || doc.querySelector('.next-step')) return;
 
-    var UP = ['Send your track', 'upload.html'], SHOP = ['Browse the shop', 'shop.html'], FREE = ['Try the free tools', 'free.html'];
-    var LAB = ['Share in the Lab', 'community.html'], HOME = ['Back to home', '/'];
+    var UP = ['Send your track', 'upload.html'], SHOP = ['Browse the shop', 'shop.html'], FREE = ['Try the Lab tools', 'community.html#tools'];
+    var LAB = ['Share in the Lab', 'community.html#community'], HOME = ['Back to home', '/'];
     var LEGAL = { line: 'Looking for something else?', btns: [HOME, ['Shop', 'shop.html']] };
     var MAP = {
       index: { line: 'Ready? Send your track.', btns: [['Upload your track', 'upload.html'], ['Browse the shop', 'shop.html']] },
@@ -52,7 +52,8 @@
       upload: { line: 'While you wait: train your ears.', btns: [['Try the Ear Trainer', 'eartrainer.html'], ['Get the guide', 'shop.html']] },
       success: { line: 'Your order is on its way. What next?', btns: [['Explore the Perc Lab', 'beatlab.html'], ['Back to shop', 'shop.html']] },
       status: { line: 'Your order is on its way. What next?', btns: [['Explore the Perc Lab', 'beatlab.html'], ['Back to shop', 'shop.html']] },
-      free: { line: 'Want pro sounds?', btns: [['Get Essentials', 'shop.html'], ['Get your track mixed', 'upload.html']] },
+      free: { line: 'Turn the sounds into music.', btns: [['Make loops with the free tools', 'community.html#tools'], ['Pro sounds: Essentials', 'essentials.html']] },
+      mixcheck: { line: 'Want a pro to take it from here?', btns: [['Get your track mixed', 'upload.html'], ['Train your ears', 'eartrainer.html']] },
       beatlab: { line: 'Like the sounds? Take the loop further.', btns: [['Write chords for your loop', 'chords.html'], LAB] },
       chords: { line: 'Add percussion to your chords.', btns: [['Open the Perc Lab', 'beatlab.html'], LAB] },
       eartrainer: { line: 'Hear it in a real mix.', btns: [['Hear the difference', '/#hear'], ['Get your track mixed', 'upload.html']] },

@@ -4,6 +4,8 @@
   'use strict';
   // iPhone: Web-Audio (Player, Perc Lab, Ear Trainer) auch bei Lautlos-Schalter hörbar machen
   try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+  // Alter Deep-Link: Mix Check ist von free.html nach mixcheck.html umgezogen
+  try { if (/free\.html$/.test(location.pathname) && /^#(mixcheck|mix-check)$/i.test(location.hash)) { location.replace('mixcheck.html'); return; } } catch (e) {}
   // Jahreszahl im Footer (frueher Inline-Script, wegen CSP hier)
   try { var yEl = document.getElementById('year'); if (yEl) yEl.textContent = new Date().getFullYear(); } catch (e) {}
   // Event-Helfer fuer die Statistik (macht nichts, wenn Umami nicht geladen ist; wirft nie)
