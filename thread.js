@@ -1,7 +1,9 @@
-/* thread.js – "the red thread": one thin, glowing, gently vibrating purple line that runs down the left gutter of every page,
+/* thread.js – "the red thread": one thin, glowing purple line that runs down the left gutter of every page,
    weaves in soft S-curves, draws itself with the scroll (stroke-dashoffset), ends in a glowing tip and makes a node at each section eyebrow.
    Home: starts at the left end of the hero wave line and ends at the footer wordmark. Tinted by body[data-area] via CSS (thread.css).
-   One SVG, one path (+ one wider low-opacity duplicate as glow, + one faint ghost route). Reduced motion: fully drawn, static.
+   Home: the line leaves the hero wave's left end (fillet into the gutter) and the segment down to the FIRST node keeps moving like the wave
+   (damped to exactly still at node 1, only that segment is rewritten per frame, loop runs only while it is on screen); everything after is static.
+   One SVG, two path pairs (A animated, B static) + glow duplicates + one faint ghost route. Reduced motion: fully drawn, static, connected.
    Never throws into the page. */
 (function () {
   'use strict';
@@ -17,16 +19,20 @@
     var svg = doc.createElementNS(NS, 'svg');
     function mk(tag, cls, par) { var n = doc.createElementNS(NS, tag); if (cls) n.setAttribute('class', cls); (par || svg).appendChild(n); return n; }
     var ghost = mk('path', 'th-ghost');
-    var glow = mk('path', 'th-glow'), line = mk('path', 'th-line');
-    glow.setAttribute('pathLength', '1000'); line.setAttribute('pathLength', '1000');
-    glow.style.strokeDasharray = line.style.strokeDasharray = '1000 1000';
+    /* two path pairs share ONE group opacity each (no doubled alpha where they meet): A = hero→first node (animated, home only), B = rest (static) */
+    var glowG = mk('g', 'th-glows'), lineG = mk('g', 'th-lines');
+    var glowA = mk('path', 'th-glow', glowG), glowB = mk('path', 'th-glow', glowG);
+    var lineA = mk('path', 'th-line', lineG), lineB = mk('path', 'th-line', lineG);
+    [glowA, glowB, lineA, lineB].forEach(function (p) { p.setAttribute('pathLength', '1000'); p.style.strokeDasharray = '1000 1000'; });
     var nodesG = mk('g', 'th-nodes');
     var halo = mk('circle', 'th-halo'); halo.setAttribute('r', '7');
     var tip = mk('circle', 'th-tip'); tip.setAttribute('r', '2.6');
     host.appendChild(svg); body.appendChild(host);
 
-    var xs = [], ys = [], cum = [], total = 1, nodes = [], vibOn = !reduce;
-    var W = 0, H = 0, gx = 12, amp = 2, startY = 0, endY = 0, ok = false, frac = 0, dirty = true, lastBuild = 0, raf = 0, T = 0;
+    var xs = [], ys = [], cum = [], total = 1, nodes = [];
+    var W = 0, H = 0, gx = 12, amp = 2, startY = 0, endY = 0, ok = false, frac = 0, raf = 0, wlG = 40;
+    /* segment A (generated per frame): static points, arclength, unit normals, current (animated) points */
+    var seg = null, LA = 0, arcLen = 0, aMax = 8, tA = 0, lastFr = 0, velA = 0, lastSY = 0, pOn = false, pAct = 0, mx = -1e4, my = -1e4, lastD = '';
     var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
     var smooth = function (u) { u = clamp(u, 0, 1); return u * u * (3 - 2 * u); };
     var sy = function () { return win.pageYOffset || 0; };
@@ -42,6 +48,7 @@
       gx = small ? 12 : Math.max(24 > wl - 12 ? wl * 0.5 : 24, wl - 40);
       if (!small) gx = Math.max(wl - 40, wl * 0.5);
       amp = clamp(Math.min(16, wl - gx - r - 4, gx - r - 3), 2, 16);
+      wlG = wl;
       var period = small ? 420 : 560;
 
       // nodes at eyebrows (and legal h1), only visible ones that sit in the left column
@@ -73,17 +80,25 @@
       host.hidden = false;
       svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
 
-      // sample the route (monotone in y)
+      // sample the route (monotone in y). With the hero wave: a fillet leaves the wave's left end heading left, turns down into the gutter.
       xs = []; ys = []; cum = [];
-      var step = 14, y, u, x, w, sb, eb, c = 0;
-      for (y = startY; ; y += step) {
+      var step = 14, y, u, x, w, eb, c = 0, y0 = startY, x0 = startX, R = 0, j;
+      function push(px, py) { if (xs.length) c += Math.hypot(px - xs[xs.length - 1], py - ys[ys.length - 1]); xs.push(px); ys.push(py); cum.push(c); }
+      arcLen = 0;
+      if (startX !== null) {
+        R = Math.min(small ? 12 : 22, Math.max(0, startX - 4));
+        if (R >= 6) {
+          for (j = 0; j <= 8; j++) { var th = j / 8 * Math.PI / 2; push(startX - R * Math.sin(th), startY + R * (1 - Math.cos(th))); }
+          arcLen = c; y0 = startY + R; x0 = startX - R;
+        } else { push(startX, startY); R = 0; }
+      }
+      for (y = (xs.length ? y0 + step : startY); ; y += step) {
         if (y > endY) y = endY;
         u = (y - startY) / period * Math.PI * 2;
         w = gx + amp * (Math.sin(u) * 0.8 + Math.sin(u * 0.43 + 1.3) * 0.35) / 1.15;
-        if (startX !== null) { sb = smooth((y - startY) / 120); w = startX + (w - startX) * sb; }
+        if (startX !== null) w = x0 + (w - x0) * smooth((y - y0) / 140);
         eb = smooth((endY - y) / 200); w = endX + (w - endX) * eb;
-        if (xs.length) c += Math.hypot(w - xs[xs.length - 1], y - ys[ys.length - 1]);
-        xs.push(w); ys.push(y); cum.push(c);
+        push(w, y);
         if (y >= endY) break;
       }
       total = Math.max(1, c);
@@ -104,8 +119,34 @@
         }
         nodes.push({ y: y, g: g, on: false });
       }
-      ghost.setAttribute('d', pathD(0));
-      dirty = true; lastBuild = 0;
+
+      // split: A = start .. first node (animated, damped to rest at the node), B = first node .. end (static)
+      seg = null; LA = 0;
+      if (startX !== null && nodes.length) {
+        var y1 = nodes[0].y, x1 = xAt(y1), n = 0;
+        while (n < ys.length && ys[n] < y1 - 0.5) n++;
+        var px = xs.slice(0, n), py = ys.slice(0, n); px.push(x1); py.push(y1);
+        var m = px.length, ps = [0], nx = [], ny = [], tx, ty, d;
+        for (i = 1; i < m; i++) ps.push(ps[i - 1] + Math.hypot(px[i] - px[i - 1], py[i] - py[i - 1]));
+        for (i = 0; i < m; i++) {
+          tx = px[Math.min(m - 1, i + 1)] - px[Math.max(0, i - 1)]; ty = py[Math.min(m - 1, i + 1)] - py[Math.max(0, i - 1)];
+          d = Math.hypot(tx, ty) || 1; nx.push(ty / d); ny.push(-tx / d);
+        }
+        if (m >= 3 && ps[m - 1] > 30) {
+          LA = ps[m - 1];
+          seg = { px: px, py: py, s: ps, nx: nx, ny: ny, cx: px.slice(), cy: py.slice(), n: m };
+          aMax = clamp(Math.min(gx - 5, wl - gx - r - 6), 3, small ? 7 : 20);
+          var dB = 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1);
+          for (i = n; i < xs.length; i++) dB += 'L' + xs[i].toFixed(1) + ' ' + ys[i].toFixed(1);
+          glowB.setAttribute('d', dB); lineB.setAttribute('d', dB);
+          drawA(0, 0);
+        }
+      }
+      if (!seg) {
+        var dW = pathD(); glowB.setAttribute('d', dW); lineB.setAttribute('d', dW);
+        glowA.setAttribute('d', ''); lineA.setAttribute('d', '');
+      }
+      ghost.setAttribute('d', pathD());
     }
 
     function xAt(y) {
@@ -120,54 +161,99 @@
       while (hi - lo > 1) { m = (lo + hi) >> 1; if (ys[m] > y) hi = m; else lo = m; }
       var k = (y - ys[lo]) / (ys[hi] - ys[lo] || 1); return cum[lo] + (cum[hi] - cum[lo]) * k;
     }
-    function vib(i, t) {
-      var env = Math.sin(Math.PI * (i / (ys.length - 1))) ; // calm at both ends
-      return (Math.sin(ys[i] * 0.045 + t * 1.5) * 0.9 + Math.sin(ys[i] * 0.11 - t * 2.3) * 0.4) * (mqM.matches ? 0.5 : 0.9) * env;
-    }
-    function pathD(t) {
-      var d = '', i, n = xs.length, v;
-      for (i = 0; i < n; i++) { v = t ? vib(i, t) : 0; d += (i ? 'L' : 'M') + (xs[i] + v).toFixed(1) + ' ' + ys[i].toFixed(1); }
+    function pathD() {
+      var d = '', i, n = xs.length;
+      for (i = 0; i < n; i++) d += (i ? 'L' : 'M') + xs[i].toFixed(1) + ' ' + ys[i].toFixed(1);
       return d;
     }
+    /* Segment A: same wave language as the hero wave (sum of three sines, speed follows scroll velocity, pointer swells it),
+       displaced along the path normal, amplitude A * (1 - smoothstep(0, L1, s)) -> exactly still at the first node.
+       A short ramp-in (first ~50px) keeps it glued to the wave's end (the wave itself has zero amplitude there). */
+    function drawA(t, act) {
+      if (!seg) return;
+      var n = seg.n, i, s, env, k, a, dx, xx, yy, near, sp = 0.9 + Math.min(4, Math.abs(velA) * 0.12), d = '';
+      var vAmp = clamp(Math.abs(velA) / 28, 0, 1), sc = sy();
+      var maxX = wlG - 4;
+      for (i = 0; i < n; i++) {
+        s = seg.s[i];
+        env = (1 - smooth(s / LA)) * smooth(s / 50);
+        xx = seg.px[i]; yy = seg.py[i];
+        if (env > 0 && act > 0) {
+          near = pAct > 0.01 ? pAct * Math.exp(-Math.pow((xx - mx) / 200, 2)) * Math.exp(-Math.pow((yy - (my + sc)) / 200, 2)) : 0;
+          k = Math.sin(s * 0.012 + t * sp) * 0.55 + Math.sin(s * 0.028 - t * sp * 1.7) * 0.3 + Math.sin(s * 0.06 + t * sp * 2.6) * 0.15 * (0.4 + 0.6 * Math.abs(Math.sin(s * 0.006 + t * 0.7)));
+          a = aMax * (0.5 + 0.5 * clamp(vAmp * 1.3 + near, 0, 1)) * env * act;
+          dx = a * k;
+          xx += seg.nx[i] * dx; yy += seg.ny[i] * dx;
+          if (s > arcLen) xx = clamp(xx, 3, maxX);
+        }
+        seg.cx[i] = xx; seg.cy[i] = yy;
+        d += (i ? 'L' : 'M') + xx.toFixed(1) + ' ' + yy.toFixed(1);
+      }
+      if (d !== lastD) { lastD = d; lineA.setAttribute('d', d); glowA.setAttribute('d', d); }
+    }
+    function segVisible() {
+      if (!seg || reduce) return false;
+      var sc = sy(), vh = win.innerHeight;
+      return sc + vh > startY - 60 && sc < seg.py[seg.n - 1] + 60;
+    }
+    function tipAt(ty) {
+      if (seg && ty < seg.py[seg.n - 1]) {
+        var lo = 0, hi = seg.n - 1, m;
+        if (ty <= seg.py[0]) return [seg.cx[0], seg.cy[0]];
+        while (hi - lo > 1) { m = (lo + hi) >> 1; if (seg.py[m] > ty) hi = m; else lo = m; }
+        var k = (ty - seg.py[lo]) / (seg.py[hi] - seg.py[lo] || 1);
+        return [seg.cx[lo] + (seg.cx[hi] - seg.cx[lo]) * k, seg.cy[lo] + (seg.cy[hi] - seg.cy[lo]) * k];
+      }
+      return [xAt(ty), ty];
+    }
+    function setDash(p, f) { p.style.strokeDashoffset = (1000 * (1 - clamp(f, 0, 1))).toFixed(1); }
 
     function update(now) {
       if (!ok) return;
       var vh = win.innerHeight, scrollY = sy(), maxS = Math.max(1, H - vh);
       var tipY = scrollY + vh * 0.6 + clamp(scrollY / maxS, 0, 1) * vh * 0.4;
       if (reduce) tipY = 1e9;
-      frac = clamp(lenAt(tipY) / total, 0, 1);
-      var off = (1000 * (1 - frac)).toFixed(1);
-      line.style.strokeDashoffset = off; glow.style.strokeDashoffset = off;
+      var len = lenAt(tipY);
+      frac = clamp(len / total, 0, 1);
+      if (seg) {
+        var fA = clamp(len / LA, 0, 1), fB = clamp((len - LA) / Math.max(1, total - LA), 0, 1);
+        setDash(lineA, fA); setDash(glowA, fA); setDash(lineB, fB); setDash(glowB, fB);
+      } else { setDash(lineB, frac); setDash(glowB, frac); }
       var show = frac > 0.002 && !(reduce);
       var ty = clamp(tipY, startY, endY);
       if (show && frac < 0.999) {
-        var tx = xAt(ty);
-        tip.setAttribute('cx', tx.toFixed(1)); tip.setAttribute('cy', ty.toFixed(1));
-        halo.setAttribute('cx', tx.toFixed(1)); halo.setAttribute('cy', ty.toFixed(1));
+        var tp = tipAt(ty), tx = tp[0], tyy = tp[1];
+        tip.setAttribute('cx', tx.toFixed(1)); tip.setAttribute('cy', tyy.toFixed(1));
+        halo.setAttribute('cx', tx.toFixed(1)); halo.setAttribute('cy', tyy.toFixed(1));
         tip.style.display = halo.style.display = '';
       } else tip.style.display = halo.style.display = 'none';
-      line.style.opacity = glow.style.opacity = frac > 0.002 ? '' : '0';
+      lineG.style.opacity = glowG.style.opacity = frac > 0.002 ? '' : '0';
       for (var i = 0; i < nodes.length; i++) {
         var on = tipY >= nodes[i].y;
         if (on !== nodes[i].on) { nodes[i].on = on; nodes[i].g.setAttribute('class', on ? 'th-node on' : 'th-node'); }
       }
-      if (vibOn && (!lastBuild || now - lastBuild > 33)) {
-        lastBuild = now; var d = pathD(now / 1000); line.setAttribute('d', d); glow.setAttribute('d', d);
-      }
     }
     function frame(now) {
       raf = 0;
-      if (doc.hidden) return;
+      if (doc.hidden) { lastFr = 0; return; }
+      var sc = sy(), vis = segVisible();
+      var dt = lastFr ? Math.min(0.05, (now - lastFr) / 1000) : 0.016; lastFr = now;
+      if (vis) {
+        tA += dt;
+        velA += ((sc - lastSY) / Math.max(dt, 0.008) / 60 - velA) * 0.18;
+        pAct += ((pOn ? 1 : 0) - pAct) * (1 - Math.exp(-dt * 5));
+        drawA(tA, 1);
+      }
+      lastSY = sc;
       update(now);
-      if (vibOn) raf = requestAnimationFrame(frame);
-      else dirty = false;
+      if (vis) raf = requestAnimationFrame(frame); else lastFr = 0;
     }
-    function kick() { if (!raf && !doc.hidden) raf = requestAnimationFrame(frame); }
+    function kick() { if (!raf && !doc.hidden) { lastSY = sy(); raf = requestAnimationFrame(frame); } }
 
     var bq = 0;
-    function rebuild() { if (bq) clearTimeout(bq); bq = setTimeout(function () { bq = 0; build(); if (reduce || ok) { var d = pathD(0); line.setAttribute('d', d); glow.setAttribute('d', d); } kick(); if (!vibOn) update(0); }, 120); }
+    function rebuild() { if (bq) clearTimeout(bq); bq = setTimeout(function () { bq = 0; build(); lastD = ''; if (ok) { if (seg) drawA(tA, reduce ? 0 : 1); update(0); kick(); } }, 120); }
 
-    win.addEventListener('scroll', function () { if (!vibOn) { if (!raf) raf = requestAnimationFrame(frame); } else kick(); }, { passive: true });
+    win.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
     win.addEventListener('resize', rebuild, { passive: true });
     win.addEventListener('load', function () { rebuild(); setTimeout(rebuild, 1200); setTimeout(rebuild, 3500); });
     doc.addEventListener('visibilitychange', function () { if (!doc.hidden) kick(); });
@@ -177,9 +263,16 @@
       if (mn && win.MutationObserver) new MutationObserver(rebuild).observe(mn, { childList: true, subtree: true });
     } catch (e) {}
     try { if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(rebuild); } catch (e) {}
+    try {
+      if (!reduce && win.matchMedia && matchMedia('(hover:hover) and (pointer:fine)').matches) {
+        doc.addEventListener('pointermove', function (e) { if (e.pointerType && e.pointerType !== 'mouse') return; mx = e.clientX; my = e.clientY; pOn = true; if (seg) kick(); }, { passive: true });
+        doc.addEventListener('mouseleave', function () { pOn = false; });
+        win.addEventListener('blur', function () { pOn = false; });
+      }
+    } catch (e) {}
 
     build();
-    if (ok) { var d0 = pathD(0); line.setAttribute('d', d0); glow.setAttribute('d', d0); }
-    if (reduce) update(0); else kick();
+    if (ok) { lastD = ''; if (seg) drawA(0, 0); update(0); }
+    kick();
   } catch (err) { /* the page must never break because of an animation */ }
 })();
