@@ -7,7 +7,7 @@
 .ar-card[data-href]{cursor:pointer}
 .ar-card a,.ar-card button{cursor:pointer}
 .ar-card:hover,.ar-card:focus-within{border-color:rgba(var(--ep-rgb),.6);background:linear-gradient(160deg,rgba(var(--ep-rgb),.2),var(--panel,#17131f) 62%)}
-.ar-mix{--ep-rgb:230,101,221;--ep-c:#e665dd}
+.ar-mix{--ep-rgb:226,146,218;--ep-c:#e292da}
 .ar-shop{--ep-rgb:212,180,110;--ep-c:#D4B46E}
 .ar-lab{--ep-rgb:143,162,255;--ep-c:#8fa2ff}
 .ar-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -26,8 +26,8 @@
 .ar-lab .button:hover{background:linear-gradient(135deg,#a1b1ff,#c6d0ff);box-shadow:0 16px 36px -12px rgba(143,162,255,.75)}
 
 /* ---- mixing card: 4 process steps ---- */
-.ar-mix .button{background:linear-gradient(135deg,#e665dd,#ee8de7);box-shadow:0 10px 28px -14px rgba(230,101,221,.7);color:#1a141f}
-.ar-mix .button:hover{background:linear-gradient(135deg,#ea78e3,#f1a0ec)}
+.ar-mix .button{background:linear-gradient(135deg,#e292da,#ecb3e6);box-shadow:0 10px 28px -14px rgba(226,146,218,.7);color:#1a141f}
+.ar-mix .button:hover{background:linear-gradient(135deg,#e8a3e1,#f2c4ee)}
 
 /* ---- shop products ---- */
 .ar-prods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
