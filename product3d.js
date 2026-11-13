@@ -377,6 +377,7 @@
       ro = new ResizeObserver(function () {
         if (!S.ready || S.destroyed) return;
         var W = stage.clientWidth, H = stage.clientHeight;
+        if (S.pendingReady && !S.hidden && W && H) { S.pendingReady = false; requestAnimationFrame(function () { if (!S.destroyed && build()) { stage.classList.add("p3d-ready"); el.classList.add("p3d-on", "has-p3d"); if (opts.onready) try { opts.onready(); } catch (e) {} readyRes(true); wake(); } }); return; }
         if (W && H && (!built || Math.abs(W - S.W) > 2 || Math.abs(H - S.H) > 2)) {
           cancelAnimationFrame(rt);
           rt = requestAnimationFrame(function () { if (!S.destroyed) { build(); wake(); } });
@@ -412,7 +413,7 @@
           } else if (S.hidden || n > 0) {
             // unsichtbar (z.B. anderer Slide): spaeter ueber ResizeObserver bauen
             if (S.hidden) { S.pendingReady = true; } else setTimeout(function () { tryBuild(n - 1); }, 100);
-          } else fail();
+          } else { S.pendingReady = true; }
         };
         tryBuild(20);
       })

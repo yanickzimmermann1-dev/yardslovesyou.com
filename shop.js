@@ -42,11 +42,13 @@
 
   const card=p=>`
       <article class="product">
-        <a class="product-link" href="${link(p.id)}">
+        <a class="product-link cover-link" href="${link(p.id)}" aria-label="${esc(p.title)}">
           <div class="cover"${model(p)?` data-p3d="${esc(p.id)}"`:""}>
-            ${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}
             ${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" width="600" height="600" class="bu" loading="lazy" decoding="async">`:esc(p.cover_emoji||"")}
           </div>
+        </a>
+        <div class="p-under">${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}</div>
+        <a class="product-link" href="${link(p.id)}">
           <h3>${esc(p.title)}</h3>
           <p>${esc(p.description||"Digital download as ZIP file.")}</p>
           ${p.royalty_free?`<p class="tag-line"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Royalty-free</p>`:""}

@@ -1965,3 +1965,14 @@ footer.site-footer .footer-social svg{display:block;width:22px;height:22px}
 .product-grid .product .cover::before,.product-grid .product .cover::after{display:none!important}
 .product-grid .product:hover .cover img{transform:none!important}
 .product-grid .product .p3d-glow{display:none!important}
+
+/* Shop: Badge und "Play sounds" unter dem Produkt, damit das Produkt frei oben schwebt */
+.product-grid .product .p-under{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-height:0;margin:2px 0 12px}
+.product-grid .product .p-under:empty{display:none}
+.product-grid .product .p-under .badge{position:static;transform:none;margin:0}
+.product-grid .product .sp-layer{position:static;inset:auto;height:auto;overflow:visible;border-radius:0;pointer-events:auto;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.product-grid .product .sp-layer::before{display:none}
+.product-grid .product .sp-pill{position:static}
+.product-grid .product .sp-layer .sp-pads{position:static;display:none;opacity:1;transform:none;pointer-events:auto;justify-content:flex-start}
+.product-grid .product .sp-layer.sp-open .sp-pads{display:flex}
+.product-grid .product .cover-link{display:block}

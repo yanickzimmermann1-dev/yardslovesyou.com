@@ -184,7 +184,7 @@
       const layer = document.createElement("div");
       layer.className = "sp-layer";
       layer.innerHTML = `<button type="button" class="sp-pill" aria-expanded="false" aria-label="Play sounds of ${esc(p.title)}">${PAD_IC}<span>Play sounds</span></button><div class="sp-pads" role="group" aria-label="Sound preview pads">${padHtml(k, p.title)}</div>`;
-      card.appendChild(layer);
+      (card.querySelector(".p-under") || card).appendChild(layer);
       const pill = layer.querySelector(".sp-pill");
       pill.addEventListener("click", e => {
         e.preventDefault(); e.stopPropagation();
