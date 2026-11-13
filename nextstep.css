@@ -9,7 +9,7 @@
   transition:border-color .25s ease,box-shadow .3s ease,transform .3s var(--smooth,ease),background .3s ease}
 .ep-card::before{content:"";position:absolute;left:0;right:0;top:-6px;bottom:-6px;pointer-events:auto}  /* hover hit area follows the lifted card: no enter/leave flicker at the card edge */
 .ep-mix{--ep-rgb:182,138,255;--ep-c:#b68aff}
-.ep-shop{--ep-rgb:224,112,255;--ep-c:#e070ff}
+.ep-shop{--ep-rgb:212,180,110;--ep-c:#D4B46E}
 .ep-free{--ep-rgb:95,224,208;--ep-c:#5fe0d0}
 .ep-ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:var(--ep-c);background:rgba(var(--ep-rgb),.14);border:1px solid rgba(var(--ep-rgb),.35)}
 .ep-ico svg{width:24px;height:24px;display:block}
