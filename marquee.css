@@ -4,6 +4,8 @@
 .mq-set{display:flex;align-items:center;flex:none}
 .mq-w{display:inline-block;padding:0 .35em;color:#fff}
 .mq-w.o{color:transparent;-webkit-text-stroke:1.5px var(--purple,#b68aff)}
+.mq-row:first-child .mq-w.o{-webkit-text-stroke-color:#5fe0d0}
+.mq-row:first-child .mq-star{color:#5fe0d0}
 .mq-row+.mq-row .mq-w.o{-webkit-text-stroke-width:1px}
 .mq-star{flex:none;width:.4em;height:.4em;color:var(--purple,#b68aff);margin:0 .15em}
 @media (prefers-reduced-motion:reduce){.mq-row{will-change:auto}}

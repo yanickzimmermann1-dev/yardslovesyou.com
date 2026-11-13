@@ -17,7 +17,7 @@
   }
   function makeSet(offset) {
     var set = document.createElement('div'); set.className = 'mq-set';
-    WORDS.forEach(function (w, i) {
+    WORDS.concat(WORDS).forEach(function (w, i) {   // 9 words doubled = 18 (even), so the white/outline alternation holds across set seams
       var sp = document.createElement('span');
       sp.className = 'mq-w' + (((i + offset) % 2) ? ' o' : '');
       sp.textContent = w; set.appendChild(sp); set.appendChild(star());

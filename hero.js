@@ -79,19 +79,6 @@
         if (tilt) { s.setProperty('--rx', rx.toFixed(2) + 'deg'); s.setProperty('--ry', ry.toFixed(2) + 'deg'); }
       }
 
-      // spotlight on the gradient words
-      if (tilt && words.length) {
-        var on = pAct > 0.02, i, r;
-        if (on || spot) {
-          for (i = 0; i < words.length; i++) {
-            r = words[i].getBoundingClientRect();
-            words[i].style.setProperty('--sx', (on ? (mx - r.left).toFixed(0) : -999) + 'px');
-            words[i].style.setProperty('--sy', (on ? (my - r.top).toFixed(0) : -999) + 'px');
-          }
-          spot = on ? 1 : 0;
-        }
-      }
-
       drawWave(now, reduce ? 0 : Math.max(vAmp * 0.6, 0.03));
       if (!reduce) raf = requestAnimationFrame(frame);
     }
