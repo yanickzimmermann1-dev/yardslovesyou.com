@@ -165,6 +165,11 @@
       if (!playing || !ch) return offset;
       return Math.max(0, Math.min(dur, ch[side].el.currentTime));
     }
+    var pal = (function () {
+      var svc = document.body && document.body.getAttribute('data-area') === 'service', c = '';
+      if (svc) { try { c = getComputedStyle(document.body).getPropertyValue('--area-c').trim(); } catch (e) {} }
+      return svc ? { a: c || '#e292da', b: '#ecb3e6', r: '226,146,218', r2: '236,179,230' } : { a: '#b68aff', b: '#e5a5ff', r: '182,138,255', r2: '229,165,255' };
+    })();
     function draw() {
       size();
       var W = cv.width, H = cv.height; if (!W || !H) return;
@@ -173,7 +178,7 @@
       var prog = dur ? pos() / dur : 0, mid = H / 2, ps = peaks;
       var g = cx.createLinearGradient(0, 0, W, 0);
       var active = side === 'after';
-      g.addColorStop(0, active ? '#b68aff' : '#8f7fb0'); g.addColorStop(1, active ? '#e5a5ff' : '#a99cc4');
+      g.addColorStop(0, active ? pal.a : '#8f7fb0'); g.addColorStop(1, active ? pal.b : '#a99cc4');
       for (var i = 0; i < n; i++) {
         var x = i * (bw + gap), a, b;
         if (ps) {
@@ -187,12 +192,12 @@
         bar(cx, x, mid - hb / 2, bw, hb);
         // Hauptwelle: AFTER
         var played = (i + 0.5) / n <= prog;
-        cx.fillStyle = !ps ? 'rgba(182,138,255,.14)' : played ? g : (active ? 'rgba(182,138,255,.42)' : 'rgba(182,138,255,.22)');
+        cx.fillStyle = !ps ? 'rgba(' + pal.r + ',.14)' : played ? g : (active ? 'rgba(' + pal.r + ',.42)' : 'rgba(' + pal.r + ',.22)');
         bar(cx, x, mid - ha / 2, bw, ha);
       }
       if (ps) { // Abspielposition
         var px = Math.round(prog * W);
-        cx.fillStyle = '#fff'; cx.shadowColor = 'rgba(229,165,255,.9)'; cx.shadowBlur = 10 * dpr;
+        cx.fillStyle = '#fff'; cx.shadowColor = 'rgba(' + pal.r2 + ',.9)'; cx.shadowBlur = 10 * dpr;
         cx.fillRect(Math.min(W - 2 * dpr, px), 0, 2 * dpr, H); cx.shadowBlur = 0;
       }
     }
@@ -203,7 +208,7 @@
       if (!freq) freq = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(freq);
       var n = W / (sp.clientWidth || 1) > 0 ? Math.max(16, Math.min(48, Math.floor(sp.clientWidth / 9))) : 32, bw = W / n, maxBin = Math.floor(freq.length * 0.7);
-      var g = sx.createLinearGradient(0, H, 0, 0); g.addColorStop(0, 'rgba(182,138,255,.15)'); g.addColorStop(1, side === 'after' ? 'rgba(229,165,255,.95)' : 'rgba(170,160,183,.8)');
+      var g = sx.createLinearGradient(0, H, 0, 0); g.addColorStop(0, 'rgba(' + pal.r + ',.15)'); g.addColorStop(1, side === 'after' ? 'rgba(' + pal.r2 + ',.95)' : 'rgba(170,160,183,.8)');
       sx.fillStyle = g;
       for (var i = 0; i < n; i++) {
         var a = Math.floor(Math.pow(i / n, 1.7) * maxBin) + 1, b = Math.max(a + 1, Math.floor(Math.pow((i + 1) / n, 1.7) * maxBin) + 1), m = 0;

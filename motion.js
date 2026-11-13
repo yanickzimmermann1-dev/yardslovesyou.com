@@ -56,11 +56,12 @@
         var headX = prog * W;
         ctx.lineJoin = 'round'; ctx.lineCap = 'round';
         ctx.shadowBlur = 0;
-        ctx.strokeStyle = 'rgba(182,138,255,.18)'; ctx.lineWidth = 1;
+        var svc = document.body && document.body.getAttribute('data-area') === 'service';
+        ctx.strokeStyle = svc ? 'rgba(226,146,218,.18)' : 'rgba(182,138,255,.18)'; ctx.lineWidth = 1;
         path(Math.max(0, headX - 1), W, T, amp * 0.35, null);
         if (headX > 1) {
-          ctx.strokeStyle = '#b68aff'; ctx.lineWidth = 1.75;
-          ctx.shadowColor = '#8f1fe0'; ctx.shadowBlur = 6;
+          ctx.strokeStyle = svc ? '#e292da' : '#b68aff'; ctx.lineWidth = 1.75;
+          ctx.shadowColor = svc ? '#c45cb9' : '#8f1fe0'; ctx.shadowBlur = 6;
           path(0, headX, T, amp, headX);
           ctx.shadowBlur = 0;
         }

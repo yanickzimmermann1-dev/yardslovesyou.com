@@ -1,0 +1,111 @@
+/* upload-pink.css – pink (service area) colour override, loaded ONLY on upload.html. Generated from the site CSS; scoped to body[data-area="service"]. */
+
+body[data-area="service"]{--purple:#e292da;--pink:#ecb3e6;--area-line:rgba(226,146,218,.55);--glow:0 10px 30px -10px rgba(226,146,218,.55)}
+
+/* styles.css */
+body[data-area="service"] input[type="file"]::file-selector-button:hover{background: rgba(226,146,218, 0.12)}
+body[data-area="service"] input[type="file"]::-webkit-file-upload-button:hover{background: rgba(226,146,218, 0.12)}
+body[data-area="service"] .play-btn{background:#c98fc2}
+body[data-area="service"] .play-btn:hover{background:#f2c4ee}
+body[data-area="service"] .wave-bar.active{background:#c98fc2}
+body[data-area="service"] #admin-panel button[type="submit"],body[data-area="service"] #admin-panel button:not(#admin-toggle){background:#c98fc2}
+body[data-area="service"] #admin-panel button:hover{background:#f2c4ee}
+body[data-area="service"] .pd-video-ph small{color:var(--muted,#c29cbd)}
+body[data-area="service"] .service-option:hover .opt{border-color:#6e4766}
+body[data-area="service"] .service-option input:checked + .opt{background:rgba(226,146,218,.08)}
+body[data-area="service"] .free-kit{background:linear-gradient(135deg,rgba(226,146,218,.12),rgba(23,19,31,.95) 60%)}
+body[data-area="service"] .mc-drop:hover,body[data-area="service"] .mc-drop.over{background:rgba(226,146,218,.06)}
+body[data-area="service"] .mc-mail{border:1px solid rgba(226,146,218,.35);background:linear-gradient(135deg,rgba(226,146,218,.12),rgba(15,12,21,.6) 70%)}
+body[data-area="service"] .bl-cell:hover{border-color:#6e4766}
+body[data-area="service"] .bl-unlock{border:1px solid rgba(226,146,218,.35);background:linear-gradient(135deg,rgba(226,146,218,.12),rgba(15,12,21,.6) 70%)}
+body[data-area="service"] .free-nav-new{border-color:rgba(226,146,218,.5) !important}
+body[data-area="service"] .cm-pill:hover{border-color:#6e4766}
+body[data-area="service"] .cm-chord.now{background:rgba(226,146,218,.1)}
+body[data-area="service"] .button{background:linear-gradient(135deg,var(--purple),#f2c4ee)}
+body[data-area="service"] .button:hover{box-shadow:0 16px 36px -12px rgba(226,146,218,.75);background:linear-gradient(135deg,#f2c4ee,var(--pink))}
+body[data-area="service"] .outline:hover{box-shadow:0 10px 26px -14px rgba(226,146,218,.6)}
+@keyframes breathe{50%{box-shadow:0 0 0 10px rgba(226,146,218,0),0 0 28px 2px rgba(226,146,218,.45)}}
+body[data-area="service"] .product::after,body[data-area="service"] .cp::after,body[data-area="service"] .free-nav a::after{background:radial-gradient(420px circle at var(--mx) var(--my),rgba(226,146,218,.14),transparent 45%)}
+body[data-area="service"] .product:hover,body[data-area="service"] .cp:hover{border-color:#6e4766;box-shadow:0 22px 50px -28px rgba(0,0,0,.9),0 0 0 1px rgba(226,146,218,.12)}
+body[data-area="service"] input:focus,body[data-area="service"] select:focus,body[data-area="service"] textarea:focus{box-shadow:0 0 0 4px rgba(226,146,218,.18)}
+body[data-area="service"] .cm-note.ed:hover{box-shadow:0 0 0 1px #fff6 inset,0 4px 12px -4px rgba(226,146,218,.8)}
+@media(max-width:720px){body[data-area="service"] nav[aria-label="Main"] a.active,body[data-area="service"] nav[aria-label="Main"] a[aria-current="page"]{background:rgba(226,146,218,.12)}
+}body[data-area="service"] .cat-chip.active{background:rgba(226,146,218,.14)}
+body[data-area="service"] .cat-chip.active .cat-n{background:rgba(226,146,218,.22)}
+@media(min-width:721px){body[data-area="service"] .topbar nav[aria-label="Main"] a.active,body[data-area="service"] .topbar nav[aria-label="Main"] a[aria-current="page"]{background:rgba(226,146,218,.14)}
+}@media(min-width:721px){body[data-area="service"] .nav-dd:has(>a.active),body[data-area="service"] .nav-dd:has(>a[aria-current="page"]){background:rgba(226,146,218,.14)}
+body[data-area="service"] .nav-dd-panel a:hover,body[data-area="service"] .nav-dd-panel a:focus-visible{background:rgba(226,146,218,.14) !important}
+}body[data-area="service"] footer.site-footer .footer-links a:hover,body[data-area="service"] footer.site-footer .footer-links a:focus-visible{color:var(--purple,#e292da)}
+body[data-area="service"] footer.site-footer .footer-social a:hover,body[data-area="service"] footer.site-footer .footer-social a:focus-visible{color:var(--purple,#e292da);background:rgba(226,146,218,.10);box-shadow:0 0 18px rgba(226,146,218,.35)}
+body[data-area="service"] .button{box-shadow:0 0 0 1px rgba(226,146,218,.25),0 8px 22px -8px rgba(226,146,218,.6),0 0 26px -8px rgba(236,179,230,.4)}
+body[data-area="service"] .button:hover{box-shadow:0 0 0 1px rgba(236,179,230,.5),0 14px 34px -10px rgba(226,146,218,.85),0 0 40px -6px rgba(236,179,230,.6)}
+body[data-area="service"] .button:active{box-shadow:0 0 0 1px rgba(226,146,218,.4),0 3px 10px -4px rgba(226,146,218,.6),inset 0 2px 8px rgba(24,14,35,.35)}
+body[data-area="service"] .outline:hover{background:rgba(226,146,218,.07);box-shadow:inset 0 0 18px -4px rgba(226,146,218,.35),0 10px 26px -14px rgba(226,146,218,.6)}
+body[data-area="service"] .outline:active{box-shadow:inset 0 0 14px rgba(226,146,218,.4)}
+body[data-area="service"] .button:hover{background:linear-gradient(135deg,#f2c4ee,#f2c4ee)}
+
+/* beforeafter.css */
+body[data-area="service"] .ba-card{box-shadow:0 24px 60px -34px rgba(226,146,218,.4)}
+body[data-area="service"] .ba-card::before{background:radial-gradient(closest-side,rgba(226,146,218,.16),transparent)}
+body[data-area="service"] .ba-card:focus-visible{box-shadow:0 0 0 3px rgba(226,146,218,.3),0 24px 60px -30px rgba(226,146,218,.45)}
+body[data-area="service"] .ba-tabs button[aria-selected="true"]{background:rgba(226,146,218,.14)}
+body[data-area="service"] .ba-wave:hover{border-color:#e292da55}
+body[data-area="service"] .ba-play{background:linear-gradient(135deg,var(--purple),#f2c4ee);box-shadow:0 12px 34px -10px rgba(226,146,218,.8)}
+body[data-area="service"] .ba-play:hover{box-shadow:0 16px 40px -10px rgba(226,146,218,.95)}
+@keyframes baPulse{0%,100%{box-shadow:0 12px 34px -10px rgba(226,146,218,.8)}50%{box-shadow:0 12px 44px -4px rgba(236,179,230,1)}}
+body[data-area="service"] .ba-thumb{background:linear-gradient(135deg,#d98ad1,#ecb3e6);box-shadow:0 0 0 1px #ffffff22 inset,0 8px 28px -4px rgba(226,146,218,.85),0 0 24px rgba(226,146,218,.45)}
+body[data-area="service"] .ba-match input:checked+.ba-box{background:rgba(226,146,218,.35)}
+
+/* mixcalc.css */
+body[data-area="service"] .mc-card{box-shadow:0 24px 60px -30px rgba(226,146,218,.45)}
+body[data-area="service"] .mc-card::before{background:radial-gradient(closest-side,rgba(226,146,218,.16),transparent)}
+body[data-area="service"] .mc-dot.is-done{background:#9a5f93}
+body[data-area="service"] .mc-opt:hover{background:rgba(226,146,218,.1);box-shadow:0 14px 34px -16px rgba(226,146,218,.7)}
+body[data-area="service"] .mc-opt.is-picked{background:rgba(226,146,218,.18)}
+body[data-area="service"] .mc-ico{background:rgba(226,146,218,.14)}
+body[data-area="service"] .mc-rec{background:linear-gradient(160deg,rgba(226,146,218,.18),rgba(13,11,18,.5));box-shadow:0 0 0 1px #ffffff10 inset,0 18px 50px -24px rgba(226,146,218,.8)}
+body[data-area="service"] .mc-go{background:linear-gradient(135deg,var(--purple),#f2c4ee);box-shadow:0 14px 36px -12px rgba(226,146,218,.85)}
+@keyframes mcFlash{0%{box-shadow:0 0 0 0 rgba(226,146,218,.0)}20%{box-shadow:0 0 0 4px rgba(226,146,218,.75),0 0 46px rgba(226,146,218,.5)}100%{box-shadow:0 0 0 0 rgba(226,146,218,0)}}
+
+/* cart.css */
+body[data-area="service"] .cart-upsell{background:rgba(226,146,218,.07)}
+body[data-area="service"] .cart-fly{box-shadow:0 14px 34px -8px rgba(226,146,218,.7)}
+body[data-area="service"] .cart-add-ic.in-cart{background:rgba(226,146,218,.14)}
+body[data-area="service"] .cart-chip{background:rgba(226,146,218,.12)}
+body[data-area="service"] .promo-note{background:rgba(226,146,218,.12)}
+
+/* stepper.css */
+body[data-area="service"] .up-stepper li.done:not(:last-child)::after{background:var(--purple,#e292da)}
+body[data-area="service"] li.done .up-step .n{background:var(--purple,#e292da);border-color:var(--purple,#e292da)}
+body[data-area="service"] li.current .up-step .n{border-color:var(--purple,#e292da);color:var(--purple,#e292da);box-shadow:0 0 0 4px #e292da26}
+body[data-area="service"] .up-step:focus-visible{outline:2px solid var(--purple,#e292da)}
+@keyframes upPulse{50%{box-shadow:0 0 0 8px #e292da10}}
+
+/* upload-fx.css */
+body[data-area="service"] .upfx-orb{background:radial-gradient(circle at 50% 45%,#fff 0%,#f6d6f2 14%,#e292da 38%,rgba(192,79,180,.55) 62%,rgba(192,79,180,0) 72%);box-shadow:0 0 70px 24px rgba(226,106,218,.5),0 0 160px 60px rgba(192,79,180,.28)}
+body[data-area="service"] .upfx-card{border:1px solid rgba(226,146,218,.35);box-shadow:0 10px 30px -10px rgba(226,146,218,.55)}
+body[data-area="service"] .upfx-ico{background:rgba(226,146,218,.18);color:#f2c4ee}
+body[data-area="service"] .upfx-bar{background:rgba(226,146,218,.18)}
+body[data-area="service"] .upfx-fill{background:linear-gradient(90deg,#c04fb4,#e292da)}
+
+/* skeleton.css */
+body[data-area="service"] .sk{background:rgba(226,146,218,.07)}
+body[data-area="service"] .sk::after{background:linear-gradient(100deg,transparent 20%,rgba(226,146,218,.16) 50%,transparent 80%)}
+
+/* footerword.css */
+body[data-area="service"] .fw-p{background:linear-gradient(90deg,#ecb3e6,#e292da 55%,#b0559f)}
+
+/* uisound.css */
+body[data-area="service"] .uis-btn[aria-pressed="true"]{color:var(--purple,#e292da)}
+body[data-area="service"] .uis-btn:hover{border-color:var(--purple,#e292da);color:var(--purple,#e292da)}
+body[data-area="service"] .uis-btn:focus-visible{outline:2px solid var(--purple,#e292da)}
+
+/* thread.css */
+body[data-area="service"] .thread{--thread-c:#e292da;--thread-c:color-mix(in srgb,var(--area-c,#e292da) 38%,#e292da)}
+
+/* nextstep.css */
+body[data-area="service"] .ep-mix{--ep-c:#e292da}
+body[data-area="service"] .ns-box{box-shadow:inset 0 1px 0 var(--area-line,rgba(226,146,218,.55))}
+
+/* states.css */
+body[data-area="service"] .yly-state-ic{color:var(--area-c,#e292da)}

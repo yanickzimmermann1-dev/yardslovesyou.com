@@ -1855,15 +1855,18 @@ html.js-motion .hero .hero-actions{animation-delay:.32s}
 .nav-dd{display:contents}
 .nav-dd-toggle,.nav-dd-panel{display:none}
 @media(min-width:721px){
-  .nav-dd{display:flex;position:relative;align-items:center}
-  .nav-dd>a{padding-right:6px !important}
+  .nav-dd{display:flex;position:relative;align-items:center;border-radius:999px;transition:background .25s,color .2s}
+  .topbar nav[aria-label="Main"] .nav-dd>a,.topbar nav[aria-label="Main"] .nav-dd>a:hover,.topbar nav[aria-label="Main"] .nav-dd>a.active,.topbar nav[aria-label="Main"] .nav-dd>a[aria-current="page"]{background:none;padding-right:2px;transform:none}
   .nav-dd-toggle{
-    display:inline-flex;align-items:center;justify-content:center;width:26px;height:30px;margin-left:-4px;margin-right:4px;
+    display:inline-flex;align-items:center;justify-content:center;width:26px;align-self:stretch;margin:0 8px 0 0;
     background:none;border:0;border-radius:999px;color:var(--muted);cursor:pointer;padding:0;
-    transition:transform .35s var(--spring),color .2s,background .25s;
+    transition:color .2s;
   }
+  .nav-dd:hover,.nav-dd.open{background:#ffffff0f}
+  .topbar nav[aria-label="Main"] .nav-dd:hover>a,.topbar nav[aria-label="Main"] .nav-dd.open>a,.nav-dd:hover .nav-dd-toggle,.nav-dd.open .nav-dd-toggle{color:var(--text)}
+  .nav-dd:has(>a.active),.nav-dd:has(>a[aria-current="page"]){background:rgba(182,138,255,.14)}
+  .topbar nav[aria-label="Main"] .nav-dd>a.active,.topbar nav[aria-label="Main"] .nav-dd>a[aria-current="page"],.nav-dd:has(>a.active) .nav-dd-toggle,.nav-dd:has(>a[aria-current="page"]) .nav-dd-toggle{color:var(--purple)}
   .nav-dd-toggle svg{width:14px;height:14px;transition:transform .35s var(--spring)}
-  .nav-dd-toggle:hover{color:var(--text);background:#ffffff0f}
   .nav-dd.open .nav-dd-toggle svg{transform:rotate(180deg)}
   .nav-dd-panel{
     display:block;position:absolute;top:calc(100% + 14px);left:50%;z-index:20;width:290px;padding:8px;
