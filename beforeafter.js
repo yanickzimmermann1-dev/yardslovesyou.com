@@ -461,5 +461,7 @@
   fetchRows().then(function (rows) {
     if (!rows.length) return;
     sections.forEach(function (s, i) { try { mount(s, rows, i); } catch (e) { s.hidden = true; } });
+    // The section is hidden until the data arrives, so the browser could not jump to #hear on load: do it now (e.g. upload.html#hear)
+    if (location.hash === '#hear') { var t = document.getElementById('hear'); if (t && !t.hidden) setTimeout(function () { t.scrollIntoView({ block: 'start' }); }, 60); }
   }).catch(function () {});
 })();

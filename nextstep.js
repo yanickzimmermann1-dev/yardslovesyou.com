@@ -36,7 +36,7 @@
     // entry cards on home
     var ep = doc.querySelector('.entry-paths');
     if (ep) {
-      reveal([].slice.call(ep.querySelectorAll('.section-head, .ep-card')));
+      reveal([].slice.call(ep.querySelectorAll('.section-head, .ar-card, .ep-card')));
       ep.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a'); if (a) track('entry', a.getAttribute('href')); });
     }
 
@@ -56,7 +56,7 @@
       mixcheck: { line: 'Want a pro to take it from here?', btns: [['Get your track mixed', 'upload.html'], ['Train your ears', 'eartrainer.html']] },
       beatlab: { line: 'Like the sounds? Take the loop further.', btns: [['Write chords for your loop', 'chords.html'], LAB] },
       chords: { line: 'Add percussion to your chords.', btns: [['Open the Perc Lab', 'beatlab.html'], LAB] },
-      eartrainer: { line: 'Hear it in a real mix.', btns: [['Hear the difference', '/#hear'], ['Get your track mixed', 'upload.html']] },
+      eartrainer: { line: 'Hear it in a real mix.', btns: [['Hear the difference', 'upload.html#hear'], ['Get your track mixed', 'upload.html']] },
       community: { line: 'Make something new.', btns: [['Perc Lab', 'beatlab.html'], ['Chord Starter', 'chords.html']] },
       profile: { line: 'Make something new.', btns: [['Perc Lab', 'beatlab.html'], ['Chord Starter', 'chords.html']] },
       account: { line: 'Your next stop.', btns: [['Go to the Lab', 'community.html']] },

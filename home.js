@@ -15,7 +15,7 @@
     return; 
   }
   
-  const db = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
+  const db = (window.YLY && window.YLY.db) || window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);   // one shared client (community-core.js) avoids a second GoTrue instance
   let user = null;
   const status = msg => { const el = $("status"); if(el) el.textContent = msg; };
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));

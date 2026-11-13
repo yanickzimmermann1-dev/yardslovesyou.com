@@ -108,3 +108,4 @@
   .ba-thumb,.ba-play,.ba-box::after,.ba-spectrum{transition:none}
   .ba-play.playing,.ba-switch.morph .ba-thumb,.ba-play.indet .ba-ring{animation:none}
 }
+#hear{scroll-margin-top:90px}

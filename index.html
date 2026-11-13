@@ -65,9 +65,9 @@
   <link rel="stylesheet" href="fx.css?v=20261113g">
   <link rel="stylesheet" href="styles.css?v=20261114i">
   <link rel="stylesheet" href="states.css?v=20261113q">
-  <link rel="stylesheet" href="beforeafter.css?v=20261113l">
-  <link rel="stylesheet" href="home-scroll.css?v=20261113o">
-  <link rel="stylesheet" href="home-work.css?v=20261113o">
+  <link rel="stylesheet" href="product3d.css?v=20261111f">
+  <link rel="stylesheet" href="home-scroll.css?v=20261114p">
+  <link rel="stylesheet" href="home-work.css?v=20261114p">
   <link rel="stylesheet" href="hero.css?v=20261113t">
   <link rel="stylesheet" href="cart.css?v=20261113q">
   <!-- WICHTIG: UMD-Build für globales window.supabase -->
@@ -80,6 +80,7 @@
   <link rel="stylesheet" href="sections.css?v=20261114g">
   <link rel="stylesheet" href="thread.css?v=20261113t">
   <link rel="stylesheet" href="nextstep.css?v=20261114n">
+  <link rel="stylesheet" href="home-areas.css?v=20261114p">
 </head>
 <body data-area="mix">
 
@@ -108,95 +109,102 @@
         <div class="hero-actions hx-cta">
           <a class="button hx-primary" href="upload.html">Submit your track</a>
           <a class="outline hx-ghost" href="shop.html">Browse sounds</a>
-          <a class="hx-hear" href="#hear">Hear the difference <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6"/></svg></a>
+          <a class="hx-hear" href="upload.html#hear">Hear the difference <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6"/></svg></a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Three entry paths -->
+  <!-- Three areas: Mixing / Shop / Lab -->
   <section class="entry-paths" id="paths" aria-labelledby="paths-title">
     <div class="section-head">
       <div>
         <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>START HERE</p>
-        <h2 id="paths-title">Where do you want to go?</h2>
+        <h2 id="paths-title">Everything yards does, in one place</h2>
       </div>
     </div>
-    <div class="ep-grid">
-      <div class="ep-card ep-mix">
-        <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v5M6 13v7M12 4v9M12 17v3M18 4v3M18 11v9"/><circle cx="6" cy="11" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="18" cy="9" r="2"/></svg></span>
-        <h3>Get your track mixed</h3>
-        <p>Send your stems and get a mix or master that hits hard and stays clean.</p>
-        <a class="ep-sub" href="#hear">Hear the difference</a>
-        <a class="ep-go" href="upload.html">Upload your track <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-      <div class="ep-card ep-shop">
-        <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg></span>
-        <h3>Get sounds &amp; guides</h3>
-        <p>The Essentials percussion kit and The Last Yards guide, ready to download.</p>
-        <a class="ep-go" href="shop.html">Browse the shop <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-      <div class="ep-card ep-lab">
-        <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18V6H3zM12 6v14"/><path d="M12 6c-1-3-5-3.5-5-1.2C7 6.2 9 6 12 6Zm0 0c1-3 5-3.5 5-1.2 0 1.4-2 1.2-5 1.2Z"/></svg></span>
-        <h3>Make &amp; share in the Lab</h3>
-        <p>Perc Lab, Chord Starter, Ear Trainer and Mix Check. Make loops, write chords, then share them.</p>
-        <a class="ep-sub" href="free.html">Free sounds</a>
-        <a class="ep-go" href="community.html#tools">Open the Lab <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
+    <div class="ar-grid">
+      <article class="ar-card ar-mix" aria-labelledby="ar-mix-t">
+        <div class="ar-top"><span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v5M6 13v7M12 4v9M12 17v3M18 4v3M18 11v9"/><circle cx="6" cy="11" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="18" cy="9" r="2"/></svg></span><span class="ar-tag">Mixing &amp; mastering</span></div>
+        <h3 id="ar-mix-t">Get your track mixed</h3>
+        <p class="ar-price">from <strong>CHF 150</strong></p>
+        <p class="ar-lead">Send your stems and get a mix or master that hits hard and stays clean.</p>
+        <div class="ab-mini" id="ab-mini" aria-label="Before and after sample">
+          <div class="ab-row">
+            <button class="ab-play" type="button" aria-label="Play before and after sample" disabled>
+              <svg class="ab-i-play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+              <svg class="ab-i-pause" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+            </button>
+            <div class="ab-seg is-before" role="radiogroup" aria-label="Version">
+              <span class="ab-thumb" aria-hidden="true"></span>
+              <button type="button" role="radio" aria-checked="true" data-side="before">Before</button>
+              <button type="button" role="radio" aria-checked="false" data-side="after">After</button>
+            </div>
+          </div>
+          <div class="ab-bar" aria-hidden="true"><i></i></div>
+          <p class="ab-cap" aria-live="polite">Loading sample</p>
+        </div>
+        <div class="ar-actions">
+          <a class="button" href="upload.html">Upload your track</a>
+          <a class="ar-link" href="upload.html#hear">Hear the full comparison <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </article>
+
+      <article class="ar-card ar-shop" aria-labelledby="ar-shop-t">
+        <div class="ar-top"><span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg></span><span class="ar-tag">Shop</span></div>
+        <h3 id="ar-shop-t">Get sounds &amp; guides</h3>
+        <p class="ar-lead">The Essentials percussion kit and The Last Yards guide, ready to download.</p>
+        <div class="ar-prods" id="ar-prods" aria-busy="true">
+          <div class="ar-p sk-card" aria-hidden="true"><div class="ar-cover sk"></div><div class="sk sk-line"></div></div>
+          <div class="ar-p sk-card" aria-hidden="true"><div class="ar-cover sk"></div><div class="sk sk-line"></div></div>
+        </div>
+        <div class="ar-actions">
+          <a class="button" href="shop.html">Browse the shop</a>
+        </div>
+      </article>
+
+      <article class="ar-card ar-lab" aria-labelledby="ar-lab-t">
+        <div class="ar-top"><span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5h5"/><path d="M10.5 3.5v6L5 19a1.5 1.5 0 0 0 1.3 2.2h11.4A1.5 1.5 0 0 0 19 19l-5.5-9.5v-6"/><path d="M7.5 15h9"/></svg></span><span class="ar-tag">The Lab</span></div>
+        <h3 id="ar-lab-t">Make &amp; share in the Lab</h3>
+        <p class="ar-lead">Free tools for loops, chords, ears and mixes. Make something, then share it.</p>
+        <ul class="ar-tools">
+          <li><a href="beatlab.html"><span class="ar-ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h2M7 8v8M11 5v14M15 8v8M19 10v4M21 12h0"/></svg></span>Perc Lab</a></li>
+          <li><a href="chords.html"><span class="ar-ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17V7l8 3v10l-8-3ZM12 10l8-3v10l-8 3"/></svg></span>Chord Starter</a></li>
+          <li><a href="eartrainer.html"><span class="ar-ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg></span>Ear Trainer</a></li>
+          <li><a href="mixcheck.html"><span class="ar-ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v5M6 13v7M12 4v9M12 17v3M18 4v3M18 11v9"/><circle cx="6" cy="11" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="18" cy="9" r="2"/></svg></span>Mix Check</a></li>
+        </ul>
+        <p class="ar-count" id="lab-count" hidden><strong>0</strong> loops &amp; ideas shared</p>
+        <div class="ar-actions">
+          <a class="button" href="community.html#tools">Open the Lab</a>
+        </div>
+      </article>
     </div>
   </section>
 
-  <!-- Before / After (versteckt, bis Daten da sind) -->
-  <section class="home-section ba-section" id="hear" data-beforeafter data-cta="upload.html" hidden></section>
-
-  <!-- Services -->
-  <section class="home-section" id="services" aria-labelledby="services-title">
+  <!-- Selected work: compact gallery (home.js renders the cards, home-work.js animates them) -->
+  <section class="home-section" id="work" aria-labelledby="work-title">
     <div class="section-head">
       <div>
-        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>SERVICES</p>
-        <h2 id="services-title">What you can book</h2>
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>SELECTED WORK</p>
+        <h2 id="work-title">Recent mixes</h2>
       </div>
-      <a class="outline" href="upload.html">All services</a>
     </div>
-
-    <div class="service-grid">
-      <a class="service-card" data-hs data-nomagnet href="upload.html?service=stem-mastering">
-        <span class="service-meta">ZIP upload</span>
-        <h3>Stem Mastering</h3>
-        <p>Send your stems and get a release-ready master with the punch and loudness your track deserves.</p>
-        <span class="price">CHF 200</span>
-        <span class="service-cta">Book now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </a>
-      <a class="service-card" data-hs data-nomagnet href="upload.html?service=mixing">
-        <span class="service-meta">ZIP upload</span>
-        <h3>Mixing</h3>
-        <p>Balance, depth and clarity: your stems mixed into a cohesive, professional sounding track.</p>
-        <span class="price">CHF 300</span>
-        <span class="service-cta">Book now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </a>
-      <a class="service-card" data-hs data-nomagnet href="upload.html?service=vocal-hook">
-        <span class="service-meta">Single WAV</span>
-        <h3>Vocal Hook</h3>
-        <p>Send your instrumental and get a custom vocal hook written and recorded for it.</p>
-        <span class="price">CHF 500</span>
-        <span class="service-cta">Book now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </a>
-      <a class="service-card" data-hs data-nomagnet href="upload.html?service=vocal-mix">
-        <span class="service-meta">ZIP upload · 2-track beat</span>
-        <h3>Vocal Mix</h3>
-        <p>Bought or leased a beat? Send the 2-track beat together with your vocal stems and get your vocals mixed to sit perfectly on it.</p>
-        <span class="price">CHF 150</span>
-        <span class="service-cta">Book now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </a>
-    </div>
-  </section>
-
-  <!-- Work gallery: vertical gallery, cards rotate into place with scroll (home-work.js) -->
-  <section class="home-section" id="work" aria-label="Recent mixes">
     <div id="tracks" class="track-grid">
       <div class="empty">Loading tracks …</div>
     </div>
     <p id="status" class="status" role="status"></p>
+  </section>
+
+  <!-- New in the Lab (home-areas.js; stays hidden without posts) -->
+  <section class="home-section nl-section" id="newlab" aria-labelledby="newlab-title" hidden>
+    <div class="section-head">
+      <div>
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>FROM THE COMMUNITY</p>
+        <h2 id="newlab-title">New in the Lab</h2>
+      </div>
+      <a class="outline" href="community.html">See all</a>
+    </div>
+    <div class="cp-list nl-grid" id="nl-grid"></div>
   </section>
 
   <!-- About & Kontakt -->
@@ -224,6 +232,16 @@
       </div>
     </div>
   </section>
+
+  <!-- Free sounds band -->
+  <section class="home-section free-band" id="freeband" aria-labelledby="freeband-title">
+    <div class="fb-text">
+      <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>FREE</p>
+      <h2 id="freeband-title">Free percussion kit + monthly Sound Drop</h2>
+      <p class="muted">Grab a free kit and get a fresh sound drop in your inbox every month.</p>
+    </div>
+    <a class="button" href="free.html">Get free sounds</a>
+  </section>
 </main>
 
 <footer class="site-footer">
@@ -246,11 +264,14 @@
 <script defer src="config.js"></script>
   <script defer src="products-map.js?v=20261114m"></script>
   <script defer src="media.js?v=20261114k"></script>
-<script defer src="home.js?v=20261114j"></script>
-<script defer src="home-scroll.js?v=20261113p"></script>
+<script src="product3d.js?v=20261114f" defer></script>
+<script defer src="community-core.js"></script>
+<script defer src="home.js?v=20261114p"></script>
+<script defer src="home-scroll.js?v=20261114p"></script>
 <script defer src="home-work.js?v=20261113q"></script>
 <script defer src="hero.js?v=20261113t"></script>
-<script src="beforeafter.js?v=20261114j" defer></script>
+<script defer src="home-ab.js?v=20261114p"></script>
+<script defer src="home-areas.js?v=20261114p"></script>
   <script src="cart.js?v=20261114m" defer></script>
   <script src="nav.js?v=20261114n" defer></script>
   <script src="fx.js?v=20261113g" defer></script>
@@ -258,10 +279,10 @@
   <script src="intro.js?v=20261113g" defer></script>
   <script src="motion.js?v=20261113l" defer></script>
   <script src="thread.js?v=20261113t" defer></script>
-  <script src="nextstep.js?v=20261114n" defer></script>
+  <script src="nextstep.js?v=20261114p" defer></script>
   <script src="cursor.js?v=20261113n" defer></script>
   <script src="reveal.js?v=20261113j" defer></script>
   <script src="footerword.js?v=20261113l" defer></script>
-  <script src="marquee.js?v=20261113l" defer></script>
+  <script src="marquee.js?v=20261114p" defer></script>
 </body>
 </html>

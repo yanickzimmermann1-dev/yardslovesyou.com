@@ -35,30 +35,6 @@ body::before{
 .hs-dia.hs-live{will-change:transform}
 .hs-dia.hs-live .hs-pend,.hs-dia.hs-live .hs-gem{will-change:transform}
 
-/* ---------- 2) Player-Karte: Neigung aus der Tiefe ---------- */
-.ba-card.hs-tilt{transform-origin:50% 100%;backface-visibility:hidden}
-.ba-card.hs-live{will-change:transform,opacity}
-.ba-wave.hs-wave canvas.ba-canvas{-webkit-mask-image:linear-gradient(90deg,#000 calc(var(--hs-r,0) * 1%),transparent calc(var(--hs-r,0) * 1% + 14%));mask-image:linear-gradient(90deg,#000 calc(var(--hs-r,0) * 1%),transparent calc(var(--hs-r,0) * 1% + 14%));transform-origin:50% 50%}
-
-/* ---------- 3) Services: 3D-Stapel ---------- */
-.hs-stack{position:relative}
-.hs-pin{position:sticky;top:78px;height:calc(100vh - 78px);height:calc(100svh - 78px);display:flex;flex-direction:column;justify-content:center}
-.hs-pin .section-head{margin-bottom:26px}
-.hs-pin .service-grid{position:relative;padding-right:26px}
-/* Services reagieren NUR auf Scroll: home-scroll.js ist die einzige Instanz, die transform schreibt. Kein Hover, keine Transition. */
-.service-card[data-hs]{transition:none;transform-style:flat;backface-visibility:hidden;transform-origin:50% 60%}
-.service-card[data-hs]:focus-visible{outline:2px solid var(--purple,#b68aff);outline-offset:3px}
-.hs-live .service-card{will-change:transform}
-.hs-dots{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;pointer-events:none}
-.hs-dots i{display:block;width:8px;height:8px;border-radius:50%;background:#ffffff30;transition:transform .3s,background .3s}
-.hs-dots i.on{background:var(--purple,#b68aff);transform:scale(1.35)}
-@media(max-width:720px){
-  .service-grid .service-card.hs-m{transform-origin:50% 100%;backface-visibility:hidden}
-  .service-grid.hs-live .service-card{will-change:transform,opacity}
-}
-
 @media(prefers-reduced-motion:reduce){
   .hs-spk{display:none}
-  .ba-card.hs-tilt{transform:none!important;opacity:1!important}
-  .ba-wave.hs-wave canvas.ba-canvas{-webkit-mask-image:none;mask-image:none}
 }

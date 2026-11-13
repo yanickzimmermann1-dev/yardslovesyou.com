@@ -8,7 +8,6 @@
     var doc = document, root = doc.documentElement;
     var reduce = false;
     try { reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
-    var mqM = window.matchMedia ? matchMedia('(max-width: 720px)') : { matches: false };
     var raf = 0, y = 0, lastY = 0, lastT = 0, vel = 0, vh = window.innerHeight || 800, maxScroll = 1;
     var G = {};              // gemessene Dokument-Positionen (ohne Transforms)
     var near = new Map();    // Element -> nah am Viewport
@@ -45,7 +44,7 @@
     }
     /* Kein Landen mehr: Der Diamant schwingt, solange der Hero im Bild ist. Beim Hinausscrollen sinkt er ein Stück,
        blendet aus (Opacity -> 0), wird leicht unscharf und kleiner und ist komplett unsichtbar, bevor er die
-       „Hear the difference“-Sektion erreicht. Vollständig umkehrbar (alles wird aus dem Scrollstand berechnet). */
+       nächsten Sektion erreicht. Vollständig umkehrbar (alles wird aus dem Scrollstand berechnet). */
     function fadeRange() {
       var yEnd = Math.max(200, G.nextTop - (G.by + 90 * G.s) + 10);
       var span = clamp(yEnd, 200, 520);
@@ -97,120 +96,6 @@
       setTimeout(sparkLoop, moving ? 140 + Math.random() * 260 : 800 + Math.random() * 1500);
     }
 
-    /* ================= 2) „Hear the difference“ ================= */
-    var hearSec = $('#hear'), card = null, waveEl = null, cvEl = null, waveT0 = 0, waveState = 0, tiltDone = false;
-    function bindHear() {
-      if (card || !hearSec || hearSec.hidden) return;
-      var c = $('.ba-card', hearSec); if (!c) return;
-      card = c; card.classList.add('hs-tilt');
-      waveEl = $('.ba-wave', card); cvEl = waveEl && $('.ba-canvas', waveEl);
-      if (waveEl && cvEl) { waveEl.classList.add('hs-wave'); waveEl.style.setProperty('--hs-r', '-16'); cvEl.style.transform = 'scaleY(.35)'; watch(waveEl); }
-      watch(card); measure(); schedule();
-    }
-    var hp = 0, hTgt = 0, hKey = '', hInit = false, hRel = 0, hLast = 0;
-    function hearFrame(now, dt) {
-      var more = false;
-      if (!card) return false;
-      /* Einziger Schreiber der Karte. Ziel aus dem UNtransformierten Dokument-Offset (G.cardTop = offsetTop-Summe),
-         der angezeigte Wert folgt dem Ziel zeitbasiert (exponentiell) und rastet bei |delta| < 0.001 ein. */
-      hTgt = clamp((vh * 0.95 - (G.cardTop - y)) / (vh * 0.5), 0, 1);
-      if (!hInit) { hInit = true; hp = hTgt; }
-      var d = hTgt - hp;
-      if (Math.abs(d) < 0.001) hp = hTgt; else { hp += d * (1 - Math.exp(-Math.max(dt, 0.001) * 16)); more = true; }
-      var e = ease(hp);
-      if (e >= 0.999 && hTgt >= 0.995) {                    /* Ruhezustand: Hysterese gegen Flackern an der Schwelle */
-        if (!tiltDone) {
-          tiltDone = true; hKey = '';
-          card.style.transform = ''; card.style.opacity = '';
-          clearTimeout(hRel); hRel = setTimeout(function () { if (tiltDone) setLive(card, false); }, 180);
-        }
-      } else if (e < 0.999) {
-        if (tiltDone) { tiltDone = false; clearTimeout(hRel); }
-        setLive(card, true);
-        var tr = 'perspective(1100px) translate3d(0,' + ((1 - e) * 30).toFixed(2) + 'px,' + (-70 * (1 - e)).toFixed(2) + 'px) rotateX(' + (18 * (1 - e)).toFixed(3) + 'deg) scale(' + (0.92 + 0.08 * e).toFixed(3) + ')';
-        if (tr !== hKey) { hKey = tr; card.style.transform = tr; card.style.opacity = (0.15 + 0.85 * e).toFixed(3); }
-      }
-      if (waveState === 0 && waveEl && isNear(waveEl) && G.waveTop - y < vh * 0.85) { waveState = 1; waveT0 = now; }
-      if (waveState === 1) {
-        var q = clamp((now - waveT0) / 1300, 0, 1), s = smooth(q);
-        waveEl.style.setProperty('--hs-r', (-16 + 116 * s).toFixed(1));
-        cvEl.style.transform = 'scaleY(' + (0.35 + 0.65 * ease(q)).toFixed(3) + ')';
-        if (q >= 1) { waveState = 2; waveEl.classList.remove('hs-wave'); waveEl.style.removeProperty('--hs-r'); cvEl.style.transform = ''; } else more = true;
-      }
-      return more;
-    }
-
-    /* ================= 3) Services ================= */
-    var svc = $('#services'), grid = svc && $('.service-grid', svc), cards = grid ? [].slice.call(grid.querySelectorAll('.service-card')) : [];
-    var stackEl = null, pinEl = null, dotsEl = null, dotEls = [], stackOn = false, slots = [], stackDone = false, dotIdx = -1, zs = [];
-    function buildStack() {
-      if (stackOn || reduce || !svc || cards.length < 2 || mqM.matches) return;
-      var head = $('.section-head', svc);
-      stackEl = doc.createElement('div'); stackEl.className = 'hs-stack';
-      pinEl = doc.createElement('div'); pinEl.className = 'hs-pin';
-      svc.insertBefore(stackEl, head || grid); stackEl.appendChild(pinEl);
-      if (head) pinEl.appendChild(head);
-      pinEl.appendChild(grid);
-      dotsEl = doc.createElement('div'); dotsEl.className = 'hs-dots'; dotsEl.setAttribute('aria-hidden', 'true');
-      dotEls = cards.map(function () { var d = doc.createElement('i'); dotsEl.appendChild(d); return d; });
-      pinEl.appendChild(dotsEl);
-      stackEl.style.height = ((cards.length + 1) * 60) + 'vh';
-      stackOn = true; stackDone = false; dotIdx = -1;
-      watch(stackEl);
-    }
-    function destroyStack() {
-      if (!stackOn) return;
-      var head = $('.section-head', pinEl);
-      svc.insertBefore(grid, stackEl);
-      if (head) svc.insertBefore(head, grid);
-      svc.removeChild(stackEl); io && io.unobserve(stackEl); near.delete(stackEl);
-      stackEl = pinEl = dotsEl = null; stackOn = false;
-      cards.forEach(function (c) { c.style.transform = ''; c.style.zIndex = ''; });
-      grid.classList.remove('hs-live');
-    }
-    function stackFrame() {
-      if (!stackOn || !G.range || !(isNear(stackEl) || !stackDone)) return;
-      var n = cards.length, P = clamp((y - (G.stackTop - 78)) / G.range, 0, 1);
-      if (P >= 1 && stackDone) return;
-      var f = [], i, seg = P * (n + 1), sw = 0, ax = 0, ay = 0, fc = 0;
-      for (i = 0; i < n; i++) {
-        f[i] = smooth(clamp(seg - i, 0, 1)); fc += f[i];
-        var w = 1 - f[i]; sw += w; ax += w * slots[i].x; ay += w * slots[i].y;
-      }
-      if (sw > 0.001) { ax /= sw; ay /= sw; } else { ax = slots[n - 1].x; ay = slots[n - 1].y; }
-      if (P >= 1) {
-        cards.forEach(function (c) { c.style.transform = ''; c.style.zIndex = ''; });
-        grid.classList.remove('hs-live'); stackDone = true; setDots(n - 1); return;
-      }
-      stackDone = false; grid.classList.add('hs-live');
-      for (i = 0; i < n; i++) {
-        var rk = Math.max(0, i - fc), e = f[i], m = 1 - e;
-        var tx = (ax - slots[i].x + rk * 7) * m, ty = (ay - slots[i].y + rk * 9) * m, tz = -rk * 45 * m;
-        var rz = (2 - rk * 2.6) * m, ry = (-7 + rk * 2) * m, sc = 1 - (0.035 * rk + 0.02) * m;
-        cards[i].style.transform = 'perspective(1100px) translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,' + tz.toFixed(1) + 'px) rotateY(' + ry.toFixed(2) + 'deg) rotateZ(' + rz.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
-        var z = e > 0 ? 20 + i : 10 - i;
-        if (zs[i] !== z) { zs[i] = z; cards[i].style.zIndex = z; }
-      }
-      setDots(Math.min(n - 1, Math.floor(P * (n + 1))));
-    }
-    function setDots(k) {
-      if (k === dotIdx) return; dotIdx = k;
-      dotEls.forEach(function (d, i) { d.classList.toggle('on', i === k); });
-    }
-    function mobileFrame() {
-      if (stackOn || reduce || !grid || !mqM.matches) return;
-      for (var i = 0; i < cards.length; i++) {
-        var c = cards[i], top = G.cardTops && G.cardTops[i];
-        if (top == null) continue;
-        var p = y >= maxScroll - 2 ? 1 : clamp((vh * 0.95 - (top - y)) / (vh * 0.32), 0, 1), e = ease(p);
-        if (e >= 0.999) { if (c.style.transform || c.style.opacity) { c.style.transform = ''; c.style.opacity = ''; } continue; }
-        if (!isNear(c) && p <= 0) { if (!c.style.opacity) { c.style.opacity = '0.15'; } }
-        c.classList.add('hs-m');
-        c.style.transform = 'perspective(700px) translate3d(0,' + ((1 - e) * 46).toFixed(1) + 'px,' + (-60 * (1 - e)).toFixed(1) + 'px) rotateX(' + (10 * (1 - e)).toFixed(2) + 'deg)';
-        c.style.opacity = (0.15 + 0.85 * e).toFixed(3);
-      }
-    }
-
     /* ================= Messen + Hauptschleife ================= */
     function measure() {
       vh = window.innerHeight || 800;
@@ -229,12 +114,6 @@
         var wr = $('.wrap'); var wrR = wr ? wr.getBoundingClientRect().right : vw - 20;
         G.tx = Math.min(vw - 14 - 80 * G.sl, wrR - 80 * G.sl - 6); G.ty0 = (vw / vh >= 1.15 ? 10 : -22) + 74 * G.sl;
       }
-      if (card) { G.cardTop = rect0(card); if (waveEl) G.waveTop = rect0(waveEl); }
-      if (stackOn) {
-        G.stackTop = rect0(stackEl); G.range = Math.max(1, stackEl.offsetHeight - pinEl.offsetHeight);
-        slots = cards.map(function (c) { return { x: c.offsetLeft + c.offsetWidth / 2, y: c.offsetTop + c.offsetHeight / 2 }; });
-      }
-      if (!stackOn && grid && !reduce) G.cardTops = cards.map(rect0);
     }
     var lastFrameT = 0;
     function frame(now) {
@@ -249,9 +128,6 @@
       try {
         if (!reduce) {
           if (heroFrame(dt, dy)) more = true;
-          if (hearFrame(now, dt)) more = true;
-          stackFrame();
-          mobileFrame();
         }
       } catch (e) {}
       lastY = y; lastFrameT = now;
@@ -275,29 +151,13 @@
         }, { rootMargin: '25% 0px 25% 0px', threshold: 0 });
         if (hero) watch(hero);
         if (gemEl) { watch(gemEl); }
-        if (grid && !stackOn) cards.forEach(watch);
       }
-      buildStack();
-      var onMq = function () {
-        if (mqM.matches) { destroyStack(); } else { buildStack(); }
-        if (io && grid && !stackOn) cards.forEach(function (c) { if (!near.has(c)) watch(c); });
-        cards.forEach(function (c) { c.style.transform = ''; c.style.opacity = ''; });
-        measure(); schedule();
-      };
-      if (mqM.addEventListener) mqM.addEventListener('change', onMq); else if (mqM.addListener) mqM.addListener(onMq);
-      measure(); bindHear();
-      if (hearSec) { try { new MutationObserver(bindHear).observe(hearSec, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] }); } catch (e) {} }
+      measure();
       var rq = 0, remeasure = function () { if (rq) return; rq = requestAnimationFrame(function () { rq = 0; measure(); schedule(); }); };
       window.addEventListener('resize', remeasure, { passive: true });
       window.addEventListener('load', remeasure);
       try { if (window.ResizeObserver) { var main = $('main') || doc.body; new ResizeObserver(remeasure).observe(main); } } catch (e) {}
       window.addEventListener('scroll', schedule, { passive: true });
-      if (stackEl) stackEl.addEventListener('focusin', function (e) {
-        var c = e.target.closest && e.target.closest('.service-card'); if (!c) return;
-        var i = cards.indexOf(c), n = cards.length;
-        var need = G.stackTop - 78 + ((i + 1) / (n + 1)) * G.range + 2;
-        if (y < need - 4 && y < G.stackTop - 78 + G.range) window.scrollTo({ top: need, behavior: 'auto' });
-      });
       lastMoveT = 0; setTimeout(sparkLoop, 900);
       heroFrame(0.016, 0, true);
       schedule();
