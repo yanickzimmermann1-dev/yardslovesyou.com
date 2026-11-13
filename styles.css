@@ -1980,3 +1980,20 @@ footer.site-footer .footer-social svg{display:block;width:22px;height:22px}
 /* Shop: Sound-Pads unter dem Produkt grösser */
 .product-grid .product .sp-layer .sp-pads{gap:6px;flex-wrap:nowrap}
 .product-grid .product .sp-layer .sp-pad{flex:0 0 36px;width:36px;height:36px;max-width:none;font-size:13px}
+
+
+/* ===== Calm buttons (owner request): colour change only, no movement ===== */
+.button,.outline,.cm-pill,.cm-tab,.cp-like,.cp-icon,.bl-sound,.mc-toggle button,.play-btn,.bl-play,.ba-play,.cart-btn,.cart-add-ic,.cart-x,.mc-go,.mc-opt,.et-play,.et-chip,.et-opt,.cat-chip,.gen-btn,.sp-pill,.rv-pick button,.free-nav a,.gd-card,.et-mode,.ab-play{
+  transition:background-color .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease !important;
+}
+.button:hover,.button:active,.outline:hover,.outline:active,.cm-pill:active,.cm-tab:active,.cp-like:active,.cp-icon:active,.bl-sound:active,.mc-toggle button:active,
+.play-btn:hover,.play-btn:active,.bl-play:hover,.bl-play:active,.ba-play:hover,.ba-play:active,.cart-btn:hover,.cart-add-ic:hover,.cart-x:hover,.mc-go:hover,.mc-go:active,
+.mc-opt:hover,.mc-opt:active,.et-play:active,.et-chip:active,.et-opt:active,.cat-chip:hover,.gen-btn:hover,.gen-btn:active,.sp-pill:hover,.sp-pill:active,.rv-pick button:hover,
+.free-nav a:hover,.gd-card:hover,.gd-card:active,.et-mode:hover,.ab-play:hover,.bl-cell:active,.topbar nav[aria-label="Main"] a:hover{
+  transform:none !important;translate:none !important;
+}
+.button:hover::after,.button::after{animation:none !important;display:none !important}
+.cp-like.liked,.bl-play.playing{animation:none !important}
+.ripple,.fx-p,.fx-layer{display:none !important}
+.button:hover{background:linear-gradient(135deg,#c39cff,#d9b8ff)}
+.button:focus-visible,.outline:focus-visible,.gen-btn:focus-visible{outline:2px solid var(--purple);outline-offset:3px}

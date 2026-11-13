@@ -23,9 +23,8 @@
 .ep-sub{position:relative;z-index:2;align-self:flex-start;font:600 13px 'DM Sans';color:var(--muted,#a89fbb);text-decoration:underline;text-underline-offset:3px;padding:6px 0}
 .ep-sub:hover,.ep-sub:focus-visible{color:var(--text,#f3edff)}
 @media(hover:hover) and (pointer:fine){
-  .ep-card:hover,.ep-card:focus-within{border-color:rgba(var(--ep-rgb),.6);transform:translateY(-4px);
+  .ep-card:hover,.ep-card:focus-within{border-color:rgba(var(--ep-rgb),.6);
     box-shadow:inset 0 1px 0 rgba(var(--ep-rgb),.7),0 22px 50px -22px rgba(var(--ep-rgb),.7),0 0 0 1px rgba(var(--ep-rgb),.12)}
-  .ep-card:hover .ep-go svg{transform:translateX(5px)}
 }
 @media(max-width:860px){.ep-grid{grid-template-columns:1fr}.ep-card{min-height:0}}
 

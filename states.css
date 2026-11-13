@@ -6,7 +6,7 @@
   max-width:520px;width:100%;
   margin:12px auto;
   padding:28px 22px 24px;
-  border:1px solid var(--line,#30263d);
+  border:1px solid rgba(var(--area-rgb,182,138,255),.45);
   border-radius:18px;
   background:linear-gradient(180deg,var(--panel,#17131f),rgba(23,19,31,.6));
   color:var(--muted,#aaa0b7);
@@ -14,9 +14,9 @@
 .yly-state-ic{
   width:52px;height:52px;border-radius:50%;
   display:grid;place-items:center;
-  color:var(--purple,#b68aff);
-  background:rgba(182,138,255,.12);
-  border:1px solid rgba(182,138,255,.28);
+  color:var(--area-c,#b68aff);
+  background:rgba(var(--area-rgb,182,138,255),.12);
+  border:1px solid rgba(var(--area-rgb,182,138,255),.4);
   margin-bottom:4px;
 }
 .yly-state-ic svg{width:26px;height:26px;display:block}

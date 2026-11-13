@@ -36,7 +36,7 @@
     if(!window.Product3D) return;
     box.querySelectorAll(".cover[data-p3d]").forEach(c=>{
       const p=products.find(x=>String(x.id)===c.dataset.p3d), m=model(p);
-      if(m) handles.push(window.Product3D.mount(c,m,{size:"small",alt:p.title}));
+      if(m) handles.push(window.Product3D.mount(c,m,{size:"small",still:true,alt:p.title}));
     });
   };
 

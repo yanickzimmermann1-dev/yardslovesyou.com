@@ -232,7 +232,7 @@
       var RIPPLE_SEL = '.button, .outline, .cm-pill, .cm-tab, .cp-like, .cp-icon, .bl-sound, .mc-toggle button, .play-btn, .bl-play';
       doc.addEventListener('pointerdown', function (e) {
         try {
-          if (reduce) return;
+          return; /* ripple removed: no button motion */
           var t = e.target && e.target.closest ? e.target.closest(RIPPLE_SEL) : null;
           if (!t || t.disabled) return;
           var rect = t.getBoundingClientRect();
@@ -260,6 +260,7 @@
       var P_COLORS = ['#b68aff', '#a374f5', '#c9a4ff', '#e5a5ff', '#d9c2ff'];
       doc.addEventListener('click', function (e) {
         try {
+          return; /* particle burst + pop removed */
           var t = e.target && e.target.closest ? e.target.closest('.gen-btn') : null;
           if (!t || t.disabled || !t.animate) return;
           // sanftes "Pop" auf dem Button, ohne Inhalt zu ändern

@@ -1,11 +1,13 @@
-/* home-areas.css – home page: "three areas" cards (#paths), mini A/B player, New in the Lab, free sounds band.
-   Area colours: mix purple, shop brass, lab lilac-blue, free teal. Uses the shared tokens (--panel, --line, --muted, --sec-radius). */
+/* home-areas.css – home page: "three areas" cards (#paths), 4 process steps, New in the Lab, free sounds band.
+   Area colours: mix pink, shop brass, lab lilac-blue, free teal. Uses the shared tokens (--panel, --line, --muted, --sec-radius). */
 .ar-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,22px);align-items:stretch}
 .ar-card{position:relative;display:flex;flex-direction:column;gap:12px;min-width:0;padding:clamp(20px,2.4vw,28px);border-radius:var(--sec-radius,16px);
   background:linear-gradient(160deg,rgba(var(--ep-rgb),.14),var(--panel,#17131f) 62%);border:1px solid var(--line,#2a2336);
-  box-shadow:inset 0 1px 0 rgba(var(--ep-rgb),.55);color:var(--text,#f3edff);transition:border-color .25s ease,box-shadow .25s ease}
-.ar-card:hover,.ar-card:focus-within{border-color:rgba(var(--ep-rgb),.55);box-shadow:inset 0 1px 0 rgba(var(--ep-rgb),.7),0 22px 50px -26px rgba(var(--ep-rgb),.6)}
-.ar-mix{--ep-rgb:182,138,255;--ep-c:#b68aff}
+  box-shadow:inset 0 1px 0 rgba(var(--ep-rgb),.55);color:var(--text,#f3edff);transition:border-color .25s ease,background-color .25s ease}
+.ar-card[data-href]{cursor:pointer}
+.ar-card a,.ar-card button{cursor:pointer}
+.ar-card:hover,.ar-card:focus-within{border-color:rgba(var(--ep-rgb),.6);background:linear-gradient(160deg,rgba(var(--ep-rgb),.2),var(--panel,#17131f) 62%)}
+.ar-mix{--ep-rgb:243,169,201;--ep-c:#f3a9c9}
 .ar-shop{--ep-rgb:212,180,110;--ep-c:#D4B46E}
 .ar-lab{--ep-rgb:143,162,255;--ep-c:#8fa2ff}
 .ar-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -16,38 +18,21 @@
 .ar-price strong{color:var(--ep-c);font:600 20px 'Space Grotesk'}
 .ar-actions{margin-top:auto;padding-top:6px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px}
 .ar-link{display:inline-flex;align-items:center;gap:6px;font:600 14px 'DM Sans';color:var(--ep-c);text-decoration:none;padding:6px 0}
-.ar-link svg{width:16px;height:16px;transition:transform .3s var(--smooth,ease)}
-.ar-link:hover svg,.ar-link:focus-visible svg{transform:translateX(4px)}
+.ar-link svg{width:16px;height:16px}
 .ar-link:hover,.ar-link:focus-visible{text-decoration:underline;text-underline-offset:3px}
 .ar-shop .button{background:linear-gradient(135deg,#D4B46E,#ecd29a);box-shadow:0 10px 28px -14px rgba(212,180,110,.7);color:#1c1608}
 .ar-shop .button:hover{background:linear-gradient(135deg,#e2c581,#f4dfae);box-shadow:0 16px 36px -12px rgba(212,180,110,.75)}
 .ar-lab .button{background:linear-gradient(135deg,#8fa2ff,#b3c0ff);box-shadow:0 10px 28px -14px rgba(143,162,255,.7);color:#0e1330}
 .ar-lab .button:hover{background:linear-gradient(135deg,#a1b1ff,#c6d0ff);box-shadow:0 16px 36px -12px rgba(143,162,255,.75)}
 
-/* ---- mini A/B player ---- */
-.ab-mini{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:12px;background:rgba(13,11,18,.55);border:1px solid rgba(var(--ep-rgb),.22)}
-.ab-mini[hidden]{display:none}
-.ab-row{display:flex;align-items:center;gap:12px}
-.ab-play{position:relative;flex:none;width:42px;height:42px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;color:#180e23;
-  background:linear-gradient(135deg,var(--purple,#b68aff),#c9a4ff);box-shadow:0 8px 22px -10px rgba(182,138,255,.8);transition:transform .2s var(--smooth,ease),box-shadow .2s}
-.ab-play:hover:not(:disabled){transform:scale(1.06)}
-.ab-play:focus-visible{outline:2px solid #fff;outline-offset:3px}
-.ab-play:disabled{opacity:.5;cursor:default}
-.ab-play svg{grid-area:1/1}
-.ab-play .ab-i-pause{display:none}
-.ab-play.playing .ab-i-play{display:none}
-.ab-play.playing .ab-i-pause{display:block}
-.ab-mini.is-loading .ab-play{animation:abPulse 1s ease-in-out infinite}
-@keyframes abPulse{50%{opacity:.55}}
-.ab-seg{position:relative;flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;padding:3px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line,#2a2336)}
-.ab-thumb{position:absolute;left:3px;top:3px;bottom:3px;width:calc(50% - 3px);border-radius:999px;background:rgba(182,138,255,.28);border:1px solid rgba(182,138,255,.6);transition:transform .25s var(--smooth,ease),background .25s}
-.ab-seg.is-after .ab-thumb{transform:translateX(100%);background:rgba(182,138,255,.5)}
-.ab-seg button{position:relative;z-index:1;border:0;background:transparent;color:var(--muted,#a89fbb);font:600 13px 'DM Sans';padding:8px 6px;border-radius:999px;cursor:pointer;transition:color .2s}
-.ab-seg button[aria-checked="true"]{color:var(--text,#f3edff)}
-.ab-seg button:focus-visible{outline:2px solid var(--purple,#b68aff);outline-offset:1px}
-.ab-bar{height:3px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
-.ab-bar i{display:block;height:100%;width:100%;transform:scaleX(0);transform-origin:0 50%;background:linear-gradient(90deg,var(--purple,#b68aff),var(--pink,#e5a5ff))}
-.ab-cap{margin:0;font-size:12px;color:var(--muted,#a89fbb);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ---- mixing card: 4 process steps ---- */
+.ar-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:ars}
+.ar-steps li{position:relative;display:flex;flex-direction:column;gap:1px;padding-left:36px;min-height:26px;counter-increment:ars}
+.ar-steps li::before{content:counter(ars);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 12px 'Space Grotesk';color:var(--ep-c);background:rgba(var(--ep-rgb),.14);border:1px solid rgba(var(--ep-rgb),.5)}
+.ar-steps strong{font:600 14px 'Space Grotesk';color:var(--text,#f3edff)}
+.ar-steps span{font-size:13px;line-height:1.4;color:var(--muted,#a89fbb)}
+.ar-mix .button{background:linear-gradient(135deg,#f3a9c9,#f8c4dc);box-shadow:0 10px 28px -14px rgba(243,169,201,.7);color:#1a141f}
+.ar-mix .button:hover{background:linear-gradient(135deg,#f6b9d4,#fbd3e5)}
 
 /* ---- shop products ---- */
 .ar-prods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -104,4 +89,4 @@
   .nl-grid>:nth-child(3){display:block}
   .free-band .button{width:100%;text-align:center}
 }
-@media(prefers-reduced-motion:reduce){.ar-card,.ar-link svg,.ab-thumb,.ab-play{transition:none}.ab-mini.is-loading .ab-play{animation:none}}
+@media(prefers-reduced-motion:reduce){.ar-card{transition:none}}

@@ -4,6 +4,14 @@
    Everything fails quietly: no data -> the block hides, the page never breaks. No inline code (strict CSP). */
 (function () {
   'use strict';
+  /* whole card clickable (inner links/buttons keep working; keyboard uses the inner primary button) */
+  [].forEach.call(document.querySelectorAll('.ar-card[data-href]'), function (card) {
+    card.addEventListener('click', function (e) {
+      if (e.defaultPrevented || (window.getSelection && String(window.getSelection()).length)) return;
+      if (e.target.closest && e.target.closest('a,button,input,select,textarea,label,summary,[role=button]')) return;
+      var h = card.getAttribute('data-href'); if (h) window.location.href = h;
+    });
+  });
   var Y = window.YLY, cfg = window.APP_CONFIG || {};
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
@@ -44,7 +52,7 @@
           if (!window.Product3D) return;
           [].forEach.call(prods.querySelectorAll('.ar-cover[data-p3d]'), function (c) {
             var p = list.filter(function (x) { return String(x.id) === c.dataset.p3d; })[0], m = model(p);
-            if (m) { try { window.Product3D.mount(c, m, { size: 'small', alt: p.title }); } catch (e) {} }
+            if (m) { try { window.Product3D.mount(c, m, { size: 'small', still: true, alt: p.title }); } catch (e) {} }
           });
         };
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount); else mount();

@@ -73,6 +73,7 @@
     opts = opts || {};
     var noop = { destroy: function () {}, show: function () {}, hide: function () {}, ready: Promise.resolve(false) };
     var small = opts.size === "small";
+    var still = !!opts.still; /* static + frontal: no loop, no hover follow, no drag */
     if (typeof model === "string") { try { model = JSON.parse(model); } catch (e) { model = null; } }
     if (!el || !model || !model.front || (model.type !== "book" && model.type !== "card") || !NS.supported) {
       if (opts.onfail) try { opts.onfail(); } catch (e) {}
@@ -99,7 +100,7 @@
     var scene = stage.querySelector(".p3d-scene"), obj = stage.querySelector(".p3d-obj"), shadow = stage.querySelector(".p3d-shadow");
 
     var S = {
-      yaw: isBook ? -28 : -24, pitch: REST_PITCH, v: 0,
+      yaw: still ? 0 : (isBook ? -28 : -24), pitch: still ? 0 : REST_PITCH, v: 0,
       lastInteract: -1e9, following: false, base: 0,
       dragging: false, keyRemain: 0, hover: false,
       ready: false, hidden: false, visible: false, destroyed: false,
@@ -109,7 +110,7 @@
     var hoverEl = small ? (el.closest && el.closest(".product")) || el : null;
 
     var inst = {
-      active: function () { return S.ready && S.visible && !S.hidden && !S.destroyed && built && !document.hidden; },
+      active: function () { return !still && S.ready && S.visible && !S.hidden && !S.destroyed && built && !document.hidden; },
       tick: tick
     };
 
@@ -326,7 +327,9 @@
     var offs = [];
     function on(t, type, fn, o) { t.addEventListener(type, fn, o); offs.push(function () { t.removeEventListener(type, fn, o); }); }
 
-    if (small) {
+    if (still) {
+      /* no interaction */
+    } else if (small) {
       on(hoverEl, "pointerenter", function (e) { if (e.pointerType === "mouse") { S.hover = true; wake(); } });
       on(hoverEl, "pointerleave", function () { S.hover = false; });
     } else {
