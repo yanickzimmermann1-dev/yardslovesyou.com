@@ -1,0 +1,9 @@
+/* Trust line component */
+.trust{display:flex;align-items:center;justify-content:center;gap:7px;margin:10px 0 0;font-size:12px;line-height:1.4;color:var(--muted,#aaa0b7);text-align:center}
+.trust svg{flex:none;width:14px;height:14px;color:var(--green,#9ef0ce)}
+.trust.left{justify-content:flex-start;text-align:left}
+.trust.compact{font-size:11px;margin:0}
+.pd-sticky .trust{display:none}
+@media(min-width:760px){.pd-sticky .trust{display:flex}}
+@media(max-width:480px){.trust{font-size:11.5px;align-items:flex-start}.trust svg{margin-top:2px}}
+.cart-foot .trust{margin:0 0 10px}

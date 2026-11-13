@@ -1,8 +1,10 @@
 (() => {
   const cfg=window.APP_CONFIG||{}, $=id=>document.getElementById(id);
   $("year").textContent=new Date().getFullYear();
+  const hint=(m,t)=>{ m=String(m||"Something went wrong."); return /try again|try another/i.test(m)?m:m.replace(/[.!?\s]*$/,"")+". "+(t||"Please try again."); };
+  const S=(el,o)=>{ if(window.YLYState) window.YLYState.render(el,o); else if(el) el.textContent=(o.title||"")+" "+(o.text||""); };
   const ready=cfg.SUPABASE_URL?.startsWith("https://")&&!cfg.SUPABASE_URL.includes("DEINE_")&&cfg.SUPABASE_PUBLISHABLE_KEY&&!cfg.SUPABASE_PUBLISHABLE_KEY.includes("DEIN_");
-  if(!ready){$("products").innerHTML='<div class="empty">The shop is not available right now.</div>';return;}
+  if(!ready){S($("products"),{icon:"box",title:"The shop is unavailable",text:"We could not reach the shop right now. Please try again in a moment.",error:true,actions:[{label:"Back to home",href:"index.html"}]});return;}
   const db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const img=u=>/^https:\/\//i.test(u)?u:db.storage.from("coverart-products").getPublicUrl(u).data.publicUrl;
@@ -74,11 +76,12 @@
 
   function renderGrid(animate){
     const box=$("products"); box.removeAttribute("aria-busy");
-    if(!products.length){handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];box.className="product-grid";box.innerHTML='<div class="empty">No products yet. Check back soon.</div>';return;}
+    if(!products.length){handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];box.className="product-grid";$("shop-count").textContent="";S(box,{icon:"box",title:"No products yet",text:"New packs are on the way. Check back soon, or reload to see if something just landed.",actions:[{label:"Retry",onClick:()=>load()},{label:"Back to home",href:"index.html"}]});return;}
     const grouped=cats.length>=2&&!sel;
     let list=products;
     if(cats.length>=2&&sel) list=products.filter(p=>p.category===sel);
     $("shop-count").textContent=`${list.length} ${list.length===1?"product":"products"}`;
+    if(!list.length){handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];box.className="product-grid";S(box,{icon:"box",title:"Nothing in this category yet",text:"This category has no products at the moment. Try another one or browse everything.",actions:[{label:"Browse all",onClick:()=>select(null,true)},{label:"Try another category",onClick:()=>{const c=cats.find(x=>x.slug!==sel);select(c?c.slug:null,true);}}]});return;}
     if(grouped){
       const groups=cats.map(c=>({name:c.name,tagline:c.tagline,items:products.filter(p=>p.category===c.slug)}));
       const rest=products.filter(p=>!cats.some(c=>c.slug===p.category));
@@ -119,19 +122,21 @@
     }catch(_){return [];}
   }
 
+  let barBound=false;
   async function load() {
+    $("products").setAttribute("aria-busy","true"); $("products").className="product-grid"; $("products").innerHTML=skCard.repeat(2);
     // select("*"): neue Spalten (badge, compare_at_cents, category …) werden automatisch mitgeladen
     const {data,error}=await db.from("shop_products").select("*").eq("published",true).order("created_at",{ascending:false});
-    if(error){$("products").removeAttribute("aria-busy");$("products").className="product-grid";$("products").innerHTML='<div class="empty">Products could not be loaded. Please try again later.</div>';return;}
+    if(error){$("products").removeAttribute("aria-busy");$("products").className="product-grid";S($("products"),{icon:"alert",title:"Products could not be loaded",text:"Something went wrong on our side or your connection dropped. Please try again.",error:true,actions:[{label:"Retry",onClick:()=>load()},{label:"Back to home",href:"index.html"}]});return;}
     products=data;
     if(document.readyState==="loading") await new Promise(r=>document.addEventListener("DOMContentLoaded",r)); // defer-Skripte (product3d.js) sind danach bereit
     cats=products.length?await loadCategories():[];
     const bar=$("cat-bar");
-    if(bar) bar.addEventListener("click",e=>{
+    if(bar&&!barBound){ barBound=true; bar.addEventListener("click",e=>{
       const a=e.target.closest&&e.target.closest("[data-cat]");
       if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button) return;
       e.preventDefault(); select(a.dataset.cat||null,true);
-    });
+    });}
     select(new URLSearchParams(location.search).get("cat"),false);
   }
 
@@ -172,7 +177,7 @@
           : "Done! Check your inbox for the download link (and your spam folder, just in case).";
         kitForm.reset();
       }catch(err){
-        status.textContent=err.message||"Something went wrong. Please try again."; status.classList.add("danger");
+        status.textContent=hint(err.message); status.classList.add("danger");
       }finally{
         btn.disabled=false; btn.textContent="Send me the kit";
       }

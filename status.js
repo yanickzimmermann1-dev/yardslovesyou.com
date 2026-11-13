@@ -17,19 +17,21 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   const fmt = iso => iso ? new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) + ", " + new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "";
 
-  const errorView = (title, text) => {
-    root.innerHTML = `<div class="st-card st-err">${ICON.info.replace('width="16" height="16"', 'width="40" height="40"')}
-      <h2>${esc(title)}</h2><p class="muted">${esc(text)}</p><a class="button" href="index.html">Back to home</a></div>`;
+  const MAIL = "mailto:yardsyurr@gmail.com?subject=" + encodeURIComponent("Question about my order");
+  const errorView = (title, text, retry) => {
+    const actions = retry ? [{ label: "Retry", onClick: () => { root.textContent = "Loading …"; load(); } }, { label: "Contact us", href: MAIL }] : [{ label: "Contact us", href: MAIL }, { label: "Back to home", href: "index.html" }];
+    if (window.YLYState) window.YLYState.render(root, { icon: retry ? "alert" : "link", error: !!retry, title, text, actions });
+    else root.innerHTML = `<div class="st-card st-err"><h2>${esc(title)}</h2><p class="muted">${esc(text)}</p><a class="button" href="index.html">Back to home</a></div>`;
   };
 
   const token = (new URLSearchParams(location.search).get("t") || "").trim();
-  if (!token) return errorView("No order link", "This page needs the personal link from your order email or confirmation page.");
-  if (!UUID.test(token)) return errorView("Invalid link", "This link looks incomplete. Please use the full link from your email.");
-  if (!window.supabase) return errorView("Something went wrong", "Please reload the page.");
+  if (!token) return errorView("Open the link from your confirmation email", "This page needs the personal order link from your confirmation email or the page you saw after paying. Can't find it? Contact us and we'll resend it.");
+  if (!UUID.test(token)) return errorView("Open the link from your confirmation email", "This link looks incomplete. Please open the full link from your email (copy it completely if it wrapped onto two lines), or contact us.");
+  if (!window.supabase) return errorView("Something went wrong", "The page could not start. Please reload, or contact us if it keeps happening.", true);
   const db = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
 
   const call = async body => {
-    const { data, error } = await db.functions.invoke("order-status", { body: { token, ...body } });
+    const { data, error } = await db.functions.invoke("order-status", { body: { token, ...body } }).catch(e => ({ data: null, error: e }));
     let msg = data?.error;
     if (!msg && error) {
       try { msg = (await error.context.json()).error; } catch (_) { msg = error.message; }
@@ -105,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const r = await call({});
     if (r.error || !r.data) {
       if (silent && last) return;
-      return errorView(r.notFound ? "Order not found" : "Couldn't load your order", r.notFound ? "We couldn't find an order for this link. Please check the link in your email." : "Please try again in a moment.");
+      return errorView(r.notFound ? "Order not found" : "Couldn't load your order", r.notFound ? "We couldn't find an order for this link. Open the link from your confirmation email, or contact us." : "Please try again in a moment.", !r.notFound);
     }
     render(r.data);
   }

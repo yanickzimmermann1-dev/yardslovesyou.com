@@ -8,12 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const box = $("confirm");
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+  const MAIL = "mailto:yardsyurr@gmail.com?subject=" + encodeURIComponent("Question about my order");
   const fail = msg => {
-    box.innerHTML = `
-      <p class="eyebrow">SOMETHING WENT WRONG</p>
-      <h1>Order not <span>found</span></h1>
-      <p class="muted">${esc(msg)}<br>If you were charged, please contact us – we'll sort it out.</p>
-      <a class="button" href="index.html">Back to home</a>`;
+    msg = msg ? String(msg).replace(/[.!?\s]*$/, ".") : "";
+    const pending = /pending|not (yet )?(paid|complete)|unpaid|processing/i.test(String(msg || ""));
+    const o = pending
+      ? { icon: "clock", title: "Payment still pending", text: (msg ? msg + " " : "") + "Payments can take a moment to confirm. Check your email for the confirmation, or check again in a minute.", actions: [{ label: "Check again", onClick: () => location.reload() }, { label: "Contact us", href: MAIL }] }
+      : { icon: "mail", error: true, title: "We couldn't find this order", text: (msg ? msg + " " : "") + "Check your email: your confirmation has the link to your order. If you were charged, contact us and we'll sort it out.", actions: [{ label: "Contact us", href: MAIL }, { label: "Back to shop", href: "shop.html" }] };
+    if (window.YLYState) window.YLYState.render(box, o);
+    else box.innerHTML = `<h1>${esc(o.title)}</h1><p class="muted">${esc(o.text)}</p><a class="button" href="shop.html">Back to shop</a> <a class="outline" href="${MAIL}">Contact us</a>`;
   };
 
   if (!window.supabase) return fail("Supabase SDK is not loaded.");
@@ -23,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!sessionId) return fail("No order reference found.");
 
   (async () => {
-    const { data, error } = await db.functions.invoke("order-details", { body: { session_id: sessionId } });
+    const { data, error } = await db.functions.invoke("order-details", { body: { session_id: sessionId } }).catch(e => ({ data: null, error: e }));
     if (error || data?.error) return fail(data?.error || error?.message || "Payment could not be confirmed.");
 
     const price = (data.amount / 100).toLocaleString("de-CH", {
@@ -72,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const r = await db.functions.invoke("download-zip", { body });
         btn.disabled = false;
         if (r.error || !r.data?.url) {
-          status.textContent = "Download not available: " + (r.data?.error || r.error?.message || "Please try again.");
+          status.textContent = "Download not available: " + (r.data?.error || r.error?.message || "Please try again.") + " You can press Download to retry, or check your email for the link.";
           return;
         }
         if (!/^https:\/\//i.test(String(r.data.url))) { status.textContent = "Download not available."; return; }

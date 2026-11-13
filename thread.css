@@ -1,0 +1,19 @@
+/* thread.css – the red thread: one thin glowing line down the left gutter of every page (thread.js draws it). */
+.thread{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;contain:layout paint;
+  --thread-c:#b68aff;--thread-c:color-mix(in srgb,var(--area-c,#b68aff) 38%,#b68aff);--thread-w:1.6px}
+.thread[hidden]{display:none}
+.thread svg{position:absolute;left:0;top:0;display:block;overflow:hidden}
+.thread .th-line{fill:none;stroke:var(--thread-c);stroke-width:var(--thread-w);stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+.thread .th-glow{fill:none;stroke:var(--thread-c);stroke-width:7px;stroke-linecap:round;stroke-linejoin:round;opacity:.16}
+.thread .th-ghost{fill:none;stroke:var(--thread-c);stroke-width:1px;opacity:.1;stroke-linecap:round}
+.thread .th-ring{fill:#0d0b12;stroke:var(--thread-c);stroke-width:1.5;opacity:.35;transition:opacity .5s ease}
+.thread .th-dot{fill:var(--thread-c);opacity:0;transition:opacity .5s ease}
+.thread .th-tick{stroke:var(--thread-c);stroke-width:1;stroke-linecap:round;opacity:0;transition:opacity .5s ease}
+.thread .th-node.on .th-ring{opacity:1}
+.thread .th-node.on .th-dot{opacity:1}
+.thread .th-node.on .th-tick{opacity:.5}
+.thread .th-tip{fill:#fff;opacity:.95}
+.thread .th-halo{fill:var(--thread-c);opacity:.35;transform-box:fill-box;transform-origin:center;animation:thPulse 2.2s ease-in-out infinite}
+@keyframes thPulse{0%,100%{transform:scale(.8);opacity:.45}50%{transform:scale(1.5);opacity:.15}}
+@media(max-width:720px){.thread{--thread-w:1.1px}.thread .th-glow{stroke-width:5px}}
+@media(prefers-reduced-motion:reduce){.thread .th-halo{animation:none}.thread .th-ring,.thread .th-dot,.thread .th-tick{transition:none}}

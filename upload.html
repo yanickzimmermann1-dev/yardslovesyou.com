@@ -25,20 +25,25 @@
   <link rel="preload" href="font-spacegrotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://kmekgjllklwrxizqbrac.supabase.co" crossorigin>
   <link rel="dns-prefetch" href="https://kmekgjllklwrxizqbrac.supabase.co">
-  <link rel="stylesheet" href="styles.css?v=20261113m">
+  <link rel="stylesheet" href="styles.css?v=20261113q">
   <link rel="stylesheet" href="beforeafter.css?v=20261113l">
-  <link rel="stylesheet" href="mixcalc.css?v=20261112b">
-  <link rel="stylesheet" href="cart.css?v=20261113m">
+  <link rel="stylesheet" href="mixcalc.css?v=20261113q">
+  <link rel="stylesheet" href="cart.css?v=20261113q">
+  <link rel="stylesheet" href="stepper.css?v=20261113q">
+  <link rel="stylesheet" href="trust.css?v=20261113q">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="fx-gate.js?v=20261113g"></script>
   <link rel="stylesheet" href="fx.css?v=20261113g">
-  <link rel="stylesheet" href="upload-fx.css?v=20261113f">
+  <link rel="stylesheet" href="upload-fx.css?v=20261113q">
   <link rel="stylesheet" href="cursor.css?v=20261113n">
   <link rel="stylesheet" href="skeleton.css?v=20261113j">
   <link rel="stylesheet" href="footerword.css?v=20261113l">
   <link rel="stylesheet" href="uisound.css?v=20261113m">
+  <link rel="stylesheet" href="sections.css?v=20261113q">
+  <link rel="stylesheet" href="thread.css?v=20261113r">
+  <link rel="stylesheet" href="nextstep.css?v=20261113r">
 </head>
-<body>
+<body data-area="mix">
 
   <header class="topbar">
     <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
@@ -65,6 +70,8 @@
       <li><strong>Pay</strong>Secure checkout with Stripe.</li>
       <li><strong>Receive</strong>I get to work and send you the result by email.</li>
     </ol>
+
+    <nav class="up-stepper" id="up-stepper" aria-label="Progress"><ol><li data-step="1"><button type="button" class="up-step" disabled><span class="n"><span>1</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span><span class="l">Service</span></button></li><li data-step="2"><button type="button" class="up-step" disabled><span class="n"><span>2</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span><span class="l">Files</span></button></li><li data-step="3"><button type="button" class="up-step" disabled><span class="n"><span>3</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span><span class="l">Details</span></button></li><li data-step="4"><button type="button" class="up-step" disabled><span class="n"><span>4</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span><span class="l">Pay</span></button></li></ol></nav>
 
     <section class="ba-section" id="hear" data-beforeafter data-compact hidden></section>
 
@@ -156,6 +163,7 @@
         </div>
 
         <!-- Checkout -->
+        <p class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3Z"/><path d="m9 12 2.2 2.2L15 10.4"/></svg><span>2 revisions included · Track your order online · Secure checkout (TWINT, PayPal, card)</span></p>
         <button id="submit-btn" class="button" type="submit" style="align-self: center; margin-top: 0.5rem;">Proceed to checkout</button>
       </form>
 
@@ -180,15 +188,17 @@
   </footer>
 
   <script defer src="config.js"></script>
-  <script defer src="upload-fx.js?v=20261113f"></script>
-  <script defer src="upload.js"></script>
+  <script defer src="upload-fx.js?v=20261113q"></script>
+  <script defer src="upload.js?v=20261113q"></script>
   <script src="beforeafter.js?v=20261113l" defer></script>
-  <script src="mixcalc.js?v=20261112a" defer></script>
-  <script src="cart.js?v=20261113h" defer></script>
+  <script src="mixcalc.js?v=20261113q" defer></script>
+  <script src="cart.js?v=20261113q" defer></script>
   <script src="nav.js" defer></script>
   <script src="fx.js?v=20261113g" defer></script>
   <script src="uisound.js?v=20261113m" defer></script>
   <script src="motion.js?v=20261113l" defer></script>
+  <script src="thread.js?v=20261113r" defer></script>
+  <script src="nextstep.js?v=20261113r" defer></script>
   <script src="cursor.js?v=20261113n" defer></script>
   <script src="reveal.js?v=20261113j" defer></script>
   <script src="footerword.js?v=20261113l" defer></script>

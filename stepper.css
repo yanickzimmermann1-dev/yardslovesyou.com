@@ -1,0 +1,25 @@
+/* Upload progress stepper */
+.up-stepper{position:sticky;top:78px;z-index:4;margin:0 0 20px;padding:10px 14px;background:#0d0b12e6;border:1px solid var(--line,#30263d);border-radius:14px;backdrop-filter:blur(14px)}
+.up-stepper ol{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:6px}
+.up-stepper li{display:flex;align-items:center;flex:1 1 0;min-width:0}
+.up-stepper li:not(:last-child)::after{content:"";flex:1 1 auto;height:2px;margin:0 8px;background:var(--line,#30263d);border-radius:2px;transition:background .4s}
+.up-stepper li.done:not(:last-child)::after{background:var(--purple,#b68aff)}
+.up-step{display:inline-flex;align-items:center;gap:8px;padding:4px 6px 4px 4px;border:0;background:none;color:var(--muted,#aaa0b7);font:600 13px 'DM Sans',system-ui,sans-serif;cursor:default;border-radius:999px;white-space:nowrap;transition:color .3s}
+.up-step .n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line,#30263d);font-size:12px;transition:background .3s,border-color .3s,color .3s,transform .3s}
+.up-step .n svg{display:none;width:14px;height:14px}
+li.done .up-step{cursor:pointer;color:var(--text,#f5f0fb)}
+li.done .up-step .n{background:var(--purple,#b68aff);border-color:var(--purple,#b68aff);color:#0d0b12}
+li.done .up-step .n span{display:none}
+li.done .up-step .n svg{display:block}
+li.current .up-step{color:var(--text,#f5f0fb)}
+li.current .up-step .n{border-color:var(--purple,#b68aff);color:var(--purple,#b68aff);transform:scale(1.1);box-shadow:0 0 0 4px #b68aff26}
+li.current.busy .up-step .n{animation:upPulse 1.2s ease-in-out infinite}
+.up-step:focus-visible{outline:2px solid var(--purple,#b68aff);outline-offset:2px}
+@keyframes upPulse{50%{box-shadow:0 0 0 8px #b68aff10}}
+@media(max-width:600px){
+  .up-stepper{top:64px;padding:8px 10px}
+  .up-step .l{display:none}
+  li.current .up-step .l{display:inline}
+  .up-stepper li.current{flex:2 1 0}
+}
+@media(prefers-reduced-motion:reduce){.up-step .n,.up-stepper li::after{transition:none}li.current.busy .up-step .n{animation:none}}

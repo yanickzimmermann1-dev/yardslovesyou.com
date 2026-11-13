@@ -1,0 +1,41 @@
+/* states.css – consistent empty / error state card (used with states.js) */
+.yly-state{
+  grid-column:1/-1;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:10px;
+  max-width:520px;width:100%;
+  margin:12px auto;
+  padding:28px 22px 24px;
+  border:1px solid var(--line,#30263d);
+  border-radius:18px;
+  background:linear-gradient(180deg,var(--panel,#17131f),rgba(23,19,31,.6));
+  color:var(--muted,#aaa0b7);
+}
+.yly-state-ic{
+  width:52px;height:52px;border-radius:50%;
+  display:grid;place-items:center;
+  color:var(--purple,#b68aff);
+  background:rgba(182,138,255,.12);
+  border:1px solid rgba(182,138,255,.28);
+  margin-bottom:4px;
+}
+.yly-state-ic svg{width:26px;height:26px;display:block}
+.yly-state.is-error .yly-state-ic{color:#ff9db0;background:rgba(255,120,150,.1);border-color:rgba(255,120,150,.3)}
+.yly-state h3{
+  margin:0;font:600 18px/1.25 'Space Grotesk',system-ui,sans-serif;
+  color:var(--text,#f5f0fb);letter-spacing:-.2px;
+}
+.yly-state p{margin:0;font-size:14.5px;line-height:1.55;max-width:42ch}
+.yly-state-acts{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+  margin-top:8px;width:100%;
+}
+.yly-state-acts .button,.yly-state-acts .outline{min-height:44px}
+.yly-state.is-compact{padding:18px 16px;margin:8px auto}
+.yly-state.is-compact .yly-state-ic{width:40px;height:40px}
+.yly-state.is-compact .yly-state-ic svg{width:20px;height:20px}
+.yly-state.is-compact h3{font-size:16px}
+@media (max-width:420px){
+  .yly-state{padding:24px 16px 20px;border-radius:16px}
+  .yly-state-acts>*{flex:1 1 100%;text-align:center;justify-content:center}
+}

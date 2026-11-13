@@ -51,6 +51,20 @@
         .order("created_at", { ascending: false }).limit(500);
     } catch (_) { rm(); return; }
     rm();
+    if (res && !res.error && res.data && !res.data.length) {
+      // No reviews yet: calm empty state (reviews are only possible after a purchase, so no action buttons)
+      var es = document.createElement("section");
+      es.className = "pd-section rv-section"; es.id = "reviews"; es.setAttribute("aria-labelledby", "rv-h");
+      es.innerHTML = '<h2 id="rv-h">Reviews</h2><div class="rv-empty-state"></div>';
+      var holder = es.querySelector(".rv-empty-state");
+      if (window.YLYState) window.YLYState.render(holder, { icon: "star", compact: true, title: "No reviews yet", text: "Be the first to review. Reviews can be written after purchase, from your order confirmation page." });
+      else holder.textContent = "No reviews yet. Be the first to review after purchase.";
+      var ef = root.querySelector(".pd-faq"), efs = ef && ef.closest("section"), est = root.querySelector("#pd-sticky");
+      if (efs && efs.parentNode) efs.parentNode.insertBefore(es, efs);
+      else if (est && est.parentNode) est.parentNode.insertBefore(es, est);
+      else root.appendChild(es);
+      return;
+    }
     if (!res || res.error || !res.data || !res.data.length) return;
     var list = res.data, n = list.length;
     var sum = 0, dist = [0, 0, 0, 0, 0, 0];
