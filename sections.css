@@ -84,4 +84,4 @@ nav a.active svg{filter:drop-shadow(0 0 6px rgba(var(--area-rgb),.45))}
 
 /* Kein seitliches Scrollen auf keiner Breite (clip bricht position:sticky nicht) */
 html,body{overflow-x:clip}
-.mq-band{overflow:hidden;max-width:100%}
+.mq-band{overflow:hidden}
