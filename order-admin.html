@@ -53,6 +53,7 @@
       <div class="oa-tabs" id="oa-tabs" role="tablist" aria-label="Sections">
         <button type="button" class="outline active" role="tab" aria-selected="true" data-tab="orders">Orders</button>
         <button type="button" class="outline" role="tab" aria-selected="false" data-tab="reviews">Reviews<span class="rv-count" id="rv-pending" hidden></span></button>
+        <button type="button" class="outline" role="tab" aria-selected="false" data-tab="inquiries">Custom Beat Inquiries<span class="rv-count" id="iq-new" hidden></span></button>
       </div>
       <div id="oa-orders">
       <div class="oa-bar">
@@ -79,6 +80,21 @@
         <p class="status" id="rv-status" role="status"></p>
         <div id="rv-list" class="oa-list"></div>
       </div>
+      <div id="oa-inquiries" class="hidden">
+        <div class="oa-bar">
+          <div class="oa-filters" id="iq-filters" role="group" aria-label="Filter inquiries">
+            <button type="button" class="outline active" data-f="all">All</button>
+            <button type="button" class="outline" data-f="new">New</button>
+            <button type="button" class="outline" data-f="open">Open</button>
+            <button type="button" class="outline" data-f="won">Won</button>
+            <button type="button" class="outline" data-f="lost">Lost</button>
+            <button type="button" class="outline" data-f="archived">Archived</button>
+          </div>
+          <button type="button" class="outline" id="iq-reload">Refresh</button>
+        </div>
+        <p class="status" id="iq-status" role="status"></p>
+        <div id="iq-list" class="oa-list"></div>
+      </div>
     </div>
   </main>
 
@@ -104,7 +120,7 @@
   <script defer src="media.js?v=20261114k"></script>
   <script defer src="community-core.js"></script>
   <script defer src="reviews.js?v=20261113q"></script>
-  <script defer src="order-admin.js?v=20261114y"></script>
+  <script defer src="order-admin.js?v=20261114za"></script>
   <script src="cart.js?v=20261114m" defer></script>
   <script src="nav.js?v=20261114n" defer></script>
   <script src="fx.js?v=20261113g" defer></script>

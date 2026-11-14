@@ -133,19 +133,77 @@
     try { reviews = (await call({ action: "reviews-list" })).reviews || []; rvLoaded = true; rvStatus(""); rvCount(); renderReviews(); }
     catch (e) { rvStatus(e.message, true); S($("rv-list"), { icon: "alert", error: true, title: "Reviews could not be loaded", text: e.message || "Please try again.", actions: [{ label: "Retry", onClick: () => loadReviews() }] }); }
   }
+
+  // ---------- Custom Beat Inquiries ----------
+  let inquiries = [], iqFilter = "all", iqLoaded = false;
+  const iqStatus = (t, bad) => { const el = $("iq-status"); el.textContent = t; el.classList.toggle("danger", !!bad); };
+  const IQ_LABEL = { new: "New", contacted: "Contacted", quoted: "Quoted", won: "Won", lost: "Lost", archived: "Archived" };
+  const IQ_CLASS = { new: "", contacted: "", quoted: "", won: "done", lost: "bad", archived: "" };
+  const IQ_OPEN = ["new", "contacted", "quoted"];
+  const iqVisible = () => inquiries.filter(q => iqFilter === "all" ? true : iqFilter === "open" ? IQ_OPEN.includes(q.status) : q.status === iqFilter);
+  const iqLinks = txt => String(txt || "").split(/[\s,]+/).filter(Boolean).map(t =>
+    /^https?:\/\/[^\s<>"']+$/i.test(t) ? `<a href="${esc(t)}" target="_blank" rel="noopener noreferrer">${esc(t)}</a>` : esc(t)).join("<br>");
+
+  function iqCount() {
+    const n = inquiries.filter(q => q.status === "new").length, el = $("iq-new");
+    el.textContent = n; el.hidden = !n;
+  }
+  function renderInquiries() {
+    const list = iqVisible();
+    $("iq-list").innerHTML = list.length ? list.map(q => `
+      <article class="oa-card" data-id="${esc(q.id)}">
+        <div class="oa-head"><strong>${esc(q.name || "Unknown")}</strong>
+          <span class="st-badge ${IQ_CLASS[q.status] || ""}">${esc(IQ_LABEL[q.status] || q.status)}</span></div>
+        <p class="oa-sub"><a href="mailto:${esc(q.email)}?subject=${encodeURIComponent("Your custom beat – YARDSLOVESYOU")}">${esc(q.email)}</a><br>Received ${esc(fmt(q.created_at))} · Budget: ${esc(q.budget || "-")} · Deadline: ${esc(q.deadline || "-")}</p>
+        <div class="rv-adm-body">${esc(q.description || "")}</div>
+        ${q.reference_links ? `<p class="oa-sub"><strong>References:</strong><br>${iqLinks(q.reference_links)}</p>` : ""}
+        <div class="oa-row">
+          <select class="oa-prog" aria-label="Status">${Object.entries(IQ_LABEL).map(([k, v]) => `<option value="${k}"${k === q.status ? " selected" : ""}>${v}</option>`).join("")}</select>
+          <textarea class="oa-note" rows="2" maxlength="1000" placeholder="Internal note (not sent to the customer)">${esc(q.admin_note || "")}</textarea>
+        </div>
+        <div class="oa-acts"><button type="button" class="button" data-i="save">Save</button></div>
+        <p class="status oa-msg" role="status"></p>
+      </article>`).join("") : "";
+    if (!list.length) S($("iq-list"), { icon: "box", title: "No inquiries in this view", text: "Nothing matches this filter right now.", actions: [{ label: "Reload", onClick: () => loadInquiries() }] });
+  }
+  async function loadInquiries() {
+    iqStatus("Loading …");
+    try { inquiries = (await call({ action: "inquiries-list" })).inquiries || []; iqLoaded = true; iqStatus(""); iqCount(); renderInquiries(); }
+    catch (e) { iqStatus(e.message, true); S($("iq-list"), { icon: "alert", error: true, title: "Inquiries could not be loaded", text: e.message || "Please try again.", actions: [{ label: "Retry", onClick: () => loadInquiries() }] }); }
+  }
+  $("iq-filters").addEventListener("click", e => {
+    const b = e.target.closest("[data-f]"); if (!b) return;
+    iqFilter = b.dataset.f;
+    document.querySelectorAll("#iq-filters button").forEach(x => x.classList.toggle("active", x === b));
+    renderInquiries();
+  });
+  $("iq-reload").addEventListener("click", loadInquiries);
+  $("iq-list").addEventListener("click", async e => {
+    const b = e.target.closest("[data-i]"); if (!b) return;
+    const card = b.closest(".oa-card"), id = card.dataset.id, msg = card.querySelector(".oa-msg");
+    b.disabled = true; msg.textContent = "Saving …"; msg.classList.remove("danger");
+    try {
+      const r = await call({ action: "inquiry-set", id, status: card.querySelector(".oa-prog").value, admin_note: card.querySelector(".oa-note").value });
+      const i = inquiries.findIndex(x => x.id === id); if (i > -1 && r.inquiry) inquiries[i] = r.inquiry;
+      iqCount(); renderInquiries();
+      const c2 = $("iq-list").querySelector(`.oa-card[data-id="${CSS.escape(id)}"] .oa-msg`); if (c2) c2.textContent = "Saved.";
+    } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); b.disabled = false; }
+  });
   function tab(name) {
-    const rv = name === "reviews";
-    $("oa-orders").classList.toggle("hidden", rv);
+    const rv = name === "reviews", iq = name === "inquiries";
+    $("oa-orders").classList.toggle("hidden", rv || iq);
     $("oa-reviews").classList.toggle("hidden", !rv);
+    $("oa-inquiries").classList.toggle("hidden", !iq);
     document.querySelectorAll("#oa-tabs button").forEach(b => {
       const on = b.dataset.tab === name; b.classList.toggle("active", on); b.setAttribute("aria-selected", on ? "true" : "false");
     });
     if (rv && !rvLoaded) loadReviews();
+    if (iq && !iqLoaded) loadInquiries();
   }
   $("oa-tabs").addEventListener("click", e => {
     const b = e.target.closest("[data-tab]"); if (!b) return;
     tab(b.dataset.tab);
-    try { history.replaceState(null, "", b.dataset.tab === "reviews" ? "#reviews" : location.pathname + location.search); } catch (_) {}
+    try { history.replaceState(null, "", b.dataset.tab === "reviews" ? "#reviews" : b.dataset.tab === "inquiries" ? "#inquiries" : location.pathname + location.search); } catch (_) {}
   });
   $("rv-filters").addEventListener("click", e => {
     const b = e.target.closest("[data-f]"); if (!b) return;
@@ -164,8 +222,8 @@
       rvCount(); renderReviews();
     } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); b.disabled = false; }
   });
-  window.addEventListener("hashchange", () => { if (location.hash === "#reviews") tab("reviews"); });
-  if (location.hash === "#reviews") tab("reviews"); else loadReviews();
+  window.addEventListener("hashchange", () => { if (location.hash === "#reviews") tab("reviews"); else if (location.hash === "#inquiries") tab("inquiries"); });
+  if (location.hash === "#reviews") tab("reviews"); else { loadReviews(); if (location.hash === "#inquiries") tab("inquiries"); }
 
   load();
 })();
