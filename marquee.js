@@ -3,7 +3,7 @@
   var host = document.querySelector('main') || document.body;
   var about = document.getElementById('newlab') || document.getElementById('about');   // divider between Selected work and New in the Lab
   if (!document.querySelector('.hero') || !about || !document.getElementById('paths')) return;
-  var WORDS = ['HIP-HOP', 'TRAP', 'DRILL', 'AFROBEATS', 'R&B', 'MIXING', 'MASTERING', 'VOCAL HOOKS', 'PERCUSSION'];
+  var WORDS = ['HIP-HOP', 'TRAP', 'DRILL', 'AFROBEATS', 'R&B', 'MIXING', 'MASTERING', 'CUSTOM BEATS', 'PERCUSSION'];
   var NS = 'http://www.w3.org/2000/svg';
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
