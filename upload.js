@@ -38,9 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const songsInput = $("song-count");
   const rushInput = $("rush-48h");
   const summaryEl = $("price-summary");
-  const orderFields = $("order-fields");
   const inquiryForm = $("inquiry-form");
-  const stepperNav = $("up-stepper");
   const serviceRadios = [...document.querySelectorAll('input[name="service"]')];
   const selectedService = () => serviceRadios.find(r => r.checked) || serviceRadios[0];
   const REVISIONS = { "mastering": 1, "stem-mastering": 1, "mixing": 3, "mix-master": 3 };
@@ -49,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const n = Number(songsInput ? songsInput.value : 1);
     return Number.isInteger(n) && n >= 1 && n <= P.MAX_SONGS ? n : null;
   };
-  const isInquiry = () => selectedService().dataset.kind === "inquiry";
   // WAV is only allowed for Mastering with exactly one song; everything else needs a ZIP.
   const wavAllowed = () => selectedService().dataset.kind === "wavzip" && getSongs() === 1;
   const text = (tag, cls, t) => { const n = document.createElement(tag); if (cls) n.className = cls; n.textContent = t; return n; };
@@ -78,14 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Label, erlaubter Dateityp und Hinweis passend zu Service, Songs und Rush
   function applyService(resetFile) {
     const r = selectedService();
-    const inq = isInquiry();
-    if (orderFields) orderFields.hidden = inq;
-    if (inquiryForm) inquiryForm.hidden = !inq;
-    if (stepperNav) stepperNav.hidden = inq;
     const trust = $("trust-text");
     const rev = REVISIONS[r.value];
     if (trust && rev) trust.textContent = rev + " revision" + (rev === 1 ? "" : "s") + " included · Track your order online · Secure checkout (TWINT, PayPal, card)";
-    if (inq || !fileInput || !fileLabel) return;
+    if (!fileInput || !fileLabel) return;
     const songs = getSongs();
     const wav = wavAllowed();
     const total = songs === null ? null : P.calc(Number(r.dataset.price), songs, !!(rushInput && rushInput.checked)).total;
@@ -154,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (uploadForm) {
     uploadForm.onsubmit = async (e) => {
       e.preventDefault();
-      if (isInquiry()) return;
 
       const btn = $("submit-btn");
       const statusEl = $("upload-status");

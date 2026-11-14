@@ -174,7 +174,7 @@
   <link rel="stylesheet" href="sections.css?v=20261114s">
   <link rel="stylesheet" href="thread.css?v=20261113t">
   <link rel="stylesheet" href="nextstep.css?v=20261114q">
-  <link rel="stylesheet" href="upload-pink.css?v=20261114y">
+  <link rel="stylesheet" href="upload-pink.css?v=20261114z">
 </head>
 <body data-area="service">
 
@@ -266,20 +266,9 @@
                 <span class="opt-approx" data-approx="220"></span>
               </span>
             </label>
-            <label class="service-option">
-              <input type="radio" name="service" value="custom-beat"
-                data-kind="inquiry" data-name="Custom Beat" data-price="300"
-                data-hint="Send an inquiry, no payment and no upload needed.">
-              <span class="opt">
-                <strong>Custom Beat</strong>
-                <span>Inquiry · quote by email</span>
-                <span>No payment now</span>
-                <span class="opt-price">from CHF 300</span>
-                <span class="opt-approx" data-approx="300"></span>
-              </span>
-            </label>
           </div>
           <p class="hint" id="rates-note">Prices per song in CHF. USD/EUR amounts are approximate hints only, you pay in CHF.</p>
+          <p class="hint"><a class="up-link" href="#custom-beat">Looking for a custom beat? &rarr;</a></p>
         </fieldset>
 
         <div id="order-fields" class="up-fields">
@@ -344,9 +333,17 @@
         </div>
       </form>
 
-      <!-- Custom Beat: Anfrageformular (keine Zahlung, kein Upload) -->
-      <form id="inquiry-form" class="upload-form" hidden novalidate>
-        <p class="muted" style="margin:0">Custom beats start from CHF 300. Tell me what you have in mind and I'll get back to you by email with a quote. Nothing is charged now.</p>
+      <p id="upload-status" class="status" role="status" style="margin-top: 1.5rem; font-weight: 500; text-align: center;"></p>
+    </section>
+
+    <!-- Custom Beat: separate section, inquiry only (no payment, no upload) -->
+    <section class="upload-card custom-card" id="custom-beat" aria-labelledby="cb-title">
+      <p class="eyebrow">CUSTOM PRODUCTION</p>
+      <h2 id="cb-title">Need a custom beat?</h2>
+      <p class="muted cb-price">from CHF 300 &middot; quote by email &middot; no payment now <span class="opt-approx" id="cb-approx" data-approx="300"></span></p>
+      <p class="muted" style="margin:0">Tell me what you have in mind and I'll get back to you by email with a quote. Nothing is charged now.</p>
+      
+      <form id="inquiry-form" class="upload-form" novalidate>
         <div class="field">
           <label for="inq-name">Name / Artist name</label>
           <input id="inq-name" type="text" maxlength="100" placeholder="Your name" autocomplete="name" required>
@@ -377,8 +374,6 @@
         <button id="inq-btn" class="button" type="submit" style="align-self: center; margin-top: 0.5rem;">Send inquiry</button>
         <p id="inq-status" class="status" role="status" style="margin:0;font-weight:500;text-align:center"></p>
       </form>
-
-      <p id="upload-status" class="status" role="status" style="margin-top: 1.5rem; font-weight: 500; text-align: center;"></p>
     </section>
 
   </main>
@@ -402,9 +397,9 @@
   <script defer src="products-map.js?v=20261114m"></script>
   <script defer src="media.js?v=20261114k"></script>
   <script defer src="upload-fx.js?v=20261113q"></script>
-  <script defer src="upload.js?v=20261114y"></script>
+  <script defer src="upload.js?v=20261114z"></script>
   <script src="beforeafter.js?v=20261114v" defer></script>
-  <script src="mixcalc.js?v=20261114y" defer></script>
+  <script src="mixcalc.js?v=20261114z" defer></script>
   <script src="cart.js?v=20261114m" defer></script>
   <script src="nav.js?v=20261114n" defer></script>
   <script src="fx.js?v=20261113g" defer></script>

@@ -71,6 +71,7 @@
   var radios = [].slice.call(document.querySelectorAll('input[name="service"]'));
   function radioFor(s) { for (var i = 0; i < radios.length; i++) if (radios[i].value === s) return radios[i]; return null; }
   function meta(s) {
+    if (s === "custom-beat") return { name: "Custom Beat", price: 300, from: true };
     var r = radioFor(s);
     return r ? { name: r.dataset.name, price: parseInt(r.dataset.price, 10), from: r.dataset.kind === "inquiry" } : null;
   }
@@ -110,6 +111,8 @@
   }
 
   function scrollToForm() {
+    if (state.svc === "custom-beat") formCard = document.getElementById("custom-beat") || formCard;
+    else formCard = document.querySelector(".upload-card");
     if (!formCard) return;
     formCard.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     formCard.classList.remove("mc-flash");
@@ -119,6 +122,7 @@
   }
 
   function preselect(svc) {
+    if (svc === "custom-beat") return;
     var r = radioFor(svc);
     if (!r) return;
     r.checked = true;

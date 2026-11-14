@@ -112,18 +112,40 @@ body[data-area="service"] .yly-state-ic{color:var(--area-c,#e292da)}
 body[data-area="service"] .fw-p{-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 
 /* Service lineup: songs, rush add-on, price summary, custom beat inquiry */
-.up-stepper[hidden],.up-fields[hidden],#inquiry-form[hidden]{display:none}
+.up-stepper[hidden]{display:none}
 .up-fields{display:flex;flex-direction:column;gap:1.25rem;min-width:0}
 .up-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;min-width:0}
 .service-option .opt .opt-approx{font-size:11px;margin-top:-2px}
 .service-option .opt .opt-approx:empty{display:none}
-.up-check{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#0f0c15;cursor:pointer;font-weight:400;margin:0}
-.up-check input{width:18px;height:18px;min-height:0;flex:none;margin:2px 0 0;padding:0;accent-color:var(--purple)}
+.up-check{position:relative;display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1px solid rgba(226,146,218,.28);border-radius:12px;background:#0f0c15;cursor:pointer;font-weight:400;margin:0;transition:border-color .2s,background .2s}
+.up-check:hover{border-color:rgba(226,146,218,.55)}
+.up-check input{position:absolute;opacity:0;width:1px;height:1px;margin:0;padding:0;min-height:0;pointer-events:none}
+.up-check::before{content:"";flex:none;box-sizing:border-box;width:20px;height:20px;margin-top:1px;border:1.5px solid rgba(226,146,218,.55);border-radius:6px;background:transparent;transition:background .2s,border-color .2s}
+.up-check::after{content:"";position:absolute;left:21px;top:15px;width:5px;height:10px;border:solid #1a141f;border-width:0 2.2px 2.2px 0;transform:rotate(45deg) scale(0);transition:transform .15s}
+.up-check:has(input:checked){border-color:#e292da;background:rgba(226,146,218,.14)}
+.up-check:has(input:checked)::before{background:#e292da;border-color:#e292da}
+.up-check:has(input:checked)::after{transform:rotate(45deg) scale(1)}
+.up-check:has(input:focus-visible){outline:2px solid #e292da;outline-offset:2px}
 .up-check span{display:flex;flex-direction:column;gap:2px;min-width:0}
 .up-check strong{font-size:14px}
 .up-check small{font-size:12px;color:var(--muted);line-height:1.5}
-.up-check:has(input:checked){border-color:var(--purple);background:rgba(226,146,218,.08)}
-.up-check:has(input:focus-visible){outline:2px solid var(--purple);outline-offset:2px}
+/* Dark native controls (no white number spinner / checkbox) */
+body[data-area="service"]{color-scheme:dark}
+body[data-area="service"] input[type="number"],body[data-area="service"] input[type="text"],body[data-area="service"] input[type="email"],body[data-area="service"] textarea{background:#0f0c15;color:var(--text);border:1px solid var(--line)}
+body[data-area="service"] input[type="number"]{-moz-appearance:textfield;appearance:textfield}
+body[data-area="service"] input[type="number"]::-webkit-inner-spin-button,body[data-area="service"] input[type="number"]::-webkit-outer-spin-button{filter:invert(.85);opacity:.6}
+body[data-area="service"] input[type="checkbox"]:not(.up-check input){appearance:none;-webkit-appearance:none;width:20px;height:20px;min-height:0;padding:0;border:1.5px solid rgba(226,146,218,.55)!important;border-radius:6px!important;background:#0f0c15;cursor:pointer;display:inline-grid;place-content:center}
+body[data-area="service"] input[type="checkbox"]:not(.up-check input):checked{background:#e292da;border-color:#e292da!important}
+body[data-area="service"] input[type="checkbox"]:not(.up-check input):checked::after{content:"";width:5px;height:10px;border:solid #1a141f;border-width:0 2.2px 2.2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+body[data-area="service"] input[type="checkbox"]:not(.up-check input):focus-visible{outline:2px solid #e292da;outline-offset:2px}
+/* Custom beat section */
+.custom-card{display:flex;flex-direction:column;gap:1rem;border-color:rgba(226,146,218,.35);scroll-margin-top:90px}
+.custom-card .eyebrow,.custom-card h2{margin:0}
+.custom-card .cb-price{margin:0;color:var(--text);font-weight:500}
+.custom-card .opt-approx{color:var(--muted);font-size:12px;font-weight:400;margin-left:4px}
+.custom-card .opt-approx:empty{display:none}
+.up-link{color:var(--purple,#e292da);text-decoration:none}
+.up-link:hover,.up-link:focus-visible{text-decoration:underline}
 .up-summary{border:1px solid var(--line);border-radius:12px;background:#0f0c15;padding:14px 16px;display:flex;flex-direction:column;gap:6px;font-size:14px}
 .up-summary .up-row{display:flex;justify-content:space-between;gap:12px;color:var(--muted)}
 .up-summary .up-row span:last-child{white-space:nowrap;color:var(--text)}
