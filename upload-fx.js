@@ -5,7 +5,7 @@
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var el, orb, card, nameEl, pctEl, labelEl, fill, cv, ctx, W = 0, H = 0, dpr = 1;
   var shown = 0, target = 0, raf = 0, last = 0, P = [], open = false, fin = false, timers = [];
-  var COLS = ['#8f1fe0', '#b33cff', '#d47bff'];
+  var COLS = ['#c45cb9', '#e292da', '#f2c4ee']; /* upload = pink service area */
 
   function build() {
     if (el) return;

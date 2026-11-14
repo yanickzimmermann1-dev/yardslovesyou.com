@@ -158,3 +158,26 @@ body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .tk li.now .dot
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .st-loop{background:hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .1)}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .oa-rev{background:hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .1)}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .fw-p{-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+
+/* Colour audit: mint success-green (#9ef0ce) and next-step card hues are decoration here and follow the page's own area colour. Real error reds, ear-trainer right/wrong, mute/warn/live indicators stay functional. */
+body[data-area="shop"]{--green:#e2c581}
+body[data-area="free"]{--green:#86e9dc}
+body[data-area="lab"]{--green:#a1b1ff}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .ep-card{--ep-rgb:var(--ac-rgb);--ep-c:var(--ac)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .license-badge{border-color:rgba(var(--ac-rgb),.35);background:rgba(var(--ac-rgb),.06)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .gd-card.is-free{border-color:rgba(var(--ac-rgb),.4);background:linear-gradient(135deg,rgba(var(--ac-rgb),.08),rgba(23,19,31,.78) 60%)}
+@keyframes gdPulse{50%{box-shadow:0 0 0 6px rgba(var(--ac-rgb),.22);transform:scale(1.02)}}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .gd-fit-col.yes{border-color:rgba(var(--ac-rgb),.35)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .gd-ic.ok{background:rgba(var(--ac-rgb),.16)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .gd-tip{background:linear-gradient(135deg,rgba(var(--ac-rgb),.14),rgba(var(--ac-rgb),.05));border-color:rgba(var(--ac-rgb),.4);border-left-color:var(--ac)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .mc-badge{background:rgba(var(--ac-rgb),.14)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .st-badge.done{background:rgba(var(--ac-rgb),.15)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .rv-verified{background:rgba(var(--ac-rgb),.12)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-hint{color:var(--green)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cp-feat{color:var(--green)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-mode-daily{background:linear-gradient(150deg,hsl(var(--ah) calc(60% * var(--as)) calc(20% + var(--al))),#16101f 75%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .live-pill{border-color:rgba(var(--ac-rgb),.33)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .live-pill strong{color:var(--ac)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .live-dot{background:var(--ac);box-shadow:0 0 0 0 rgba(var(--ac-rgb),.6);animation-name:livePulseArea}
+@keyframes livePulseArea{0%{box-shadow:0 0 0 0 rgba(var(--ac-rgb),.55)}70%{box-shadow:0 0 0 8px rgba(var(--ac-rgb),0)}100%{box-shadow:0 0 0 0 rgba(var(--ac-rgb),0)}}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) ::selection{background:rgba(var(--ac-rgb),.35);color:#fff}

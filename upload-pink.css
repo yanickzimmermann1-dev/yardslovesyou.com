@@ -160,3 +160,14 @@ body[data-area="service"] .up-check span{gap:4px}
 body[data-area="service"] .service-option{display:flex}
 body[data-area="service"] .service-option .opt{flex:1 1 auto}
 body[data-area="service"] .service-option .opt .opt-price{margin-top:auto;padding-top:10px}
+
+/* Colour audit: mint success-green and next-step hues follow the pink service colour. */
+body[data-area="service"]{--green:#ecb3e6}
+body[data-area="service"] .ep-card{--ep-rgb:226,146,218;--ep-c:#e292da}
+body[data-area="service"] .st-badge.done,body[data-area="service"] .rv-verified{background:rgba(226,146,218,.14)}
+body[data-area="service"] .license-badge,body[data-area="service"] .mc-badge{border-color:rgba(226,146,218,.35);background:rgba(226,146,218,.08)}
+body[data-area="service"] .live-pill{border-color:rgba(226,146,218,.33)}
+body[data-area="service"] .live-pill strong{color:#e292da}
+body[data-area="service"] .live-dot{background:#e292da;box-shadow:0 0 0 0 rgba(226,146,218,.6);animation-name:livePulseSvc}
+@keyframes livePulseSvc{0%{box-shadow:0 0 0 0 rgba(226,146,218,.55)}70%{box-shadow:0 0 0 8px rgba(226,146,218,0)}100%{box-shadow:0 0 0 0 rgba(226,146,218,0)}}
+body[data-area="service"] ::selection{background:rgba(226,146,218,.35);color:#fff}

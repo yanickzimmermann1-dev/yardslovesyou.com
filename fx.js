@@ -2,7 +2,20 @@
 (function () {
   'use strict';
   var root = document.documentElement;
-  var COLS = ['#8f1fe0', '#b33cff', '#d47bff'];
+  /* Particle colours follow the page's area colour (--area-rgb); default purple on home/legal. */
+  var COLS = (function () {
+    try {
+      var b = document.body, a = b && b.getAttribute('data-area');
+      if (a && a !== 'mix') {
+        var v = getComputedStyle(b).getPropertyValue('--area-rgb').trim().split(',').map(Number);
+        if (v.length === 3 && v.every(isFinite)) {
+          var d = v.map(function (x) { return Math.round(x * 0.62); }), l = v.map(function (x) { return Math.round(x + (255 - x) * 0.35); });
+          return ['rgb(' + d.join(',') + ')', 'rgb(' + v.join(',') + ')', 'rgb(' + l.join(',') + ')'];
+        }
+      }
+    } catch (e) {}
+    return ['#8f1fe0', '#b33cff', '#d47bff'];
+  })();
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var active = null;
