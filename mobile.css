@@ -1,0 +1,109 @@
+/* mobile.css - phone polish, loaded LAST on every page (after area-theme / upload-pink).
+   Only layout, sizing and touch rules, no colours, so the area themes (home purple, upload pink, shop gold, free teal, lab blue) stay untouched.
+   Desktop (>860px) is not affected: everything lives inside max-width media queries. */
+
+/* ---- tablets / large phones (<=860px) ---- */
+@media(max-width:860px){
+  /* iOS: never auto-zoom into form fields */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),select,textarea{font-size:16px !important}
+  /* long strings (emails, URLs, hashes) wrap instead of pushing the page sideways */
+  main p,main li,main h1,main h2,main h3,main a,main label,main td,footer a{overflow-wrap:anywhere}
+  /* landscape phones with a notch */
+  .wrap{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+}
+
+/* ---- touch devices: no sticky hover lifts ---- */
+@media(hover:none){
+  .button:hover,.outline:hover,.cat-chip:hover,.free-nav a:hover,.cart-btn:hover,.cart-add-ic:hover,.ep-card:hover,.product:hover,.cp:hover{transform:none}
+}
+
+/* ---- phones (<=720px) ---- */
+@media(max-width:720px){
+  :root{--topbar-h:56px;--stepper-h:46px}
+  html{scroll-padding-top:calc(var(--topbar-h) + 12px)}
+
+  /* header + tab bar: safe areas, 44px targets, readable labels */
+  .topbar{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .topbar .brand{display:inline-flex;align-items:center;min-height:44px}
+  nav[aria-label="Main"]{padding-left:max(6px,env(safe-area-inset-left,0px));padding-right:max(6px,env(safe-area-inset-right,0px));font-size:12px}
+  nav[aria-label="Main"] a,nav[aria-label="Main"] a span{font-size:12px}
+  /* last content is never hidden behind the tab bar */
+  body{padding-bottom:calc(var(--tabbar-space,64px) + 8px)}
+  footer,footer.site-footer{padding-bottom:calc(var(--tabbar-space,64px) + 24px)}
+  .yly-toast{bottom:calc(var(--tabbar-space,64px) + 14px)}
+
+  /* readable small print (>=13px body text, >=12px labels) */
+  .hint,.fineprint,small,.footer-copy,#year,.opt-approx,#rates-note,.mc-private,.mc-eyebrow,.up-link,.sp-hint,.cp-link,.bl-hint,#file-hint,#drop-next,#et-board-date,.tag-line,.pl-seed,.pl-n,.pl-sub{font-size:13px}
+  .eyebrow,.ar-tag,.badge,.gd-card-tag,#et-daily-no,.pl-role{font-size:12px}
+  .pl-seg button{font-size:12px}
+  .cart-lbl,#sticky-buy-btn{font-size:14px}
+
+  /* 44px tap targets */
+  .cat-chip,.sp-pill,.cm-pill,.ep-go,.up-link,.back-link,.cp-link,label.consent,.play-btn,#sticky-cart-btn,#sticky-buy-btn,.gd-addcart{min-height:44px}
+  .cart-add-ic,.gd-addcart{min-width:44px;min-height:44px}
+  .qv-eye{width:44px;height:44px;top:24px;right:24px}
+  .ep-go,.up-link,.back-link,.cp-link{display:inline-flex;align-items:center}
+  footer a{display:inline-flex;align-items:center;min-height:44px}
+  /* the stepper dots stay compact, their touch area grows invisibly */
+  .up-step{position:relative}
+  .up-step::after{content:"";position:absolute;inset:-9px -4px}
+  /* upload: anchors / scrolled sections land below header AND sticky stepper */
+  .mc-section,.upload-card,.custom-card,.rv-section,#hear,#services{scroll-margin-top:calc(var(--topbar-h) + var(--stepper-h) + 16px)}
+
+  /* Perc Lab: intentional sideways scroll with a visible hint */
+  .pl-scroll::before{content:"Swipe sideways to see all steps \2192";position:sticky;left:0;display:block;width:max-content;padding:0 0 8px;font:500 12px 'DM Sans',sans-serif;color:var(--muted)}
+  .pl-grid{--head:200px}
+  .pl-head{grid-template-columns:40px 40px minmax(0,1fr) 40px}
+  .pl-mini{width:40px;height:40px}
+  .pl-sound{min-height:40px}
+}
+
+/* ---- narrow phones (<=420px) ---- */
+@media(max-width:420px){
+  .wrap{width:calc(100% - 28px)}
+  .hero h1{font-size:clamp(32px,10vw,44px)}
+  h2{font-size:clamp(24px,7.4vw,30px);line-height:1.12}
+  .hero-actions .button,.hero-actions .outline{min-height:50px}
+}
+@media(max-width:720px){
+  .topbar>.uis-btn,.topbar>.uis-btn:not(.uis-float){width:44px;height:44px}
+}
+
+/* ---- phones: final text floors + remaining tap targets ---- */
+@media(max-width:720px){
+  body .footer-copy,body .product-link p,body .pd-specs li,body .trust span,body .opt,body .opt-approx,body .up-approx,body .gd-card-tag,body .cm-chord span,body .pl-field span,body .pl-field strong,body .cm-bpm span,body .cm-bpm strong,body .cm-key-row span,body .ed-tools button,body .ed-snap,body .license-badge,body .mc-private,body kbd{font-size:13px !important}
+  body button small,body .gd-card-tag,body .tag-line{font-size:12px !important}
+  body .cm-chord span{font-size:12px !important}
+  /* text links: bigger hit area without changing line height */
+  main p a:not(.button):not(.outline),main li a:not(.button):not(.outline),main span a:not(.button):not(.outline),.hint a,.fineprint a,.bl-hint a{padding:14px 0}
+  .crumbs a,a.back-link,.license-badge a{display:inline-flex;align-items:center;min-height:44px}
+  .pl-seg button,.ed-tools button,label.ed-snap{min-height:44px}
+  label.ed-snap{display:inline-flex;align-items:center;gap:8px}
+  .cm-bpm input[type="range"],.bl-ctl input[type="range"],.pl-field input[type="range"]{height:44px}
+  .pl-vol{height:40px}
+}
+
+/* ---- product pages: price + Add to cart share a row, Buy now is full width below ---- */
+@media(max-width:720px){
+  .pd-buy{gap:12px}
+  .pd-buy .price-wrap{flex:0 0 auto}
+  .pd-buy .button{flex:1 1 0;justify-content:center;min-height:50px}
+  .pd-buy .outline{flex:1 1 100%;justify-content:center;min-height:50px}
+}
+
+/* ---- upload: slimmer sticky stepper, full-width primary actions ---- */
+@media(max-width:720px){
+  .up-stepper{top:calc(var(--topbar-h) + 6px);padding:6px 10px;margin-bottom:14px}
+  .up-step .n{width:24px;height:24px}
+  #submit-btn,#inq-btn,.upload-form>.button[type="submit"]{align-self:stretch !important;width:100%;min-height:52px;justify-content:center}
+}
+
+/* ---- tool pages: single next-step CTA full width, action rows as tidy 2-col grid ---- */
+@media(max-width:720px){
+  .bl-cta{flex-direction:column;align-items:stretch;gap:16px;padding:20px}
+  .bl-cta h2{font-size:22px}
+  .bl-cta .button{width:100%;justify-content:center;min-height:50px}
+  .bl-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .bl-actions>*{width:100%;justify-content:center;text-align:center;min-height:48px}
+  .bl-actions>:first-child:nth-last-child(odd),.bl-actions>.bl-wide{grid-column:1/-1}
+}
