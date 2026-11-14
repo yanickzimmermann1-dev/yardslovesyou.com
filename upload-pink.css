@@ -153,3 +153,10 @@ body[data-area="service"] input[type="checkbox"]:not(.up-check input):focus-visi
 .up-summary .up-total{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-top:1px solid var(--line);margin-top:4px;padding-top:10px;font:600 18px 'Space Grotesk',system-ui,sans-serif;color:var(--text)}
 .up-summary .up-approx{font-size:12px;color:var(--muted);margin:0}
 .up-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+/* Rush tile: mehr Luft; Service-Karten: Preis unten buendig */
+body[data-area="service"] .up-check{padding:16px 18px;gap:14px}
+body[data-area="service"] .up-check::after{left:25px;top:19px}
+body[data-area="service"] .up-check span{gap:4px}
+body[data-area="service"] .service-option{display:flex}
+body[data-area="service"] .service-option .opt{flex:1 1 auto}
+body[data-area="service"] .service-option .opt .opt-price{margin-top:auto;padding-top:10px}
