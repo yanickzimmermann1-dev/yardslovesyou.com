@@ -157,3 +157,4 @@ body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .tk li.now .dot
 @keyframes tkPulse{0%{box-shadow:0 0 0 0 hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .55)}70%{box-shadow:0 0 0 12px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / 0)}100%{box-shadow:0 0 0 0 hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / 0)}}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .st-loop{background:hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .1)}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .oa-rev{background:hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .1)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .fw-p{-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}

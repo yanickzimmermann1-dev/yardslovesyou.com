@@ -109,3 +109,4 @@ body[data-area="service"] .ns-box{box-shadow:inset 0 1px 0 var(--area-line,rgba(
 
 /* states.css */
 body[data-area="service"] .yly-state-ic{color:var(--area-c,#e292da)}
+body[data-area="service"] .fw-p{-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
