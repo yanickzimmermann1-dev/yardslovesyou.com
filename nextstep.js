@@ -89,7 +89,7 @@
       var ln = doc.createElement('p'); ln.className = 'ns-line'; ln.textContent = c.line;
       tx.appendChild(ey); tx.appendChild(ln);
       var ac = doc.createElement('div'); ac.className = 'ns-actions';
-      c.btns.forEach(function (b, i) {
+      c.btns.slice(0, 1).forEach(function (b, i) {
         var a = doc.createElement('a'); a.className = i ? 'outline' : 'button'; a.href = b[1]; a.textContent = b[0];
         var t = tone(b[1]); a.setAttribute('data-tone', t); if (!i) box.setAttribute('data-tone', t);
         a.addEventListener('click', function () { track(page, b[1]); });
