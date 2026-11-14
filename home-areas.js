@@ -13,6 +13,39 @@
     });
   });
   var Y = window.YLY, cfg = window.APP_CONFIG || {};
+
+  /* ---------- Mixing card: star rating line (ONE REST request, 10 min sessionStorage cache; hidden on 0 reviews / error) ---------- */
+  (function () {
+    var price = document.querySelector('.ar-mix .ar-price');
+    if (!price || !cfg.SUPABASE_URL || String(cfg.SUPABASE_URL).indexOf('https://') !== 0 || !window.fetch) return;
+    var KEY = 'yly_svc_rating_v1', TTL = 10 * 60 * 1000;
+    var STAR = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.7 6.1 20.8l1.2-6.5L2.5 9.7l6.6-.9z"/></svg>';
+    var five = function () { var o = ''; for (var i = 0; i < 5; i++) o += STAR; return o; };
+    function render(avg, n) {
+      if (!(n > 0) || !(avg >= 1 && avg <= 5) || document.querySelector('.ar-rate')) return;
+      var a = document.createElement('a');
+      a.className = 'ar-rate';
+      a.href = 'upload.html#artists-say';
+      a.setAttribute('aria-label', 'Rated ' + avg.toFixed(1) + ' out of 5 by ' + n + ' artist' + (n === 1 ? '' : 's'));
+      a.innerHTML = '<span class="ar-stars" aria-hidden="true"><span class="ar-stars-bg">' + five() + '</span><span class="ar-stars-fg" style="width:' + (Math.round(avg * 2) / 2 / 5 * 100) + '%">' + five() + '</span></span>' +
+        '<b>' + avg.toFixed(1) + '</b><span class="ar-rate-n">from ' + n + ' artist' + (n === 1 ? '' : 's') + '</span>';
+      price.insertAdjacentElement('afterend', a);
+    }
+    try {
+      var c = JSON.parse(sessionStorage.getItem(KEY) || 'null');
+      if (c && Date.now() - c.t < TTL) { render(Number(c.avg), Number(c.n)); return; }
+    } catch (e) {}
+    var h = { apikey: cfg.SUPABASE_PUBLISHABLE_KEY };
+    if (String(cfg.SUPABASE_PUBLISHABLE_KEY).split('.').length === 3) h.Authorization = 'Bearer ' + cfg.SUPABASE_PUBLISHABLE_KEY;
+    fetch(cfg.SUPABASE_URL + '/rest/v1/service_reviews?select=rating&status=eq.approved&limit=1000', { headers: h })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) {
+        var v = (Array.isArray(d) ? d : []).map(function (x) { return Number(x && x.rating); }).filter(function (x) { return x >= 1 && x <= 5; });
+        var n = v.length, avg = n ? Math.round(v.reduce(function (a, b) { return a + b; }, 0) / n * 10) / 10 : 0;
+        try { sessionStorage.setItem(KEY, JSON.stringify({ t: Date.now(), avg: avg, n: n })); } catch (e) {}
+        render(avg, n);
+      }).catch(function () {});
+  })();
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var prods = $('ar-prods'), count = $('lab-count'), nl = $('newlab'), grid = $('nl-grid');

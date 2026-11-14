@@ -28,6 +28,14 @@
 /* ---- mixing card: 4 process steps ---- */
 .ar-mix .button{background:linear-gradient(135deg,#e292da,#ecb3e6);box-shadow:0 10px 28px -14px rgba(226,146,218,.7);color:#1a141f}
 .ar-mix .button:hover{background:linear-gradient(135deg,#e8a3e1,#f2c4ee)}
+.ar-rate{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:-6px 0 0;width:fit-content;max-width:100%;font:14px 'DM Sans';color:var(--muted,#a89fbb);text-decoration:none}
+.ar-rate b{color:var(--text,#f3edff);font-weight:700}
+.ar-rate:hover .ar-rate-n,.ar-rate:focus-visible .ar-rate-n{text-decoration:underline;text-underline-offset:3px}
+.ar-rate:focus-visible{outline:2px solid #e292da;outline-offset:3px;border-radius:6px}
+.ar-stars{position:relative;display:inline-block;line-height:0;color:#e292da;white-space:nowrap}
+.ar-stars svg{display:inline-block;width:14px;height:14px;margin-right:1px}
+.ar-stars-bg{display:inline-block;opacity:.28}
+.ar-stars-fg{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap}
 
 /* ---- shop products ---- */
 .ar-prods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
