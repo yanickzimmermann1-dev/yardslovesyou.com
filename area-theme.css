@@ -90,7 +90,6 @@ body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .fw-p{backgroun
 /* thread.css */
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .thread{--thread-c:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)));--thread-c:color-mix(in srgb,var(--area-c,#b68aff) 38%,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al))))}
 /* nextstep.css */
-body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .ep-mix{--ep-c:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)))}
 /* eartrainer.css */
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-hero h1 span{filter:drop-shadow(0 0 24px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .45))}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-mode:hover{box-shadow:0 22px 50px -28px #000,0 0 0 1px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .14)}
@@ -163,7 +162,6 @@ body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .fw-p{-webkit-b
 body[data-area="shop"]{--green:#e2c581}
 body[data-area="free"]{--green:#86e9dc}
 body[data-area="lab"]{--green:#a1b1ff}
-body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .ep-card{--ep-rgb:var(--ac-rgb);--ep-c:var(--ac)}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .license-badge{border-color:rgba(var(--ac-rgb),.35);background:rgba(var(--ac-rgb),.06)}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .gd-card.is-free{border-color:rgba(var(--ac-rgb),.4);background:linear-gradient(135deg,rgba(var(--ac-rgb),.08),rgba(23,19,31,.78) 60%)}
 @keyframes gdPulse{50%{box-shadow:0 0 0 6px rgba(var(--ac-rgb),.22);transform:scale(1.02)}}
@@ -176,8 +174,4 @@ body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .rv-verified{ba
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-hint{color:var(--green)}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cp-feat{color:var(--green)}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-mode-daily{background:linear-gradient(150deg,hsl(var(--ah) calc(60% * var(--as)) calc(20% + var(--al))),#16101f 75%)}
-body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .live-pill{border-color:rgba(var(--ac-rgb),.33)}
-body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .live-pill strong{color:var(--ac)}
-body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .live-dot{background:var(--ac);box-shadow:0 0 0 0 rgba(var(--ac-rgb),.6);animation-name:livePulseArea}
-@keyframes livePulseArea{0%{box-shadow:0 0 0 0 rgba(var(--ac-rgb),.55)}70%{box-shadow:0 0 0 8px rgba(var(--ac-rgb),0)}100%{box-shadow:0 0 0 0 rgba(var(--ac-rgb),0)}}
 body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) ::selection{background:rgba(var(--ac-rgb),.35);color:#fff}

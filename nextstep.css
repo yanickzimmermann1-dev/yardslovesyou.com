@@ -8,7 +8,7 @@
   box-shadow:inset 0 1px 0 rgba(var(--ep-rgb),.55);color:var(--text,#f3edff);
   transition:border-color .25s ease,box-shadow .3s ease,transform .3s var(--smooth,ease),background .3s ease}
 .ep-card::before{content:"";position:absolute;left:0;right:0;top:-6px;bottom:-6px;pointer-events:auto}  /* hover hit area follows the lifted card: no enter/leave flicker at the card edge */
-.ep-mix{--ep-rgb:182,138,255;--ep-c:#b68aff}
+.ep-mix{--ep-rgb:226,146,218;--ep-c:#e292da}
 .ep-shop{--ep-rgb:212,180,110;--ep-c:#D4B46E}
 .ep-free{--ep-rgb:95,224,208;--ep-c:#5fe0d0}
 .ep-ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:var(--ep-c);background:rgba(var(--ep-rgb),.14);border:1px solid rgba(var(--ep-rgb),.35)}
@@ -58,3 +58,16 @@
 .free-more p{margin:0;color:var(--muted,#a89fbb);font-size:15px;line-height:1.5;flex:1 1 280px}
 .free-more strong{color:var(--text,#f3edff)}
 .free-more .outline{display:inline-flex;align-items:center;gap:8px}
+
+/* Next step: Farbe der Zielseite (data-tone von nextstep.js) */
+[data-tone="home"]{--t-rgb:182,138,255;--t-c:#b68aff;--t-c2:#cfb0ff;--t-ink:#140d22}
+[data-tone="service"]{--t-rgb:226,146,218;--t-c:#e292da;--t-c2:#ecb3e6;--t-ink:#1a141f}
+[data-tone="shop"]{--t-rgb:212,180,110;--t-c:#D4B46E;--t-c2:#ecd29a;--t-ink:#1c1608}
+[data-tone="free"]{--t-rgb:95,224,208;--t-c:#5fe0d0;--t-c2:#b0f1e8;--t-ink:#062a26}
+[data-tone="lab"]{--t-rgb:143,162,255;--t-c:#8fa2ff;--t-c2:#b3c0ff;--t-ink:#0e1330}
+body .next-step .ns-box[data-tone]{background:linear-gradient(135deg,rgba(var(--t-rgb),.1),var(--panel,#17131f) 65%);box-shadow:inset 0 1px 0 rgba(var(--t-rgb),.55)}
+body .next-step .ns-box[data-tone] .eyebrow{color:var(--t-c)}
+body .next-step .ns-actions a.button[data-tone]{background:linear-gradient(135deg,var(--t-c),var(--t-c2));color:var(--t-ink);border-color:transparent;box-shadow:0 10px 28px -14px rgba(var(--t-rgb),.7)}
+body .next-step .ns-actions a.button[data-tone]:hover{filter:brightness(1.08)}
+body .next-step .ns-actions a.outline[data-tone]{color:var(--t-c);border-color:rgba(var(--t-rgb),.45);background:transparent}
+body .next-step .ns-actions a.outline[data-tone]:hover{background:rgba(var(--t-rgb),.1);border-color:rgba(var(--t-rgb),.7)}

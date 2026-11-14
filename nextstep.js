@@ -70,6 +70,15 @@
     cfg = cfg || MAP[page];
     if (!cfg) return;
 
+    // Farbe des Ziels: Upload pink, Shop gold, Free tuerkis, Lab blau, sonst lila
+    function tone(href) {
+      var h = String(href || '').split(/[?#]/)[0].replace(/^\//, '');
+      if (h === 'upload.html') return 'service';
+      if (/^(shop|product|essentials|the-last-yards)\.html$/.test(h)) return 'shop';
+      if (h === 'free.html') return 'free';
+      if (/^(community|beatlab|chords|eartrainer|mixcheck|profile)\.html$/.test(h)) return 'lab';
+      return 'home';
+    }
     function build(c) {
       var sec = doc.createElement('section'); sec.className = 'next-step'; sec.setAttribute('aria-label', 'Next step');
       var box = doc.createElement('div'); box.className = 'ns-box';
@@ -82,6 +91,7 @@
       var ac = doc.createElement('div'); ac.className = 'ns-actions';
       c.btns.forEach(function (b, i) {
         var a = doc.createElement('a'); a.className = i ? 'outline' : 'button'; a.href = b[1]; a.textContent = b[0];
+        var t = tone(b[1]); a.setAttribute('data-tone', t); if (!i) box.setAttribute('data-tone', t);
         a.addEventListener('click', function () { track(page, b[1]); });
         ac.appendChild(a);
       });
