@@ -2000,3 +2000,8 @@ footer.site-footer .footer-social svg{display:block;width:22px;height:22px}
 .ripple,.fx-p,.fx-layer{display:none !important}
 .button:hover{background:linear-gradient(135deg,#c39cff,#d9b8ff)}
 .button:focus-visible,.outline:focus-visible,.gen-btn:focus-visible{outline:2px solid var(--purple);outline-offset:3px}
+
+/* Kontrast: Nav-Pille, Warenkorb und Ghost-Button ohne Blur, deckend mit klarem Rand */
+html body .topbar nav[aria-label="Main"],html body .cart-btn{-webkit-backdrop-filter:none;backdrop-filter:none;background:#1a1424;border-color:rgba(255,255,255,.22)}
+html body .hero.hx .hx-ghost{-webkit-backdrop-filter:none;backdrop-filter:none;background:transparent;border-color:rgba(182,138,255,.7)}
+html body .cart-btn:hover{background:#241c31;border-color:rgba(255,255,255,.32)}
