@@ -2005,3 +2005,7 @@ footer.site-footer .footer-social svg{display:block;width:22px;height:22px}
 html body .topbar nav[aria-label="Main"],html body .cart-btn{-webkit-backdrop-filter:none;backdrop-filter:none;background:#1a1424;border-color:rgba(255,255,255,.22)}
 html body .hero.hx .hx-ghost{-webkit-backdrop-filter:none;backdrop-filter:none;background:transparent;border-color:rgba(182,138,255,.7)}
 html body .cart-btn:hover{background:#241c31;border-color:rgba(255,255,255,.32)}
+/* Shop-Dropdown: eine einheitliche Pille (keine Abstufung zwischen Link und Pfeil) */
+@media(min-width:721px){
+  html body .topbar nav[aria-label="Main"] .nav-dd>a,html body .topbar nav[aria-label="Main"] .nav-dd>a:hover,html body .topbar nav[aria-label="Main"] .nav-dd>a.active,html body .topbar nav[aria-label="Main"] .nav-dd>a[aria-current="page"],html body .topbar nav[aria-label="Main"] .nav-dd .nav-dd-toggle{background:none !important;box-shadow:none !important}
+}
