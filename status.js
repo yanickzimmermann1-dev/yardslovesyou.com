@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     else root.innerHTML = `<div class="st-card st-err"><h2>${esc(title)}</h2><p class="muted">${esc(text)}</p><a class="button" href="index.html">Back to home</a></div>`;
   };
 
-  const token = (new URLSearchParams(location.search).get("t") || "").trim();
+  const token = (new URLSearchParams(location.search).get("t") || new URLSearchParams(location.search).get("token") || "").trim();
   if (!token) return errorView("Open the link from your confirmation email", "This page needs the personal order link from your confirmation email or the page you saw after paying. Can't find it? Contact us and we'll resend it.");
   if (!UUID.test(token)) return errorView("Open the link from your confirmation email", "This link looks incomplete. Please open the full link from your email (copy it completely if it wrapped onto two lines), or contact us.");
   if (!window.supabase) return errorView("Something went wrong", "The page could not start. Please reload, or contact us if it keeps happening.", true);
@@ -40,7 +40,31 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const STEPS = [["received", "Received", "inbox"], ["in_progress", "In progress", "wave"], ["delivered", "Delivered", "box"], ["completed", "Completed", "star"]];
-  let last = null;
+  let last = null, justReviewed = false, scrolledToReview = false;
+  const STAR = '<svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.7 6.1 20.8l1.2-6.5L2.5 9.7l6.6-.9z"/></svg>';
+
+  // "Rate your experience"-Karte (nur bei delivered/completed); Radios 5..1 + row-reverse, damit "~" die Sterne links vom Treffer faerbt
+  function reviewCard(o) {
+    if (o.progress !== "delivered" && o.progress !== "completed") return "";
+    if (o.has_review || justReviewed) {
+      return `<section class="st-card st-rate" id="review" tabindex="-1"><h3>${justReviewed ? "Thank you for your review!" : "Thanks for your review"}</h3><p class="muted" style="margin:0">${justReviewed ? "It will appear on the site once it has been checked." : "We really appreciate it."}</p></section>`;
+    }
+    const stars = [5, 4, 3, 2, 1].map(n => `<input type="radio" name="st-rate" id="st-rate-${n}" value="${n}" required><label for="st-rate-${n}" title="${n} star${n === 1 ? "" : "s"}"><span class="sr-only">${n} star${n === 1 ? "" : "s"}</span>${STAR}</label>`).join("");
+    return `
+      <section class="st-card st-rate" id="review" tabindex="-1">
+        <h3>Rate your experience</h3>
+        <p class="muted" style="margin:0">How did it go? Your feedback helps other artists.</p>
+        <form class="st-form" id="st-rv-form">
+          <fieldset class="st-stars"><legend class="sr-only">Rating</legend>${stars}</fieldset>
+          <textarea id="st-rv-text" rows="4" maxlength="600" placeholder="Optional: tell us a bit about the result (max. 600 characters)"></textarea>
+          <label class="st-lab" for="st-rv-name">Display name</label>
+          <input id="st-rv-name" type="text" maxlength="40" required autocomplete="off" value="${esc((o.artist_name || "").slice(0, 40))}">
+          <p class="st-consent">Your review may be shown on yardslovesyou.com (name + rating + text).</p>
+          <div class="st-actions" style="margin:0"><button class="button" type="submit" id="st-rv-btn">Send review</button></div>
+          <p class="st-msg" id="st-rv-msg" role="status"></p>
+        </form>
+      </section>`;
+  }
 
   function render(o) {
     last = o;
@@ -81,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </form>` : `<p class="muted">All included revisions have been used. Reply to your order email if you need anything else.</p>`}
         <p class="st-msg" id="st-msg" role="status"></p>
       </section>` : ""}
+      ${reviewCard(o)}
       <p class="st-hint">${ICON.info}<span>Bookmark this page: it's your personal order link. This page refreshes automatically, and we'll also email you at every step.</span></p>`;
 
     const msg = (t, bad) => { const m = $("st-msg"); if (m) { m.textContent = t; m.classList.toggle("danger", !!bad); } };
@@ -91,6 +116,26 @@ document.addEventListener("DOMContentLoaded", () => {
       if (r.error) { ap.disabled = false; return msg(r.error, true); }
       load();
     };
+    const rf = $("st-rv-form");
+    if (rf) rf.onsubmit = async e => {
+      e.preventDefault();
+      const rm = (t, bad) => { const m = $("st-rv-msg"); if (m) { m.textContent = t; m.classList.toggle("danger", !!bad); } };
+      const pick = rf.querySelector('input[name="st-rate"]:checked');
+      const name = $("st-rv-name").value.trim();
+      if (!pick) return rm("Please choose a star rating.", true);
+      if (!name) return rm("Please enter a display name.", true);
+      $("st-rv-btn").disabled = true; rm("Sending …");
+      const r = await call({ review: { rating: +pick.value, body: $("st-rv-text").value.trim(), name: name.slice(0, 40) } });
+      if (r.error) {
+        if (/already reviewed/i.test(r.error)) { last.has_review = true; return render(last); }
+        $("st-rv-btn").disabled = false; return rm(r.error, true);
+      }
+      justReviewed = true; render(last);
+    };
+    if (!scrolledToReview && location.hash === "#review") {
+      const card = $("review");
+      if (card) { scrolledToReview = true; card.scrollIntoView({ behavior: "smooth", block: "start" }); }
+    }
     const f = $("st-rev-form");
     if (f) f.onsubmit = async e => {
       e.preventDefault();
@@ -115,7 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
   load();
   setInterval(() => {
     if (document.hidden) return;
-    const typing = $("st-rev") && $("st-rev").value.trim();
+    const rvPick = document.querySelector('input[name="st-rate"]:checked');
+    const typing = ($("st-rev") && $("st-rev").value.trim()) || ($("st-rv-text") && $("st-rv-text").value.trim()) || rvPick;
     if (!typing) load(true);
   }, 60000);
 });

@@ -1,0 +1,18 @@
+/* service-reviews.css – "What artists say" auf upload.html (rosa Service-Bereich) */
+.sr-section{max-width:1040px;margin:28px auto}
+.sr-section[hidden]{display:none}
+.sr-section h2{margin:0 0 12px;font:600 clamp(22px,3vw,28px) 'Space Grotesk',sans-serif;letter-spacing:-.5px}
+.sr-stars{position:relative;display:inline-block;line-height:0;vertical-align:middle;white-space:nowrap}
+.sr-stars-bg,.sr-stars-fg{display:inline-flex;gap:2px}
+.sr-stars-bg{color:rgba(170,160,183,.28)}
+.sr-stars-fg{position:absolute;left:0;top:0;overflow:hidden;color:var(--purple,#e292da)}
+.sr-stars svg{display:block;flex:none}
+.sr-sum{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 18px;color:var(--muted)}
+.sr-avg{font-size:15px}
+.sr-avg b{color:var(--text);font:700 22px 'Space Grotesk',sans-serif}
+.sr-n{font-size:13px}
+.sr-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.sr-card{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;min-width:0}
+.sr-card p{margin:0;color:var(--text);line-height:1.65;font-size:14px;overflow-wrap:anywhere;white-space:pre-wrap}
+.sr-meta{display:flex;flex-wrap:wrap;gap:2px 10px;margin-top:auto;font-size:12px;color:var(--muted)}
+.sr-meta strong{color:var(--text);font-weight:600}

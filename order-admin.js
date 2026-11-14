@@ -104,13 +104,16 @@
 
     // ---------- Reviews ----------
   let reviews = [], rvFilter = "pending", rvLoaded = false;
+  let svReviews = [], svFilter = "pending";
   const rvStatus = (t, bad) => { const el = $("rv-status"); el.textContent = t; el.classList.toggle("danger", !!bad); };
   const RV_LABEL = { pending: "Pending", approved: "Approved", rejected: "Rejected" };
   const RV_CLASS = { pending: "", approved: "done", rejected: "bad" };
 
   function rvCount() {
-    const n = reviews.filter(r => r.status === "pending").length, el = $("rv-pending");
-    el.textContent = n; el.hidden = !n;
+    const np = reviews.filter(r => r.status === "pending").length, ns = svReviews.filter(r => r.status === "pending").length, el = $("rv-pending");
+    el.textContent = np + ns; el.hidden = !(np + ns);
+    const a = $("rk-product-n"), b = $("rk-service-n");
+    a.textContent = np; a.hidden = !np; b.textContent = ns; b.hidden = !ns;
   }
   function renderReviews() {
     const list = reviews.filter(r => r.status === rvFilter);
@@ -133,6 +136,53 @@
     try { reviews = (await call({ action: "reviews-list" })).reviews || []; rvLoaded = true; rvStatus(""); rvCount(); renderReviews(); }
     catch (e) { rvStatus(e.message, true); S($("rv-list"), { icon: "alert", error: true, title: "Reviews could not be loaded", text: e.message || "Please try again.", actions: [{ label: "Retry", onClick: () => loadReviews() }] }); }
   }
+
+  // ---------- Service reviews (service_reviews) ----------
+  const svStatus = (t, bad) => { const el = $("sv-status"); el.textContent = t; el.classList.toggle("danger", !!bad); };
+  function renderServiceReviews() {
+    const list = svReviews.filter(r => r.status === svFilter);
+    $("sv-list").innerHTML = list.length ? list.map(r => `
+      <article class="oa-card" data-id="${esc(r.id)}">
+        <div class="oa-head"><span>${window.YLYReviews.stars(r.rating, 18)}</span>
+          <span class="st-badge ${RV_CLASS[r.status] || ""}">${esc(RV_LABEL[r.status] || r.status)}</span></div>
+        <p class="oa-sub">${esc(r.service || "Service")}<br>${esc(r.display_name)} · ${esc(fmt(r.created_at))}</p>
+        ${r.body ? `<div class="rv-adm-body">${esc(r.body)}</div>` : '<p class="oa-sub">No text, rating only.</p>'}
+        <div class="oa-acts">
+          <button type="button" class="button" data-s="approved"${r.status === "approved" ? " disabled" : ""}>Approve</button>
+          <button type="button" class="outline" data-s="rejected"${r.status === "rejected" ? " disabled" : ""}>Reject</button>
+        </div>
+        <p class="status oa-msg" role="status"></p>
+      </article>`).join("") : "";
+    if (!list.length) S($("sv-list"), { icon: "star", title: "No " + RV_LABEL[svFilter].toLowerCase() + " service reviews", text: "Nothing to show in this view right now.", actions: [{ label: "Reload", onClick: () => loadServiceReviews() }] });
+  }
+  async function loadServiceReviews() {
+    svStatus("Loading …");
+    try { svReviews = (await call({ action: "service-reviews-list" })).reviews || []; svStatus(""); rvCount(); renderServiceReviews(); }
+    catch (e) { svStatus(e.message, true); S($("sv-list"), { icon: "alert", error: true, title: "Service reviews could not be loaded", text: e.message || "Please try again.", actions: [{ label: "Retry", onClick: () => loadServiceReviews() }] }); }
+  }
+  $("rk-toggle").addEventListener("click", e => {
+    const b = e.target.closest("[data-k]"); if (!b) return;
+    const sv = b.dataset.k === "service";
+    $("rv-product").classList.toggle("hidden", sv); $("rv-service").classList.toggle("hidden", !sv);
+    document.querySelectorAll("#rk-toggle button").forEach(x => x.classList.toggle("active", x === b));
+  });
+  $("sv-filters").addEventListener("click", e => {
+    const b = e.target.closest("[data-f]"); if (!b) return;
+    svFilter = b.dataset.f;
+    document.querySelectorAll("#sv-filters button").forEach(x => x.classList.toggle("active", x === b));
+    renderServiceReviews();
+  });
+  $("sv-reload").addEventListener("click", loadServiceReviews);
+  $("sv-list").addEventListener("click", async e => {
+    const b = e.target.closest("[data-s]"); if (!b) return;
+    const card = b.closest(".oa-card"), id = Number(card.dataset.id), msg = card.querySelector(".oa-msg");
+    b.disabled = true; msg.textContent = "Saving …"; msg.classList.remove("danger");
+    try {
+      await call({ action: "service-review-set", id, status: b.dataset.s });
+      const r = svReviews.find(x => x.id === id); if (r) r.status = b.dataset.s;
+      rvCount(); renderServiceReviews();
+    } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); b.disabled = false; }
+  });
 
   // ---------- Custom Beat Inquiries ----------
   let inquiries = [], iqFilter = "all", iqLoaded = false;
@@ -197,7 +247,7 @@
     document.querySelectorAll("#oa-tabs button").forEach(b => {
       const on = b.dataset.tab === name; b.classList.toggle("active", on); b.setAttribute("aria-selected", on ? "true" : "false");
     });
-    if (rv && !rvLoaded) loadReviews();
+    if (rv && !rvLoaded) { loadReviews(); loadServiceReviews(); }
     if (iq && !iqLoaded) loadInquiries();
   }
   $("oa-tabs").addEventListener("click", e => {
@@ -223,7 +273,7 @@
     } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); b.disabled = false; }
   });
   window.addEventListener("hashchange", () => { if (location.hash === "#reviews") tab("reviews"); else if (location.hash === "#inquiries") tab("inquiries"); });
-  if (location.hash === "#reviews") tab("reviews"); else { loadReviews(); if (location.hash === "#inquiries") tab("inquiries"); }
+  if (location.hash === "#reviews") tab("reviews"); else { loadReviews(); loadServiceReviews(); if (location.hash === "#inquiries") tab("inquiries"); }
 
   load();
 })();
