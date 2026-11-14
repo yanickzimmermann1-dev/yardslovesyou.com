@@ -71,3 +71,11 @@ body .next-step .ns-actions a.button[data-tone]{background:linear-gradient(135de
 body .next-step .ns-actions a.button[data-tone]:hover{filter:brightness(1.08)}
 body .next-step .ns-actions a.outline[data-tone]{color:var(--t-c);border-color:rgba(var(--t-rgb),.45);background:transparent}
 body .next-step .ns-actions a.outline[data-tone]:hover{background:rgba(var(--t-rgb),.1);border-color:rgba(var(--t-rgb),.7)}
+/* Glow passend zur Zielfarbe (alle Zustaende) */
+body .next-step .ns-actions a.button[data-tone]{box-shadow:0 0 0 1px rgba(var(--t-rgb),.25),0 8px 22px -8px rgba(var(--t-rgb),.6),0 0 26px -8px rgba(var(--t-rgb),.4)}
+body .next-step .ns-actions a.button[data-tone]:hover{box-shadow:0 0 0 1px rgba(var(--t-rgb),.5),0 14px 34px -10px rgba(var(--t-rgb),.85),0 0 40px -6px rgba(var(--t-rgb),.6)}
+body .next-step .ns-actions a.button[data-tone]:active{box-shadow:0 0 0 1px rgba(var(--t-rgb),.4),0 3px 10px -4px rgba(var(--t-rgb),.6)}
+body .next-step .ns-actions a.outline[data-tone]{box-shadow:none}
+body .next-step .ns-actions a.outline[data-tone]:hover{box-shadow:inset 0 0 18px -4px rgba(var(--t-rgb),.35),0 10px 26px -14px rgba(var(--t-rgb),.6)}
+body .next-step .ns-actions a.outline[data-tone]:active{box-shadow:inset 0 0 14px rgba(var(--t-rgb),.4)}
+body .next-step .ns-actions a[data-tone]:focus-visible{outline-color:var(--t-c)}

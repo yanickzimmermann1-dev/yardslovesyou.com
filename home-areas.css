@@ -99,3 +99,9 @@
 .ar-st .ar-ti{font:700 14px 'Space Grotesk'}
 .ar-st strong{font:600 14px 'DM Sans';min-width:0}
 .ar-sx{grid-column:1/-1;font:400 12.5px/1.35 'DM Sans';color:var(--muted,#a89fbb);overflow-wrap:anywhere}
+/* Glow der Karten-Buttons in Kartenfarbe (auch Hover/Active) */
+.ar-card .button{box-shadow:0 0 0 1px rgba(var(--ep-rgb),.25),0 8px 22px -8px rgba(var(--ep-rgb),.6),0 0 26px -8px rgba(var(--ep-rgb),.4)}
+.ar-card .button:hover{box-shadow:0 0 0 1px rgba(var(--ep-rgb),.5),0 14px 34px -10px rgba(var(--ep-rgb),.85),0 0 40px -6px rgba(var(--ep-rgb),.6)}
+.ar-card .button:active{box-shadow:0 0 0 1px rgba(var(--ep-rgb),.4),0 3px 10px -4px rgba(var(--ep-rgb),.6)}
+.ar-card .button:focus-visible{outline-color:var(--ep-c)}
+.free-band .button:active{box-shadow:0 0 0 1px rgba(95,224,208,.4),0 3px 10px -4px rgba(95,224,208,.6)}
