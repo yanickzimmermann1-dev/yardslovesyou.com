@@ -1,0 +1,159 @@
+/* area-theme.css - full-page area colour theming for Shop (brass), Free (teal) and Lab (lilac-blue); upload-pink.css keeps Upload (pink). Generated from the site CSS: every purple-hued colour is re-based onto the area hue via --ah/--as/--al (hue, saturation factor, lightness offset), so tints/gradients keep their relative lightness. Home/legal pages (data-area="mix") stay default purple. */
+body[data-area="shop"]{--ah:41;--as:.542;--al:-14%;--ac:#D4B46E;--ac-rgb:212,180,110;--ac-ink:#1c1608;--purple:#D4B46E;--pink:#e2c581;--area-line:rgba(212,180,110,.55);--glow:0 10px 30px -10px rgba(212,180,110,.55)}
+body[data-area="free"]{--ah:174;--as:.675;--al:-14.6%;--ac:#5fe0d0;--ac-rgb:95,224,208;--ac-ink:#062a26;--purple:#5fe0d0;--pink:#86e9dc;--area-line:rgba(95,224,208,.55);--glow:0 10px 30px -10px rgba(95,224,208,.55)}
+body[data-area="lab"]{--ah:232;--as:1;--al:.9%;--ac:#8fa2ff;--ac-rgb:143,162,255;--ac-ink:#0e1330;--purple:#8fa2ff;--pink:#a1b1ff;--area-line:rgba(143,162,255,.55);--glow:0 10px 30px -10px rgba(143,162,255,.55)}
+
+/* styles.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .button{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) input[type="file"]::file-selector-button:hover{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / 0.12)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) input[type="file"]::-webkit-file-upload-button:hover{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / 0.12)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .play-btn{background:hsl(var(--ah) calc(54.43% * var(--as)) calc(69.02% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .play-btn:hover{background:hsl(var(--ah) calc(100% * var(--as)) calc(81.373% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .wave-bar.active{background:hsl(var(--ah) calc(54.43% * var(--as)) calc(69.02% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) #admin-panel button[type="submit"],body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) #admin-panel button:not(#admin-toggle){background:hsl(var(--ah) calc(54.43% * var(--as)) calc(69.02% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) #admin-panel button:hover{background:hsl(var(--ah) calc(100% * var(--as)) calc(81.373% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .steps li::before{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .service-option input:checked + .opt{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .08)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .badge{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .free-kit{background:linear-gradient(135deg,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .12),rgba(23,19,31,.95) 60%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .mc-step{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .mc-toggle button.active{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .mc-drop:hover,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .mc-drop.over{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .06)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .mc-dot{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .mc-mail{border:1px solid hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .35);background:linear-gradient(135deg,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .12),rgba(15,12,21,.6) 70%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .bl-play{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .bl-mute.on{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .bl-cell{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .bl-unlock{border:1px solid hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .35);background:linear-gradient(135deg,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .12),rgba(15,12,21,.6) 70%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .free-nav-new{border-color:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .5) !important}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .free-nav strong em{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cm-pill.active{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cm-chord.now{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .1)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cm-tab.active{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cp-type{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pf-avatar{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .button{background:linear-gradient(135deg,var(--purple),hsl(var(--ah) calc(100% * var(--as)) calc(82.157% + var(--al))))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .button:hover{box-shadow:0 16px 36px -12px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .75);background:linear-gradient(135deg,hsl(var(--ah) calc(100% * var(--as)) calc(80.588% + var(--al))),var(--pink))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .outline:hover{box-shadow:0 10px 26px -14px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .6)}
+@keyframes breathe{50%{box-shadow:0 0 0 10px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / 0),0 0 28px 2px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .45)}}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .product::after,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cp::after,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .free-nav a::after{background:radial-gradient(420px circle at var(--mx) var(--my),hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .14),transparent 45%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .product:hover,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cp:hover{box-shadow:0 22px 50px -28px rgba(0,0,0,.9),0 0 0 1px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .12)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) input:focus,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) select:focus,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) textarea:focus{box-shadow:0 0 0 4px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .18)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cm-note.ed:hover{box-shadow:0 0 0 1px #fff6 inset,0 4px 12px -4px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .8)}
+@media(max-width:720px){
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) nav[aria-label="Main"] a.active,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) nav[aria-label="Main"] a[aria-current="page"]{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .12)}
+}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cat-chip.active{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .14)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cat-chip.active .cat-n{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .22)}
+@media(min-width:721px){
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .topbar nav[aria-label="Main"] a.active,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .topbar nav[aria-label="Main"] a[aria-current="page"]{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .14)}
+}
+@media(min-width:721px){
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .nav-dd:has(>a.active),body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .nav-dd:has(>a[aria-current="page"]){background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .14)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .nav-dd-panel a:hover,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .nav-dd-panel a:focus-visible{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .14) !important}
+}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) footer.site-footer .footer-social a:hover,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) footer.site-footer .footer-social a:focus-visible{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .10);box-shadow:0 0 18px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .35)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .button{box-shadow:0 0 0 1px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .25),0 8px 22px -8px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .6),0 0 26px -8px hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .4)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .button:hover{box-shadow:0 0 0 1px hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .5),0 14px 34px -10px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .85),0 0 40px -6px hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .6)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .button:active{box-shadow:0 0 0 1px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .4),0 3px 10px -4px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .6),inset 0 2px 8px rgba(24,14,35,.35)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .outline:hover{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .07);box-shadow:inset 0 0 18px -4px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .35),0 10px 26px -14px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .6)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .outline:active{box-shadow:inset 0 0 14px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .4)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .button:hover{background:linear-gradient(135deg,hsl(var(--ah) calc(100% * var(--as)) calc(80.588% + var(--al))),hsl(var(--ah) calc(100% * var(--as)) calc(86.078% + var(--al))))}
+/* perclab.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-seg button.on{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-role{border:1px solid hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .4)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-mute.on{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-solo.on{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-row.locked .pl-head{box-shadow:inset 0 0 0 1px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .45)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-row.locked .pl-cells{box-shadow:0 0 0 1px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .35);background:hsl(var(--ah) calc(67.021% * var(--as)) calc(63.137% + var(--al)) / .07)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-cell.on{background:hsl(var(--ah) calc(67.021% * var(--as)) calc(63.137% + var(--al)));border-color:hsl(var(--ah) calc(79.452% * var(--as)) calc(71.373% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-cell.acc{border-color:hsl(var(--ah) calc(100% * var(--as)) calc(91.373% + var(--al)));box-shadow:0 0 12px -2px hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .7)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-cell.on.now{box-shadow:0 0 16px 1px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .85)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pl-cell.acc.now{box-shadow:0 0 18px 2px hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .95)}
+/* product3d.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .p3d:focus-visible{outline:2px solid hsl(var(--ah) calc(100% * var(--as)) calc(74.118% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .p3d-glow{background:radial-gradient(ellipse 62% 56% at 50% 46%,hsl(var(--ah) calc(100% * var(--as)) calc(74.118% + var(--al)) / .26),hsl(var(--ah) calc(73.404% * var(--as)) calc(63.137% + var(--al)) / .10) 48%,transparent 72%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .pd-thumbs .pd-thumb-3d{background:radial-gradient(circle at 50% 40%,hsl(var(--ah) calc(100% * var(--as)) calc(74.118% + var(--al)) / .28),rgba(255,255,255,.04))}
+/* cart.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cart-badge{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cart-upsell{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .07)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cart-fly{box-shadow:0 14px 34px -8px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .7)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cart-add-ic.in-cart{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .14)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .cart-chip{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .12)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .promo-note{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .12)}
+/* skeleton.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sk{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .07)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sk::after{background:linear-gradient(100deg,transparent 20%,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .16) 50%,transparent 80%)}
+/* footerword.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .fw-y{color:hsl(var(--ah) calc(57.895% * var(--as)) calc(96.275% + var(--al)) / .16)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .fw-p{background:linear-gradient(90deg,hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al))),hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al))) 55%,hsl(var(--ah) calc(62.212% * var(--as)) calc(57.451% + var(--al))))}
+/* thread.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .thread{--thread-c:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)));--thread-c:color-mix(in srgb,var(--area-c,#b68aff) 38%,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al))))}
+/* nextstep.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .ep-mix{--ep-c:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)))}
+/* eartrainer.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-hero h1 span{filter:drop-shadow(0 0 24px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .45))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-mode:hover{box-shadow:0 22px 50px -28px #000,0 0 0 1px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .14)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-mode-daily{border-color:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .5)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-mode-daily::before{background:radial-gradient(circle,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .4),transparent 65%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-mode-ic{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .14)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-n{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-board li.me{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .1)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) #et-setup,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) #et-game,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) #et-result{box-shadow:0 30px 70px -40px #000,0 0 0 1px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .06) inset}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-chip[aria-pressed="true"]{color:var(--ac-ink)!important}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-seg button.on{background:linear-gradient(135deg,var(--purple),hsl(var(--ah) calc(100% * var(--as)) calc(82.157% + var(--al))));color:var(--ac-ink)!important}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-prog.dots i.cur{box-shadow:0 0 12px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .8)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-viz-wrap{background:radial-gradient(120% 140% at 50% 120%,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .2),#0c0912 65%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-badge{border:1px solid hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .35)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-play{background:linear-gradient(135deg,var(--purple),hsl(var(--ah) calc(100% * var(--as)) calc(82.157% + var(--al))));color:var(--ac-ink)!important}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-ab-thumb{background:linear-gradient(135deg,hsl(var(--ah) calc(100% * var(--as)) calc(73.725% + var(--al))),hsl(var(--ah) calc(100% * var(--as)) calc(82.157% + var(--al))));box-shadow:0 0 28px 2px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .55),0 6px 18px -6px #000}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-ab[data-side="B"] .et-ab-thumb{background:linear-gradient(135deg,hsl(var(--ah) calc(100% * var(--as)) calc(79.02% + var(--al))),hsl(var(--ah) calc(100% * var(--as)) calc(85.686% + var(--al))));box-shadow:0 0 30px 3px hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .55),0 6px 18px -6px #000}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-ab button.on{color:var(--ac-ink)!important}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-opt:hover{box-shadow:0 10px 26px -14px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .6)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-strip.pan .et-rail::before{background:linear-gradient(90deg,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / 0.267),#2a2138 50%,hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / 0.267))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-node.hot i{box-shadow:0 0 22px 4px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .75)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-node:focus-visible i{box-shadow:0 0 0 4px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .5)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-eq .curve{filter:drop-shadow(0 0 5px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .8))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-pan-dot{box-shadow:0 0 20px 3px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .8)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-bars i{box-shadow:0 0 20px -4px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .7)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-res-score span{filter:drop-shadow(0 0 30px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .55))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .et-cta{border:1px solid hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .4);background:linear-gradient(135deg,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .16),hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .06))}
+/* guide.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .gd-stop.on .gd-dot{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .gd-guarantee{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .1)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .gd-final{background:radial-gradient(600px circle at 50% 0%,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .22),transparent 60%),rgba(23,19,31,.85)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .gd-sheet{background:radial-gradient(700px circle at 15% 0%,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .09),transparent 55%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 1px,transparent 1px 4px),
+    #1a1522}
+/* soundpads.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sp-pill:hover,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sp-layer.sp-open .sp-pill{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .32);border-color:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .7)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sp-pill:focus-visible,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sp-pad:focus-visible{outline:2px solid hsl(var(--ah) calc(100% * var(--as)) calc(74.118% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sp-pad{color:hsl(var(--ah) calc(57.895% * var(--as)) calc(96.275% + var(--al)) / .78)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sp-pad:hover{border-color:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .7)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sp-pad.sp-lit{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .55);border-color:hsl(var(--ah) calc(100% * var(--as)) calc(86.863% + var(--al)));box-shadow:0 0 0 3px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .28),0 0 18px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .7)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sp-ripple{background:radial-gradient(circle,hsl(var(--ah) calc(100% * var(--as)) calc(86.863% + var(--al)) / .8),hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / 0) 70%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .sp-pad.sp-loading::after{border:2px solid hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .25);border-top-color:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)))}
+/* reviews.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .rv-count{color:var(--ac-ink)}
+/* quickview.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-eye{color:hsl(var(--ah) calc(57.895% * var(--as)) calc(96.275% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-eye:hover{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .4);border-color:hsl(var(--ah) calc(100% * var(--as)) calc(86.863% + var(--al)) / .8)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-eye:focus-visible{outline:2px solid hsl(var(--ah) calc(100% * var(--as)) calc(74.118% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-dlg{box-shadow:0 30px 80px -20px rgba(0,0,0,.8),0 0 60px -20px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .4)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-stage{background:radial-gradient(circle at 50% 40%,hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .18),rgba(0,0,0,0) 70%)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-actions .outline{color:hsl(var(--ah) calc(57.895% * var(--as)) calc(96.275% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-actions .outline:hover{border-color:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-actions .button{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)));color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-actions .button:hover{background:hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-actions .button.qv-in{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .16);color:hsl(var(--ah) calc(100% * var(--as)) calc(86.863% + var(--al)));border-color:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-x,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-nav{color:hsl(var(--ah) calc(57.895% * var(--as)) calc(96.275% + var(--al)))}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-x:hover,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-nav:hover{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .4);border-color:hsl(var(--ah) calc(100% * var(--as)) calc(86.863% + var(--al)) / .8)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-x:focus-visible,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-nav:focus-visible,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-actions a:focus-visible,body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .qv-actions button:focus-visible{outline:2px solid hsl(var(--ah) calc(100% * var(--as)) calc(74.118% + var(--al)))}
+/* status.css */
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .st-badge{background:hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .15)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .tk li.done .dot{color:var(--ac-ink)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .tk li.now .dot{box-shadow:0 0 0 0 hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .6)}
+@keyframes tkPulse{0%{box-shadow:0 0 0 0 hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / .55)}70%{box-shadow:0 0 0 12px hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / 0)}100%{box-shadow:0 0 0 0 hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al)) / 0)}}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .st-loop{background:hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .1)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .oa-rev{background:hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al)) / .1)}

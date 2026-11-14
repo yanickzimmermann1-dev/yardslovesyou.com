@@ -7,6 +7,13 @@
    ===================================================================== */
 (() => {
   "use strict";
+  /* Area colour (Lab) from CSS --ac-rgb; falls back to the default purple. */
+  const AC = (() => {
+    let r = [182, 138, 255];
+    try { const p = getComputedStyle(document.body).getPropertyValue("--ac-rgb").trim().split(",").map(Number); if (p.length === 3 && p.every(Number.isFinite)) r = p; } catch (e) {}
+    const mix = (k, t) => r.map(x => Math.round(x + (t - x) * k)), hex = a => "#" + a.map(x => x.toString(16).padStart(2, "0")).join("");
+    return { c: r.join(","), hex: hex(r), lt: mix(.35, 255).join(","), ltHex: hex(mix(.35, 255)), dk: mix(.28, 0).join(","), deep: hex(mix(.78, 0)), dkHex: hex(mix(.12, 0)) };
+  })();
 
   const $ = id => document.getElementById(id);
   const cfg = window.APP_CONFIG || {};
@@ -508,12 +515,12 @@
     if (analyser) analyser.getByteFrequencyData(bins);
     vSide += ((side === "B" ? 1 : 0) - vSide) * 0.18;
     const g = c.createLinearGradient(0, H, 0, 0);
-    g.addColorStop(0, `rgba(${Math.round(120 + 40 * vSide)},70,${Math.round(235 - 10 * vSide)},.95)`);
-    g.addColorStop(0.55, "rgba(182,138,255,.95)");
-    g.addColorStop(1, `rgba(${Math.round(229 + 10 * vSide)},${Math.round(190 - 25 * vSide)},255,1)`);
+    g.addColorStop(0, `rgba(${AC.dk},.95)`);
+    g.addColorStop(0.55, `rgba(${AC.c},.95)`);
+    g.addColorStop(1, `rgba(${AC.lt},1)`);
     const sr = ctx ? ctx.sampleRate : 48000, nb = bins.length;
     const gap = 3 * dpr, bw = (W - gap * (N - 1)) / N;
-    c.shadowColor = "rgba(182,138,255,.75)"; c.shadowBlur = 14 * dpr; c.fillStyle = g;
+    c.shadowColor = `rgba(${AC.c},.75)`; c.shadowBlur = 14 * dpr; c.fillStyle = g;
     for (let i = 0; i < N; i++) {
       const f0 = 30 * Math.pow(16000 / 30, i / N), f1 = 30 * Math.pow(16000 / 30, (i + 1) / N);
       const b0 = Math.floor(f0 / (sr / 2) * nb), b1 = Math.max(b0 + 1, Math.ceil(f1 / (sr / 2) * nb));
@@ -790,32 +797,32 @@
     try { await Promise.all([document.fonts.load('700 120px "Space Grotesk"'), document.fonts.load('500 40px "DM Sans"')]); } catch (_) {}
     const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
     const c = cv.getContext("2d");
-    const bg = c.createLinearGradient(0, 0, W, H); bg.addColorStop(0, "#2a1450"); bg.addColorStop(0.55, "#17102a"); bg.addColorStop(1, "#0d0b12");
+    const bg = c.createLinearGradient(0, 0, W, H); bg.addColorStop(0, AC.deep); bg.addColorStop(0.55, "#17102a"); bg.addColorStop(1, "#0d0b12");
     c.fillStyle = bg; c.fillRect(0, 0, W, H);
-    const gl = c.createRadialGradient(W / 2, 640, 40, W / 2, 640, 620); gl.addColorStop(0, "rgba(182,138,255,.55)"); gl.addColorStop(1, "rgba(182,138,255,0)");
+    const gl = c.createRadialGradient(W / 2, 640, 40, W / 2, 640, 620); gl.addColorStop(0, `rgba(${AC.c},.55)`); gl.addColorStop(1, `rgba(${AC.c},0)`);
     c.fillStyle = gl; c.fillRect(0, 0, W, H);
     // Equalizer-Balken als Deko
     const r = rng("card" + rec.score + rec.day);
-    for (let i = 0; i < 40; i++) { const h = 30 + r() * 90, x = 60 + i * 24; const g = c.createLinearGradient(0, H - 50, 0, H - 50 - h); g.addColorStop(0, "rgba(182,138,255,.15)"); g.addColorStop(1, "rgba(229,165,255,.55)"); c.fillStyle = g; c.beginPath(); c.roundRect ? c.roundRect(x, H - 50 - h, 14, h, 7) : c.rect(x, H - 50 - h, 14, h); c.fill(); }
+    for (let i = 0; i < 40; i++) { const h = 30 + r() * 90, x = 60 + i * 24; const g = c.createLinearGradient(0, H - 50, 0, H - 50 - h); g.addColorStop(0, `rgba(${AC.c},.15)`); g.addColorStop(1, `rgba(${AC.lt},.55)`); c.fillStyle = g; c.beginPath(); c.roundRect ? c.roundRect(x, H - 50 - h, 14, h, 7) : c.rect(x, H - 50 - h, 14, h); c.fill(); }
     const F = "'Space Grotesk','DM Sans',Helvetica,Arial,sans-serif";
     c.textAlign = "center"; c.fillStyle = "#f5f0fb";
     c.font = `700 150px ${F}`; c.fillText("Hear it?", W / 2, 250);
-    c.fillStyle = "#b68aff"; c.font = `600 38px ${F}`;
+    c.fillStyle = AC.hex; c.font = `600 38px ${F}`;
     c.fillText(mode === "daily" ? `DAILY CHALLENGE #${dailyNo(rec.day)}` : "PRACTICE RUN", W / 2, 330);
     c.fillStyle = "#aaa0b7"; c.font = `500 34px ${F}`; c.fillText(rec.day, W / 2, 382);
-    c.shadowColor = "rgba(182,138,255,.8)"; c.shadowBlur = 50; c.fillStyle = "#ffffff"; c.font = `700 300px ${F}`;
+    c.shadowColor = `rgba(${AC.c},.8)`; c.shadowBlur = 50; c.fillStyle = "#ffffff"; c.font = `700 300px ${F}`;
     c.fillText(String(rec.score), W / 2, 690); c.shadowBlur = 0;
-    c.fillStyle = "#e5a5ff"; c.font = `600 48px ${F}`; c.fillText("POINTS", W / 2, 760);
+    c.fillStyle = AC.ltHex; c.font = `600 48px ${F}`; c.fillText("POINTS", W / 2, 760);
     c.fillStyle = "#f5f0fb"; c.font = `600 64px ${F}`;
     c.fillText(mode === "daily" ? `${rec.correct} of 5 correct` : `Best streak ${rec.streak}`, W / 2, 880);
     const n = mode === "daily" ? 5 : Math.min(rec.results.length, 10), gap = 90, x0 = W / 2 - (n - 1) * gap / 2;
     for (let i = 0; i < n; i++) {
       const res = rec.results[i], ok = res && res.ok;
       c.beginPath(); c.arc(x0 + i * gap, 960, 26, 0, Math.PI * 2);
-      if (ok) { c.fillStyle = "#b68aff"; c.fill(); } else { c.strokeStyle = res ? "#7a6a90" : "#3a2f4a"; c.lineWidth = 5; c.stroke(); }
+      if (ok) { c.fillStyle = AC.hex; c.fill(); } else { c.strokeStyle = res ? "#7a6a90" : "#3a2f4a"; c.lineWidth = 5; c.stroke(); }
     }
     c.fillStyle = "#f5f0fb"; c.font = `700 46px ${F}`; c.fillText("YARDS", W / 2 - 115, 1110);
-    c.fillStyle = "#b68aff"; c.fillText("LOVESYOU", W / 2 + 95, 1110);
+    c.fillStyle = AC.hex; c.fillText("LOVESYOU", W / 2 + 95, 1110);
     c.fillStyle = "#aaa0b7"; c.font = `500 34px ${F}`; c.fillText("yardslovesyou.com/eartrainer.html", W / 2, 1165);
     cv.toBlob(b => {
       if (!b) return toast("Could not create the image.", true);
@@ -848,7 +855,7 @@
       let grid = ""; q.options.forEach(o => { grid += `<line x1="${xOf(o.id).toFixed(1)}" x2="${xOf(o.id).toFixed(1)}" y1="14" y2="106" class="g"/><text x="${xOf(o.id).toFixed(1)}" y="118" class="t">${fmtF(o.id)}</text>`; });
       const gx = xOf(q.freq).toFixed(1), py = (60 - q.gain * 4.2).toFixed(1);
       const you = !ok ? `<line x1="${xOf(picked).toFixed(1)}" x2="${xOf(picked).toFixed(1)}" y1="14" y2="106" class="you"/><text x="${xOf(picked).toFixed(1)}" y="11" class="t y">You</text>` : "";
-      return `<svg class="et-eq" viewBox="0 0 320 124" role="img" aria-label="EQ curve: ${q.gain > 0 ? "boost" : "cut"} of ${Math.abs(q.gain)} dB at ${fmtFull(q.freq)}"><defs><linearGradient id="etg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b68aff" stop-opacity=".55"/><stop offset="1" stop-color="#b68aff" stop-opacity="0"/></linearGradient></defs>${grid}<line x1="10" x2="310" y1="60" y2="60" class="zero"/>${you}<path d="${r.area}" fill="url(#etg)" class="area"/><path d="${r.d}" class="curve" pathLength="1"/><circle cx="${gx}" cy="${py}" r="5" class="dot"/><text x="${gx}" y="${(+py + (q.gain > 0 ? -10 : 18)).toFixed(1)}" class="t big">${q.gain > 0 ? "+" : ""}${q.gain} dB</text></svg>`;
+      return `<svg class="et-eq" viewBox="0 0 320 124" role="img" aria-label="EQ curve: ${q.gain > 0 ? "boost" : "cut"} of ${Math.abs(q.gain)} dB at ${fmtFull(q.freq)}"><defs><linearGradient id="etg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${AC.hex}" stop-opacity=".55"/><stop offset="1" stop-color="${AC.hex}" stop-opacity="0"/></linearGradient></defs>${grid}<line x1="10" x2="310" y1="60" y2="60" class="zero"/>${you}<path d="${r.area}" fill="url(#etg)" class="area"/><path d="${r.d}" class="curve" pathLength="1"/><circle cx="${gx}" cy="${py}" r="5" class="dot"/><text x="${gx}" y="${(+py + (q.gain > 0 ? -10 : 18)).toFixed(1)}" class="t big">${q.gain > 0 ? "+" : ""}${q.gain} dB</text></svg>`;
     }
     if (q.type === "pan") {
       const pos = q.pos, p = picked != null ? +picked : 0;
@@ -887,7 +894,7 @@
     if (RM || !el || !el.getBoundingClientRect) return;
     const rc = el.getBoundingClientRect(), cx = rc.left + rc.width / 2, cy = rc.top + rc.height / 2;
     const layer = document.createElement("div"); layer.className = "et-fx"; document.body.appendChild(layer);
-    const cols = ["#b68aff", "#c9a4ff", "#e5a5ff", "#9d6bff", "#f5f0fb"];
+    const cols = [AC.hex, AC.ltHex, AC.ltHex, AC.hex, "#f5f0fb"];
     for (let i = 0; i < 28; i++) {
       const p = document.createElement("i"), s = 5 + Math.random() * 7, a = Math.random() * Math.PI * 2, d = 50 + Math.random() * 120;
       p.style.cssText = `left:${cx}px;top:${cy}px;width:${s}px;height:${s}px;background:${cols[i % cols.length]};box-shadow:0 0 10px ${cols[i % cols.length]}`;

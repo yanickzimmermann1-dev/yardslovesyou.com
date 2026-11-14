@@ -48,6 +48,21 @@
         }
         ctx.stroke();
       }
+      var _wc;
+      /* Header wavebar colour per area (service pink, shop brass, free teal, lab lilac-blue); null = default purple (home/legal). */
+      function waveCol() {
+        if (_wc !== undefined) return _wc;
+        _wc = null;
+        try {
+          var a = document.body && document.body.getAttribute('data-area');
+          if (a === 'service') _wc = { s: '#e292da', f: 'rgba(226,146,218,.18)', sh: '#c45cb9' };
+          else if (a === 'shop' || a === 'free' || a === 'lab') {
+            var v = getComputedStyle(document.body).getPropertyValue('--area-rgb').trim().split(',').map(Number);
+            if (v.length === 3 && v.every(isFinite)) _wc = { s: 'rgb(' + v.join(',') + ')', f: 'rgba(' + v.join(',') + ',.18)', sh: 'rgb(' + v.map(function (x) { return Math.round(x * 0.72); }).join(',') + ')' };
+          }
+        } catch (e) {}
+        return _wc;
+      }
       function draw() {
         ctx.clearRect(0, 0, W, H);
         var maxA = W < 720 ? 3 : 3.5;
@@ -56,12 +71,12 @@
         var headX = prog * W;
         ctx.lineJoin = 'round'; ctx.lineCap = 'round';
         ctx.shadowBlur = 0;
-        var svc = document.body && document.body.getAttribute('data-area') === 'service';
-        ctx.strokeStyle = svc ? 'rgba(226,146,218,.18)' : 'rgba(182,138,255,.18)'; ctx.lineWidth = 1;
+        var wc = waveCol();
+        ctx.strokeStyle = wc ? wc.f : 'rgba(182,138,255,.18)'; ctx.lineWidth = 1;
         path(Math.max(0, headX - 1), W, T, amp * 0.35, null);
         if (headX > 1) {
-          ctx.strokeStyle = svc ? '#e292da' : '#b68aff'; ctx.lineWidth = 1.75;
-          ctx.shadowColor = svc ? '#c45cb9' : '#8f1fe0'; ctx.shadowBlur = 6;
+          ctx.strokeStyle = wc ? wc.s : '#b68aff'; ctx.lineWidth = 1.75;
+          ctx.shadowColor = wc ? wc.sh : '#8f1fe0'; ctx.shadowBlur = 6;
           path(0, headX, T, amp, headX);
           ctx.shadowBlur = 0;
         }
