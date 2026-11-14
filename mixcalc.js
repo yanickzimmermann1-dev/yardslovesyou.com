@@ -1,5 +1,5 @@
 /* "Find your service" wizard. Prices/names are read from the existing form radios
-   (data-price / data-name); the server charges fixed prices anyway. */
+   (data-price / data-name); the server recomputes the price anyway. */
 (function () {
   "use strict";
   var root = document.getElementById("mixcalc");
@@ -27,49 +27,55 @@
 
   // Copy is taken from index.html service cards and the upload form hints.
   var SERVICES = {
+    "mastering": {
+      desc: "Your finished mix, mastered for release: loud, balanced and ready for every streaming platform.",
+      inc: ["Streaming-ready master as WAV + MP3", "1 revision included", "Delivered in 3 business days"]
+    },
     "stem-mastering": {
-      desc: "Send your stems and get a release-ready master with the punch and loudness your track deserves.",
-      inc: ["Release-ready master", "Punch and loudness for your track", "Put all your stems into one ZIP file"]
+      desc: "Send up to 8 stems and get a release-ready master with the punch and loudness your track deserves.",
+      inc: ["Up to 8 stems in one ZIP file", "1 revision, WAV + MP3", "Delivered in 5 business days"]
     },
     "mixing": {
-      desc: "Balance, depth and clarity: your stems mixed into a cohesive, professional sounding track.",
-      inc: ["Balance, depth and clarity", "A cohesive, professional sounding track", "Put all your stems into one ZIP file"]
+      desc: "Balance, depth and clarity: up to 30 stems mixed into a cohesive, professional sounding track.",
+      inc: ["Up to 30 stems in one ZIP file", "3 revisions included", "Delivered in 7 business days"]
     },
-    "vocal-mix": {
-      desc: "Send the 2-track beat together with your vocal stems and get your vocals mixed to sit perfectly on it.",
-      inc: ["Vocals mixed to sit perfectly on your beat", "Works with a bought or leased 2-track beat", "Put the 2-track beat and your vocal stems into one ZIP file"]
+    "mix-master": {
+      desc: "Mixing and mastering in one package: from stems to a finished, release-ready track.",
+      inc: ["Mixing of up to 30 stems plus mastering", "3 revisions, save CHF 20 vs. booking both", "Delivered in 7 business days"]
     },
-    "vocal-hook": {
-      desc: "Send your instrumental and get a custom vocal hook written and recorded for it.",
-      inc: ["A custom vocal hook, written and recorded for your beat", "Upload your instrumental as one WAV file (no MP3)"]
+    "custom-beat": {
+      desc: "A beat produced from scratch for you. Send an inquiry with your vibe and references and get a quote by email.",
+      inc: ["Made for you, from scratch", "Simple inquiry form, no payment up front", "Quote by email, from CHF 300"]
     }
   };
 
   // step1 answer -> step2 answer -> [recommended, alternative]
   var MAP = {
-    stems: { loud: ["stem-mastering", "mixing"], vocals: ["mixing", "vocal-mix"], hook: ["vocal-hook", "mixing"] },
-    beat:  { loud: ["stem-mastering", "vocal-hook"], vocals: ["vocal-hook", "vocal-mix"], hook: ["vocal-hook", "stem-mastering"] },
-    vox:   { loud: ["vocal-mix", "stem-mastering"], vocals: ["vocal-mix", "mixing"], hook: ["vocal-hook", "vocal-mix"] },
-    master:{ loud: ["stem-mastering", "mixing"], vocals: ["mixing", "vocal-mix"], hook: ["vocal-hook", "stem-mastering"] }
+    stems: { loud: ["mix-master", "mixing"], vocals: ["mixing", "mix-master"], custom: ["custom-beat", "mixing"] },
+    beat:  { loud: ["stem-mastering", "mixing"], vocals: ["mixing", "mix-master"], custom: ["custom-beat", "mixing"] },
+    vox:   { loud: ["mix-master", "mixing"], vocals: ["mixing", "mix-master"], custom: ["custom-beat", "mixing"] },
+    master:{ loud: ["mastering", "stem-mastering"], vocals: ["mastering", "mixing"], custom: ["custom-beat", "mastering"] }
   };
   var Q1 = [
     { id: "stems", ico: "mix", t: "Beat and vocals as stems", d: "Everything is recorded and ready, but not mixed yet." },
-    { id: "beat", ico: "beat", t: "Only a beat or instrumental", d: "No vocals yet, or I need them written." },
+    { id: "beat", ico: "beat", t: "Only a beat or instrumental", d: "Instrumental stems, no vocals yet." },
     { id: "vox", ico: "mic", t: "Vocals on a 2-track beat", d: "A bought or leased beat plus my own vocal stems." },
     { id: "master", ico: "polish", t: "A mix that needs the final polish", d: "The mix is done, it needs the last step." }
   ];
   var Q2 = [
     { id: "loud", ico: "loud", t: "Radio-ready loudness", d: "Punch, level and a finished sound." },
     { id: "vocals", ico: "sit", t: "Vocals that sit right", d: "Clear, balanced and in the pocket." },
-    { id: "hook", ico: "hook", t: "A catchy hook", d: "Written and recorded for my beat." }
+    { id: "custom", ico: "hook", t: "A beat made for me", d: "Produced from scratch, just for my project." }
   ];
 
   var radios = [].slice.call(document.querySelectorAll('input[name="service"]'));
   function radioFor(s) { for (var i = 0; i < radios.length; i++) if (radios[i].value === s) return radios[i]; return null; }
   function meta(s) {
     var r = radioFor(s);
-    return r ? { name: r.dataset.name, price: parseInt(r.dataset.price, 10) } : null;
+    return r ? { name: r.dataset.name, price: parseInt(r.dataset.price, 10), from: r.dataset.kind === "inquiry" } : null;
   }
+  // "CHF 60 / song" (custom beat: "from CHF 300"), same prices as the form radios
+  function priceText(m, n) { var v = n == null ? m.price : n; return m.from ? "from CHF " + v : "CHF " + v + " / song"; }
   function track(name, svc) { try { window.ylyTrack && window.ylyTrack(name, { service: svc }); } catch (e) {} }
 
   var state = { step: 1, a1: null, a2: null, svc: null, alt: null };
@@ -177,9 +183,10 @@
       var rec = el("div", "mc-rec");
       rec.appendChild(text("span", "mc-badge", "Recommended"));
       rec.appendChild(text("h3", "mc-name", m.name));
-      var price = text("p", "mc-price", "CHF " + (reduce ? m.price : 0));
-      price.setAttribute("aria-label", "CHF " + m.price);
+      var price = text("p", "mc-price", priceText(m, reduce ? m.price : 0));
+      price.setAttribute("aria-label", priceText(m));
       rec.appendChild(price);
+      if (window.YLYPricing) { var ap = text("p", "mc-desc", window.YLYPricing.approx(m.price) + " (approx.)"); ap.style.margin = "-4px 0 8px"; ap.style.fontSize = "12px"; rec.appendChild(ap); }
       rec.appendChild(text("p", "mc-desc", info.desc));
       var ul = el("ul", "mc-inc");
       info.inc.forEach(function (s) {
@@ -207,7 +214,7 @@
         var alt = el("button", "mc-alt");
         alt.type = "button";
         alt.appendChild(text("span", "", "Or look at " + am.name));
-        alt.appendChild(text("small", "", "CHF " + am.price));
+        alt.appendChild(text("small", "", priceText(am)));
         alt.addEventListener("click", function () {
           var s = state.svc; state.svc = state.alt; state.alt = s;
           setHash(state.svc);
@@ -232,10 +239,10 @@
         (function tick(now) {
           var p = Math.min(1, ((now || performance.now()) - t0) / dur);
           var e = 1 - Math.pow(1 - p, 3);
-          price.textContent = "CHF " + Math.round(m.price * e);
+          price.textContent = priceText(m, Math.round(m.price * e));
           if (p < 1) countTimer = requestAnimationFrame(tick);
         })(t0);
-        finalTimer = setTimeout(function () { price.textContent = "CHF " + m.price; }, dur + 150);
+        finalTimer = setTimeout(function () { price.textContent = priceText(m); }, dur + 150);
       }
     }
     card.appendChild(stage);

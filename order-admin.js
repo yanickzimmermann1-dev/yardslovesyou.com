@@ -29,8 +29,9 @@
     $("oa-list").innerHTML = list.length ? list.map(o => `
       <article class="oa-card" data-id="${esc(o.id)}">
         <div class="oa-head"><strong>${esc(o.artist_name || "Unknown")} · ${esc(o.service)}</strong>
-          <span class="st-badge ${o.progress === "completed" ? "done" : ""}">${esc(LABEL[o.progress] || o.progress)}</span></div>
-        <p class="oa-sub">${esc(o.email)}<br>Ordered ${esc(fmt(o.created_at))} · ${o.status === "complete" ? "Paid " + esc(fmt(o.paid_at)) : "Payment: " + esc(o.status || "unknown")} · Revisions ${+o.revisions_used || 0}/2</p>
+          ${o.rush ? `<span class="st-badge">RUSH 48h</span>` : ""}<span class="st-badge ${o.progress === "completed" ? "done" : ""}">${esc(LABEL[o.progress] || o.progress)}</span></div>
+        <p class="oa-sub">${esc(o.email)}<br>Ordered ${esc(fmt(o.created_at))} · ${o.status === "complete" ? "Paid " + esc(fmt(o.paid_at)) : "Payment: " + esc(o.status || "unknown")} · Revisions ${+o.revisions_used || 0}/${+o.max_revisions || 2}</p>
+        <p class="oa-sub"><strong>${+o.songs || 1} song${(+o.songs || 1) === 1 ? "" : "s"}</strong>${o.rush ? ` · <strong class="danger">RUSH 48h</strong>${o.paid_at ? " (due 48h after " + esc(fmt(o.paid_at)) + ")" : ""}` : ""}</p>
         ${o.revision_note && o.progress === "revision" ? `<div class="oa-rev"><strong>Revision request:</strong>\n${esc(o.revision_note)}</div>` : ""}
         <div class="oa-row">
           <select class="oa-prog" aria-label="Progress">${Object.entries(LABEL).map(([k, v]) => `<option value="${k}"${k === o.progress ? " selected" : ""}>${v}</option>`).join("")}</select>
