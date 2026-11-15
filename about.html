@@ -23,7 +23,7 @@
   <link rel="preload" href="font-spacegrotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"yards","jobTitle":"Mixing & Mastering Engineer, Music Producer","url":"https://yardslovesyou.com/about.html","knowsLanguage":["de","en","fr"],"address":{"@type":"PostalAddress","addressCountry":"CH"},"sameAs":["https://www.instagram.com/yardslovesyou/","https://www.youtube.com/@yardslovesyou"]}</script>
   <!-- css-src: styles.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css about.css -->
-  <link rel="stylesheet" href="css/b-5bf3f896d0.css" data-css="styles.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css about.css">
+  <link rel="stylesheet" href="css/b-0da7803049.css" data-css="styles.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css about.css">
   <script src="fx-gate.js?v=20261113g"></script>
 </head>
 <body data-area="mix">
@@ -46,8 +46,7 @@
         <h1 id="ab-title">Hi, I'm <span>yards.</span></h1>
         <p class="muted">I'm a producer and a mixing &amp; mastering engineer from Switzerland.</p>
       </div>
-      <!-- PORTRAIT (optional): once a photo exists, add this inside <section class="ab-hero"> after .ab-intro; the layout switches to two columns automatically:
-      <figure class="ab-photo"><img src="media/about-portrait.jpg" width="800" height="1000" alt="Portrait of yards" loading="eager" decoding="async"></figure> -->
+      <figure class="ab-photo"><img src="about-img/yards-portrait.jpg" alt="yards, producer and mixing engineer" width="665" height="1182" fetchpriority="high" decoding="async"></figure>
     </section>
 
     <div class="ab-grid">
@@ -81,6 +80,27 @@
         </div>
       </section>
     </div>
+
+    <section class="ab-card ab-gallery" aria-labelledby="ab-gal">
+      <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>BEHIND THE SCENES</p>
+      <h2 id="ab-gal">Studio, sessions, field recordings</h2>
+      <div class="ab-shots">
+        <figure class="ab-shot"><button type="button" class="ab-shot-btn" aria-label="Enlarge photo: Home studio"><img src="about-img/home-studio.jpg" alt="Home studio" width="665" height="1182" loading="lazy" decoding="async"></button><figcaption>Home studio</figcaption></figure>
+        <figure class="ab-shot"><button type="button" class="ab-shot-btn" aria-label="Enlarge photo: The console"><img src="about-img/console.jpg" alt="The console" width="665" height="1182" loading="lazy" decoding="async"></button><figcaption>The console</figcaption></figure>
+        <figure class="ab-shot"><button type="button" class="ab-shot-btn" aria-label="Enlarge photo: Mic shootout"><img src="about-img/mics.jpg" alt="Mic shootout" width="768" height="1024" loading="lazy" decoding="async"></button><figcaption>Mic shootout</figcaption></figure>
+        <figure class="ab-shot"><button type="button" class="ab-shot-btn" aria-label="Enlarge photo: Live room"><img src="about-img/live-room.jpg" alt="Live room" width="768" height="1024" loading="lazy" decoding="async"></button><figcaption>Live room</figcaption></figure>
+        <figure class="ab-shot"><button type="button" class="ab-shot-btn" aria-label="Enlarge photo: Drum session"><img src="about-img/drum-session.jpg" alt="Drum session" width="665" height="1182" loading="lazy" decoding="async"></button><figcaption>Drum session</figcaption></figure>
+        <figure class="ab-shot"><button type="button" class="ab-shot-btn" aria-label="Enlarge photo: Field recording"><img src="about-img/field-recording.jpg" alt="Field recording" width="768" height="1022" loading="lazy" decoding="async"></button><figcaption>Field recording</figcaption></figure>
+        <figure class="ab-shot"><button type="button" class="ab-shot-btn" aria-label="Enlarge photo: On stage"><img src="about-img/stage.jpg" alt="On stage" width="665" height="1182" loading="lazy" decoding="async"></button><figcaption>On stage</figcaption></figure>
+      </div>
+    </section>
+
+    <dialog class="ab-lb" id="ab-lb" aria-label="Photo viewer">
+      <figure><img alt="" src=""><figcaption></figcaption></figure>
+      <button type="button" class="ab-lb-close" aria-label="Close">&times;</button>
+      <button type="button" class="ab-lb-prev" aria-label="Previous photo">&#8249;</button>
+      <button type="button" class="ab-lb-next" aria-label="Next photo">&#8250;</button>
+    </dialog>
 
     <blockquote class="ab-quote"><p>&ldquo;Do not fear the unknown.&rdquo;</p></blockquote>
 
@@ -117,6 +137,7 @@
     </nav>
   </footer>
   <script defer src="products-map.js?v=20261114m"></script>
+  <script src="about.js?v=20261115f" defer></script>
   <script src="cart.js?v=20261115a" defer></script>
   <script src="nav.js?v=20261114n" defer></script>
   <script src="fx.js?v=20261114ze" defer></script>
