@@ -282,15 +282,18 @@
     }
 
     /* ----- Animation pro Frame ----- */
+    var rectT = null;   // stage rect, read at most once per tick (before any style writes)
+    function stageRect() { return rectT || (rectT = stage.getBoundingClientRect()); }
     function near() {
       if (small) return S.hover && mouse.ok;
       if (!mouse.ok) return false;
-      var r = stage.getBoundingClientRect();
+      var r = stageRect();
       var cx = r.left + r.width / 2, cyy = r.top + (S.H - S.h * 0.09) / 2;
       var hw = S.w * 1.25 / 2, hh = S.h * 1.25 / 2;
       return Math.abs(mouse.x - cx) <= hw && Math.abs(mouse.y - cyy) <= hh;
     }
     function tick(dt, now) {
+      rectT = null;
       if (S.keyRemain) {
         var st = S.keyRemain * (1 - Math.exp(-dt * 9));
         S.yaw += st; S.keyRemain -= st;
@@ -301,7 +304,7 @@
         S.lastInteract = now; S.following = false;
       } else if (!reduce && !S.keyRemain && near()) {
         if (!S.following) { S.following = true; S.base = S.yaw; }
-        var r = stage.getBoundingClientRect();
+        var r = stageRect();
         var cx = r.left + r.width / 2, cyy = r.top + (S.H - S.h * 0.09) / 2;
         var hw = Math.max(40, S.w * 1.25 / 2), hh = Math.max(40, S.h * 1.25 / 2);
         if (small) { hw = Math.max(hw, r.width / 2); hh = Math.max(hh, r.height / 2); }

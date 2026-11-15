@@ -44,6 +44,7 @@
       var main = doc.querySelector('main') || doc.querySelector('.wrap');
       if (!main) { ok = false; return; }
       var scrollY = sy(), mr = main.getBoundingClientRect(), wl = Math.round(mr.left);
+      var muEl = doc.querySelector('.hero .muted'), muTop = muEl ? muEl.getBoundingClientRect().top : 0;   // read here, before host/svg writes (no forced reflow)
       var r = small ? 4.5 : 6.5;
       gx = small ? 12 : Math.max(24 > wl - 12 ? wl * 0.5 : 24, wl - 40);
       if (!small) gx = Math.max(wl - 40, wl * 0.5);
@@ -89,8 +90,8 @@
         /* ONE cubic Bezier from the wave (heading left, flat) into the gutter (heading down): generous radius, starts early along the wave.
            hero.js draws the wave from x = cut rightwards, so wave and arc share exactly one point + tangent. */
         var vw2 = vw, Rt = small ? clamp(vw2 * 0.17, 56, 90) : clamp(vw2 * 0.15, 120, 190);
-        var ex = Math.min(Rt * 1.05, Math.max(30, W * 0.4)), ey = Rt, ax0 = gx + ex, h1 = ex * 0.78, h2, ok2 = false, k, tt, bx, by, mu = doc.querySelector('.hero .muted');
-        var limY = mu ? mu.getBoundingClientRect().top + scrollY - 10 : 1e9;
+        var ex = Math.min(Rt * 1.05, Math.max(30, W * 0.4)), ey = Rt, ax0 = gx + ex, h1 = ex * 0.78, h2, ok2 = false, k, tt, bx, by, mu = muEl;
+        var limY = mu ? muTop + scrollY - 10 : 1e9;
         /* keep the bend clear of the subline: where the gutter is narrow (<= ~1100px) the drop is limited to what fits above it,
            the curve then stays a long, gentle sweep (rx >> ry); with room (wide screens) it is the full round arc */
         for (; ; ey = Math.max(44, ey * 0.88)) {

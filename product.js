@@ -2,7 +2,7 @@
   const cfg=window.APP_CONFIG||{}, $=id=>document.getElementById(id);
   $("year").textContent=new Date().getFullYear();
 const TRUST_SVG='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3Z"/><path d="m9 12 2.2 2.2L15 10.4"/></svg>';
-(function(){if(!document.querySelector('link[href^="trust.css"]')){var l=document.createElement('link');l.rel='stylesheet';l.href='trust.css?v=20261113q';document.head.appendChild(l);}})();
+(function(){if(!document.querySelector('link[href^="trust.css"],link[data-css~="trust.css"]')){var l=document.createElement('link');l.rel='stylesheet';l.href='trust.css?v=20261113q';document.head.appendChild(l);}})();
 function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Royalty-free for your music':'','Secure checkout'].filter(Boolean).join(' · ');return `<p class="trust left${compact?' compact':''}">${TRUST_SVG}<span>${t}</span></p>`;}
   const root=$("product-root");
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));

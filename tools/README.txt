@@ -24,3 +24,27 @@ Hinweise:
   * product.html?id=... funktioniert weiterhin (alte Links), zeigt aber auf die statische Seite als Canonical.
   * Die Seiten nicht von Hand bearbeiten, sie werden beim naechsten Lauf ueberschrieben.
   * Das Datum in der Sitemap (lastmod) steht oben im Skript (LASTMOD).
+
+
+build.py - CSS-Bundles erzeugen (schnellere Seitenladung)
+---------------------------------------------------------
+Was es macht:
+  * Jede HTML-Seite hat statt 10-18 einzelner CSS-<link>-Tags nur noch EIN Bundle: css/b-<hash>.css
+    (alle CSS-Dateien der Seite in derselben Reihenfolge, konservativ minimiert, url()-Pfade angepasst).
+  * Welche Dateien in ein Bundle kommen, steht pro Seite im Marker direkt vor dem Link:
+        <!-- css-src: intro.css fx.css styles.css ... -->
+        <link rel="stylesheet" href="css/b-xxxxxxxxxx.css" data-css="...">
+  * Die Quelldateien (styles.css, hero.css, ...) bleiben im Hauptordner und sind weiter die Dateien,
+    die du bearbeitest. Die Dateien in css/ nie von Hand aendern.
+  * Seiten mit gleicher Dateiliste teilen sich ein Bundle. Der Hash im Dateinamen sorgt fuer Cache-Busting
+    (kein ?v= mehr noetig). Alte, nicht mehr benutzte Bundles werden automatisch geloescht.
+
+So startest du es (im Hauptordner des Repos, nur Python 3 noetig):
+    python3 tools/build.py
+
+Wann ausfuehren:
+  * Nach JEDER Aenderung an einer CSS-Datei (sonst sieht die Seite die Aenderung nicht).
+  * Nach dem Erzeugen von Produktseiten (gen-product-pages.py), falls die Vorlage product.html geaendert wurde.
+  * Danach css/ und die geaenderten HTML-Dateien mit hochladen (GitHub).
+Neues CSS auf einer Seite einbinden: den Dateinamen im Marker (css-src) dieser Seite ergaenzen, dann build.py ausfuehren.
+Neue Seite: normale <link rel="stylesheet" href="xyz.css">-Tags schreiben, build.py baut den Marker beim ersten Lauf selbst.

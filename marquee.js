@@ -52,7 +52,8 @@
   }
   measure(); render();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); render(); });
-  addEventListener('resize', function () { measure(); render(); });
+  var rzq = 0;
+  addEventListener('resize', function () { if (rzq) return; rzq = requestAnimationFrame(function () { rzq = 0; measure(); render(); }); }, { passive: true });
   if (reduce) return;
 
   var BASE = 40, vis = true, raf = 0, last = 0, lastY = scrollY, vel = 0, flip = 1, flipT = 1, boost = 0;

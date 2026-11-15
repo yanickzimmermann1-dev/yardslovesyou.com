@@ -3,7 +3,7 @@
    API: window.ylyCart = { add(item, fromEl), remove(id), has(id), items(), count(), clear(), open(), close() }
    Buttons: <button data-cart-add="ID" data-cart-title data-cart-price data-cart-currency data-cart-cover> (Delegation + Status-Sync). */
 var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3Z"/><path d="m9 12 2.2 2.2L15 10.4"/></svg>';
-(function(){if(!document.querySelector('link[href^="trust.css"]')){var l=document.createElement('link');l.rel='stylesheet';l.href='trust.css?v=20261113q';document.head.appendChild(l);}})();
+(function(){if(!document.querySelector('link[href^="trust.css"],link[data-css~="trust.css"]')){var l=document.createElement('link');l.rel='stylesheet';l.href='trust.css?v=20261113q';document.head.appendChild(l);}})();
 (function () {
   'use strict';
   var KEY = 'yly_cart', PKEY = 'yly_promo', PSRC = 'yly_promo_src', BUNDLE = 15, MAX = 10;

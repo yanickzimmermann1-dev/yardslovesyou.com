@@ -189,7 +189,7 @@
         var scan = function () {
           scanQueued = false;
           try {
-            var found = [];
+            var found = [], inView = [];
             var list = body.querySelectorAll(RV_SEL);
             for (var i = 0; i < list.length; i++) {
               var el = list[i];
@@ -200,10 +200,11 @@
               // Ankunft per Seitenübergang: Elemente im ersten Viewport starten im Endzustand (kein Einblenden/Verschieben)
               if (arrived && performance.now() < 3000) {
                 var br = el.getBoundingClientRect();
-                if (br.bottom > 0 && br.top < window.innerHeight) { el.dataset.rv = '1'; continue; }
+                if (br.bottom > 0 && br.top < window.innerHeight) { inView.push(el); continue; }
               }
               found.push(el);
             }
+            for (var iv = 0; iv < inView.length; iv++) inView[iv].dataset.rv = '1';   // writes after all reads (no layout thrash)
             // Gruppen je Elternelement für die Staffelung
             var parents = [];
             var groups = [];
