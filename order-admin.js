@@ -19,19 +19,59 @@
     return data;
   }
 
-  const visible = () => orders.filter(o =>
+  const base = () => orders.filter(o =>
     filter === "all" ? true
     : filter === "open" ? ["received", "in_progress", "revision"].includes(o.progress)
     : o.progress === filter);
 
+  // ---------- Rush countdown ----------
+  const RUSH_MS = 48 * 3600e3, WARN_MS = 12 * 3600e3;
+  let rushTimer = null;
+  const rushDeadline = o => (o.rush && o.paid_at && o.progress !== "delivered" && o.progress !== "completed" && !isNaN(Date.parse(o.paid_at))) ? Date.parse(o.paid_at) + RUSH_MS : null;
+  const dur = ms => {
+    const m = Math.max(0, Math.floor(ms / 60000)), d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), mi = m % 60;
+    return d ? d + "d " + h + "h" : h ? h + "h " + mi + "m" : mi + "m";
+  };
+  const dueFmt = ts => {
+    const p = {}; new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Zurich", weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(ts)).forEach(x => { p[x.type] = x.value; });
+    return "Due " + p.weekday + " " + p.day + "." + p.month + ". " + p.hour + ":" + p.minute;
+  };
+  function rushState(dl, now) {
+    const left = dl - now;
+    if (left < 0) return { cls: "over", text: "Overdue by " + dur(-left) };
+    return { cls: left > WARN_MS ? "ok" : "soon", text: dur(left) + " left" };
+  }
+  function tickRush() {
+    const now = Date.now();
+    document.querySelectorAll("#oa-list .oa-cd[data-dl]").forEach(el => {
+      const dl = +el.dataset.dl, st = rushState(dl, now), full = st.text + ". " + dueFmt(dl);
+      el.className = "oa-cd " + st.cls; el.textContent = st.text; el.title = full; el.setAttribute("aria-label", "Rush countdown: " + full);
+    });
+    const open = orders.map(rushDeadline).filter(x => x !== null).sort((a, b) => a - b), chip = $("oa-rushchip");
+    if (!open.length) { chip.hidden = true; chip.textContent = ""; return; }
+    const st = rushState(open[0], now), over = open[0] < now;
+    chip.className = "oa-rushchip " + st.cls;
+    chip.textContent = open.length + " rush order" + (open.length === 1 ? "" : "s") + " open \u00b7 " + (over ? "oldest overdue by " + dur(now - open[0]) : "next due in " + dur(open[0] - now));
+    chip.hidden = false;
+  }
+  function stopRush() { if (rushTimer) { clearInterval(rushTimer); rushTimer = null; } }
+  function startRush() { stopRush(); tickRush(); rushTimer = setInterval(tickRush, 60000); }
+
+  const visible = () => {
+    const l = base().map((o, i) => ({ o, i, dl: rushDeadline(o) }));
+    l.sort((a, b) => (a.dl !== null && b.dl !== null) ? a.dl - b.dl || a.i - b.i : a.dl !== null ? -1 : b.dl !== null ? 1 : a.i - b.i);
+    return l.map(x => x.o);
+  };
+
   function render() {
+    stopRush();
     const list = visible();
     $("oa-list").innerHTML = list.length ? list.map(o => `
       <article class="oa-card" data-id="${esc(o.id)}">
         <div class="oa-head"><strong>${esc(o.artist_name || "Unknown")} · ${esc(o.service)}</strong>
-          ${o.rush ? `<span class="st-badge">RUSH 48h</span>` : ""}<span class="st-badge ${o.progress === "completed" ? "done" : ""}">${esc(LABEL[o.progress] || o.progress)}</span></div>
+          ${o.rush ? `<span class="st-badge">RUSH 48h</span>` : ""}${rushDeadline(o) !== null ? `<span class="oa-cd" data-dl="${rushDeadline(o)}"></span>` : ""}<span class="st-badge ${o.progress === "completed" ? "done" : ""}">${esc(LABEL[o.progress] || o.progress)}</span></div>
         <p class="oa-sub">${esc(o.email)}<br>Ordered ${esc(fmt(o.created_at))} · ${o.status === "complete" ? "Paid " + esc(fmt(o.paid_at)) : "Payment: " + esc(o.status || "unknown")} · Revisions ${+o.revisions_used || 0}/${+o.max_revisions || 2}</p>
-        <p class="oa-sub"><strong>${+o.songs || 1} song${(+o.songs || 1) === 1 ? "" : "s"}</strong>${o.rush ? ` · <strong class="danger">RUSH 48h</strong>${o.paid_at ? " (due 48h after " + esc(fmt(o.paid_at)) + ")" : ""}` : ""}</p>
+        <p class="oa-sub"><strong>${+o.songs || 1} song${(+o.songs || 1) === 1 ? "" : "s"}</strong>${o.rush ? ` · <strong class="danger">RUSH 48h</strong>${o.paid_at ? " (due 48h after " + esc(fmt(o.paid_at)) + ")" : ""}${rushDeadline(o) !== null ? ` · <span class="oa-due">${esc(dueFmt(rushDeadline(o)))}</span>` : ""}` : ""}</p>
         ${o.revision_note && o.progress === "revision" ? `<div class="oa-rev"><strong>Revision request:</strong>\n${esc(o.revision_note)}</div>` : ""}
         <div class="oa-row">
           <select class="oa-prog" aria-label="Progress">${Object.entries(LABEL).map(([k, v]) => `<option value="${k}"${k === o.progress ? " selected" : ""}>${v}</option>`).join("")}</select>
@@ -47,6 +87,7 @@
         <p class="status oa-msg" role="status"></p>
       </article>`).join("") : "";
     if (!list.length) S($("oa-list"), { icon: "box", title: "No orders in this view", text: "Nothing matches this filter right now.", actions: filter === "all" ? [{ label: "Reload", onClick: () => load() }] : [{ label: "Show all orders", onClick: () => { const b = document.querySelector('#oa-filters [data-f="all"]'); if (b) b.click(); } }, { label: "Reload", onClick: () => load() }] });
+    startRush();
   }
 
   async function load() {
@@ -75,7 +116,7 @@
         const r = await call({ action: "update", id, progress: card.querySelector(".oa-prog").value, admin_note: card.querySelector(".oa-note").value });
         say(r.mailed ? "Saved. Customer notified by email." : "Saved. Email could not be sent.", !r.mailed);
         const o = orders.find(x => x.id === id);
-        if (o) { o.progress = card.querySelector(".oa-prog").value; o.admin_note = card.querySelector(".oa-note").value; }
+        if (o) { o.progress = card.querySelector(".oa-prog").value; o.admin_note = card.querySelector(".oa-note").value; tickRush(); }
       } catch (err) { say(err.message, true); }
       b.disabled = false;
     } else if (b.dataset.a === "upload") {
@@ -97,7 +138,7 @@
       if (!res.ok) throw new Error("Upload failed (" + res.status + ").");
       const r = await call({ action: "deliver", id, path: up.path });
       say(r.mailed ? "Delivered. Customer notified by email." : "Delivered. Email could not be sent.", !r.mailed);
-      const o = orders.find(x => x.id === id); if (o) o.progress = "delivered";
+      const o = orders.find(x => x.id === id); if (o) { o.progress = "delivered"; tickRush(); }
     } catch (err) { say(err.message, true); }
     inp.value = "";
   });
@@ -302,6 +343,7 @@
     document.querySelectorAll("#oa-tabs button").forEach(b => {
       const on = b.dataset.tab === name; b.classList.toggle("active", on); b.setAttribute("aria-selected", on ? "true" : "false");
     });
+    if (name === "orders") startRush(); else stopRush();
     if (rv && !rvLoaded) { loadReviews(); loadServiceReviews(); }
     if (iq && !iqLoaded) loadInquiries();
     if (sx && !sxLoaded) loadStats();
