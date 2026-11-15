@@ -129,3 +129,11 @@
   .promo-band .pb-list{flex-direction:column;align-items:flex-start;gap:6px}
   .promo-band .pb-list li::before,.promo-band .pb-list li+li::before{content:"";flex:none;width:5px;height:5px;border-radius:50%;background:rgba(226,146,218,.7);margin:0 10px 0 0}
 }
+/* Startseite About: rundes Portraet neben der Ueberschrift */
+.about-head{display:flex;align-items:center;gap:18px;margin-bottom:6px}
+.about-head .eyebrow{margin-bottom:6px}
+.about-head h2{margin:0}
+.about-avatar{flex:none;width:76px;height:76px;border-radius:50%;overflow:hidden;border:2px solid rgba(182,138,255,.55);box-shadow:0 0 0 4px rgba(182,138,255,.12);transition:border-color .2s,box-shadow .2s}
+.about-avatar img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block}
+.about-avatar:hover,.about-avatar:focus-visible{border-color:#b68aff;box-shadow:0 0 0 4px rgba(182,138,255,.25)}
+@media(max-width:420px){.about-avatar{width:64px;height:64px}.about-head{gap:14px}}
