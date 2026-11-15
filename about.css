@@ -5,7 +5,7 @@
 .ab-hero h1 span{color:var(--purple)}
 .ab-hero .muted{max-width:560px;margin:0}
 .ab-photo{margin:0;justify-self:end;width:100%;max-width:360px;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--panel)}
-.ab-photo img{display:block;width:100%;aspect-ratio:4/5;height:auto;object-fit:cover;object-position:35% 40%}
+.ab-photo img{display:block;width:100%;aspect-ratio:1/1;height:auto;object-fit:cover;object-position:50% 50%}
 .ab-gallery{margin:0 0 16px}
 .ab-shots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .ab-shot{margin:0}
@@ -51,8 +51,8 @@
 @media(max-width:1000px) and (min-width:761px){.ab-shots{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){
   .ab-hero:has(.ab-photo){grid-template-columns:minmax(0,1fr)}
-  .ab-photo{justify-self:center;max-height:360px}
-  .ab-photo img{aspect-ratio:auto;height:360px;object-position:35% 35%}
+  .ab-photo{justify-self:center;max-width:320px}
+  .ab-photo img{aspect-ratio:1/1;height:auto}
   .ab-shots{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ab-lb-prev{left:6px}.ab-lb-next{right:6px}.ab-lb-close{top:6px;right:6px}
   .ab-grid{grid-template-columns:minmax(0,1fr)}
