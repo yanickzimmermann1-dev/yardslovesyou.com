@@ -320,11 +320,11 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
     meta("property","og:title",`${p.title} · YARDSLOVESYOU`);
     meta("property","og:description",desc);
     meta("property","og:url",url);
-    meta("property","og:image",images[0]||"https://yardslovesyou.com/og-image.jpg");
+    meta("property","og:image",images[0]||"https://yardslovesyou.com/og-image-v2.jpg");
     meta("name","twitter:card","summary_large_image");
     meta("name","twitter:title",`${p.title} · YARDSLOVESYOU`);
     meta("name","twitter:description",desc);
-    meta("name","twitter:image",images[0]||"https://yardslovesyou.com/og-image.jpg");
+    meta("name","twitter:image",images[0]||"https://yardslovesyou.com/og-image-v2.jpg");
 
     let canon=document.head.querySelector('link[rel="canonical"]');
     if(!canon){canon=document.createElement("link");canon.rel="canonical";document.head.appendChild(canon);}
