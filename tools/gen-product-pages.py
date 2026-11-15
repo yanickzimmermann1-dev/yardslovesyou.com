@@ -158,14 +158,38 @@ def update_sitemap(slugs):
     f.write_text(s, encoding="utf-8")
 
 
+LOCAL_JSON = ROOT.parent / "next" / "upload-guides" / "products.json"
+
+
+def load_local(path):
+    """Lokale Produktdaten (gleiche Felder wie die DB-Zeilen, plus optional "slug" = Seitenname)."""
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def current_slugs():
+    m = re.search(r"var SLUGS = (\{.*?\});", (ROOT / "products-map.js").read_text(encoding="utf-8"), re.S)
+    return json.loads(m.group(1)) if m else {}
+
+
 def main():
+    """Modi:
+      python3 tools/gen-product-pages.py            alle veroeffentlichten Produkte live aus der DB (read-only GET)
+      python3 tools/gen-product-pages.py --local [pfad/zu/products.json]
+          nur die Produkte aus der lokalen JSON (Standard: ../next/upload-guides/products.json), ohne DB-Zugriff;
+          bestehende Eintraege in products-map.js/sitemap.xml bleiben erhalten.
+    Hat ein Produkt in der JSON ein Feld "slug", wird dieser Seitenname auch im Live-Modus verwendet."""
     tpl = (ROOT / "product.html").read_text(encoding="utf-8")
     files = media_manifest()
-    products = fetch_products()
-    slugs = {}
+    args = sys.argv[1:]
+    local_mode = "--local" in args
+    src = Path(args[args.index("--local") + 1]) if local_mode and len(args) > args.index("--local") + 1 else LOCAL_JSON
+    local = load_local(src) if (local_mode or src.exists()) else []
+    forced = {p["id"]: p["slug"] for p in local if p.get("slug")}
+    products = local if local_mode else fetch_products()
+    slugs = current_slugs() if local_mode else {}
     for p in products:
-        slug = slugify(p["title"])
-        if slug in ("product", "shop", "index") or slug in slugs.values():
+        slug = forced.get(p["id"]) or slugify(p["title"])
+        if p["id"] not in forced and (slug in ("product", "shop", "index") or slug in slugs.values()):
             slug += "-" + p["id"][:4]
         slugs[p["id"]] = slug
         (ROOT / (slug + ".html")).write_text(build_page(tpl, p, slug, files), encoding="utf-8")

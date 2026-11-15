@@ -3,8 +3,15 @@
 (function () {
   "use strict";
   var SLUGS = {
+  "0dfc444f-fd2e-4d1f-9196-0d438769641f": "guide-fl-studio-workflow-guide",
   "11f558ea-9332-4bf3-ad2f-d8327c489445": "essentials",
-  "c9ab4f32-e7a1-4ae0-8e93-a421b3225c15": "the-last-yards"
+  "36f3f7cd-3167-496a-a3b4-f4c036b58e0e": "guide-mixing-and-mastering-workflow",
+  "5c25a310-80f3-4685-8103-7f7f146cf347": "guide-beat-arrangement-blueprints",
+  "697e8ff1-4278-46e7-bfad-63390932b7e7": "guide-beat-business-playbook",
+  "80dbc815-6313-41bf-8185-aeb150508d6c": "guide-trap-mixing-cheat-sheets",
+  "c2acae2f-390c-4af5-b7b9-1023c8e994fa": "short-guides-bundle",
+  "c9ab4f32-e7a1-4ae0-8e93-a421b3225c15": "the-last-yards",
+  "e79a3d0a-8a26-4876-80cb-9718c85e0c50": "guide-vocal-chain-recipes"
 };
   window.YLYProducts = {
     slugs: SLUGS,
