@@ -179,3 +179,12 @@ body[data-area="service"] ::selection{background:rgba(226,146,218,.35);color:#ff
 .faq-item summary:focus-visible{outline:2px solid #e292da;outline-offset:2px}
 .faq-item p{margin:0;padding:0 16px 16px;color:var(--muted);line-height:1.6;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){.faq-item summary,.faq-item summary::after{transition:none}}
+
+/* Capacity: "Only N slots left" note + "Booked out" panel */
+.up-slots{margin:10px 0 0;padding:6px 12px;border:1px solid rgba(226,146,218,.45);background:rgba(226,146,218,.1);color:#ecb3e6;border-radius:999px;font-size:13px;font-weight:600;display:inline-block}
+.up-slots[hidden],.up-booked-panel[hidden]{display:none}
+.up-booked-panel{margin:0 0 1.5rem;padding:clamp(18px,3vw,26px);border:1px solid rgba(226,146,218,.45);background:linear-gradient(135deg,rgba(226,146,218,.16),rgba(23,19,31,.95) 65%);border-radius:16px}
+.up-booked-panel h2{margin:6px 0 8px;font:600 clamp(22px,3vw,28px)/1.2 'Space Grotesk',system-ui,sans-serif}
+.up-booked-panel .muted{margin:0 0 10px;max-width:60ch}
+.up-booked-panel .hint{margin:0}
+.upload-form.is-booked{opacity:.45;pointer-events:none;filter:grayscale(.3)}

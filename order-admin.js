@@ -280,6 +280,85 @@
       const c2 = $("iq-list").querySelector(`.oa-card[data-id="${CSS.escape(id)}"] .oa-msg`); if (c2) c2.textContent = "Saved.";
     } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); b.disabled = false; }
   });
+  // ---------- Places (place_suggestions) ----------
+  let places = [], plFilter = "all", plLoaded = false;
+  const plStatus = (t, bad) => { const el = $("pl-status"); el.textContent = t; el.classList.toggle("danger", !!bad); };
+  const PL_LABEL = { new: "New", planned: "Planned", done: "Done", rejected: "Rejected" };
+  const PL_CLASS = { new: "", planned: "", done: "done", rejected: "bad" };
+  function plCount() {
+    const n = places.filter(p => p.status === "new").length, el = $("pl-new");
+    el.textContent = n; el.hidden = !n;
+  }
+  function renderPlaces() {
+    const list = places.filter(p => plFilter === "all" ? true : p.status === plFilter);
+    $("pl-list").innerHTML = list.length ? list.map(p => `
+      <article class="oa-card" data-id="${esc(p.id)}">
+        <div class="oa-head"><strong>${esc(p.place)}</strong>
+          <span class="st-badge ${PL_CLASS[p.status] || ""}">${esc(PL_LABEL[p.status] || p.status)}</span></div>
+        <p class="oa-sub">${esc(p.name || "Anonymous")}${p.email ? ` · <a href="mailto:${esc(p.email)}">${esc(p.email)}</a>` : ""} · ${esc(fmt(p.created_at))}</p>
+        ${p.note ? `<div class="rv-adm-body">${esc(p.note)}</div>` : ""}
+        <div class="oa-acts">
+          <select class="pl-sel" aria-label="Status">${Object.entries(PL_LABEL).map(([k, v]) => `<option value="${k}"${k === p.status ? " selected" : ""}>${v}</option>`).join("")}</select>
+        </div>
+        <p class="status oa-msg" role="status"></p>
+      </article>`).join("") : "";
+    if (!list.length) S($("pl-list"), { icon: "box", title: "No place suggestions in this view", text: "Nothing matches this filter right now.", actions: [{ label: "Reload", onClick: () => loadPlaces() }] });
+  }
+  async function loadPlaces() {
+    plStatus("Loading ...");
+    try { places = (await call({ action: "places-list" })).places || []; plLoaded = true; plStatus(""); plCount(); renderPlaces(); }
+    catch (e) { plStatus(e.message, true); S($("pl-list"), { icon: "alert", error: true, title: "Place suggestions could not be loaded", text: e.message || "Please try again.", actions: [{ label: "Retry", onClick: () => loadPlaces() }] }); }
+  }
+  $("pl-filters").addEventListener("click", e => {
+    const b = e.target.closest("[data-f]"); if (!b) return;
+    plFilter = b.dataset.f;
+    document.querySelectorAll("#pl-filters button").forEach(x => x.classList.toggle("active", x === b));
+    renderPlaces();
+  });
+  $("pl-reload").addEventListener("click", loadPlaces);
+  $("pl-list").addEventListener("change", async e => {
+    const sel = e.target.closest(".pl-sel"); if (!sel) return;
+    const card = sel.closest(".oa-card"), id = Number(card.dataset.id), msg = card.querySelector(".oa-msg");
+    sel.disabled = true; msg.textContent = "Saving ..."; msg.classList.remove("danger");
+    try {
+      const r = await call({ action: "place-set", id, status: sel.value });
+      const i = places.findIndex(x => x.id === id); if (i > -1 && r.place) places[i] = r.place;
+      plCount(); renderPlaces();
+      const c2 = $("pl-list").querySelector(`.oa-card[data-id="${CSS.escape(String(id))}"] .oa-msg`); if (c2) c2.textContent = "Saved.";
+    } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); sel.disabled = false; }
+  });
+
+  // ---------- Capacity (site_settings 'service_capacity') ----------
+  const capStatus = (t, bad) => { const el = $("cap-status"); el.textContent = t; el.classList.toggle("danger", !!bad); };
+  function capShowUsed(paid, max) {
+    $("cap-used").innerHTML = "Paid orders this month: <strong>" + (paid == null ? "n/a" : esc(paid)) + " / " + esc(max) + "</strong>";
+  }
+  let capPaid = null;
+  async function loadCapacity() {
+    try {
+      const d = await call({ action: "settings-get" }), s = d.settings || {};
+      $("cap-enabled").checked = s.enabled === true;
+      $("cap-max").value = s.max_per_month || 8;
+      $("cap-message").value = s.message || "";
+      capPaid = d.paid_this_month == null ? null : d.paid_this_month;
+      capShowUsed(capPaid, s.max_per_month || 8);
+      capStatus("");
+    } catch (e) { capStatus("Capacity settings could not be loaded: " + e.message, true); }
+  }
+  $("cap-save").addEventListener("click", async () => {
+    const btn = $("cap-save"), max = Number($("cap-max").value);
+    if (!Number.isInteger(max) || max < 1 || max > 100) { capStatus("Max orders must be a whole number from 1 to 100.", true); return; }
+    btn.disabled = true; capStatus("Saving ...");
+    try {
+      const r = await call({ action: "settings-set", enabled: $("cap-enabled").checked, max_per_month: max, message: $("cap-message").value.trim() });
+      const s = r.settings || {};
+      capShowUsed(capPaid, s.max_per_month || max);
+      capStatus("Saved." + (s.enabled ? " Booking is limited to " + (s.max_per_month || max) + " orders per month." : " No limit is active."));
+      try { sessionStorage.removeItem("yly_slots_v1"); } catch (_) {}
+    } catch (e) { capStatus(e.message, true); }
+    btn.disabled = false;
+  });
+
   // ---------- Stats ----------
   let sxLoaded = false, sxBusy = false;
   const sxStatus = (t, bad) => { const el = $("sx-status"); el.textContent = t; el.classList.toggle("danger", !!bad); };
@@ -335,8 +414,9 @@
   $("sx-reload").addEventListener("click", loadStats);
 
   function tab(name) {
-    const rv = name === "reviews", iq = name === "inquiries", sx = name === "stats";
-    $("oa-orders").classList.toggle("hidden", rv || iq || sx);
+    const rv = name === "reviews", iq = name === "inquiries", sx = name === "stats", pl = name === "places";
+    $("oa-orders").classList.toggle("hidden", rv || iq || sx || pl);
+    $("oa-places").classList.toggle("hidden", !pl);
     $("oa-stats").classList.toggle("hidden", !sx);
     $("oa-reviews").classList.toggle("hidden", !rv);
     $("oa-inquiries").classList.toggle("hidden", !iq);
@@ -346,12 +426,13 @@
     if (name === "orders") startRush(); else stopRush();
     if (rv && !rvLoaded) { loadReviews(); loadServiceReviews(); }
     if (iq && !iqLoaded) loadInquiries();
+    if (pl && !plLoaded) loadPlaces();
     if (sx && !sxLoaded) loadStats();
   }
   $("oa-tabs").addEventListener("click", e => {
     const b = e.target.closest("[data-tab]"); if (!b) return;
     tab(b.dataset.tab);
-    try { history.replaceState(null, "", b.dataset.tab === "reviews" ? "#reviews" : b.dataset.tab === "inquiries" ? "#inquiries" : b.dataset.tab === "stats" ? "#stats" : location.pathname + location.search); } catch (_) {}
+    try { history.replaceState(null, "", b.dataset.tab === "reviews" ? "#reviews" : b.dataset.tab === "inquiries" ? "#inquiries" : b.dataset.tab === "stats" ? "#stats" : b.dataset.tab === "places" ? "#places" : location.pathname + location.search); } catch (_) {}
   });
   $("rv-filters").addEventListener("click", e => {
     const b = e.target.closest("[data-f]"); if (!b) return;
@@ -370,8 +451,10 @@
       rvCount(); renderReviews();
     } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); b.disabled = false; }
   });
-  window.addEventListener("hashchange", () => { if (location.hash === "#reviews") tab("reviews"); else if (location.hash === "#inquiries") tab("inquiries"); else if (location.hash === "#stats") tab("stats"); });
-  if (location.hash === "#reviews") tab("reviews"); else { loadReviews(); loadServiceReviews(); if (location.hash === "#inquiries") tab("inquiries"); else if (location.hash === "#stats") tab("stats"); }
+  window.addEventListener("hashchange", () => { if (location.hash === "#reviews") tab("reviews"); else if (location.hash === "#inquiries") tab("inquiries"); else if (location.hash === "#stats") tab("stats"); else if (location.hash === "#places") tab("places"); });
+  if (location.hash === "#reviews") tab("reviews"); else { loadReviews(); loadServiceReviews(); if (location.hash === "#inquiries") tab("inquiries"); else if (location.hash === "#stats") tab("stats"); else if (location.hash === "#places") tab("places"); }
+  if (location.hash !== "#places") loadPlaces();
+  loadCapacity();
 
   load();
 })();

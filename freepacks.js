@@ -1,6 +1,7 @@
 /* freepacks.js - YARDSLOVESSOUNDS auf free.html:
    Hub (kein ?ep): Episoden-Karten aus der Tabelle free_packs (Abschnitt bleibt verborgen, solange keine Zeilen da sind).
    Fokus (?ep=<slug> | latest): nur Formular fuer ein Gratis-Pack, Mail ueber die Function free-kit.
+   Karte "Where should I record next?" (#suggest) in Hub UND Fokus: Ortsvorschlag ueber die Function suggest-place.
    Faellt bei jedem Fehler still zurueck (Hub ohne Serie bzw. eingebauter Essentials-Lite-Standard). */
 (function () {
   "use strict";
@@ -53,6 +54,60 @@
   }
   var episodesOf = function (rows) { return rows.filter(function (r) { return r && r.kind === "episode" && r.slug; }); };
 
+  // ---- Ortsvorschlag ("Where should I record next?") ----
+  function suggestHtml() {
+    return '<div class="fp-sug-text"><p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>SUGGEST A PLACE</p>' +
+      '<h2 id="ps-title">Where should I record next?</h2>' +
+      '<p class="muted">Know a place that sounds great? A parking garage, a workshop, a train station? Tell me and it might be the next episode.</p></div>' +
+      '<form class="fp-sug-form" id="ps-form" novalidate>' +
+      '<label class="fp-lbl" for="ps-place">Place</label>' +
+      '<input id="ps-place" type="text" maxlength="120" placeholder="e.g. a parking garage" autocomplete="off" required>' +
+      '<label class="fp-lbl" for="ps-note">Note <span class="fp-opt">(optional)</span></label>' +
+      '<textarea id="ps-note" rows="2" maxlength="500" placeholder="Why does it sound good?"></textarea>' +
+      '<label class="fp-lbl" for="ps-name">Name <span class="fp-opt">(optional)</span></label>' +
+      '<input id="ps-name" type="text" maxlength="40" placeholder="Your name" autocomplete="given-name">' +
+      '<div class="fp-hp" aria-hidden="true"><label for="ps-website">Website</label><input id="ps-website" type="text" tabindex="-1" autocomplete="off"></div>' +
+      '<button id="ps-btn" class="button" type="submit">Suggest a place</button>' +
+      '<p id="ps-status" class="status" role="status"></p></form>';
+  }
+  function wireSuggest(sec) {
+    var form = sec.querySelector("#ps-form"); if (!form) return;
+    var place = sec.querySelector("#ps-place"), note = sec.querySelector("#ps-note"), nameEl = sec.querySelector("#ps-name"),
+      hp = sec.querySelector("#ps-website"), btn = sec.querySelector("#ps-btn"), status = sec.querySelector("#ps-status");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      status.classList.remove("danger"); status.textContent = "";
+      var p = place.value.trim();
+      if (!p) { status.textContent = "Please tell me the place."; status.classList.add("danger"); place.focus(); return; }
+      if (!cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY) { status.textContent = "Service is not available right now. Please try again."; status.classList.add("danger"); return; }
+      var label = btn.textContent;
+      btn.disabled = true; btn.textContent = "Sending …";
+      var h = { "Content-Type": "application/json", apikey: cfg.SUPABASE_PUBLISHABLE_KEY };
+      if (String(cfg.SUPABASE_PUBLISHABLE_KEY).split(".").length === 3) h.Authorization = "Bearer " + cfg.SUPABASE_PUBLISHABLE_KEY;
+      fetch(cfg.SUPABASE_URL + "/functions/v1/suggest-place", { method: "POST", headers: h,
+        body: JSON.stringify({ place: p, note: note.value.trim(), name: nameEl.value.trim(), website: hp.value }) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (!res.ok || !res.j.ok) throw new Error((res.j && res.j.error) || "Something went wrong.");
+          track("place-suggest", {});
+          form.innerHTML = '<div class="fp-done" role="status"><strong>Thanks! Maybe your place is next.</strong></div>';
+        })
+        .catch(function (err) {
+          var m = String(err && err.message || "Something went wrong.");
+          status.textContent = /try again|later/i.test(m) ? m : m.replace(/[.!?\s]*$/, "") + ". Please try again.";
+          status.classList.add("danger");
+          btn.disabled = false; btn.textContent = label;
+        });
+    });
+  }
+  function mountSuggest(sec) {
+    if (!sec) return;
+    sec.innerHTML = suggestHtml();
+    sec.classList.remove("hidden");
+    wireSuggest(sec);
+  }
+  var hubSuggest = $("suggest");
+
   // ---- Hub ----
   function renderHub(rows) {
     var eps = episodesOf(rows), sec = $("series");
@@ -83,6 +138,7 @@
     root.classList.remove("fp-focus");
     var f = $("fp-focus"); if (f) f.classList.add("hidden");
     doc.title = baseTitle; if (metaDesc) metaDesc.setAttribute("content", baseDesc);
+    mountSuggest(hubSuggest);
     loadRows().then(renderHub);
   }
   function renderFocus(p) {
@@ -124,6 +180,11 @@
     }
     f.innerHTML = '<div class="fp-grid2"><div>' + left + "</div><div>" + right + '</div></div><a class="fp-more" href="free.html">More free sounds</a>';
     f.classList.remove("hidden");
+    if (hubSuggest && hubSuggest.parentNode) hubSuggest.parentNode.removeChild(hubSuggest);   // Fokus-Seite hat eine eigene Karte (keine doppelte id)
+    var sg = doc.createElement("section");
+    sg.className = "fp-suggest fp-suggest-focus"; sg.id = "suggest"; sg.setAttribute("aria-labelledby", "ps-title");
+    f.appendChild(sg); mountSuggest(sg);
+    if (location.hash === "#suggest") { try { sg.scrollIntoView(); } catch (e) {} }
     var label = isEp ? (p.title || "Episode") + " - free sounds" : (p.title || "Free kit");
     setMeta(label + " · YARDSLOVESSOUNDS", isEp
       ? "Get the raw sounds from " + (p.title || "this episode") + " for free. One place, five sounds, 20 minutes. Royalty-free, also for released music."
@@ -166,7 +227,7 @@
   }
 
   function start() {
-    if (ep === null || ep === "") { root.classList.remove("fp-focus"); loadRows().then(renderHub); return; }
+    if (ep === null || ep === "") { root.classList.remove("fp-focus"); mountSuggest(hubSuggest); loadRows().then(renderHub); return; }
     loadRows().then(function (rows) {
       var pick = null;
       if (ep === "latest") {

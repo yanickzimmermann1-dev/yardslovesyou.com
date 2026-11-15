@@ -66,6 +66,34 @@ document.addEventListener("DOMContentLoaded", () => {
       </section>`;
   }
 
+  // Rush-Frist (Europe/Zurich): "Mon 16.11. 14:30"
+  const fmtDue = iso => {
+    const p = {};
+    new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Zurich", weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+      .formatToParts(new Date(iso)).forEach(x => { p[x.type] = x.value; });
+    return `${p.weekday} ${p.day}.${p.month}. ${p.hour}:${p.minute}`;
+  };
+  const rushLeft = iso => {
+    const m = Math.max(0, Math.floor((new Date(iso).getTime() - Date.now()) / 60000));
+    return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}m`;
+  };
+  function rushHtml(o) {
+    if (!o.rush) return "";
+    if (o.progress === "delivered" || o.progress === "completed") return `<p class="st-rush-done">Rush 48h - delivered</p>`;
+    if (!o.paid_at || !o.due_at || isNaN(new Date(o.due_at))) return "";
+    const late = new Date(o.due_at).getTime() <= Date.now();
+    if (late) return `<div class="st-rush late" data-due="${esc(o.due_at)}"><b>Rush 48h</b> - your delivery is on its way, slightly behind schedule. You'll get an email as soon as it's ready.</div>`;
+    return `<div class="st-rush" data-due="${esc(o.due_at)}"><b>Rush 48h</b> - delivery by ${esc(fmtDue(o.due_at))} <span class="st-rush-left">(in ${esc(rushLeft(o.due_at))})</span></div>`;
+  }
+  function tickRush() {
+    const el = document.querySelector(".st-rush[data-due]");
+    if (!el || !last) return;
+    if (new Date(el.dataset.due).getTime() <= Date.now() && !el.classList.contains("late")) return render(last);
+    const l = el.querySelector(".st-rush-left");
+    if (l) l.textContent = `(in ${rushLeft(el.dataset.due)})`;
+  }
+  setInterval(tickRush, 60000);
+
   function render(o) {
     last = o;
     const inRev = o.progress === "revision";
@@ -87,6 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <section class="st-card">
         <h2>${esc(o.service)}</h2>
         <p class="st-meta"><span>${o.artist_name ? "For " + esc(o.artist_name) : ""}</span><span>Ordered ${esc(fmt(o.created_at))}</span><span class="st-badge ${o.progress === "completed" ? "done" : ""}">${esc(({ received: "Received", in_progress: "In progress", revision: "Revision in progress", delivered: "Delivered", completed: "Completed" })[o.progress] || o.progress)}</span></p>
+        ${rushHtml(o)}
         <ol class="tk" aria-label="Order progress">${steps}</ol>
         ${inRev ? `<div class="st-loop">${ICON.loop}<span>Your revision request is being worked on. You'll get an email when the new version is ready.</span></div>` : ""}
         ${o.admin_note ? `<div class="st-note"><small>Note from YARDSLOVESYOU</small>${esc(o.admin_note)}</div>` : ""}

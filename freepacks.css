@@ -62,3 +62,22 @@
 @media(max-width:760px){
   .fp-grid2{grid-template-columns:1fr}
 }
+
+/* ---- Ortsvorschlag: "Where should I record next?" (Hub + Fokus) ---- */
+.fp-suggest{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,3vw,36px);align-items:start;margin:0 0 clamp(28px,4vw,40px);padding:clamp(20px,3vw,28px);background:linear-gradient(135deg,rgba(95,224,208,.12),rgba(23,19,31,.95) 60%);border:1px solid var(--line);border-radius:16px;scroll-margin-top:90px}
+.fp-suggest:empty{display:none}
+.fp-suggest-focus{grid-template-columns:1fr;margin:clamp(28px,4vw,44px) 0 0}
+.fp-suggest h2{font:600 clamp(20px,2.6vw,26px)/1.2 'Space Grotesk';margin:6px 0 8px}
+.fp-suggest .muted{margin:0;max-width:52ch}
+.fp-sug-form{display:flex;flex-direction:column;gap:8px;min-width:0}
+.fp-sug-form label.fp-lbl{font-size:13px;font-weight:600;color:var(--text)}
+.fp-sug-form .fp-opt{font-weight:400;color:var(--muted)}
+.fp-sug-form input[type="text"],.fp-sug-form textarea{width:100%;box-sizing:border-box}
+.fp-sug-form textarea{resize:vertical;min-height:64px;background:var(--panel,#0f0c15);color:var(--text,#f3edff);border:1px solid var(--line,#2a2336);border-radius:12px;padding:12px 14px;font:inherit;font-size:16px}
+.fp-sug-form textarea::placeholder{color:var(--muted,#a89fbb);opacity:.8}
+.fp-sug-form textarea:focus{outline:none;border-color:#5fe0d0;box-shadow:0 0 0 3px rgba(95,224,208,.18)}
+.fp-sug-form .button{align-self:flex-start;margin-top:4px}
+.fp-sug-form .status{margin:0;min-height:1.2em}
+.fp-sug-form .status.danger{color:#ffb8c7}
+.fp-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (max-width:720px){.fp-suggest{grid-template-columns:1fr}.fp-sug-form .button{align-self:stretch}}

@@ -120,3 +120,12 @@
 .sx-list li{display:flex;justify-content:space-between;gap:10px}
 .sx-list li span:first-child{color:var(--muted)}
 .sx-note{color:var(--muted);font-size:12px;margin:0 0 12px}
+
+/* ===== RUSH DEADLINE (status page) - start ===== */
+.st-rush{margin:14px 0;padding:12px 14px;border:1px solid #e292da;border-radius:12px;background:rgba(226,146,218,.12);color:#e292da;font-size:15px;line-height:1.45}
+.st-rush b{font-weight:700;letter-spacing:.02em}
+.st-rush .st-rush-left{opacity:.85;white-space:nowrap}
+.st-rush.late{color:inherit;border-color:rgba(226,146,218,.6)}
+.st-rush.late b{color:#e292da}
+.st-rush-done{margin:10px 0;font-size:12px;color:#e292da;opacity:.85}
+/* ===== RUSH DEADLINE (status page) - end ===== */

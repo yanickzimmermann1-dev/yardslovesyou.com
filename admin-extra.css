@@ -1,0 +1,14 @@
+/* admin-extra.css - Order admin: Capacity box (Orders tab) + Places tab */
+.cap-box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:16px}
+.cap-box h2{margin:0 0 4px;font:600 17px 'Space Grotesk',system-ui,sans-serif}
+.cap-box .cap-used{margin:0 0 12px;color:var(--muted);font-size:14px}
+.cap-box .cap-used strong{color:var(--text)}
+.cap-grid{display:grid;grid-template-columns:1fr;gap:12px;align-items:end}
+@media(min-width:700px){.cap-grid{grid-template-columns:auto 130px 1fr auto}}
+.cap-box label.cap-lbl{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--text)}
+.cap-box .cap-toggle{flex-direction:row;align-items:center;gap:10px;min-height:44px;cursor:pointer}
+.cap-box .cap-toggle input{width:18px;height:18px;accent-color:var(--purple)}
+.cap-box input[type="number"],.cap-box input[type="text"]{width:100%;box-sizing:border-box;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px;font:14px 'DM Sans'}
+.cap-box .cap-msg{margin:8px 0 0;min-height:1.2em}
+.pl-sel{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;font:14px 'DM Sans'}
+.pl-note{margin:8px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}

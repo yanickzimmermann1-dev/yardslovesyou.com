@@ -107,6 +107,50 @@ document.addEventListener("DOMContentLoaded", () => {
   if (rushInput) rushInput.addEventListener("change", () => refresh(false));
   refresh(false);
 
+  // ---------- Capacity ("Booked out"): service_slots_left() -> null = no limit, otherwise free slots this month ----------
+  const CAP_KEY = "yly_slots_v1", CAP_TTL = 5 * 60 * 1000;
+  const CAP_DEFAULT_MSG = "I'm fully booked for this month. New slots open on the 1st. You can still send a custom beat inquiry or message me.";
+  async function loadSlots() {
+    try { const o = JSON.parse(sessionStorage.getItem(CAP_KEY)); if (o && Date.now() - o.t < CAP_TTL && (o.v === null || Number.isInteger(o.v))) return o.v; } catch (e) {}
+    const { data, error } = await db.rpc("service_slots_left");
+    if (error) throw error;
+    const v = typeof data === "number" && Number.isFinite(data) ? Math.max(0, Math.floor(data)) : null;
+    try { sessionStorage.setItem(CAP_KEY, JSON.stringify({ t: Date.now(), v: v })); } catch (e) {}
+    return v;
+  }
+  async function loadCapMessage() {
+    try {
+      const { data } = await db.from("site_settings").select("value").eq("key", "service_capacity").maybeSingle();
+      const m = data && data.value && typeof data.value.message === "string" ? data.value.message.trim() : "";
+      return m.slice(0, 300);
+    } catch (e) { return ""; }
+  }
+  let booked = false;
+  function applyBooked(msg) {
+    booked = true;
+    const panel = $("up-booked"), m = $("up-booked-msg");
+    if (m) m.textContent = msg || CAP_DEFAULT_MSG;
+    if (panel) panel.hidden = false;
+    const f = $("upload-form");
+    if (f) {
+      f.classList.add("is-booked");
+      f.setAttribute("aria-disabled", "true");
+      f.querySelectorAll("input, textarea, select, button").forEach(el => { el.disabled = true; });
+    }
+    const slots = $("up-slots"); if (slots) slots.hidden = true;
+  }
+  (async function initCapacity() {
+    try {
+      const left = await loadSlots();
+      if (left === null || left === undefined) return;
+      if (left <= 0) { applyBooked(await loadCapMessage()); return; }
+      if (left <= 3) {
+        const el = $("up-slots");
+        if (el) { el.textContent = "Only " + left + " slot" + (left === 1 ? "" : "s") + " left this month"; el.hidden = false; }
+      }
+    } catch (e) { /* nothing shown on errors */ }
+  })();
+
   // ---------- Custom beat inquiry (no payment, no upload) ----------
   if (inquiryForm) {
     inquiryForm.addEventListener("submit", async (e) => {
@@ -147,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (uploadForm) {
     uploadForm.onsubmit = async (e) => {
       e.preventDefault();
+      if (booked) return;
 
       const btn = $("submit-btn");
       const statusEl = $("upload-status");
