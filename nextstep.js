@@ -52,6 +52,7 @@
       upload: { line: 'While you wait: train your ears.', btns: [['Try the Ear Trainer', 'eartrainer.html'], ['Get the guide', 'shop.html']] },
       success: { line: 'Your order is on its way. What next?', btns: [['Explore the Perc Lab', 'beatlab.html'], ['Back to shop', 'shop.html']] },
       status: { line: 'Your order is on its way. What next?', btns: [['Explore the Perc Lab', 'beatlab.html'], ['Back to shop', 'shop.html']] },
+      about: { line: 'Hear what I do.', btns: [['Hear the difference', 'upload.html#hear']] },
       free: { line: 'Turn the sounds into music.', btns: [['Make loops with the free tools', 'community.html#tools'], ['Pro sounds: Essentials', 'essentials.html']] },
       mixcheck: { line: 'Want a pro to take it from here?', btns: [['Get your track mixed', 'upload.html'], ['Train your ears', 'eartrainer.html']] },
       beatlab: { line: 'Like the sounds? Take the loop further.', btns: [['Write chords for your loop', 'chords.html'], LAB] },
