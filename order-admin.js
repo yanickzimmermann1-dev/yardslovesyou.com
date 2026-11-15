@@ -239,9 +239,64 @@
       const c2 = $("iq-list").querySelector(`.oa-card[data-id="${CSS.escape(id)}"] .oa-msg`); if (c2) c2.textContent = "Saved.";
     } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); b.disabled = false; }
   });
+  // ---------- Stats ----------
+  let sxLoaded = false, sxBusy = false;
+  const sxStatus = (t, bad) => { const el = $("sx-status"); el.textContent = t; el.classList.toggle("danger", !!bad); };
+  const chf = n => n == null ? "n/a" : "CHF " + String(Math.round(+n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u2019");
+  const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const mlabel = ym => MON[(+String(ym).slice(5, 7) || 1) - 1] || ym;
+  const kpi = (label, val, sub) => `<div class="sx-kpi"><small>${esc(label)}</small><strong>${esc(val)}</strong>${sub ? `<span>${esc(sub)}</span>` : ""}</div>`;
+  const rows = pairs => `<ul class="sx-list">${pairs.map(p => `<li><span>${esc(p[0])}</span><strong>${esc(p[1])}</strong></li>`).join("")}</ul>`;
+  const num = v => v == null ? "n/a" : String(v);
+
+  function renderStats(d) {
+    const t = d.totals || {}, tm = t.this_month || {}, months = d.months || [];
+    const stripe = d.source === "stripe";
+    $("sx-note").textContent = stripe ? "Revenue from Stripe (paid checkouts, last 12 months)." : "Revenue calculated from the price formula (shop revenue unavailable).";
+    const peak = Math.max(1, ...months.map(m => (m.service_revenue || 0) + (m.shop_revenue || 0)));
+    const chart = months.map(m => {
+      const sv = m.service_revenue || 0, sh = m.shop_revenue || 0, tot = sv + sh, h = Math.round(tot / peak * 100);
+      const title = `${m.ym}: ${chf(tot)} (services ${chf(sv)}${m.shop_revenue == null ? "" : ", shop " + chf(sh)}) - ${m.service_orders} service / ${m.shop_orders} shop orders`;
+      return `<div class="sx-col" title="${esc(title)}" role="img" aria-label="${esc(title)}"><div class="sx-bar" style="height:${h}%">${sh ? `<i class="sh" style="flex:${sh}"></i>` : ""}${sv ? `<i class="sv" style="flex:${sv}"></i>` : ""}</div></div>`;
+    }).join("");
+    const svcRows = (d.by_service || []).map(b => `<tr><td>${esc(b.service)}</td><td>${+b.orders || 0}</td><td>${+b.songs || 0}</td><td>${+b.rush_count || 0}</td><td>${esc(chf(b.revenue))}</td></tr>`).join("");
+    const iq = d.inquiries, rv = d.reviews, stars = a => a == null ? "-" : a.toFixed(1) + " / 5";
+    $("sx-body").innerHTML = `
+      <div class="sx-kpis">
+        ${kpi("Revenue this month", chf(tm.revenue), stripe ? "Services " + chf(tm.service_revenue) + " / Shop " + chf(tm.shop_revenue) : "Services only")}
+        ${kpi("Orders this month", num(tm.orders), (tm.service_orders || 0) + " service" + (stripe ? " / " + (tm.shop_orders || 0) + " shop" : ""))}
+        ${kpi("Open orders", num(d.open_orders), (d.awaiting_payment || 0) + " awaiting payment (30 days)")}
+        ${kpi("Avg order value", chf(d.avg_order_value), "Service orders")}
+        ${kpi("Rush share", (+d.rush_share || 0) + " %", (d.ep_orders || 0) + " EP orders (4+ songs)")}
+        ${kpi("Subscribers", d.subscribers ? num(d.subscribers.total_consented) : "n/a", "With marketing consent")}
+      </div>
+      <div class="sx-card"><h2>Revenue per month</h2>
+        <div class="sx-chart">${chart}</div>
+        <div class="sx-months">${months.map(m => `<span>${esc(mlabel(m.ym))}</span>`).join("")}</div>
+        <div class="sx-legend"><span><b style="background:var(--purple)"></b>Services</span><span><b style="background:var(--pink)"></b>Shop</span><span>Last 30 days: ${esc(chf((t.last_30_days || {}).revenue))}</span><span>${stripe ? "Last 12 months" : "All time"}: ${esc(chf((t.all_time || {}).revenue))}</span></div>
+      </div>
+      <div class="sx-card"><h2>By service${stripe ? " (last 12 months)" : ""}</h2>
+        ${svcRows ? `<div class="sx-wrap"><table class="sx-tbl"><thead><tr><th>Service</th><th>Orders</th><th>Songs</th><th>Rush</th><th>Revenue</th></tr></thead><tbody>${svcRows}</tbody></table></div>` : '<p class="sx-note">No paid orders yet.</p>'}
+      </div>
+      <div class="sx-boxes">
+        <div class="sx-card"><h2>Custom beat inquiries</h2>${iq ? rows([["New", iq.new], ["Open", iq.open], ["Won", iq.won], ["Lost", iq.lost]]) : '<p class="sx-note">Not available.</p>'}</div>
+        <div class="sx-card"><h2>Reviews</h2>${rv ? rows([["Service rating", stars(rv.service_avg) + (rv.service_count != null ? " (" + rv.service_count + ")" : "")], ["Product rating", stars(rv.product_avg) + (rv.product_count != null ? " (" + rv.product_count + ")" : "")], ["Pending", rv.pending]]) : '<p class="sx-note">Not available.</p>'}</div>
+      </div>`;
+  }
+  window.YLYStatsRender = renderStats;
+  async function loadStats() {
+    if (sxBusy) return; sxBusy = true;
+    sxStatus("Loading ...");
+    try { renderStats(await call({ action: "stats" })); sxLoaded = true; sxStatus(""); }
+    catch (e) { sxStatus(e.message, true); S($("sx-body"), { icon: "alert", error: true, title: "Statistics could not be loaded", text: e.message || "Please try again.", actions: [{ label: "Retry", onClick: () => loadStats() }] }); }
+    sxBusy = false;
+  }
+  $("sx-reload").addEventListener("click", loadStats);
+
   function tab(name) {
-    const rv = name === "reviews", iq = name === "inquiries";
-    $("oa-orders").classList.toggle("hidden", rv || iq);
+    const rv = name === "reviews", iq = name === "inquiries", sx = name === "stats";
+    $("oa-orders").classList.toggle("hidden", rv || iq || sx);
+    $("oa-stats").classList.toggle("hidden", !sx);
     $("oa-reviews").classList.toggle("hidden", !rv);
     $("oa-inquiries").classList.toggle("hidden", !iq);
     document.querySelectorAll("#oa-tabs button").forEach(b => {
@@ -249,11 +304,12 @@
     });
     if (rv && !rvLoaded) { loadReviews(); loadServiceReviews(); }
     if (iq && !iqLoaded) loadInquiries();
+    if (sx && !sxLoaded) loadStats();
   }
   $("oa-tabs").addEventListener("click", e => {
     const b = e.target.closest("[data-tab]"); if (!b) return;
     tab(b.dataset.tab);
-    try { history.replaceState(null, "", b.dataset.tab === "reviews" ? "#reviews" : b.dataset.tab === "inquiries" ? "#inquiries" : location.pathname + location.search); } catch (_) {}
+    try { history.replaceState(null, "", b.dataset.tab === "reviews" ? "#reviews" : b.dataset.tab === "inquiries" ? "#inquiries" : b.dataset.tab === "stats" ? "#stats" : location.pathname + location.search); } catch (_) {}
   });
   $("rv-filters").addEventListener("click", e => {
     const b = e.target.closest("[data-f]"); if (!b) return;
@@ -272,8 +328,8 @@
       rvCount(); renderReviews();
     } catch (err) { msg.textContent = err.message; msg.classList.add("danger"); b.disabled = false; }
   });
-  window.addEventListener("hashchange", () => { if (location.hash === "#reviews") tab("reviews"); else if (location.hash === "#inquiries") tab("inquiries"); });
-  if (location.hash === "#reviews") tab("reviews"); else { loadReviews(); loadServiceReviews(); if (location.hash === "#inquiries") tab("inquiries"); }
+  window.addEventListener("hashchange", () => { if (location.hash === "#reviews") tab("reviews"); else if (location.hash === "#inquiries") tab("inquiries"); else if (location.hash === "#stats") tab("stats"); });
+  if (location.hash === "#reviews") tab("reviews"); else { loadReviews(); loadServiceReviews(); if (location.hash === "#inquiries") tab("inquiries"); else if (location.hash === "#stats") tab("stats"); }
 
   load();
 })();

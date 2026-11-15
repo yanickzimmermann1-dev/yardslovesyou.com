@@ -80,3 +80,34 @@
   .tk .dot{width:34px;height:34px}.tk li::before{top:16px}
 }
 @media(prefers-reduced-motion:reduce){.tk li,.tk li.done::before,.tk li.now::before,.tk li.now .dot{animation:none;opacity:1}}
+/* Order admin: Stats */
+.sx-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.sx-kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.sx-kpi small{display:block;color:var(--muted);font-size:12px;font-weight:600;margin-bottom:6px}
+.sx-kpi strong{display:block;font-size:22px;line-height:1.2;overflow-wrap:anywhere}
+.sx-kpi span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.sx-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px}
+.sx-card h2{font-size:16px;margin:0 0 12px}
+.sx-chart{display:flex;align-items:flex-end;gap:6px;height:170px;padding-top:8px}
+.sx-col{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch}
+.sx-bar{display:flex;flex-direction:column;justify-content:flex-end;min-height:2px}
+.sx-bar i{display:block;width:100%}
+.sx-bar .sv{background:var(--purple);border-radius:4px 4px 0 0}
+.sx-bar .sh{background:var(--pink);border-radius:4px 4px 0 0}
+.sx-bar .sv+.sh,.sx-bar .sh+.sv{border-radius:0}
+.sx-bar .sh:first-child{border-radius:4px 4px 0 0}
+.sx-months{display:flex;gap:6px;margin-top:6px}
+.sx-months span{flex:1;min-width:0;text-align:center;color:var(--muted);font-size:10px}
+.sx-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;color:var(--muted);font-size:12px}
+.sx-legend b{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.sx-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.sx-tbl th,.sx-tbl td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--line)}
+.sx-tbl th:first-child,.sx-tbl td:first-child{text-align:left}
+.sx-tbl th{color:var(--muted);font-size:12px;font-weight:600}
+.sx-wrap{overflow-x:auto}
+.sx-boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:16px}
+.sx-boxes .sx-card{margin:0}
+.sx-list{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px}
+.sx-list li{display:flex;justify-content:space-between;gap:10px}
+.sx-list li span:first-child{color:var(--muted)}
+.sx-note{color:var(--muted);font-size:12px;margin:0 0 12px}
