@@ -140,7 +140,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
             ${cartBtn("button","add-cart-btn",p,images)}
             <button class="outline" id="buy-btn" type="button">Buy now</button>
           </div>
-          <p class="fineprint">Instant ZIP download after payment.</p>
+          <p class="fineprint">Instant ${/\.pdf$/i.test(String(p.storage_path||""))?"PDF":"ZIP"} download after payment.</p>
           ${trustLine(p)}
           ${p.royalty_free?`<p class="license-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m5 12.5 4.5 4.5L19 7"/></svg> 100% royalty-free – use in your beats, releases &amp; placements. <a href="license.html">License</a></p>`:""}
 
