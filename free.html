@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https: https://i.ytimg.com; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0d0b12">
   <title>Free Sounds: Essentials Lite & Monthly Sound Drop · YARDSLOVESYOU</title>
@@ -27,10 +27,11 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://kmekgjllklwrxizqbrac.supabase.co" crossorigin>
   <link rel="dns-prefetch" href="https://kmekgjllklwrxizqbrac.supabase.co">
-  <!-- css-src: styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css area-theme.css mobile.css trust.css -->
-  <link rel="stylesheet" href="css/b-959a10c888.css" data-css="styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css area-theme.css mobile.css trust.css">
+  <!-- css-src: styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css area-theme.css mobile.css trust.css freepacks.css -->
+  <link rel="stylesheet" href="css/b-fe9e68049c.css" data-css="styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css area-theme.css mobile.css trust.css freepacks.css">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="fx-gate.js?v=20261113g"></script>
+  <script src="free-gate.js?v=20261116a"></script>
 </head>
 <body data-area="free">
 
@@ -51,6 +52,16 @@
       <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>FREE DOWNLOADS</p>
       <h1>Free sounds, <span>no strings attached.</span></h1>
       <p class="muted">Grab a free percussion kit and get a fresh, royalty-free sound every month.</p>
+    </section>
+
+    <!-- ================= YARDSLOVESSOUNDS (Episoden, aus free_packs) ================= -->
+    <section class="fp-series hidden" id="series" aria-labelledby="series-title">
+      <div class="fp-head">
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>YARDSLOVESSOUNDS</p>
+        <h2 id="series-title" class="fp-mark">YARDS<span>LOVESSOUNDS</span></h2>
+        <p class="muted">Free sounds from everyday places. One place. Five sounds. 20 minutes.</p>
+      </div>
+      <div class="fp-grid" id="series-grid"></div>
     </section>
 
     <!-- ================= SOUND DROP ================= -->
@@ -107,6 +118,9 @@
       <a class="outline" href="community.html#tools">Open the Lab <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </aside>
 
+    <!-- Fokus-Seite: free.html?ep=<slug> (wird von freepacks.js gefuellt) -->
+    <section id="fp-focus" class="hidden" aria-label="Free sound pack"></section>
+
   </main>
 
   <footer class="site-footer">
@@ -131,6 +145,7 @@
   <script defer src="products-map.js?v=20261114m"></script>
   <script defer src="media.js?v=20261115a"></script>
   <script defer src="free.js?v=20261114n"></script>
+  <script defer src="freepacks.js?v=20261116a"></script>
   <script src="cart.js?v=20261115a" defer></script>
   <script src="nav.js?v=20261114n" defer></script>
   <script src="fx.js?v=20261114ze" defer></script>
