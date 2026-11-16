@@ -3,6 +3,7 @@
    model3d: {type:'book', front, spine?, back_color, thickness} | {type:'card', front}                          */
 (function () {
   "use strict";
+  function esc3d(t){ return String(t).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
   var D2R = Math.PI / 180;
   var REST_PITCH = -8, IDLE_V = 360 / 22, RESUME_MS = 1500;
   var LIGHT = [-0.42, -0.5, 0.76], HALF = [-0.225, -0.27, 0.94];
@@ -149,7 +150,7 @@
       bk.el.style.setProperty("--bc", back);
       bk.el.style.borderRadius = f2(r) + "px 0 0 " + f2(r) + "px";
       bk.el.innerHTML = '<span class="p3d-bk-mark">yards</span><span class="p3d-bk-rule"></span>' +
-        '<span class="p3d-bk-line">A Practical Guide to Mixing &amp; Mastering</span><span class="p3d-bk-code"></span>';
+        '<span class="p3d-bk-line">' + (typeof model.back_line === "string" ? esc3d(model.back_line) : (model.spine ? "Producer Guide Series" : "A Practical Guide to Mixing &amp; Mastering")) + '</span><span class="p3d-bk-code"></span>';
       lit(bk, true);
 
       var sp = face("p3d-spine", d, h, "rotateY(-90deg) translateZ(" + f2(w / 2) + "px)", [-1, 0, 0]);
