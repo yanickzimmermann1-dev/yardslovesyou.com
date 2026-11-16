@@ -2009,3 +2009,5 @@ html body .cart-btn:hover{background:#241c31;border-color:rgba(255,255,255,.32)}
 @media(min-width:721px){
   html body .topbar nav[aria-label="Main"] .nav-dd>a,html body .topbar nav[aria-label="Main"] .nav-dd>a:hover,html body .topbar nav[aria-label="Main"] .nav-dd>a.active,html body .topbar nav[aria-label="Main"] .nav-dd>a[aria-current="page"],html body .topbar nav[aria-label="Main"] .nav-dd .nav-dd-toggle{background:none !important;box-shadow:none !important}
 }
+/* Produktbild mit transparentem PNG (z.B. Bundle): ohne Rahmen und Hintergrund */
+html body .pd-main.pd-clear{background:none !important;border:0 !important;box-shadow:none !important}
