@@ -10,7 +10,7 @@
   var KEY = "yly_fp_v1", TTL = 10 * 60 * 1000;
   var DEFAULT_SLUG = "essentials-lite";
   var DEFAULT_HEADLINE = "Get the raw sounds behind this beat";
-  var DEFAULT_SUB = "Every episode of YARDSLOVESSOUNDS starts with one place, five sounds and 20 minutes of recording. Get the raw samples from this episode for free and build your own beat from them.";
+  var DEFAULT_SUB = "Every episode of YARDS LOVES SOUNDS starts with one place, five sounds and 20 minutes of recording. Get the raw samples from this episode for free and build your own beat from them.";
   var DEFAULT_KIT = {
     slug: DEFAULT_SLUG, kind: "kit", episode_no: null, title: "Essentials Lite", place: "", headline: "Essentials Lite",
     description: "20 hand-crafted percussion one-shots, straight from Essentials. 100% royalty-free. Enter your email and the download link lands in your inbox.",
@@ -20,7 +20,7 @@
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var $ = function (id) { return doc.getElementById(id); };
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
-  var mark = '<span class="fp-mark">YARDS<span>LOVESSOUNDS</span></span>';
+  var mark = '<span class="fp-mark">YARDS <span class="lv">LOVES</span> SOUNDS</span>';
   var YT_RE = /^[A-Za-z0-9_-]{6,20}$/;
   var okUrl = function (u) { return typeof u === "string" && /^https:\/\//i.test(u) ? u : ""; };
   var thumbOf = function (r) { return r.youtube_id && YT_RE.test(r.youtube_id) ? "https://i.ytimg.com/vi/" + r.youtube_id + "/hqdefault.jpg" : okUrl(r.thumb_url); };
@@ -157,7 +157,7 @@
     } else if (img) {
       media = '<div class="fp-yt"><img src="' + esc(img) + '" alt="" width="480" height="270"></div>';
     }
-    var left = '<span class="fp-mark fp-mark-line">YARDS<span>LOVESSOUNDS</span></span>' +
+    var left = '<span class="fp-mark fp-mark-line">YARDS <span class="lv">LOVES</span> SOUNDS</span>' +
       (epLine ? '<p class="fp-ep-line">' + esc(epLine) + "</p>" : "") +
       "<h1>" + esc(head) + "</h1>" +
       (sub ? '<p class="muted">' + esc(sub) + "</p>" : "") + media +
@@ -186,7 +186,7 @@
     f.appendChild(sg); mountSuggest(sg);
     if (location.hash === "#suggest") { try { sg.scrollIntoView(); } catch (e) {} }
     var label = isEp ? (p.title || "Episode") + " - free sounds" : (p.title || "Free kit");
-    setMeta(label + " · YARDSLOVESSOUNDS", isEp
+    setMeta(label + " · YARDS LOVES SOUNDS", isEp
       ? "Get the raw sounds from " + (p.title || "this episode") + " for free. One place, five sounds, 20 minutes. Royalty-free, also for released music."
       : "Get " + (p.title || "the free kit") + " for free. Royalty-free, also for released music.");
     if (!p.coming_soon) wireForm(p);
