@@ -1,0 +1,6 @@
+/* shop-v2.css - free-kit strip under the shop hero */
+.free-strip{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;flex-wrap:wrap;margin:-8px 0 34px;padding:14px 18px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,rgba(182,138,255,.12),rgba(23,19,31,.9) 70%)}
+.free-strip p{margin:0;color:var(--muted);line-height:1.45;min-width:0}
+.free-strip strong{color:var(--text,#fff);font-weight:600}
+.free-strip .button{white-space:nowrap;flex-shrink:0}
+@media (max-width:560px){.free-strip{margin-top:0}.free-strip .button{width:100%;text-align:center;justify-content:center}}

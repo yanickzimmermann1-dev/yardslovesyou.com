@@ -1,4 +1,4 @@
-/* nextstep.js – "Next step" block before footer.site-footer on every page + scroll reveal for the home entry cards.
+/* nextstep.js – "Next step" block before footer.site-footer on every page + scroll reveal for the home price cards.
    Per-page config: <body data-next='{"line":"...","btns":[["Label","href"],...]}'> or the MAP below (keyed by page name). No inline code (CSP). */
 (function () {
   'use strict';
@@ -34,9 +34,9 @@
     if (body.hasAttribute('data-product-id')) page = 'product';
 
     // entry cards on home
-    var ep = doc.querySelector('.entry-paths');
+    var ep = doc.querySelector('.entry-paths, .hv-how');
     if (ep) {
-      reveal([].slice.call(ep.querySelectorAll('.section-head, .ar-card, .ep-card')));
+      reveal([].slice.call(ep.querySelectorAll('.section-head, .ar-card, .ep-card, .hv-price')));
       ep.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a'); if (a) track('entry', a.getAttribute('href')); });
     }
 
@@ -46,7 +46,7 @@
     var LAB = ['Share in the Lab', 'community.html#community'], HOME = ['Back to home', '/'];
     var LEGAL = { line: 'Looking for something else?', btns: [HOME, ['Shop', 'shop.html']] };
     var MAP = {
-      index: { line: 'Ready? Send your track.', btns: [['Upload your track', 'upload.html'], ['Browse the shop', 'shop.html']] },
+      index: { line: 'Ready? Send your track.', btns: [['Upload your track', 'upload.html'], ['Hear before / after', '#hear']] },
       shop: { line: 'Need a mix too?', btns: [['Upload your track', 'upload.html'], FREE] },
       product: { line: 'Looking for more?', btns: [SHOP, FREE] },
       upload: { line: 'While you wait: train your ears.', btns: [['Try the Ear Trainer', 'eartrainer.html'], ['Get the guide', 'shop.html']] },

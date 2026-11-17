@@ -2,8 +2,9 @@
 (function () {
   'use strict';
   var root = document.documentElement;
-  /* Particle colours follow the page's area colour (--area-rgb); default purple on home/legal. */
+  /* One accent colour site-wide: particles always use the default purple (no per-area tint). */
   var COLS = (function () {
+    return ['#8f1fe0', '#b33cff', '#d47bff'];
     try {
       var b = document.body, a = b && b.getAttribute('data-area');
       if (a && a !== 'mix') {

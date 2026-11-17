@@ -1,0 +1,25 @@
+/* product-v2.css - product pages: mixing cross-sell line + mobile buy-above-the-fold tweaks */
+.pd-mixline{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.5}
+.pd-mixline a{color:var(--purple);font-weight:600}
+.pd-mixline a:hover{text-decoration:underline}
+.gd-hero .pd-mixline{margin-top:6px}
+
+@media(max-width:760px){
+  /* crumbs already link back to the shop: drop the extra back link so the buy row moves up */
+  #product-root .crumbs ~ .back-link{display:none}
+  #product-root .product-detail{grid-template-columns:minmax(0,1fr);padding-top:14px;gap:18px}
+  /* smaller cover so title, price and Buy now fit on the first screen */
+  #product-root .pd-main{width:min(100%,62vw);margin:0 auto}
+  #product-root .pd-thumbs{justify-content:center}
+  #product-root .pd-info h1{margin:8px 0 10px}
+  #product-root .pd-buy{margin-top:16px}
+}
+@media(max-width:720px){
+  /* guides: price + "Get the guide" share one row, other buttons below */
+  .gd-buyrow .price-wrap{flex:0 0 auto}
+  .gd-buyrow .gd-buy{flex:1 1 0;width:auto;min-height:50px;justify-content:center}
+}
+@media(max-width:860px){
+  .gd-scene{padding:4px 0 14px}
+  .gd-book{--w:min(170px,46vw)}
+}

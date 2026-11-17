@@ -47,6 +47,9 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
   const cartAttrs=(p,images)=>`data-cart-add="${esc(p.id)}" data-cart-title="${esc(p.title)}" data-cart-price="${esc(p.price_cents)}" data-cart-currency="${esc(String(p.currency||cfg.CURRENCY||"chf").toLowerCase())}" data-cart-cover="${esc(images[0]||"")}"`;
   const cartBtn=(cls,idAttr,p,images,extra)=>`<button class="${cls}" ${idAttr?`id="${idAttr}" `:""}type="button" ${cartAttrs(p,images)}${extra||""}>${CART_IC}<span class="cart-lbl">Add to cart</span></button>`;
 
+  // Cross-Sell zum Mixing-Service direkt unter Preis/Kauf (crosssell.js zeigt nur andere Produkte, keine Dienstleistung)
+  const MIX_LINE='<p class="pd-mixline">Got a beat or song to finish? <a href="upload.html">Get it mixed &amp; mastered by yards<span aria-hidden="true"> →</span></a></p>';
+
   // Info-Zeile: "120 sounds · 24-bit WAV · 350 MB" -> einzelne Chips
   const specChips=s=>String(s||"").split(/[·|•]/).map(x=>x.trim()).filter(Boolean);
 
@@ -137,11 +140,12 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
           ${chips.length?`<ul class="pd-specs">${chips.map(c=>`<li>${esc(c)}</li>`).join("")}</ul>`:""}
           <div class="pd-buy">
             <span class="price-wrap">${was}<span class="price">${price}</span></span>
-            ${cartBtn("button","add-cart-btn",p,images)}
-            <button class="outline" id="buy-btn" type="button">Buy now</button>
+            <button class="button" id="buy-btn" type="button">Buy now</button>
+            ${cartBtn("outline","add-cart-btn",p,images)}
           </div>
           <p class="fineprint">Instant ${/\.pdf$/i.test(String(p.storage_path||""))?"PDF":"ZIP"} download after payment.</p>
           ${trustLine(p)}
+          ${MIX_LINE}
           ${p.royalty_free?`<p class="license-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m5 12.5 4.5 4.5L19 7"/></svg> 100% royalty-free – use in your beats, releases &amp; placements. <a href="license.html">License</a></p>`:""}
 
           ${tracks.length?`
@@ -237,6 +241,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
       </div>`;
     window.renderGuide(p,{root:$("guide-root"),images,price,was,esc,media,paragraphs,faq:faqFor(p),buy,cartAttrs:cartAttrs(p,images),track:(n,d)=>{ window.ylyTrack&&ylyTrack(n,d); }});
     root.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",buy));
+    const gNote=root.querySelector(".gd-hero .gd-note"); if(gNote) gNote.insertAdjacentHTML("afterend",MIX_LINE);
     setupSticky(); promoNote();
     loadReviews(p);
   }

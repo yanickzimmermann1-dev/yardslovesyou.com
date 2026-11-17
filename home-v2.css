@@ -1,0 +1,64 @@
+/* home-v2.css – home page (index.html): artist-first layout. Hero trust line, How it works + prices, For producers strip.
+   Uses the shared tokens from styles.css (--panel, --line, --muted, --purple, --sec-gap). */
+.hero.hx .hx-primary{position:relative;overflow:hidden}
+.hero.hx .hv-trust{margin:16px 0 0;animation:hxUp .8s .8s var(--smooth,cubic-bezier(.22,1,.36,1)) backwards}
+html.intro-on .hero.hx .hv-trust{animation:none!important;opacity:0}
+html.fx-arrived .hero.hx .hv-trust{animation:none!important}
+main > #artists-say{max-width:none;margin:0 0 var(--sec-gap,90px)}
+
+/* ---- How it works ---- */
+.hv-steps{list-style:none;margin:0 0 22px;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.hv-steps li{display:flex;align-items:center;gap:12px;min-width:0;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}
+.hv-steps strong{font:600 15px/1.3 'Space Grotesk';color:var(--text)}
+.hv-n{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font:700 13px 'DM Sans';color:#180e23;background:linear-gradient(135deg,var(--purple),#c9a4ff)}
+
+/* ---- Prices ---- */
+.hv-prices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.hv-price{position:relative;display:flex;flex-direction:column;gap:6px;min-width:0;padding:22px 20px 18px;border-radius:16px;color:var(--text);text-decoration:none;
+  background:linear-gradient(160deg,rgba(182,138,255,.1),var(--panel,#17131f) 62%);border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(182,138,255,.35);
+  transition:border-color .25s ease,transform .3s var(--smooth,ease)}
+.hv-price:hover,.hv-price:focus-visible{border-color:rgba(182,138,255,.6);transform:translateY(-3px)}
+.hv-price:focus-visible{outline:2px solid var(--purple);outline-offset:3px}
+.hv-price h3{margin:0;font:600 19px/1.2 'Space Grotesk';letter-spacing:-.2px}
+.hv-amt{margin:0;color:var(--muted);font-size:13px}
+.hv-amt strong{color:var(--purple);font:600 24px 'Space Grotesk'}
+.hv-meta{margin:0 0 8px;color:var(--muted);font-size:13.5px;line-height:1.5;flex-grow:1}
+.hv-go{font:600 13px 'DM Sans';color:var(--purple)}
+.hv-price:hover .hv-go{text-decoration:underline;text-underline-offset:3px}
+.hv-best{border-color:rgba(182,138,255,.55);background:linear-gradient(160deg,rgba(182,138,255,.2),var(--panel,#17131f) 66%)}
+.hv-tag{position:absolute;top:-10px;right:16px;padding:3px 10px;border-radius:999px;font:700 10.5px 'DM Sans';letter-spacing:1.4px;text-transform:uppercase;color:#180e23;background:linear-gradient(135deg,var(--purple),#c9a4ff)}
+.hv-extra{margin:18px 0 0;font-size:14px}
+.hv-extra a{color:var(--purple);font-weight:600}
+.hv-extra a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* ---- For producers ---- */
+.hv-prod{--ep-rgb:182,138,255;--ep-c:#b68aff}
+.hv-prod-box{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:center;padding:clamp(22px,3vw,32px);
+  border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.hv-prod-box:has(.ar-prods[hidden]){grid-template-columns:1fr}
+.hv-prod-text h2{font:600 clamp(26px,3.4vw,34px)/1.15 'Space Grotesk';letter-spacing:-.5px;margin:8px 0 10px}
+.hv-prod-text .muted{margin:0 0 20px;max-width:440px}
+.hv-prod-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.hv-link{font:600 14px 'DM Sans';color:var(--purple);padding:6px 2px}
+.hv-link:hover,.hv-link:focus-visible{text-decoration:underline;text-underline-offset:3px}
+.hv-prod .ar-prods{max-width:380px;width:100%;justify-self:end}
+
+@media(max-width:980px){
+  .hv-steps,.hv-prices{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .hv-prod-box{grid-template-columns:1fr}
+  .hv-prod .ar-prods{justify-self:stretch;max-width:none}
+}
+@media(max-width:520px){
+  .hv-steps{gap:8px}
+  .hv-steps li{flex-direction:column;align-items:flex-start;gap:8px;padding:12px}
+  .hv-steps strong{font-size:14px}
+  .hv-prices{grid-template-columns:1fr;gap:12px}
+  .hv-price{padding:18px 18px 16px}
+  .hv-prod-actions .button,.hv-prod-actions .outline{flex:1 1 auto}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero.hx .hv-trust{animation:none!important}
+  .hv-price{transition:none}.hv-price:hover{transform:none}
+}

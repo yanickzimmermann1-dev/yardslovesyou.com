@@ -1,0 +1,46 @@
+/* refresh.css – one brand, better readability. Loaded LAST in every bundle (css-src marker).
+   Overrides only; the original files stay untouched. */
+
+/* ---------- 1. Readability ---------- */
+/* Lighter grey text: ~10:1 contrast on the #0d0b12 background (was #aaa0b7). */
+:root{--muted:#c4bccf}
+
+/* Body copy at least 16px with relaxed line height (styles.css used 15px on mobile). */
+body{font-size:16px;line-height:1.65}
+.muted,
+.hero.hx .muted,.mc-score .muted,.mc-mail .muted,.bl-unlock .muted,.et-mode .muted,.free-band .muted,
+.legal p,.legal li,.pd-text p,.about-box p{font-size:16px;line-height:1.65}
+
+/* ---------- 2. One accent colour (purple) everywhere ---------- */
+/* Area tints from sections.css / home-areas.css / nextstep.css all fall back to the brand purple.
+   body[data-area] stays in the HTML (JS still reads it). */
+body[data-area],.nl-section,.free-band{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255}
+.ar-mix,.ar-shop,.ar-lab,.ep-mix,.ep-shop,.ep-free,.ep-lab{--ep-rgb:182,138,255;--ep-c:#b68aff}
+[data-tone]{--t-rgb:182,138,255;--t-c:#b68aff;--t-c2:#c9a4ff;--t-ink:#180e23}
+
+/* Primary buttons: the single purple style from styles.css (no gold / teal / blue / pink variants). */
+.ar-card .button,.free-band .button,.promo-band .button,.ab-actions .button.pink,
+body .next-step .ns-actions a.button[data-tone]{
+  background:linear-gradient(135deg,var(--purple),#c9a4ff);color:#180e23;
+  box-shadow:0 0 0 1px rgba(182,138,255,.25),0 8px 22px -8px rgba(182,138,255,.6),0 0 26px -8px rgba(229,165,255,.4);
+}
+.ar-card .button:hover,.free-band .button:hover,.promo-band .button:hover,.ab-actions .button.pink:hover,
+body .next-step .ns-actions a.button[data-tone]:hover{
+  background:linear-gradient(135deg,#c39cff,#d9b8ff);filter:none;
+  box-shadow:0 0 0 1px rgba(229,165,255,.5),0 14px 34px -10px rgba(182,138,255,.85),0 0 40px -6px rgba(229,165,255,.6);
+}
+
+/* ---------- 3. Less decoration ---------- */
+/* Left-gutter "thread" line (thread.js) and the marquee band (marquee.js). */
+.thread,.mq-band{display:none}
+
+/* ---------- 4. Faster scroll reveals (everything visible within ~0.35s) ---------- */
+/* Wrapped in no-preference so the reduced-motion rules (transition:none) keep winning. */
+@media (prefers-reduced-motion:no-preference){
+  html.js-motion .rv{transition:opacity .28s var(--smooth,ease),transform .28s var(--smooth,ease)}
+  .rvl-go .rvl-in{transition-duration:.3s;transition-delay:calc(var(--i,0)*25ms)}
+  .rvl-eb{transition:opacity .3s ease,letter-spacing .3s ease}
+  .rvl-d>span{transition-duration:.35s;transition-delay:calc(var(--i,0)*20ms)}
+  .ns-rv{transition-duration:.3s;transition-delay:calc(var(--i,0)*25ms)}
+  html.bu-on img.bu{transition-duration:.3s}
+}

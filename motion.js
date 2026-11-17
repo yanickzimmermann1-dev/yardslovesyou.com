@@ -51,8 +51,8 @@
       var _wc;
       /* Header wavebar colour per area (service pink, shop brass, free teal, lab lilac-blue); null = default purple (home/legal). */
       function waveCol() {
-        if (_wc !== undefined) return _wc;
-        _wc = null;
+        // One accent colour site-wide: always the default purple (no per-area tint)
+        _wc = null; return _wc;
         try {
           var a = document.body && document.body.getAttribute('data-area');
           if (a === 'service') _wc = { s: '#e292da', f: 'rgba(226,146,218,.18)', sh: '#c45cb9' };
@@ -217,7 +217,7 @@
               g.forEach(function (el, n) {
                 el.dataset.rv = '1';
                 el.classList.add('rv');
-                if (g.length > 1) el.style.transitionDelay = ((n % 6) * 70) + 'ms';
+                if (g.length > 1) el.style.transitionDelay = ((n % 4) * 25) + 'ms'; // short stagger: everything visible within ~0.35s
                 io.observe(el);
               });
             });

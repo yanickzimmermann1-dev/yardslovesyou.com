@@ -63,6 +63,13 @@
         </div>
       </article>`;
 
+  // Kategorie-Rang anhand von Slug/Name (kein fester Slug bekannt, daher Stichworte)
+  const catRank=c=>{ const t=`${c.slug||""} ${c.name||""}`.toLowerCase();
+    return /kit|sound|sample|one-?shot|drum|perc/.test(t)?0:/bundle/.test(t)?1:/guide|book|pdf/.test(t)?2:3; };
+  // Innerhalb einer Liste: "The Last Yards" (Haupt-Guide) zuerst, sonst Reihenfolge aus der DB behalten
+  const featured=p=>/^the last yards$/i.test(String(p.title||"").trim())?0:1;
+  const ordered=list=>list.map((p,i)=>({p,i})).sort((a,b)=>featured(a.p)-featured(b.p)||a.i-b.i).map(x=>x.p);
+
   const catUrl=slug=>slug?`shop.html?cat=${encodeURIComponent(slug)}`:"shop.html";
 
   function renderBar(){
@@ -85,7 +92,7 @@
     $("shop-count").textContent=`${list.length} ${list.length===1?"product":"products"}`;
     if(!list.length){handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];box.className="product-grid";S(box,{icon:"box",title:"Nothing in this category yet",text:"This category has no products at the moment. Try another one or browse everything.",actions:[{label:"Browse all",onClick:()=>select(null,true)},{label:"Try another category",onClick:()=>{const c=cats.find(x=>x.slug!==sel);select(c?c.slug:null,true);}}]});return;}
     if(grouped){
-      const groups=cats.map(c=>({name:c.name,tagline:c.tagline,items:products.filter(p=>p.category===c.slug)}));
+      const groups=cats.map(c=>({name:c.name,tagline:c.tagline,items:ordered(products.filter(p=>p.category===c.slug))}));
       const rest=products.filter(p=>!cats.some(c=>c.slug===p.category));
       if(rest.length) groups.push({name:"More",tagline:"",items:rest});
       box.className="cat-groups";
@@ -96,10 +103,14 @@
         </section>`).join("");
     }else{
       box.className="product-grid";
-      box.innerHTML=list.map(card).join("");
+      box.innerHTML=ordered(list).map(card).join("");
     }
     box.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy));
     mount3d(box);
+    // "Play sounds" kommt aus soundpads.js: nur Produkte mit gueltigem shop_products.sound_preview
+    // ({bucket, folder} oder files[]) bekommen die Pads. Ohne Preview bleibt der Weg ueber Cover/Titel
+    // und den "Details"-Button im Card-Footer (immer vorhanden). Fehlende Clouds-Preview = Datenpflege
+    // in Supabase (sound_preview / preview_tracks), kein Code-Problem.
     if(window.SoundPads) SoundPads.attach(box,products,{db});
     if(animate&&!reduce&&box.animate){
       box.animate([{opacity:0,transform:"scale(.985) translateY(6px)"},{opacity:1,transform:"none"}],{duration:380,easing:"cubic-bezier(.34,1.2,.64,1)"});
@@ -120,7 +131,9 @@
     try{
       const {data,error}=await db.from("shop_categories").select("slug,name,tagline,sort").order("sort",{ascending:true});
       if(error||!Array.isArray(data)) return [];
-      return data.map(c=>({...c,n:products.filter(p=>p.category===c.slug).length})).filter(c=>c.n>0);
+      // Reihenfolge im Shop: Sound Kits -> Bundles -> Guides (unbekannte Kategorien danach, nach "sort")
+      return data.map((c,i)=>({...c,i,n:products.filter(p=>p.category===c.slug).length})).filter(c=>c.n>0)
+        .sort((a,b)=>catRank(a)-catRank(b)||a.i-b.i);
     }catch(_){return [];}
   }
 
