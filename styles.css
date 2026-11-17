@@ -1973,6 +1973,8 @@ footer.site-footer .footer-social svg{display:block;width:22px;height:22px}
 .product-grid .product .p-under{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-height:0;margin:2px 0 12px}
 .product-grid .product .p-under:empty{display:none}
 .product-grid .product .p-under .badge{position:static;transform:none;margin:0}
+/* Produkte mit Orb-Modell (ohne Sound-Preview) reservieren die Zeile unter dem Bild, damit der Text auf gleicher Hoehe wie bei Essentials steht */
+.product-grid .product .p-under.p-keep{display:flex;min-height:28px}
 .product-grid .product .sp-layer{position:static;inset:auto;height:auto;overflow:visible;border-radius:0;pointer-events:auto;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .product-grid .product .sp-layer::before{display:none}
 .product-grid .product .sp-pill{position:static}

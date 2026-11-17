@@ -35,26 +35,27 @@
     var centers = [];
     for (var i = 0; i < puffs; i++) { // Wolkenkerne gleichmaessig auf einer Kugel (Fibonacci)
       var y = 1 - (i + 0.5) * 2 / puffs, rad = Math.sqrt(1 - y * y), th = i * 2.399963 + r() * 0.4;
-      var k = 0.5 + r() * 0.2;
-      centers.push([Math.cos(th) * rad * k, y * k, Math.sin(th) * rad * k, 0.16 + r() * 0.12,
+      var k = 0.42 + r() * 0.18;
+      centers.push([Math.cos(th) * rad * k, y * k, Math.sin(th) * rad * k, 0.12 + r() * 0.09,
         0.05 + r() * 0.08, 0.05 + r() * 0.08, 0.05 + r() * 0.08,            /* Schwebe-Amplitude x,y,z */
         0.00035 + r() * 0.00055, 0.00035 + r() * 0.00055, 0.00035 + r() * 0.00055, /* Frequenzen (rad/ms) */
         r() * TAU, 0.6 + r() * 0.8]);                                       /* Phase, Wirbel-Tempo */
     }
     var P = []; // x,y,z (Einheitskugel), Groesse, Farbindex, Phase, Helligkeit
     for (var j = 0; j < n; j++) {
-      var x, yy, z, size, pf = -1, haze = r() < 0.2;
-      if (haze) { var d = [gauss(r), gauss(r), gauss(r)], l = Math.hypot(d[0], d[1], d[2]) || 1, rr = 0.7 + r() * 0.55; x = d[0] / l * rr; yy = d[1] / l * rr; z = d[2] / l * rr; size = 0.35 + r() * 0.5; }
-      else { pf = Math.floor(r() * puffs); var c = centers[pf]; x = gauss(r) * c[3]; yy = gauss(r) * c[3]; z = gauss(r) * c[3]; size = 0.6 + r() * 1.1; }
+      var x, yy, z, size, pf = -1, haze = r() < 0.14;
+      if (haze) { var d = [gauss(r), gauss(r), gauss(r)], l = Math.hypot(d[0], d[1], d[2]) || 1, rr = 0.55 + r() * 0.35; x = d[0] / l * rr; yy = d[1] / l * rr; z = d[2] / l * rr; size = 0.35 + r() * 0.5; }
+      else { pf = Math.floor(r() * puffs); var c = centers[pf]; x = clamp(gauss(r), -1.6, 1.6) * c[3]; yy = clamp(gauss(r), -1.6, 1.6) * c[3]; z = clamp(gauss(r), -1.6, 1.6) * c[3]; size = 0.6 + r() * 1.1; }
       var ci = clamp(Math.floor((((pf >= 0 ? centers[pf][1] + yy : yy) + 1) / 2 + (r() - 0.5) * 0.5) * pal.length), 0, pal.length - 1);
       P.push([x, yy, z, size, ci, r() * TAU, 0.35 + r() * 0.65, pf]);
     }
     var rings = Math.round(num(model.rings, 2, 0, 4)), notes = Math.round(num(model.notes, 40, 8, 80) * (small ? 0.6 : 1)), R = [];
     for (var q = 0; q < rings; q++) {
-      var rr2 = 1.12 + q * 0.2, tilt = (q % 2 ? 1 : -1) * (0.35 + q * 0.18), roll = q * 1.1 + r();
+      var rr2 = 1.05 + q * 0.12, tilt = (q % 2 ? 1 : -1) * (0.35 + q * 0.18), roll = q * 1.1 + r();
       for (var m = 0; m < notes; m++) R.push([m / notes * TAU + r() * 0.05, rr2, tilt, roll, 0.06 + r() * 0.16, 0.5 + r() * 0.5]);
     }
-    return { P: P, C: centers, R: R, pal: pal, sprites: pal.map(function (h) { return sprite(rgbOf(h)); }, null), ring: hex(model.ring_color, "#ffffff"), glow: /^\d{1,3},\d{1,3},\d{1,3}$/.test(String(model.glow)) ? String(model.glow) : "157,123,255", spin: num(model.spin, 1, 0, 3) };
+    var ringMax = rings ? 1.05 + (rings - 1) * 0.12 : 0;
+    return { ext: Math.max(1.2, ringMax * 1.18) + 0.14, P: P, C: centers, R: R, pal: pal, sprites: pal.map(function (h) { return sprite(rgbOf(h)); }, null), ring: hex(model.ring_color, "#ffffff"), glow: /^\d{1,3},\d{1,3},\d{1,3}$/.test(String(model.glow)) ? String(model.glow) : "157,123,255", spin: num(model.spin, 1, 0, 3) };
   }
 
   function mount(el, model, opts) {
@@ -85,7 +86,7 @@
     for (var oi = 0; oi < S.P.length; oi++) order.push(oi);
     function draw(t) {
       if (!W) return;
-      var cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.34, f = R * 3.2;
+      var cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.47 / S.ext, f = R * 3.2; /* alles passt mit Rand in die Flaeche, nichts wird abgeschnitten */
       var cyw = Math.cos(st.yaw), syw = Math.sin(st.yaw), cp = Math.cos(st.pitch), sp = Math.sin(st.pitch);
       var breathe = 1 + Math.sin(t / 1900) * 0.03;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -108,6 +109,7 @@
         var wob = Math.sin(t / 1100 + p[5]) * 0.024 * (reduce ? 0 : 1);
         if (p[7] >= 0) { var q2 = pc[p[7]]; x = q2[0] + (p[0] * q2[4] + p[2] * q2[5]) * q2[3]; y = q2[1] + p[1] * q2[3]; z = q2[2] + (-p[0] * q2[5] + p[2] * q2[4]) * q2[3]; }
         else { x = p[0] * hc + p[2] * hs; y = p[1]; z = -p[0] * hs + p[2] * hc; }
+        var ln = Math.sqrt(x * x + y * y + z * z); if (ln > 1) { var sc = (1 + (ln - 1) * 0.3) / ln; x *= sc; y *= sc; z *= sc; } /* weiche Grenze: bleibt nah am Orb */
         x = (x + wob) * R * breathe; y = (y + wob * 0.6) * R * breathe; z = (z - wob) * R * breathe;
         x1 = x * cyw + z * syw; z1 = -x * syw + z * cyw;
         y2 = y * cp - z1 * sp; z2 = y * sp + z1 * cp;

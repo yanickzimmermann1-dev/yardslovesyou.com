@@ -47,7 +47,7 @@
             ${p.image_url?`<img src="${esc(img(p.image_url))}" alt="${esc(p.title)}" width="600" height="600" class="bu" loading="lazy" decoding="async">`:esc(p.cover_emoji||"")}
           </div>
         </a>
-        <div class="p-under">${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}</div>
+        <div class="p-under${(model(p)||{}).type==="orb"?" p-keep":""}">${p.badge?`<span class="badge">${esc(p.badge)}</span>`:""}</div>
         <a class="product-link" href="${link(p.id)}">
           <h3>${esc(p.title)}</h3>
           <p>${esc(p.description||"Digital download as ZIP file.")}</p>
