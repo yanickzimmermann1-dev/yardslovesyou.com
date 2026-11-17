@@ -10,7 +10,7 @@
   var root = document.getElementById('product-root');
   if (!root || !window.fetch || !cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY || String(cfg.SUPABASE_URL).indexOf('https://') !== 0) return;
 
-  (function () { if (!document.querySelector('link[href^="crosssell.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'crosssell.css?v=20261117b'; document.head.appendChild(l); } })();
+  (function () { if (!document.querySelector('link[href^="crosssell.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'crosssell.css?v=20261117c'; document.head.appendChild(l); } })();
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function money(cents, cur) {
@@ -39,12 +39,28 @@
 
   function card(p) {
     var img = cover(p.image_url);
+    var png = /\.png(\?|$)/i.test(String(img || ''));
     return '<article class="xs-card">' +
-      '<a class="xs-img" href="' + esc(pageUrl(p.id)) + '" tabindex="-1" aria-hidden="true">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy" decoding="async" width="240" height="240">' : '') + '</a>' +
+      '<a class="xs-img' + (png ? ' xs-png' : '') + '" data-pid="' + esc(p.id) + '" href="' + esc(pageUrl(p.id)) + '" tabindex="-1" aria-hidden="true">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy" decoding="async" width="240" height="240">' : '') + '</a>' +
       '<div class="xs-body"><a class="xs-title" href="' + esc(pageUrl(p.id)) + '">' + esc(p.title) + '</a>' +
       '<span class="xs-price">' + esc(money(p.price_cents, p.currency)) + '</span>' +
       '<button type="button" class="outline" data-cart-add="' + esc(p.id) + '" data-cart-title="' + esc(p.title) + '" data-cart-price="' + esc(p.price_cents) + '" data-cart-currency="' + esc(p.currency) + '" data-cart-cover="' + esc(img) + '"><span class="cart-lbl">Add to cart</span></button></div>' +
       '</article>';
+  }
+
+  // 3D-Modell (Buch, Karte, Orb) statt Bild, wenn vorhanden: gleiche Darstellung wie in der Shop-Karte, ohne Hintergrund
+  function okModel(m) {
+    if (typeof m === 'string') { try { m = JSON.parse(m); } catch (e) { m = null; } }
+    return m && typeof m === 'object' && ((m.front && (m.type === 'book' || m.type === 'card')) || m.type === 'orb') ? m : null;
+  }
+  function mountModels(sec, list) {
+    if (!window.Product3D) return;
+    var handles = (window.__xsHandles = window.__xsHandles || []);
+    handles.forEach(function (h) { try { h.destroy(); } catch (e) {} }); handles.length = 0;
+    sec.querySelectorAll('.xs-img[data-pid]').forEach(function (box) {
+      var p = list.filter(function (x) { return x.id === box.getAttribute('data-pid'); })[0], m = p && okModel(p.model3d);
+      if (m) { try { handles.push(window.Product3D.mount(box, m, { size: 'small', still: true, alt: p.title })); } catch (e) {} }
+    });
   }
 
   function render(list, id) {
@@ -78,17 +94,18 @@
     if (!sec) { sec = document.createElement('section'); sec.id = 'cross-sell'; sec.className = 'wrap xs'; sec.setAttribute('aria-labelledby', 'xs-h'); var anchor = document.getElementById('sample-gate') || root; anchor.parentNode.insertBefore(sec, anchor.nextSibling); }
     sec.innerHTML = '<h2 id="xs-h">' + esc(title) + '</h2>' + (intro ? '<p class="muted xs-intro">' + esc(intro) + '</p>' : '') + callout +
       (cards.length ? '<div class="xs-grid">' + cards.map(card).join('') + '</div>' : '');
+    mountModels(sec, list);
     try { if (window.ylyTrack) window.ylyTrack('crosssell-view', { id: id }); } catch (e) {}
   }
 
   function start() {
     var id = currentId();
     if (!id) return;
-    fetch(cfg.SUPABASE_URL + '/rest/v1/shop_products?select=id,title,price_cents,currency,image_url&published=eq.true&order=created_at.desc', { headers: headers() })
+    fetch(cfg.SUPABASE_URL + '/rest/v1/shop_products?select=id,title,price_cents,currency,image_url,model3d&published=eq.true&order=created_at.desc', { headers: headers() })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (rows) {
         var list = (Array.isArray(rows) ? rows : []).map(function (p) {
-          return { id: String(p.id), title: p.title, price_cents: Number(p.price_cents), currency: String(p.currency || 'chf').toLowerCase(), image_url: p.image_url };
+          return { id: String(p.id), title: p.title, price_cents: Number(p.price_cents), currency: String(p.currency || 'chf').toLowerCase(), image_url: p.image_url, model3d: p.model3d };
         });
         render(list, id);
       }).catch(function () {});
