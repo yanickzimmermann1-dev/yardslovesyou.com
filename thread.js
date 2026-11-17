@@ -7,6 +7,10 @@
    Never throws into the page. */
 (function () {
   'use strict';
+  /* Disabled (anti-slop pass 2026-11-17): the thread was decoration only. Set THREAD_ON = true to bring it back
+     (and remove `.thread{display:none}` from refresh.css). With it off, nothing is built, no scroll/raf loop runs. */
+  var THREAD_ON = false;
+  if (!THREAD_ON) return;
   try {
     var doc = document, win = window, body = doc.body;
     if (!body || doc.querySelector('.thread')) return;

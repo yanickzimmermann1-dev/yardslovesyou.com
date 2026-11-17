@@ -46,7 +46,7 @@
     var LAB = ['Share in the Lab', 'community.html#community'], HOME = ['Back to home', '/'];
     var LEGAL = { line: 'Looking for something else?', btns: [HOME, ['Shop', 'shop.html']] };
     var MAP = {
-      index: { line: 'Ready? Send your track.', btns: [['Upload your track', 'upload.html'], ['Hear before / after', '#hear']] },
+      index: { line: 'Ready? Send your track.', btns: [['Upload your track', 'upload.html'], ['Browse the shop', 'shop.html']] },
       shop: { line: 'Need a mix too?', btns: [['Upload your track', 'upload.html'], FREE] },
       product: { line: 'Looking for more?', btns: [SHOP, FREE] },
       upload: { line: 'While you wait: train your ears.', btns: [['Try the Ear Trainer', 'eartrainer.html'], ['Get the guide', 'shop.html']] },

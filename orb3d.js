@@ -65,6 +65,10 @@
     if (!el || !model || model.type !== "orb" || !window.CanvasRenderingContext2D) { if (opts.onfail) try { opts.onfail(); } catch (e) {} return noop; }
     var small = opts.size === "small", still = !!opts.still;
     var reduce = false; try { reduce = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (e) {}
+    /* CALM (anti-slop pass 2026-11-17): no floating/spinning/twinkling. Small = one static frame, large = still until dragged.
+       Set CALM = false to restore the animated orb. */
+    var CALM = true;
+    if (CALM) { reduce = true; if (small) still = true; }
     if (getComputedStyle(el).position === "static") el.style.position = "relative";
 
     var stage = document.createElement("div");
@@ -148,7 +152,10 @@
       }
       ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
     }
-    function active() { return !still && st.visible && !st.hidden && !st.dead && !document.hidden; }
+    function active() {
+      if (still || !st.visible || st.hidden || st.dead || document.hidden) return false;
+      return !CALM || st.drag || Math.abs(st.vy) + Math.abs(st.vp) > 0.002 || (performance.now() - (st.idleAt || 0)) < 2500;
+    }
     function loop(now) {
       raf = 0;
       var dt = Math.min(0.05, Math.max(0, (now - st.last) / 1000)); st.last = now;

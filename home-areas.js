@@ -1,6 +1,7 @@
 /* home-areas.js - live bits of the home page (index.html only), all through the shared Supabase client from community-core.js:
-   1) Shop card: two small floating 3D products (shop_products, published; static cover as fallback)
-   2) Lab card counter + "New in the Lab": ONE posts query (latest 3 + exact total count in the same response).
+   0) Mixing star rating after the hero trust line ([data-rate-anchor]) + "Hear before / after" link fallback
+   1) "For producers": two small floating 3D products (#ar-prods; shop_products, published; static cover as fallback)
+   2) The Lab counter (#lab-count) + "New in the Lab" (#newlab): ONE posts query (latest 3 + exact total count in the same response).
    Everything fails quietly: no data -> the block hides, the page never breaks. No inline code (strict CSP). */
 (function () {
   'use strict';
@@ -14,9 +15,30 @@
   });
   var Y = window.YLY, cfg = window.APP_CONFIG || {};
 
+  /* "Hear before / after": links default to upload.html#hear (works without JS / without a player here).
+     As soon as beforeafter.js shows the home player (#hear unhidden), they jump to it on this page instead. */
+  (function () {
+    var hear = document.getElementById('hear'), links = document.querySelectorAll('a[data-hear]');
+    if (!hear || !links.length) return;
+    var sync = function () {
+      if (hear.hidden) return false;
+      [].forEach.call(links, function (a) { a.setAttribute('href', '#hear'); });
+      return true;
+    };
+    /* hero.js scrolls to #services when the player is hidden; the brief is "go to upload.html#hear" instead.
+       Capture phase runs before hero.js' own click handler on the link, so the normal navigation wins. */
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[data-hear]');
+      if (a && (hear.hidden || !hear.offsetHeight)) { a.setAttribute('href', 'upload.html#hear'); e.stopPropagation(); }
+    }, true);
+    if (sync() || !window.MutationObserver) return;
+    var mo = new MutationObserver(function () { if (sync()) mo.disconnect(); });
+    mo.observe(hear, { attributes: true, attributeFilter: ['hidden'] });
+  })();
+
   /* ---------- Mixing card: star rating line (ONE REST request, 10 min sessionStorage cache; hidden on 0 reviews / error) ---------- */
   (function () {
-    var price = document.querySelector('.ar-mix .ar-price');
+    var price = document.querySelector('[data-rate-anchor]') || document.querySelector('.ar-mix .ar-price');
     if (!price || !cfg.SUPABASE_URL || String(cfg.SUPABASE_URL).indexOf('https://') !== 0 || !window.fetch) return;
     var KEY = 'yly_svc_rating_v1', TTL = 10 * 60 * 1000;
     var STAR = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.7 6.1 20.8l1.2-6.5L2.5 9.7l6.6-.9z"/></svg>';

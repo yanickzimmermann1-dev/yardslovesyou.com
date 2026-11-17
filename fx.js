@@ -2,23 +2,23 @@
 (function () {
   'use strict';
   var root = document.documentElement;
-  /* One accent colour site-wide: particles always use the default purple (no per-area tint). */
+  /* Particle colours follow the page accent (unslop.css: body[data-area] --accent-rgb): dark / accent / light. Fallback = brand purple. */
   var COLS = (function () {
-    return ['#8f1fe0', '#b33cff', '#d47bff'];
     try {
-      var b = document.body, a = b && b.getAttribute('data-area');
-      if (a && a !== 'mix') {
-        var v = getComputedStyle(b).getPropertyValue('--area-rgb').trim().split(',').map(Number);
-        if (v.length === 3 && v.every(isFinite)) {
-          var d = v.map(function (x) { return Math.round(x * 0.62); }), l = v.map(function (x) { return Math.round(x + (255 - x) * 0.35); });
-          return ['rgb(' + d.join(',') + ')', 'rgb(' + v.join(',') + ')', 'rgb(' + l.join(',') + ')'];
-        }
+      var b = document.body;
+      var v = b ? getComputedStyle(b).getPropertyValue('--accent-rgb').trim().split(',').map(Number) : [];
+      if (v.length === 3 && v.every(isFinite)) {
+        var d = v.map(function (x) { return Math.round(x * 0.62); }), l = v.map(function (x) { return Math.round(x + (255 - x) * 0.35); });
+        return ['rgb(' + d.join(',') + ')', 'rgb(' + v.join(',') + ')', 'rgb(' + l.join(',') + ')'];
       }
     } catch (e) {}
     return ['#8f1fe0', '#b33cff', '#d47bff'];
   })();
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  /* PARTICLES (anti-slop pass 2026-11-17): the sparkle particles in the blackout and particlesBurst() are decoration only.
+     Off = plain black fade for page transitions, particlesBurst() does nothing. Set PARTICLES = true to restore. */
+  var PARTICLES = false;
   var active = null;
 
   function removeLayer() {
@@ -51,7 +51,7 @@
     var el = document.createElement('div'); el.id = 'ylyfx'; el.setAttribute('aria-hidden', 'true'); a.el = el;
     (document.body || root).appendChild(el);
     var cv = null, ctx = null, W = 0, H = 0, dpr = 1, P = [];
-    if (!reduce) {
+    if (!reduce && PARTICLES) {
       try {
         cv = document.createElement('canvas'); el.appendChild(cv); ctx = cv.getContext('2d');
         dpr = Math.min(window.devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
@@ -129,7 +129,7 @@
   }
 
   function particlesBurst(x, y, o) {
-    if (reduce) return;
+    if (reduce || !PARTICLES) return;
     o = o || {};
     try {
       var count = o.count || 14, spread = o.spread || 80, life = o.life || 700, host = document.createElement('div'), i;

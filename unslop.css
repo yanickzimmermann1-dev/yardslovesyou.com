@@ -1,0 +1,209 @@
+/* unslop.css – anti-slop pass (2026-11-17). Loaded LAST in every bundle (after refresh.css).
+   Overrides only. Rules: one opaque surface + 1px border for cards, one solid button style, no glass, no glows,
+   no gradient text, no decorative motion. The hand-drawn background (bg-clean-*.jpg) and the diamond-on-chain
+   illustration stay untouched. Accent colour per area (one token block below), surfaces neutral everywhere. */
+
+/* =====================================================================
+   0. Tokens: one accent per area. Used ONLY for primary buttons, eyebrows, active nav, links, focus rings,
+      prices and small markers. Legacy variables (--purple, --area-c, --ac …) follow it so old rules come along.
+   ===================================================================== */
+:root{--accent:#b68aff;--accent-ink:#180e23;--accent-hi:#c7a3ff;--accent-rgb:182,138,255;
+  --surface:#17131f;--surface-hi:#1c1727;--line-strong:#463a57;--glow:none}
+body[data-area="mix"]{--accent:#b68aff;--accent-ink:#180e23;--accent-hi:#c7a3ff;--accent-rgb:182,138,255}
+body[data-area="shop"]{--accent:#D4B46E;--accent-ink:#1c1608;--accent-hi:#e2c581;--accent-rgb:212,180,110}
+body[data-area="service"]{--accent:#e292da;--accent-ink:#2a0d27;--accent-hi:#eaa9e3;--accent-rgb:226,146,218}
+body[data-area="free"]{--accent:#5fe0d0;--accent-ink:#062a26;--accent-hi:#86e9dc;--accent-rgb:95,224,208}
+body[data-area="lab"]{--accent:#8fa2ff;--accent-ink:#0e1330;--accent-hi:#a9b8ff;--accent-rgb:143,162,255}
+/* legacy names → the accent (overrides the forced purple in refresh.css; same specificity, loaded later) */
+body[data-area],body[data-area] .nl-section,body[data-area] .free-band{
+  --purple:var(--accent);--pink:var(--accent-hi);
+  --area-c:var(--accent);--area-rgb:var(--accent-rgb);--area-line:var(--line);
+  --ac:var(--accent);--ac-rgb:var(--accent-rgb);--ac-ink:var(--accent-ink)}
+/* per-card tones (home area cards, next-step boxes) no longer recolour: they use the page accent */
+body .ar-mix,body .ar-shop,body .ar-lab,body .ep-mix,body .ep-shop,body .ep-free,body .ep-lab,body .hv-prod{--ep-rgb:var(--accent-rgb);--ep-c:var(--accent)}
+body [data-tone]{--t-rgb:var(--accent-rgb);--t-c:var(--accent);--t-c2:var(--accent);--t-ink:var(--accent-ink)}
+
+/* accent uses */
+.eyebrow,body .next-step .ns-box[data-tone] .eyebrow{color:var(--accent)}
+.hero h1 span:not(.hl):not(.hw),.hero.compact h1 span{color:var(--accent)}
+.hv-amt strong,.hv-go,.hv-link,.hv-extra a,.price,.p-price,.opt-price{color:var(--accent)}
+:focus-visible{outline-color:var(--accent)}
+.button:focus-visible,.outline:focus-visible,.gen-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.18)}
+
+/* =====================================================================
+   1. Hero: no wave line, no blur-in 3D words, no gradient/spotlight text, no tilt/parallax
+   ===================================================================== */
+.hx-wave{display:none!important}
+.hx-persp{perspective:none}
+.hx-tilt,.hero.hx .hx-h1,.hero.hx .hx-h1 .hl{transform:none!important;transform-style:flat;will-change:auto;scale:none}
+.hero.hx .hx-h1{letter-spacing:-.04em}
+.hero.hx .hx-h1 .hw{translate:none!important;animation:none!important;
+  background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;
+  color:var(--text)!important;-webkit-text-fill-color:currentColor}
+.hero.hx .hx-h1 .hl-b .hw{color:var(--accent)!important}
+/* one short fade for the whole hero text block instead of per-word / staggered entrances */
+.hx-cta>*,.hero.hx .hv-trust{animation:none!important}
+@media (prefers-reduced-motion:no-preference){
+  .hx-tilt{animation:usFade .22s ease-out both}
+  html.fx-arrived .hx-tilt{animation:none}
+}
+@keyframes usFade{from{opacity:0}}
+.hx-hear svg{animation:none!important}
+.hx-primary::after,.hx-ghost::after{content:none!important;display:none!important;animation:none!important}
+/* old generic hero entrance (styles.css heroIn: slide + blur) → none */
+html.js-motion .hero h1,html.js-motion .hero .eyebrow,html.js-motion .hero .muted,html.js-motion .hero .hero-actions{animation:none!important}
+
+/* =====================================================================
+   2. Buttons: ONE style. Primary = solid accent, dark text. Secondary = 1px outline. No glow, shine, pulse, lift.
+   ===================================================================== */
+.button,a.button,button.button,
+.hero.hx .hx-primary,
+body .next-step .ns-actions a.button[data-tone],
+.ar-card .button,.ar-shop .button,.ar-lab .button,.ar-mix .button,.free-band .button,.promo-band .button,.ab-actions .button.pink,
+.mc-go,.et-seg button.on,.et-play{
+  background:var(--accent)!important;color:var(--accent-ink)!important;
+  border:1px solid transparent;box-shadow:none!important;filter:none!important;
+  transform:none!important;translate:none!important;animation:none!important;text-shadow:none}
+.button:hover,a.button:hover,button.button:hover,
+.hero.hx .hx-primary:hover,
+body .next-step .ns-actions a.button[data-tone]:hover,
+.ar-card .button:hover,.free-band .button:hover,.promo-band .button:hover,.ab-actions .button.pink:hover,
+.mc-go:hover,.et-play:hover{background:var(--accent-hi)!important;box-shadow:none!important;filter:none!important;transform:none!important}
+.button:active,a.button:active,.mc-go:active{background:var(--accent)!important;box-shadow:none!important;transform:none!important}
+.button::after,.button:hover::after{content:none!important;display:none!important;animation:none!important}
+.button:disabled,.button[disabled],.button[aria-disabled="true"]{opacity:.55;background:var(--accent)!important}
+.hero.hx .hx-primary{padding:14px 26px}
+
+.outline,a.outline,button.outline,.hero.hx .hx-ghost,body .next-step .ns-actions a.outline[data-tone]{
+  background:transparent!important;color:var(--text)!important;border:1px solid var(--line-strong)!important;
+  box-shadow:none!important;transform:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+.outline:hover,a.outline:hover,button.outline:hover,.hero.hx .hx-ghost:hover,body .next-step .ns-actions a.outline[data-tone]:hover{
+  background:var(--surface-hi)!important;border-color:var(--accent)!important;box-shadow:none!important;transform:none!important}
+.outline:active{box-shadow:none!important}
+.ripple{display:none!important}
+/* small round accent markers (step numbers, play buttons): flat, no glow */
+.hv-n,.steps li::before,.et-n{background:var(--accent)!important;color:var(--accent-ink)!important;box-shadow:none!important}
+.play-btn,.bl-play,.ba-play{background:var(--accent)!important;color:var(--accent-ink);box-shadow:none!important;filter:none}
+.ba-play.playing,.bl-play.playing,.et-play.is-playing{animation:none!important}
+.ba-thumb,.et-ab-thumb,.et-ab[data-side="B"] .et-ab-thumb{background:var(--accent)!important;box-shadow:0 2px 6px rgba(0,0,0,.45)!important}
+
+/* =====================================================================
+   3. No glassmorphism: opaque surfaces + 1px border
+   ===================================================================== */
+*,*::before,*::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.topbar,.topbar.scrolled{background:#0d0b12!important;box-shadow:none!important;border-bottom:1px solid var(--line)}
+.topbar nav[aria-label="Main"],html body .topbar nav[aria-label="Main"],nav[aria-label="Main"]{background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+.topbar nav[aria-label="Main"] a:hover{background:var(--surface-hi)}
+nav[aria-label="Main"] a.active,nav[aria-label="Main"] a[aria-current="page"],
+.topbar nav[aria-label="Main"] a.active,.topbar nav[aria-label="Main"] a[aria-current="page"]{
+  color:var(--accent)!important;background:rgba(var(--accent-rgb),.12)!important;box-shadow:none!important}
+.nav-dd-panel{background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:0 12px 28px -12px rgba(0,0,0,.7)!important}
+.cart-btn,html body .cart-btn,.cart-btn.cart-float,.uis-btn{background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+.cart-btn:hover,.uis-btn:hover{border-color:var(--accent)!important;color:var(--accent)}
+.cart-btn.pulse{animation:none!important}
+.cat-scroll{background:var(--surface)!important;border:1px solid var(--line)!important}
+.pd-sticky{background:#0d0b12!important;border-top:1px solid var(--line)}
+.up-stepper{background:#0d0b12!important}
+.live-pill{background:#0f0c15!important}
+.qv-dlg{background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:0 30px 70px -24px rgba(0,0,0,.8)!important}
+.qv-stage{background:var(--bg)!important}
+.qv-eye,.sp-pill{background:#0d0b12!important;border:1px solid var(--line-strong)!important}
+.qv-eye:hover,.sp-pill:hover,.sp-layer.sp-open .sp-pill{background:var(--surface-hi)!important;border-color:var(--accent)!important}
+.sp-pad{background:var(--surface-hi)!important;border:1px solid var(--line-strong)!important}
+.sp-pad:hover{background:#262033!important}
+.sp-pad.sp-lit{background:rgba(var(--accent-rgb),.35)!important;box-shadow:none!important}
+.sp-ripple{display:none!important}
+#admin-toggle,#admin-panel{background:var(--surface)!important}
+/* scrims behind dialogs: plain dim, no blur */
+.cart-overlay,.qv-back,.gd-backdrop{background:rgba(7,5,11,.72)!important}
+.pub-dialog::backdrop{background:rgba(7,5,11,.72)}
+
+/* =====================================================================
+   4. Cards: one opaque surface, 1px border, at most a neutral shadow. No gradients, spotlights, coloured glows.
+   ===================================================================== */
+.track,.product,.service-card,.cp,.free-kit,.mc-mail,.bl-unlock,.yly-state,.sk-card,
+.ep-card,.ns-box,body .next-step .ns-box[data-tone],.ar-card,.free-band,.promo-band,.ba-card,.hv-price,.hv-best,
+.sp-row,.free-strip,.mc-card,.mc-rec,.fp-card-form,.fp-suggest,.upfx-card,.ab-quote,
+.card,.ui-card,.mc,.drop,.bl-cta,.about-box,.acc-card,.st-card,.tr-card,.upload-card,.hv-prod-box,.sr-card,.fp-card,.lab-mini,
+.hv-steps li,.steps li,.et-mode,.et-mode-daily,#et-setup,#et-game,#et-result,.et-cta,.gd-card.is-free,.gd-final,.gd-tip{
+  background:var(--surface)!important;border:1px solid var(--line)!important;
+  box-shadow:none!important;transform:none!important}
+.track:hover,.product:hover,.service-card:hover,.cp:hover,.ep-card:hover,.ep-card:focus-within,.ar-card:hover,.ar-card:focus-within,
+.hv-price:hover,.hv-price:focus-visible,#work .track:hover,.et-mode:hover,.mc-opt:hover,.fp-card:hover,.lab-mini a:hover{
+  border-color:var(--line-strong)!important;box-shadow:0 10px 24px -16px rgba(0,0,0,.8)!important;transform:none!important}
+.hv-price:hover,.hv-price:focus-visible{border-color:var(--accent)!important}
+/* "Best value" card: same surface, accent border only; the label is a functional flat tag */
+.hv-best{border-color:rgba(var(--accent-rgb),.6)!important}
+.hv-tag{background:var(--accent)!important;color:var(--accent-ink)!important;box-shadow:none}
+/* mouse-follow spotlights / radial glows inside cards */
+.product::after,.cp::after,.free-nav a::after,.ba-card::before,.mc-card::before,.et-mode-daily::before,
+.p3d-glow,.hs-spk,.hs-spk-host{display:none!important}
+/* inner pieces that were tinted gradients */
+.fp-thumb{background:var(--surface-hi)!important}
+.ar-cover{background:var(--surface-hi)!important;border:1px solid var(--line)!important}
+.ep-ico{background:var(--surface-hi)!important;border:1px solid var(--line)!important;color:var(--accent)}
+.mc-opt{background:var(--bg)!important;box-shadow:none!important;animation:none!important}
+.mc-opt.is-picked,.service-option input:checked + .opt{background:rgba(var(--accent-rgb),.10)!important;border-color:var(--accent)!important}
+.mc-result,.mc-flash{animation:none!important}
+.mc-dot.is-now,.upfx-fill,.tk li.done::before,.tk li.now::before{background:var(--accent)!important}
+.upfx-orb{display:none!important}
+.pf-avatar{background:var(--surface-hi)!important;color:var(--accent)}
+.about-avatar,.about-avatar:hover,.about-avatar:focus-visible{box-shadow:0 0 0 1px var(--line)!important}
+footer.site-footer .footer-social a:hover,footer.site-footer .footer-social a:focus-visible{box-shadow:none!important;border-color:var(--accent)}
+.cm-pill.active,.cm-tab.active{background:var(--accent)!important;color:var(--accent-ink)!important;box-shadow:none!important}
+.cm-note.ed:hover{box-shadow:0 0 0 1px #fff6 inset!important}
+.skeleton .sk::after,.sk::after{background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.05) 50%,transparent 80%)} /* loading shimmer stays (functional), neutral */
+
+/* =====================================================================
+   5. Eyebrows: plain small uppercase text, no icon in front
+   ===================================================================== */
+.area-ico,#product-root .eyebrow::before{display:none!important}
+.eyebrow{gap:0}
+/* one calm tracking; no animated letter-spacing reveal (reveal.js .rvl-eb) */
+.eyebrow,.rvl-eb,.rvl-eb.rvl-go{letter-spacing:1.6px!important}
+
+/* =====================================================================
+   6. Text effects: no gradient-clipped text anywhere
+   ===================================================================== */
+.et-hero h1 span,.et-res-score span{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;
+  color:var(--accent)!important;-webkit-text-fill-color:currentColor!important}
+
+/* =====================================================================
+   7. Motion noise off (decorative only). Functional motion stays: loading spinners, player state, menus, reveals.
+   ===================================================================== */
+.thread,.wavebar,.bg-blur,.fx-burst,.fx-layer,.fx-p{display:none!important}
+.live-dot,.et-streak.hot .et-flame,.gd-float,.tk li.now .dot,li.current.busy .up-step .n{animation:none!important}
+.tk li.now .dot{box-shadow:0 0 0 3px rgba(var(--accent-rgb),.25)!important}
+li.current .up-step .n{box-shadow:0 0 0 3px rgba(var(--accent-rgb),.2)!important}
+.et-prog.dots i.cur,.et-node.hot i,.et-pan-dot,.et-bars i,.pl-cell.acc,.pl-cell.on.now,.pl-cell.acc.now{box-shadow:none!important}
+.p3d-sheen{display:none!important}
+#ylyfx canvas{display:none}
+
+/* =====================================================================
+   8. Sections added by the restore pass (home #freeband, #lab, #newlab; topbar account link)
+   ===================================================================== */
+body .hv-lab,body .nl-section{--ep-rgb:var(--accent-rgb);--ep-c:var(--accent)}
+.ar-tools a{background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+.ar-tools a:hover,.ar-tools a:focus-visible{background:var(--surface-hi)!important;border-color:var(--line-strong)!important}
+.ar-ti{background:var(--surface-hi)!important;color:var(--accent)!important}
+.ar-count strong{color:var(--accent)}
+.ar-rate:focus-visible{outline-color:var(--accent)}
+.acct-link,.topbar>.acct-link{background:var(--surface)!important;border:1px solid var(--line)!important}
+.acct-link:hover{background:var(--surface-hi)!important;border-color:var(--accent)!important;color:var(--accent)}
+
+/* =====================================================================
+   9. Spacing: the "Next step" box sat ~260px below the last home section
+      (section margin 96 + main padding 80 + next-step margin 84). Now: main padding only.
+   ===================================================================== */
+main + .next-step,main.wrap + .next-step{margin-top:0}
+main.wrap>.home-section:last-child,
+main.wrap>.home-section:has(~ .home-section[hidden]):not(:has(~ .home-section:not([hidden]))){margin-bottom:0}
+
+/* =====================================================================
+   10. Small leftovers: hard-coded purple tints follow the accent, flat
+   ===================================================================== */
+.mc-ico{background:var(--surface-hi)!important;color:var(--accent)!important}
+.cart-upsell,.cart-hint,.promo-note{background:var(--surface-hi)!important}
+.cart-add-ic.in-cart,.cart-chip{background:rgba(var(--accent-rgb),.12)!important}
+.consent a,.hint a,.fineprint a,main p a:not(.button):not(.outline){color:var(--accent)}

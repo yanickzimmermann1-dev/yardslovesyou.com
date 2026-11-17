@@ -6,6 +6,10 @@
   function esc3d(t){ return String(t).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];}); }
   var D2R = Math.PI / 180;
   var REST_PITCH = -8, IDLE_V = 360 / 22, RESUME_MS = 1500;
+  /* CALM (anti-slop pass 2026-11-17): no decorative motion. Small cards render the static frontal cover,
+     large models sit still at their 3/4 angle (no idle spin, no mouse-follow) and only move while dragged / arrow keys.
+     Set CALM = false to restore the old floating behaviour. */
+  var CALM = true;
   var LIGHT = [-0.42, -0.5, 0.76], HALF = [-0.225, -0.27, 0.94];
   var NS = { supported: false };
 
@@ -74,7 +78,7 @@
     opts = opts || {};
     var noop = { destroy: function () {}, show: function () {}, hide: function () {}, ready: Promise.resolve(false) };
     var small = opts.size === "small";
-    var still = !!opts.still; /* static + frontal: no loop, no hover follow, no drag */
+    var still = !!opts.still || (CALM && opts.size === "small"); /* static + frontal: no loop, no hover follow, no drag */
     if (typeof model === "string") { try { model = JSON.parse(model); } catch (e) { model = null; } }
     if (model && model.type === "orb" && window.Orb3D) return window.Orb3D.mount(el, model, opts); /* orb3d.js */
     if (!el || !model || !model.front || (model.type !== "book" && model.type !== "card") || !NS.supported) {
@@ -84,6 +88,7 @@
     var isBook = model.type === "book";
     var reduce = false;
     try { reduce = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (e) {}
+    if (CALM) reduce = true;
 
     var cs = getComputedStyle(el);
     if (cs.position === "static") el.style.position = "relative";
@@ -112,7 +117,11 @@
     var hoverEl = small ? (el.closest && el.closest(".product")) || el : null;
 
     var inst = {
-      active: function () { return !still && S.ready && S.visible && !S.hidden && !S.destroyed && built && !document.hidden; },
+      active: function () {
+        if (still || !S.ready || !S.visible || S.hidden || S.destroyed || !built || document.hidden) return false;
+        /* CALM: only run frames while something actually moves (drag, keys, inertia, pitch settling) */
+        return !CALM || S.dragging || !!S.keyRemain || Math.abs(S.v) > 0.5 || Math.abs(S.pitch - REST_PITCH) > 0.05;
+      },
       tick: tick
     };
 

@@ -1,0 +1,20 @@
+/* logo-area.css – header wordmark (.topbar .brand) + footer wordmark (footerword.js) exactly as on the live site (HEAD).
+   Recreated ONLY the logo/wordmark rules from styles.css / footerword.css / area-theme.css / upload-pink.css
+   (area-theme.css and upload-pink.css are no longer loaded). Loaded right before unslop.css; unslop.css no longer touches these. */
+
+/* header: "LOVESYOU" in the area colour (HEAD: .brand span{color:var(--purple)}, --purple per area) */
+.brand span{color:#b68aff}
+body[data-area="shop"] .brand span{color:#D4B46E}
+body[data-area="free"] .brand span{color:#5fe0d0}
+body[data-area="lab"] .brand span{color:#8fa2ff}
+body[data-area="service"] .brand span{color:#e292da}
+
+/* footer wordmark: gradient text (footerword.css), re-based per area (area-theme.css / upload-pink.css) */
+.fw-p{background:linear-gradient(90deg,#e5a5ff,#b68aff 55%,#7a4fd6);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+body[data-area="shop"] .fw-word{--ah:41;--as:.542;--al:-14%}
+body[data-area="free"] .fw-word{--ah:174;--as:.675;--al:-14.6%}
+body[data-area="lab"] .fw-word{--ah:232;--as:1;--al:.9%}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .fw-y{color:hsl(var(--ah) calc(57.895% * var(--as)) calc(96.275% + var(--al)) / .16)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"]) .fw-p{background:linear-gradient(90deg,hsl(var(--ah) calc(100% * var(--as)) calc(82.353% + var(--al))),hsl(var(--ah) calc(100% * var(--as)) calc(77.059% + var(--al))) 55%,hsl(var(--ah) calc(62.212% * var(--as)) calc(57.451% + var(--al))))}
+body[data-area="service"] .fw-p{background:linear-gradient(90deg,#ecb3e6,#e292da 55%,#b0559f)}
+body:is([data-area="shop"],[data-area="free"],[data-area="lab"],[data-area="service"]) .fw-p{-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}

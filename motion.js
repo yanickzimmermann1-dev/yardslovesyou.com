@@ -11,6 +11,11 @@
     // CSS blendet .rv nur aus, wenn diese Klasse existiert
     root.classList.add('js-motion');
 
+    /* DECOR (anti-slop pass 2026-11-17): purely decorative effects are off – the wave progress bar at the top,
+       the background that blurs while scrolling and the mouse tilt/spotlight on cards.
+       Functional parts stay: scroll reveal, compact topbar, mobile tab bar placement. Set DECOR = true to restore. */
+    var DECOR = false;
+
     /* ---------- Schallwellen-Leiste oben (ersetzt den Scroll-Balken) ---------- */
     function makeWave(body) {
       var cv, ctx;
@@ -49,17 +54,13 @@
         ctx.stroke();
       }
       var _wc;
-      /* Header wavebar colour per area (service pink, shop brass, free teal, lab lilac-blue); null = default purple (home/legal). */
+      /* Wavebar colour follows the page accent (unslop.css: body[data-area] --accent-rgb); fallback = brand purple. */
       function waveCol() {
-        // One accent colour site-wide: always the default purple (no per-area tint)
-        _wc = null; return _wc;
+        if (_wc !== undefined) return _wc;
+        _wc = null;
         try {
-          var a = document.body && document.body.getAttribute('data-area');
-          if (a === 'service') _wc = { s: '#e292da', f: 'rgba(226,146,218,.18)', sh: '#c45cb9' };
-          else if (a === 'shop' || a === 'free' || a === 'lab') {
-            var v = getComputedStyle(document.body).getPropertyValue('--area-rgb').trim().split(',').map(Number);
-            if (v.length === 3 && v.every(isFinite)) _wc = { s: 'rgb(' + v.join(',') + ')', f: 'rgba(' + v.join(',') + ',.18)', sh: 'rgb(' + v.map(function (x) { return Math.round(x * 0.72); }).join(',') + ')' };
-          }
+          var v = getComputedStyle(document.body).getPropertyValue('--accent-rgb').trim().split(',').map(Number);
+          if (v.length === 3 && v.every(isFinite)) _wc = { s: 'rgb(' + v.join(',') + ')', f: 'rgba(' + v.join(',') + ',.18)', sh: 'rgb(' + v.map(function (x) { return Math.round(x * 0.72); }).join(',') + ')' };
         } catch (e) {}
         return _wc;
       }
@@ -114,13 +115,13 @@
 
       /* ---------- Hintergrund & Fortschritt ---------- */
       var bgBlur = null, bar = null, topbar = null;
-      try {
+      if (DECOR) try {
         bgBlur = doc.createElement('div');
         bgBlur.className = 'bg-blur';
         bgBlur.setAttribute('aria-hidden', 'true');
         body.insertBefore(bgBlur, body.firstChild);
       } catch (e) {}
-      bar = makeWave(body);
+      bar = DECOR ? makeWave(body) : null;
 
       /* ---------- Handy: Navigation aus der Kopfzeile lösen ----------
          iOS Safari zeigt eine fixierte Leiste innerhalb des (sticky) Headers
@@ -325,7 +326,7 @@
       /* ---------- Karten-Neigung + Lichtfleck (nur Maus) ---------- */
       var fine = false;
       try { fine = !!matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (e) {}
-      if (fine && !reduce) {
+      if (DECOR && fine && !reduce) {
         var CARD_SEL = '.product, .service-card:not([data-hs]), .cp, .free-nav a'; // Home-Services ([data-hs]) reagieren nur auf Scroll
         var active = null, lastEv = null, tiltQueued = false;
 

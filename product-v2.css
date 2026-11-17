@@ -5,8 +5,6 @@
 .gd-hero .pd-mixline{margin-top:6px}
 
 @media(max-width:760px){
-  /* crumbs already link back to the shop: drop the extra back link so the buy row moves up */
-  #product-root .crumbs ~ .back-link{display:none}
   #product-root .product-detail{grid-template-columns:minmax(0,1fr);padding-top:14px;gap:18px}
   /* smaller cover so title, price and Buy now fit on the first screen */
   #product-root .pd-main{width:min(100%,62vw);margin:0 auto}

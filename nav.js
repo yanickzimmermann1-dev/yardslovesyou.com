@@ -106,3 +106,59 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   } catch (e) {}
 })();
+
+/* Konto-Link in der Kopfzeile (.acct-link[data-acct], steht als normales "Sign in" im HTML, funktioniert ohne JS).
+   - ausgeloggt: "Sign in" -> account.html?next=<diese Seite>
+   - eingeloggt: "@handle" -> profile.html?u=handle (ohne Profil: "Account" -> account.html)
+   Erkennung: zuerst sofort ueber die Supabase-Sitzung im localStorage (+ zwischengespeicherter Handle),
+   danach verbindlich ueber window.YLY.me(), wo community-core.js geladen ist. Fehler bleiben still. */
+(function () {
+  'use strict';
+  try {
+    var a = document.querySelector('.topbar [data-acct]');
+    if (!a) return;
+    var base = (a.getAttribute('href') || 'account.html').split('?')[0];
+    var dir = base.replace(/account\.html$/, '');
+    var label = a.querySelector('.acct-t');
+    var HKEY = 'yly_acct_handle_v1';
+    var onAcct = /\/account\.html$/.test(location.pathname);
+    function show(state, handle) {
+      var text, href, title;
+      if (state === 'in' && handle) { text = '@' + handle; href = dir + 'profile.html?u=' + encodeURIComponent(handle); title = 'Your profile'; }
+      else if (state === 'in') { text = 'Account'; href = base; title = 'Your account'; }
+      else { text = 'Sign in'; href = onAcct ? base : base + '?next=' + encodeURIComponent(location.href); title = 'Sign in or create an account'; }
+      if (label) label.textContent = text;
+      a.setAttribute('href', href);
+      a.setAttribute('title', title);
+      a.classList.toggle('is-in', state === 'in');
+      if (onAcct || (state === 'in' && /\/profile\.html$/.test(location.pathname) && handle && location.search.indexOf('u=' + encodeURIComponent(handle)) !== -1)) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    }
+    function store(h) { try { if (h) localStorage.setItem(HKEY, h); else localStorage.removeItem(HKEY); } catch (e) {} }
+    // 1) schnelle Vermutung aus dem localStorage (Supabase-Standard-Schluessel sb-<projekt>-auth-token)
+    var guess = false, cachedHandle = null;
+    try {
+      // Rechtsseiten laden config.js nicht: dann den Schluessel im localStorage suchen
+      var url = window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL, k = '';
+      if (url) k = 'sb-' + new URL(url).hostname.split('.')[0] + '-auth-token';
+      else for (var i = 0; i < localStorage.length; i++) { var n = localStorage.key(i); if (/^sb-[a-z0-9]+-auth-token$/.test(n)) { k = n; break; } }
+      var raw = k && localStorage.getItem(k);
+      var sess = raw ? JSON.parse(raw) : null;
+      guess = !!(sess && (sess.user || sess.access_token || (sess.currentSession && sess.currentSession.user)));
+      cachedHandle = localStorage.getItem(HKEY);
+    } catch (e) {}
+    if (!guess) store(null);
+    show(guess ? 'in' : 'out', guess ? cachedHandle : null);
+    // 2) verbindlich ueber community-core.js (nur wo geladen)
+    function confirm() {
+      var Y = window.YLY;
+      if (!Y || typeof Y.me !== 'function') return;
+      Y.me().then(function (m) {
+        if (!m) { store(null); show('out'); return; }
+        var h = m.profile && m.profile.handle;
+        store(h || null); show('in', h || null);
+      }).catch(function () {});
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', confirm); else confirm();
+  } catch (e) {}
+})();

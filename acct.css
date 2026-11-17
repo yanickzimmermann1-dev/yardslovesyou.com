@@ -1,0 +1,28 @@
+/* acct.css - account link in the top bar (.acct-link, nav.js fills in "Sign in" / "@handle").
+   Desktop: compact pill (icon + text) just left of the cart button. Phone: round icon button next to the sound toggle. */
+.acct-link{position:relative;flex:none;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px 0 13px;border-radius:999px;
+  color:var(--muted,#c4bccf);font:500 13.5px 'DM Sans',system-ui,sans-serif;white-space:nowrap;text-decoration:none;
+  background:#1a1424;border:1px solid rgba(255,255,255,.22);transition:border-color .2s,color .2s,background .2s}
+.acct-link svg{display:block;width:19px;height:19px;flex:none}
+.acct-link .acct-t{max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.acct-link:hover{color:var(--purple,#b68aff);border-color:var(--purple,#b68aff);background:#241c31}
+.acct-link:focus-visible{outline:2px solid var(--purple,#b68aff);outline-offset:2px}
+.acct-link.is-in{color:var(--text,#f3edff)}
+.acct-link.is-in svg,.acct-link[aria-current="page"]{color:var(--purple,#b68aff)}
+
+/* Desktop: sit close to the cart button (cart + sound toggle are absolutely placed in the 98px reserved by .topbar::after) */
+@media(min-width:721px){
+  .topbar>.acct-link{margin-left:-14px;margin-right:-18px}
+}
+/* Narrow desktop: icon only, same size as the cart button */
+@media(min-width:721px) and (max-width:1100px){
+  .topbar>.acct-link{width:44px;padding:0;justify-content:center;margin-left:-6px;margin-right:-6px}
+  .topbar>.acct-link .acct-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+/* Phone: round icon button, left of the sound toggle (the cart floats above the tab bar) */
+@media(max-width:720px){
+  .topbar>.acct-link{width:44px;height:44px;padding:0;justify-content:center;margin-left:auto;background:rgba(22,17,32,.62);border-color:#ffffff1a}
+  .topbar>.acct-link .acct-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .topbar>.acct-link~.uis-btn{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){.acct-link{transition:none}}
