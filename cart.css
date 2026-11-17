@@ -92,6 +92,10 @@ html.cart-lock{overflow:hidden}
 .cart-upsell{margin-top:20px;padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(182,138,255,.07)}
 .cart-upsell h3{margin:0 0 4px;font:600 15px 'Space Grotesk',sans-serif}
 .cart-upsell > p{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.5}
+.cart-hint{margin-top:16px;padding:16px;border:1px solid var(--purple);border-radius:18px;background:rgba(182,138,255,.12)}
+.cart-hint h3{margin:0 0 4px;font:600 15px 'Space Grotesk',sans-serif}
+.cart-hint > p{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.5}
+.cart-hint .outline{padding:8px 14px;min-height:36px;font-size:12.5px}
 .cart-mini{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 0}
 .cart-mini + .cart-mini{border-top:1px solid #ffffff10}
 .cart-mini .cart-thumb{width:44px;height:44px;border-radius:10px}

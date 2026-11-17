@@ -8,6 +8,8 @@ var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
   'use strict';
   var KEY = 'yly_cart', PKEY = 'yly_promo', PSRC = 'yly_promo_src', BUNDLE = 15, MAX = 10;
   var ESSENTIALS = '11f558ea-9332-4bf3-ad2f-d8327c489445', URL_PERCENT = 15;
+  var GUIDES = ['0dfc444f-fd2e-4d1f-9196-0d438769641f', '36f3f7cd-3167-496a-a3b4-f4c036b58e0e', '5c25a310-80f3-4685-8103-7f7f146cf347', '697e8ff1-4278-46e7-bfad-63390932b7e7', '80dbc815-6313-41bf-8185-aeb150508d6c', 'e79a3d0a-8a26-4876-80cb-9718c85e0c50'];
+  var GUIDE_BUNDLE = 'c2acae2f-390c-4af5-b7b9-1023c8e994fa', HINT_FROM = 3;
   var PROMO_ERR = 'This code is invalid or expired.';
   var cfg = window.APP_CONFIG || {};
   var reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -87,7 +89,7 @@ var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
   })();
 
   /* ---------- Elemente ---------- */
-  var btn, badge, root, drawer, listEl, emptyEl, upsellEl, footEl, promoEl, titleSmall, toastEl, toastTimer, lastFocus = null, built = false, busy = false;
+  var btn, badge, root, drawer, listEl, emptyEl, upsellEl, hintEl, footEl, promoEl, titleSmall, toastEl, toastTimer, lastFocus = null, built = false, busy = false;
   var products = null, productsP = null, reconciled = false, closeTimer = null;
 
   function mountBtn() {
@@ -115,7 +117,7 @@ var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
       '<div class="cart-overlay" data-cart-close></div>' +
       '<aside class="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" tabindex="-1">' +
         '<div class="cart-head"><h2 id="cart-title">Your cart<small></small></h2><button type="button" class="cart-x" data-cart-close aria-label="Close cart">' + I.x + '</button></div>' +
-        '<div class="cart-body"><ul class="cart-list"></ul><div class="cart-empty" hidden>' + I.cart + '<p>Your cart is empty.<br>Add a product and it will show up here.</p><a class="outline" href="shop.html">Browse the shop</a></div><section class="cart-upsell" hidden></section></div>' +
+        '<div class="cart-body"><ul class="cart-list"></ul><div class="cart-empty" hidden>' + I.cart + '<p>Your cart is empty.<br>Add a product and it will show up here.</p><a class="outline" href="shop.html">Browse the shop</a></div><section class="cart-upsell" hidden></section><section class="cart-hint" hidden></section></div>' +
         '<div class="cart-promo" hidden></div>' +
         '<div class="cart-foot" hidden></div>' +
       '</aside>';
@@ -124,6 +126,7 @@ var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
     listEl = root.querySelector('.cart-list');
     emptyEl = root.querySelector('.cart-empty');
     upsellEl = root.querySelector('.cart-upsell');
+    hintEl = root.querySelector('.cart-hint');
     footEl = root.querySelector('.cart-foot');
     promoEl = root.querySelector('.cart-promo');
     titleSmall = root.querySelector('.cart-head small');
@@ -133,6 +136,8 @@ var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
       if (t.closest && t.closest('[data-cart-close]')) { close(); return; }
       var rm = t.closest && t.closest('[data-cart-rm]');
       if (rm) { remove(rm.getAttribute('data-cart-rm')); return; }
+      var sw = t.closest && t.closest('[data-cart-swap]');
+      if (sw) { swapToBundle(sw); return; }
       var up = t.closest && t.closest('[data-cart-up]');
       if (up && products) {
         var p = products.filter(function (x) { return x.id === up.getAttribute('data-cart-up'); })[0];
@@ -198,6 +203,7 @@ var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
       var cb = footEl.querySelector('.cart-checkout'); if (busy) cb.disabled = true;
     } else { footEl.innerHTML = ''; }
     renderUpsell();
+    renderHint();
   }
 
   function applyPromoInput() {
@@ -242,6 +248,41 @@ var TRUST_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
         return '<div class="cart-mini">' + thumb(p) + '<div><strong>' + esc(p.title) + '</strong><span class="p">' + money(p.price_cents, p.currency) + '</span></div>' +
           '<button type="button" class="outline" data-cart-up="' + esc(p.id) + '" aria-label="Add ' + esc(p.title) + ' to cart">Add</button></div>';
       }).join('');
+  }
+
+  /* Hinweis ab 3 Guides: "fuer CHF X mehr alle 6" (Bundle-Preis minus aktueller Guide-Anteil im Warenkorb) */
+  function guideState() {
+    if (!products || has(GUIDE_BUNDLE)) return null;
+    var b = products.filter(function (p) { return p.id === GUIDE_BUNDLE; })[0];
+    if (!b) return null;
+    var c = calc(), n = 0, cur = 0;
+    c.rows.forEach(function (r) { if (GUIDES.indexOf(r.item.id) > -1 && r.item.currency === b.currency) { n++; cur += r.unit; } });
+    if (n < HINT_FROM || n >= GUIDES.length + 1) return null;
+    return { bundle: b, n: n, diff: b.price_cents - cur };
+  }
+  function renderHint() {
+    if (!built) return;
+    var g = guideState();
+    if (!g) { hintEl.hidden = true; hintEl.innerHTML = ''; return; }
+    var b = g.bundle, rest = GUIDES.length - g.n;
+    var head, txt;
+    if (g.diff > 0) {
+      head = 'Get all ' + GUIDES.length + ' guides for ' + money(g.diff, b.currency) + ' more';
+      txt = 'The Short Guides Bundle (' + money(b.price_cents, b.currency) + ') replaces your ' + g.n + ' guides and adds ' + rest + ' more.';
+    } else {
+      head = 'Get all ' + GUIDES.length + ' guides for ' + money(b.price_cents, b.currency);
+      txt = 'That is ' + (g.diff < 0 ? money(-g.diff, b.currency) + ' less than your ' + g.n + ' guides' : 'the same price as your ' + g.n + ' guides') + (rest ? ', plus ' + rest + ' more.' : '.');
+    }
+    hintEl.hidden = false;
+    hintEl.innerHTML = '<h3>' + esc(head) + '</h3><p>' + esc(txt) + '</p><button type="button" class="outline" data-cart-swap>Switch to the bundle</button>';
+  }
+  function swapToBundle(from) {
+    var g = guideState(); if (!g) return;
+    items = items.filter(function (i) { return GUIDES.indexOf(i.id) === -1; });
+    save();
+    track('cart-bundle-swap', { count: g.n });
+    add(g.bundle, from);
+    if (!drawer.contains(document.activeElement)) drawer.focus({ preventScroll: true });
   }
 
   /* ---------- Produkte (Upsell + Abgleich) ---------- */
