@@ -86,14 +86,13 @@
     for (var oi = 0; oi < S.P.length; oi++) order.push(oi);
     function draw(t) {
       if (!W) return;
-      var cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.47 / S.ext, f = R * 3.2; /* alles passt mit Rand in die Flaeche, nichts wird abgeschnitten */
+      var cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.44 / S.ext, f = R * 3.2; /* alles passt mit Rand in die Flaeche, nichts wird abgeschnitten */
       var cyw = Math.cos(st.yaw), syw = Math.sin(st.yaw), cp = Math.cos(st.pitch), sp = Math.sin(st.pitch);
       var breathe = 1 + Math.sin(t / 1900) * 0.03;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.8);
-      g.addColorStop(0, "rgba(" + S.glow + ",.24)"); g.addColorStop(0.55, "rgba(" + S.glow + ",.08)"); g.addColorStop(1, "rgba(" + S.glow + ",0)");
-      ctx.globalCompositeOperation = "source-over"; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "source-over"; /* kein Hintergrund, kein Leuchten: alles ausser den Teilchen bleibt transparent */
+      var lim = Math.min(W, H) * 0.485; /* harte Grenze: nichts reicht bis an den Rand */
       var i, p, x, y, z, x1, z1, y2, z2, k, s, a;
       // Wolken: weiche Teilchen, hinten nach vorn (echte Tiefe, keine Ueberbelichtung)
       var C = S.C, pc = [], j, c2, ang2, ca, sa, pulse;
@@ -121,7 +120,9 @@
         k = f / (f + z2); s = p[3] * R * 0.1 * k;
         a = clamp((0.42 + 0.5 * p[6]) * (0.45 + 0.55 * (z2 / R + 1) / 2) * (reduce ? 1 : 0.86 + 0.14 * Math.sin(t / 520 + p[5] * 3)), 0.1, 0.95);
         ctx.globalAlpha = a;
-        ctx.drawImage(S.sprites[p[4]], cx + xs[q] * k - s, cy + ys[q] * k - s, s * 2, s * 2);
+        var px = xs[q] * k, py = ys[q] * k, dd = Math.sqrt(px * px + py * py), mx = lim - s, soft = mx * 0.86;
+        if (dd > soft) { var d2 = Math.min(soft + (dd - soft) * 0.3, mx); px *= d2 / dd; py *= d2 / dd; }
+        ctx.drawImage(S.sprites[p[4]], cx + px - s, cy + py - s, s * 2, s * 2);
       }
       // MIDI-Noten: kurze Striche, die tangential auf Ringen kreisen
       if (S.R.length) {
@@ -132,7 +133,9 @@
           var xr = rx * Math.cos(roll) - ry * Math.sin(roll), yr = rx * Math.sin(roll) + ry * Math.cos(roll);
           var a1 = xr * cyw + rz * syw, b1 = -xr * syw + rz * cyw;
           var a2 = yr * cp - b1 * sp, b2 = yr * sp + b1 * cp, kk = f / (f + b2);
-          return [cx + a1 * kk, cy + a2 * kk, b2, kk];
+          var sx = a1 * kk, sy = a2 * kk, d3 = Math.sqrt(sx * sx + sy * sy), m3 = lim - 3;
+          if (d3 > m3) { sx *= m3 / d3; sy *= m3 / d3; }
+          return [cx + sx, cy + sy, b2, kk];
         };
         for (i = 0; i < S.R.length; i++) {
           p = S.R[i];
