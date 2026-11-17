@@ -41,6 +41,16 @@ document.addEventListener("DOMContentLoaded", () => {
       try { sessionStorage.removeItem("yly_promo"); sessionStorage.removeItem("yly_promo_src"); } catch (_) {}
       const items = Array.isArray(data.items) ? data.items : [];
       const multi = items.length > 1;
+      // Upgrade-Angebot aufs Bundle (kommt nur von der Function, wenn die Bestellung berechtigt ist)
+      const up = data.upgrade && data.upgrade.bundle_id ? data.upgrade : null;
+      const money = c => (c / 100).toLocaleString("de-CH", { style: "currency", currency: String(up?.currency || data.currency || "chf").toUpperCase() });
+      const upgradeHtml = up ? `
+        <div class="tr-card" id="upgrade-card">
+          <h2>Get all 6 guides</h2>
+          <p class="muted" style="margin:0">You own ${esc(up.owned)} of the 6 short guides. Get the other ${esc(up.rest)} in ${esc(up.title)} for ${esc(money(up.pay_cents))}. Your ${esc(money(up.credit_cents))} is already counted.</p>
+          <div class="st-actions"><button class="button" id="upgrade-btn" type="button">Upgrade for ${esc(money(up.pay_cents))}</button></div>
+          <p id="upgrade-status" class="status" role="status"></p>
+        </div>` : "";
       const dlIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>';
       box.innerHTML = `
         <p class="eyebrow">ORDER CONFIRMED</p>
@@ -65,7 +75,23 @@ document.addEventListener("DOMContentLoaded", () => {
         <p id="download-status" class="status" role="status"></p>
         <p class="muted">A confirmation with your download link has been sent to <strong style="color:var(--text)">${esc(data.email)}</strong>.<br>
         You can come back to this page any time to download your files again.</p>
+        ${upgradeHtml}
         <a class="outline" href="shop.html">Back to shop</a>`;
+
+      if (up) {
+        const ub = $("upgrade-btn"), us = $("upgrade-status");
+        ub.onclick = async () => {
+          ub.disabled = true;
+          us.textContent = "Opening checkout…";
+          const r = await db.functions.invoke("create-checkout", { body: { items: [up.bundle_id], upgrade_from: sessionId } }).catch(e => ({ data: null, error: e }));
+          if (r.error || !r.data?.url || !/^https:\/\//i.test(String(r.data.url))) {
+            ub.disabled = false;
+            us.textContent = "The upgrade is not available right now. Please try again.";
+            return;
+          }
+          location.href = r.data.url;
+        };
+      }
 
       const download = async (btn, productId) => {
         const status = $("download-status");
