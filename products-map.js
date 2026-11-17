@@ -11,6 +11,7 @@
   "80dbc815-6313-41bf-8185-aeb150508d6c": "guide-trap-mixing-cheat-sheets",
   "c2acae2f-390c-4af5-b7b9-1023c8e994fa": "short-guides-bundle",
   "c9ab4f32-e7a1-4ae0-8e93-a421b3225c15": "the-last-yards",
+  "e51c2139-1190-40c9-bed0-af89cb5cb240": "clouds-vol-01",
   "e79a3d0a-8a26-4876-80cb-9718c85e0c50": "guide-vocal-chain-recipes"
 };
   window.YLYProducts = {
