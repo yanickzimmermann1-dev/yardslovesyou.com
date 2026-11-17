@@ -76,6 +76,7 @@
     var small = opts.size === "small";
     var still = !!opts.still; /* static + frontal: no loop, no hover follow, no drag */
     if (typeof model === "string") { try { model = JSON.parse(model); } catch (e) { model = null; } }
+    if (model && model.type === "orb" && window.Orb3D) return window.Orb3D.mount(el, model, opts); /* orb3d.js */
     if (!el || !model || !model.front || (model.type !== "book" && model.type !== "card") || !NS.supported) {
       if (opts.onfail) try { opts.onfail(); } catch (e) {}
       return noop;

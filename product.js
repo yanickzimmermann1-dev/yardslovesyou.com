@@ -76,7 +76,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
   // 3D-Modell (Spalte model3d, jsonb): nur gültig mit Typ + Front-Textur
   const parseModel=m=>{
     if(typeof m==="string"){ try{ m=JSON.parse(m); }catch(_){ m=null; } }
-    return m&&typeof m==="object"&&m.front&&(m.type==="book"||m.type==="card")?m:null;
+    return m&&typeof m==="object"&&((m.front&&(m.type==="book"||m.type==="card"))||m.type==="orb")?m:null;
   };
   const CUBE='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5"/><path d="M12 12v9"/></svg>';
 

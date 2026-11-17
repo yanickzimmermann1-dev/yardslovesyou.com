@@ -57,7 +57,7 @@
   function model(p) {
     var m = p && p.model3d;
     if (typeof m === 'string') { try { m = JSON.parse(m); } catch (e) { m = null; } }
-    return m && typeof m === 'object' && m.front && (m.type === 'book' || m.type === 'card') ? m : null;
+    return m && typeof m === 'object' && ((m.front && (m.type === 'book' || m.type === 'card')) || m.type === 'orb') ? m : null;
   }
   function imgUrl(u) {
     var r = /^https:\/\//i.test(u) ? u : db.storage.from('coverart-products').getPublicUrl(u).data.publicUrl;

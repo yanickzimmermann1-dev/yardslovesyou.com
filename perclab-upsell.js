@@ -13,7 +13,7 @@
   const model = () => {
     let m = p && p.model3d;
     if (typeof m === "string") { try { m = JSON.parse(m); } catch (_) { m = null; } }
-    return m && typeof m === "object" && m.front && (m.type === "book" || m.type === "card") ? m : null;
+    return m && typeof m === "object" && ((m.front && (m.type === "book" || m.type === "card")) || m.type === "orb") ? m : null;
   };
   const dismissed = () => { try { const t = +localStorage.getItem(DISMISS); return t && Date.now() - t < WEEK; } catch (_) { return false; } };
   const shownThisSession = () => { try { return sessionStorage.getItem(SHOWN) === "1"; } catch (_) { return false; } };
