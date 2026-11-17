@@ -10,7 +10,7 @@
   var root = document.getElementById('product-root');
   if (!root || !window.fetch || !cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY || String(cfg.SUPABASE_URL).indexOf('https://') !== 0) return;
 
-  (function () { if (!document.querySelector('link[href^="crosssell.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'crosssell.css?v=20261117a'; document.head.appendChild(l); } })();
+  (function () { if (!document.querySelector('link[href^="crosssell.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'crosssell.css?v=20261117b'; document.head.appendChild(l); } })();
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function money(cents, cur) {
@@ -75,7 +75,7 @@
     if (!cards.length && !callout) return;
 
     var sec = document.getElementById('cross-sell');
-    if (!sec) { sec = document.createElement('section'); sec.id = 'cross-sell'; sec.className = 'wrap xs'; sec.setAttribute('aria-labelledby', 'xs-h'); root.parentNode.insertBefore(sec, root.nextSibling); }
+    if (!sec) { sec = document.createElement('section'); sec.id = 'cross-sell'; sec.className = 'wrap xs'; sec.setAttribute('aria-labelledby', 'xs-h'); var anchor = document.getElementById('sample-gate') || root; anchor.parentNode.insertBefore(sec, anchor.nextSibling); }
     sec.innerHTML = '<h2 id="xs-h">' + esc(title) + '</h2>' + (intro ? '<p class="muted xs-intro">' + esc(intro) + '</p>' : '') + callout +
       (cards.length ? '<div class="xs-grid">' + cards.map(card).join('') + '</div>' : '');
     try { if (window.ylyTrack) window.ylyTrack('crosssell-view', { id: id }); } catch (e) {}
