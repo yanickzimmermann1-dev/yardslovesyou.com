@@ -36,22 +36,25 @@
     for (var i = 0; i < puffs; i++) { // Wolkenkerne gleichmaessig auf einer Kugel (Fibonacci)
       var y = 1 - (i + 0.5) * 2 / puffs, rad = Math.sqrt(1 - y * y), th = i * 2.399963 + r() * 0.4;
       var k = 0.5 + r() * 0.2;
-      centers.push([Math.cos(th) * rad * k, y * k, Math.sin(th) * rad * k, 0.16 + r() * 0.12]);
+      centers.push([Math.cos(th) * rad * k, y * k, Math.sin(th) * rad * k, 0.16 + r() * 0.12,
+        0.05 + r() * 0.08, 0.05 + r() * 0.08, 0.05 + r() * 0.08,            /* Schwebe-Amplitude x,y,z */
+        0.00035 + r() * 0.00055, 0.00035 + r() * 0.00055, 0.00035 + r() * 0.00055, /* Frequenzen (rad/ms) */
+        r() * TAU, 0.6 + r() * 0.8]);                                       /* Phase, Wirbel-Tempo */
     }
     var P = []; // x,y,z (Einheitskugel), Groesse, Farbindex, Phase, Helligkeit
     for (var j = 0; j < n; j++) {
-      var x, yy, z, size, haze = r() < 0.2;
+      var x, yy, z, size, pf = -1, haze = r() < 0.2;
       if (haze) { var d = [gauss(r), gauss(r), gauss(r)], l = Math.hypot(d[0], d[1], d[2]) || 1, rr = 0.7 + r() * 0.55; x = d[0] / l * rr; yy = d[1] / l * rr; z = d[2] / l * rr; size = 0.35 + r() * 0.5; }
-      else { var c = centers[Math.floor(r() * puffs)]; x = c[0] + gauss(r) * c[3]; yy = c[1] + gauss(r) * c[3]; z = c[2] + gauss(r) * c[3]; size = 0.6 + r() * 1.1; }
-      var ci = clamp(Math.floor(((yy + 1) / 2 + (r() - 0.5) * 0.5) * pal.length), 0, pal.length - 1);
-      P.push([x, yy, z, size, ci, r() * TAU, 0.35 + r() * 0.65]);
+      else { pf = Math.floor(r() * puffs); var c = centers[pf]; x = gauss(r) * c[3]; yy = gauss(r) * c[3]; z = gauss(r) * c[3]; size = 0.6 + r() * 1.1; }
+      var ci = clamp(Math.floor((((pf >= 0 ? centers[pf][1] + yy : yy) + 1) / 2 + (r() - 0.5) * 0.5) * pal.length), 0, pal.length - 1);
+      P.push([x, yy, z, size, ci, r() * TAU, 0.35 + r() * 0.65, pf]);
     }
     var rings = Math.round(num(model.rings, 2, 0, 4)), notes = Math.round(num(model.notes, 40, 8, 80) * (small ? 0.6 : 1)), R = [];
     for (var q = 0; q < rings; q++) {
       var rr2 = 1.12 + q * 0.2, tilt = (q % 2 ? 1 : -1) * (0.35 + q * 0.18), roll = q * 1.1 + r();
       for (var m = 0; m < notes; m++) R.push([m / notes * TAU + r() * 0.05, rr2, tilt, roll, 0.06 + r() * 0.16, 0.5 + r() * 0.5]);
     }
-    return { P: P, R: R, pal: pal, sprites: pal.map(function (h) { return sprite(rgbOf(h)); }, null), ring: hex(model.ring_color, "#ffffff"), glow: /^\d{1,3},\d{1,3},\d{1,3}$/.test(String(model.glow)) ? String(model.glow) : "157,123,255", spin: num(model.spin, 1, 0, 3) };
+    return { P: P, C: centers, R: R, pal: pal, sprites: pal.map(function (h) { return sprite(rgbOf(h)); }, null), ring: hex(model.ring_color, "#ffffff"), glow: /^\d{1,3},\d{1,3},\d{1,3}$/.test(String(model.glow)) ? String(model.glow) : "157,123,255", spin: num(model.spin, 1, 0, 3) };
   }
 
   function mount(el, model, opts) {
@@ -84,7 +87,7 @@
       if (!W) return;
       var cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.34, f = R * 3.2;
       var cyw = Math.cos(st.yaw), syw = Math.sin(st.yaw), cp = Math.cos(st.pitch), sp = Math.sin(st.pitch);
-      var breathe = 1 + Math.sin(t / 1900) * 0.018;
+      var breathe = 1 + Math.sin(t / 1900) * 0.03;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
       var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.8);
@@ -92,10 +95,20 @@
       ctx.globalCompositeOperation = "source-over"; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
       var i, p, x, y, z, x1, z1, y2, z2, k, s, a;
       // Wolken: weiche Teilchen, hinten nach vorn (echte Tiefe, keine Ueberbelichtung)
+      var C = S.C, pc = [], j, c2, ang2, ca, sa, pulse;
+      for (j = 0; j < C.length; j++) { // Wolkenballen schweben, kreisen und atmen (lebendige Materie)
+        c2 = C[j];
+        var bx = c2[0] + c2[4] * Math.sin(t * c2[7] + c2[10]), by = c2[1] + c2[5] * Math.sin(t * c2[8] + c2[10] * 1.7), bz = c2[2] + c2[6] * Math.sin(t * c2[9] + c2[10] * 2.3);
+        ang2 = t * 0.00016 * c2[11] * (S.spin || 1) * (reduce ? 0 : 1); ca = Math.cos(ang2); sa = Math.sin(ang2);
+        pc.push([bx * ca + bz * sa, by, -bx * sa + bz * ca, 1 + 0.13 * Math.sin(t / 820 + c2[10]), ca, sa]);
+      }
+      var hang = t * 0.00011 * (reduce ? 0 : 1), hc = Math.cos(hang), hs = Math.sin(hang);
       for (i = 0; i < S.P.length; i++) {
         p = S.P[i];
-        var wob = Math.sin(t / 1400 + p[5]) * 0.018;
-        x = (p[0] + wob) * R * breathe; y = (p[1] + wob * 0.6) * R * breathe; z = (p[2] - wob) * R * breathe;
+        var wob = Math.sin(t / 1100 + p[5]) * 0.024 * (reduce ? 0 : 1);
+        if (p[7] >= 0) { var q2 = pc[p[7]]; x = q2[0] + (p[0] * q2[4] + p[2] * q2[5]) * q2[3]; y = q2[1] + p[1] * q2[3]; z = q2[2] + (-p[0] * q2[5] + p[2] * q2[4]) * q2[3]; }
+        else { x = p[0] * hc + p[2] * hs; y = p[1]; z = -p[0] * hs + p[2] * hc; }
+        x = (x + wob) * R * breathe; y = (y + wob * 0.6) * R * breathe; z = (z - wob) * R * breathe;
         x1 = x * cyw + z * syw; z1 = -x * syw + z * cyw;
         y2 = y * cp - z1 * sp; z2 = y * sp + z1 * cp;
         xs[i] = x1; ys[i] = y2; zs[i] = z2;
@@ -104,7 +117,7 @@
       for (i = 0; i < order.length; i++) {
         var q = order[i]; p = S.P[q]; z2 = zs[q];
         k = f / (f + z2); s = p[3] * R * 0.1 * k;
-        a = clamp((0.42 + 0.5 * p[6]) * (0.45 + 0.55 * (z2 / R + 1) / 2), 0.1, 0.95);
+        a = clamp((0.42 + 0.5 * p[6]) * (0.45 + 0.55 * (z2 / R + 1) / 2) * (reduce ? 1 : 0.86 + 0.14 * Math.sin(t / 520 + p[5] * 3)), 0.1, 0.95);
         ctx.globalAlpha = a;
         ctx.drawImage(S.sprites[p[4]], cx + xs[q] * k - s, cy + ys[q] * k - s, s * 2, s * 2);
       }
@@ -121,7 +134,7 @@
         };
         for (i = 0; i < S.R.length; i++) {
           p = S.R[i];
-          var ang = p[0] + t / 9000 * (1 + p[1] * 0.2) * (S.spin || 1), dl = p[4] * 0.5 / p[1];
+          var ang = p[0] + t / 9000 * (1 + p[1] * 0.2) * (S.spin || 1), dl = p[4] * 0.5 / p[1] * (reduce ? 1 : 1 + 0.4 * Math.sin(t / 700 + p[0] * 3));
           var A = pos(ang - dl, p[1], p[2], p[3]), B = pos(ang + dl, p[1], p[2], p[3]);
           ctx.globalAlpha = clamp(0.12 + 0.5 * p[5] * (A[2] / R + 1.4) / 2.4, 0.06, 0.75);
           ctx.lineWidth = Math.max(1, R * 0.016 * A[3]);
@@ -136,10 +149,10 @@
       var dt = Math.min(0.05, Math.max(0, (now - st.last) / 1000)); st.last = now;
       if (!st.drag) {
         var idle = (now - st.idleAt) > 1500;
-        var base = (reduce || !S.spin) ? 0 : (small ? 0.12 : 0.2) * S.spin;
+        var base = (reduce || !S.spin) ? 0 : (small ? 0.16 : 0.3) * S.spin;
         st.yaw += (st.vy + (idle ? base : 0)) * dt; st.pitch = clamp(st.pitch + st.vp * dt, -0.9, 0.9);
         st.vy *= Math.pow(0.04, dt); st.vp *= Math.pow(0.04, dt);
-        if (idle) st.pitch += (-0.18 - st.pitch) * Math.min(1, dt * 1.2);
+        if (idle) st.pitch += ((-0.18 + (reduce ? 0 : 0.14 * Math.sin(now / 4300))) - st.pitch) * Math.min(1, dt * 1.2);
       }
       draw(now);
       if (active()) raf = requestAnimationFrame(loop);
