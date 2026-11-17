@@ -172,7 +172,7 @@ footer.site-footer .footer-social a:hover,footer.site-footer .footer-social a:fo
 /* =====================================================================
    7. Motion noise off (decorative only). Functional motion stays: loading spinners, player state, menus, reveals.
    ===================================================================== */
-.thread,.wavebar,.bg-blur,.fx-burst,.fx-layer,.fx-p{display:none!important}
+.thread,.bg-blur,.fx-burst,.fx-layer,.fx-p{display:none!important}
 .live-dot,.et-streak.hot .et-flame,.gd-float,.tk li.now .dot,li.current.busy .up-step .n{animation:none!important}
 .tk li.now .dot{box-shadow:0 0 0 3px rgba(var(--accent-rgb),.25)!important}
 li.current .up-step .n{box-shadow:0 0 0 3px rgba(var(--accent-rgb),.2)!important}
