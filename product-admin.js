@@ -13,6 +13,7 @@
   const MAIN = ["title", "price_cents", "currency", "published", "badge", "description", "long_description", "image_url"];
   const LONG = ["description", "long_description"];
   const LINES = ["gallery", "features"];
+  const JSONCOLS = ["model3d", "guide", "preview_tracks"]; /* immer als JSON bearbeiten, auch wenn leer oder als Text gespeichert */
   let rows = [], cur = null, orig = null, dirty = false;
 
   const status = (t, bad) => { const el = $("pa-status"); el.textContent = t || ""; el.classList.toggle("danger", !!bad); };
@@ -22,6 +23,7 @@
     if (READONLY.includes(k)) return "ro";
     if (k === "price_cents") return "price";
     if (typeof v === "boolean") return "bool";
+    if (JSONCOLS.includes(k) && (v == null || typeof v === "string" || typeof v === "object")) return "json";
     if (LINES.includes(k) && (v == null || (Array.isArray(v) && v.every(x => typeof x === "string")))) return "lines";
     if (Array.isArray(v) && v.length && v.every(x => typeof x === "string")) return "lines";
     if (v !== null && typeof v === "object") return "json";
@@ -32,7 +34,7 @@
   const asInput = (kind, v) => {
     if (kind === "price") return v == null ? "" : (Number(v) / 100).toFixed(2);
     if (kind === "lines") return Array.isArray(v) ? v.join("\n") : "";
-    if (kind === "json") return v == null ? "" : JSON.stringify(v, null, 2);
+    if (kind === "json") { if (typeof v === "string") { try { v = JSON.parse(v); } catch (_) {} } return v == null || v === "" ? "" : JSON.stringify(v, null, 2); }
     return v == null ? "" : String(v);
   };
 
@@ -67,7 +69,7 @@
     else if (kind === "price") ctl = `<input id="${id}" type="number" min="0" step="0.01" inputmode="decimal" value="${esc(val)}">`;
     else if (kind === "number") ctl = `<input id="${id}" type="number" step="any" value="${esc(val)}">`;
     else if (kind === "lines") ctl = `<textarea id="${id}" rows="4" placeholder="One entry per line">${esc(val)}</textarea>`;
-    else if (kind === "json") ctl = `<textarea id="${id}" rows="8" class="pa-json" spellcheck="false">${esc(val)}</textarea>`;
+    else if (kind === "json") ctl = `<textarea id="${id}" rows="8" class="pa-json" spellcheck="false" placeholder="JSON, leer lassen = kein Wert">${esc(val)}</textarea>`;
     else if (kind === "area") ctl = `<textarea id="${id}" rows="${k === "long_description" ? 10 : 4}">${esc(val)}</textarea>`;
     else ctl = `<input id="${id}" type="text" value="${esc(val)}">`;
     return `<div class="pa-f${kind === "bool" ? " pa-bool" : ""}" data-k="${esc(k)}" data-kind="${kind}"><label for="${id}">${esc(lab)}</label>${ctl}</div>`;
