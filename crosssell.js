@@ -10,7 +10,7 @@
   var root = document.getElementById('product-root');
   if (!root || !window.fetch || !cfg.SUPABASE_URL || !cfg.SUPABASE_PUBLISHABLE_KEY || String(cfg.SUPABASE_URL).indexOf('https://') !== 0) return;
 
-  (function () { if (!document.querySelector('link[href^="crosssell.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'crosssell.css?v=20261117c'; document.head.appendChild(l); } })();
+  (function () { if (!document.querySelector('link[href^="crosssell.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'crosssell.css?v=20261118a'; document.head.appendChild(l); } })();
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function money(cents, cur) {
