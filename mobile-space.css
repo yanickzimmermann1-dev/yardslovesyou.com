@@ -1,0 +1,366 @@
+/* mobile-space.css - compact buttons + chrome on phones (2026-11-18). Loaded LAST on every page (after unslop.css).
+   Only sizes/spacing inside max-width media queries, no colours; touch areas stay >=44px (invisible ::after/::before where the visual is smaller). */
+
+/* ===== chrome ===== */
+/* 1-chrome.css - slimmer phone chrome (appended after mobile.css). Layout/size only, no colours. */
+@media(max-width:720px){
+  /* shared heights: tab bar 56px, top bar 48px, upload stepper ~42px */
+  :root{--tabbar-h:56px;--tabbar-space:calc(var(--tabbar-h) + env(safe-area-inset-bottom,0px));--topbar-h:48px;--stepper-h:42px}
+
+  /* bottom tab bar: icon 20px + 11px label stacked, tight padding; 3+49+3+1 border = 56px */
+  nav[aria-label="Main"]{padding:3px max(6px,env(safe-area-inset-right,0px)) calc(3px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));box-sizing:border-box}
+  nav[aria-label="Main"] a{min-height:49px;padding:4px 2px;gap:2px;border-radius:10px}
+  nav[aria-label="Main"] a svg{width:20px;height:20px}
+  nav[aria-label="Main"] a,nav[aria-label="Main"] a span{font-size:11px;line-height:1.2}
+  /* keep content, footer, toast and sticky buy bar clear of the new bar (same formula, new var) */
+  body{padding-bottom:calc(var(--tabbar-space) + 8px)}
+  footer,footer.site-footer{padding-bottom:calc(var(--tabbar-space) + 24px)}
+  .yly-toast{bottom:calc(var(--tabbar-space) + 14px)}
+  .pd-sticky{bottom:var(--tabbar-space)}
+
+  /* top bar 48px */
+  .topbar{height:var(--topbar-h)}
+  html{scroll-padding-top:calc(var(--topbar-h) + 12px)}
+
+  /* round header buttons: 36px visual, 44px touch area via invisible ::after */
+  .topbar>.uis-btn,.topbar>.uis-btn:not(.uis-float),.topbar>.cart-btn:not(.cart-float),.topbar>.acct-link{width:36px;height:36px}
+  .topbar>.uis-btn svg,.topbar>.cart-btn:not(.cart-float) svg,.topbar>.acct-link svg{width:18px;height:18px}
+  .topbar>.uis-btn::after,.topbar>.cart-btn:not(.cart-float)::after,.topbar>.acct-link::after{content:"";position:absolute;inset:-4px}
+
+  /* shop category bar: tight sticky row, one scrollable line, chips 36px visual / 44px hit */
+  .cat-bar{top:var(--topbar-h);margin:0 -16px 14px;padding:4px 16px}
+  .cat-scroll{flex-wrap:nowrap;gap:4px;padding:4px;overflow-x:auto;overflow-y:hidden}
+  .cat-chip{position:relative;min-height:36px;padding:0 14px;font-size:13px;gap:6px}
+  .cat-chip::after{content:"";position:absolute;inset:-4px -2px}
+
+  /* upload stepper: slimmer, single row, below the 48px top bar */
+  .up-stepper{top:calc(var(--topbar-h) + 4px);padding:4px 10px;margin-bottom:10px}
+  .up-stepper ol{flex-wrap:nowrap}
+  .up-step{padding:2px 6px 2px 2px}
+  .up-step::after{inset:-7px -4px}
+  .mc-section,.upload-card,.custom-card,.rv-section,#hear,#services{scroll-margin-top:calc(var(--topbar-h) + var(--stepper-h) + 12px)}
+}
+
+/* ===== buttons ===== */
+/* 2-buttons.css - compact generic buttons + CTA rows on phones. Appended after mobile.css. No colours. */
+@media(max-width:720px){
+  /* Base pill buttons: 44px, tighter padding, never forced full width */
+  .button,.outline{min-height:44px;padding:10px 18px}
+
+  /* Hero CTA row: wrapping row, auto-width buttons, primary max 48px */
+  .hero-actions{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px}
+  .hero-actions .button,.hero-actions .outline{width:auto;min-height:44px;max-height:48px;flex:0 0 auto}
+  .hero-actions .hx-hear{display:inline-flex;align-items:center;min-height:44px}
+  .hero-actions[style*="margin-top"]{margin-top:16px !important}
+
+  /* Next-step block (every page): inline buttons, smaller gaps and top margin */
+  .next-step{margin-top:32px}
+  .ns-box{gap:12px 16px}
+  .ns-actions{flex-direction:row;flex-wrap:wrap;width:auto;gap:8px}
+  .ns-actions .button,.ns-actions .outline{width:auto;flex:0 0 auto}
+
+  /* Card CTA rows (home area cards, free strip, free packs, kit cards) */
+  .ar-actions{gap:8px 12px;padding-top:4px}
+  .ar-actions .button{width:auto}
+  .free-strip .button,.free-band .button,.hv-free .button,.hv-prod-actions .button,.hv-prod-actions .outline{width:auto}
+  .hv-prod-actions{gap:8px}
+  .fp-body .button{width:auto;align-self:flex-start}
+  .fp-sug-form .button{align-self:flex-start;margin-top:0}
+  .fp-sug-form{gap:6px}
+
+  /* Section head with a secondary outline CTA: heading left, button right (compact) */
+  .section-head:has(>.outline),.section-head:has(>.button),.free-tools-head{flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:10px}
+  .section-head>.outline,.section-head>.button,.free-tools-head .outline{flex:0 0 auto;width:auto;padding:8px 16px}
+  .section-head>div{min-width:0}
+
+  /* "Looking for the tools?" bar: auto-width button, tighter box */
+  .free-more{margin-top:24px;padding:16px;gap:10px 12px}
+  .free-more .outline{width:auto}
+
+  /* Email + button on one row when it fits, wraps (stacked) otherwise */
+  .free-kit-form{gap:10px}
+  .free-kit-row{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .free-kit-row input{flex:1 1 130px;min-width:0;width:auto}
+  .free-kit-row .button{width:auto;flex:0 0 auto;padding:10px 16px}
+
+  /* Before/after: 44px play + switch, labels kept compact */
+  .ba-cta{margin-top:10px}
+  .ba-cta .outline{width:auto}
+  .ba-controls{gap:8px;margin-top:12px}
+  .ba-play{width:48px;height:48px}
+  .ba-controls{grid-template-columns:48px minmax(0,1fr)}
+  .ba-switch{height:54px}
+  .ba-switch button{min-height:44px}
+}
+
+@media(max-width:420px){
+  /* Hero primary CTA max 48px (overrides mobile.css 50px) */
+  .hero-actions .button,.hero-actions .outline{min-height:44px;max-height:48px}
+  /* Before/after: single-line labels (sub-label stays readable to screen readers), 44px play */
+  .ba-controls{grid-template-columns:44px minmax(0,1fr)}
+  .ba-play{width:44px;height:44px}
+  .ba-play svg:not(.ba-ring){width:24px;height:24px}
+  .ba-switch{height:54px}
+  .ba-switch button small{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .ba-switch button{flex-direction:row}
+}
+
+/* ===== shop ===== */
+/* 3-shop.css - phone space savings for shop cards, product/guide buy rows, sticky bar, cross-sell and cart drawer.
+   Appended AFTER mobile.css. Layout/sizing only, no colour changes. Phone only (<=720px).
+   Rule: visual size may shrink below 44px, the real tap area never does (invisible ::after / ::before extension). */
+
+/* ===== SHOP CARDS (.product, borderless, padding 0) ===== */
+@media(max-width:720px){
+  /* tighter text block under the image */
+  .product h3{margin:0 0 3px}
+  .product p{line-height:1.45}
+  /* description max 3 lines (tag-line stays untouched) */
+  .product .product-link p:not(.tag-line){display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
+  .product .tag-line{margin-top:4px}
+  /* badge / sound-preview row under the image: less air (was margin 2px 0 12px, p-keep min-height 28px) */
+  .product-grid .product .p-under{margin:0 0 6px;gap:6px}
+  .product-grid .product .p-under.p-keep{min-height:20px}
+  .product-grid .product .sp-layer{gap:6px}
+
+  /* action row: price left, cart icon + Buy right, one line (was wrap + gap 8px + padding-top 17px) */
+  .product .price-row{flex-wrap:nowrap;gap:8px;padding-top:8px}
+  .product .price-row .price-wrap{flex:1 1 auto;min-width:0;gap:6px}
+  .product .price-row .price{font-size:18px}
+  .product .row-actions{flex:0 0 auto;gap:6px;align-items:center}
+
+  /* cart icon: visual 40px (was 44), tap area stays 44px via ::after */
+  .product .cart-add-ic{width:40px;height:40px;min-width:40px;min-height:40px;position:relative}
+  .product .cart-add-ic::after{content:"";position:absolute;inset:-2px}
+  .product .cart-add-ic svg{width:17px;height:17px}
+
+  /* Buy: visual 40px (was 46px), tap area 44px via ::before (::after is kept for the shine, overflow opened for the extension) */
+  .product .row-actions .button{min-height:40px;padding:0 16px;overflow:visible}
+  .product .row-actions .button::before{content:"";position:absolute;inset:-2px 0}
+
+  /* quick-view eye: visual 36px (was 44), tap area 44px, closer to the corner (was 24px) */
+  .qv-eye{width:36px;height:36px;top:10px;right:10px}
+  .qv-eye::after{content:"";position:absolute;inset:-4px}
+  .qv-eye svg{width:17px;height:17px}
+
+  /* "Play sounds" pill: visual 36px (was 44), tap area 44px */
+  .product-grid .product .sp-pill,.sp-pill{height:36px;min-height:36px;position:relative}
+  .sp-pill::after{content:"";position:absolute;inset:-4px -2px}
+  .product-grid .product .sp-pill{position:relative}
+}
+
+/* ===== PRODUCT PAGE: price + cart icon + Buy now on ONE row ===== */
+@media(max-width:720px){
+  .pd-buy{flex-wrap:nowrap;gap:8px;margin:16px 0 4px}
+  .pd-buy .price-wrap{flex:1 1 auto;min-width:0;gap:6px}
+  .pd-buy .price{font-size:24px}
+  .pd-buy .was-price{font-size:14px}
+  /* Add to cart: icon only (label stays for screen readers + cart.js label sync), 44x44 */
+  .pd-buy .outline[data-cart-add],.pd-buy [data-cart-add]{flex:0 0 44px;width:44px;min-width:44px;max-width:44px;min-height:44px;height:44px;padding:0;gap:0;justify-content:center}
+  .pd-buy [data-cart-add] .cart-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  /* Buy now: 44px, takes the remaining width, no own row */
+  .pd-buy #buy-btn,.pd-buy .button:not([data-cart-add]){flex:0 0 auto;min-width:0;max-width:none;min-height:44px;padding:0 20px;white-space:nowrap}
+}
+
+/* ===== GUIDE PAGES: .gd-buyrow  price | cart icon | Get the guide ; free chapter on its own slim row ===== */
+@media(max-width:720px){
+  .gd-buyrow{flex-wrap:wrap;gap:8px}
+  .gd-buyrow .price-wrap{flex:1 1 auto;order:0;min-width:0;gap:6px}
+  .gd-buyrow .price{font-size:24px}
+  .gd-buyrow .gd-addcart{order:1;flex:0 0 44px;width:44px;min-width:44px;height:44px;min-height:44px;padding:0;gap:0;justify-content:center;border:1px solid var(--line);border-radius:50%;text-decoration:none;position:relative}
+  .gd-buyrow .gd-addcart .cart-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .gd-buyrow .gd-buy{order:2;flex:1 1 0;width:auto;min-width:110px;min-height:44px;padding:0 14px}
+  .gd-buyrow .gd-free-btn{order:3;flex:1 1 100%;width:100%;min-height:44px}
+}
+
+/* ===== STICKY BUY BAR (.pd-sticky) ===== */
+@media(max-width:720px){
+  .pd-sticky-inner{padding:6px 0;gap:8px;width:calc(100% - 24px)}
+  .pd-sticky .price{font-size:17px}
+  .pd-sticky .pd-sticky-inner .cart-actions{gap:6px}
+  .pd-sticky #sticky-buy-btn{min-height:44px;padding:0 16px;font-size:14px}
+  /* cart button: icon only 44x44 */
+  .pd-sticky #sticky-cart-btn{width:44px;min-width:44px;height:44px;min-height:44px;padding:0;gap:0}
+  .pd-sticky #sticky-cart-btn .cart-lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  /* keep the floating cart bubble just above the slimmer bar (was +82px) */
+  body:has(.pd-sticky.visible) .cart-btn.cart-float{bottom:calc(var(--tabbar-space,64px) + 66px)}
+}
+
+/* ===== CROSS-SELL (.xs) ===== */
+@media(max-width:720px){
+  .xs{margin-top:28px}
+  .xs-intro{margin-bottom:12px}
+  .xs-bundle{padding:12px 14px;margin-bottom:12px;gap:10px 14px}
+  .xs-actions{gap:8px}
+  .xs-actions .button,.xs-actions .outline{min-height:44px;padding:0 14px}
+  .xs-body{padding:10px;gap:4px}
+  /* card button: visual 40px, tap area 44px */
+  .xs-body .outline{min-height:40px;padding:0 12px;overflow:visible;margin-top:6px}
+  .xs-body .outline::before{content:"";position:absolute;inset:-2px 0}
+}
+
+/* ===== CART DRAWER (bottom sheet) ===== */
+@media(max-width:720px){
+  .cart-head{padding:12px 16px 10px}
+  .cart-body{padding:2px 16px 10px}
+  .cart-item{grid-template-columns:52px minmax(0,1fr) auto;gap:12px;padding:10px 0}
+  .cart-thumb{width:52px;height:52px;border-radius:10px}
+  .cart-price{margin-top:3px}
+  /* remove + close: visual 36/38px stays, tap area 44px */
+  .cart-rm{position:relative}
+  .cart-rm::after,.cart-x::after{content:"";position:absolute;inset:-4px}
+  .cart-x{position:relative;width:36px;height:36px}
+  /* mini upsell / hint buttons: visual 36px, tap area 44px */
+  .cart-upsell,.cart-hint{margin-top:12px;padding:12px}
+  .cart-hint .outline,.cart-mini .outline{overflow:visible;padding:0 14px}
+  .cart-hint .outline::before,.cart-mini .outline::before{content:"";position:absolute;inset:-4px 0}
+  .cart-foot{padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+  .cart-sum{margin-bottom:4px}
+  .cart-sum.total{margin:8px 0 10px;padding-top:8px}
+  .cart-checkout{min-height:46px;font-size:15px}
+  .cart-continue{margin-top:6px;min-height:44px}
+  .cart-note{margin-top:6px}
+}
+
+/* ===== upload ===== */
+/* 4-upload.css - phone space savers for upload.html (service cards, mix-check, form, custom beat).
+   Loaded right after mobile.css. Layout/sizing only, no colours. Everything lives inside max-width:720px. */
+@media(max-width:720px){
+
+  /* ---- Service cards: compact rows, name left / price right, details smaller below ---- */
+  .service-picker{grid-template-columns:minmax(0,1fr);gap:8px}
+  body[data-area="service"] .service-option .opt{
+    display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:1px;
+    align-items:baseline;height:auto;min-height:44px;padding:10px 14px;border-radius:12px}
+  body[data-area="service"] .service-option .opt strong{grid-column:1;grid-row:1;font-size:15px;line-height:1.3}
+  /* price moves up to the first line (overrides margin-top:auto / padding-top from upload-pink.css) */
+  body[data-area="service"] .service-option .opt .opt-price{grid-column:2;grid-row:1;margin:0;padding:0;font-size:15px;line-height:1.3;white-space:nowrap;text-align:right}
+  /* the two detail lines stay (2nd + 3rd child), smaller, one line each with ellipsis */
+  body[data-area="service"] .service-option .opt>span:nth-child(2),
+  body[data-area="service"] .service-option .opt>span:nth-child(3){grid-column:1 / -1;font-size:12px;line-height:1.35;min-width:0}
+  body[data-area="service"] .service-option .opt>span:nth-child(2){grid-row:2}
+  body[data-area="service"] .service-option .opt>span:nth-child(3){grid-row:3}
+  /* approx currency line: only for the selected card (JS fills it, :empty already hidden by upload-pink.css) */
+  body[data-area="service"] .service-option .opt .opt-approx{grid-column:1 / -1;grid-row:4;margin:1px 0 0;font-size:12px !important;line-height:1.3}
+  body[data-area="service"] .service-option input:not(:checked) + .opt .opt-approx{display:none}
+  .service-picker+.up-slots,.up-slots{margin-top:8px}
+
+  /* ---- Mix-check questionnaire: compact option rows (JS builds .mc-opt > .mc-ico + .mc-t > strong + .mc-d) ---- */
+  .mc-opts,.mc-opts.is-3{gap:8px}
+  .mc-opt{gap:12px;padding:10px 12px;border-radius:14px;min-height:56px}
+  .mc-opt .mc-ico{width:36px;height:36px;border-radius:11px}
+  .mc-opt .mc-ico svg{width:20px;height:20px}
+  .mc-opt strong{font-size:15px;line-height:1.25}
+  .mc-opt>span.mc-t{gap:1px}
+  .mc-opt span.mc-d{font-size:13px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .mc-skip{margin-top:0}
+
+  /* ---- Form: tighter rhythm ---- */
+  .upload-card{padding:16px}
+  .upload-form{gap:14px}
+  .up-fields{gap:14px}
+  .up-opts{grid-template-columns:minmax(0,1fr);gap:14px}
+  .field{gap:6px}
+  .field > label,.field legend{margin-bottom:2px}
+  #track-wishes{min-height:0;height:84px}
+  /* add-on / rush checkbox row: slimmer but still >=44px; check mark re-aligned to the new padding */
+  body[data-area="service"] .up-check{padding:10px 12px;gap:12px;min-height:44px}
+  body[data-area="service"] .up-check::after{left:19px;top:13px}
+  body[data-area="service"] .up-check span{gap:2px}
+  .up-summary{padding:10px 12px;gap:4px}
+  .up-summary .up-total{margin-top:2px;padding-top:8px;font-size:17px}
+  .upload-form .trust{margin:0}
+  /* primary actions 52px -> 48px, inline margin-top removed */
+  #submit-btn,#inq-btn,.upload-form>.button[type="submit"]{min-height:48px !important;margin-top:0 !important}
+
+  /* ---- Custom beat inquiry card ---- */
+  .custom-card{gap:12px;padding:16px}
+  #inq-desc{min-height:0;height:104px}
+  #inq-links{min-height:0;height:68px}
+}
+
+/* ===== lab ===== */
+/* =====================================================================
+   5-lab.css - phones: slimmer Lab tools (Perc Lab, Chord Starter,
+   Ear Trainer, Mix Check). Appended after mobile.css. No colour changes.
+   ===================================================================== */
+@media(max-width:720px){
+
+  /* --- shared tool CTA card: less padding, 44px button --- */
+  .bl-cta{gap:12px;padding:16px}
+  .bl-cta .button{min-height:44px}
+
+  /* --- shared action rows (Perc Lab + Chords): 44px, single-line labels --- */
+  .bl-actions{gap:8px}
+  .bl-actions>*,
+  .pl .bl-actions .button,.pl .bl-actions .outline{
+    min-height:44px;min-width:0;padding:8px 10px;font-size:13px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;gap:6px
+  }
+
+  /* --- Perc Lab: control panel --- */
+  .pl-panel{gap:12px 10px;padding:12px;margin-bottom:14px}
+  .pl-field{gap:6px}
+
+  /* --- Perc Lab: transport row --- */
+  .pl-main{gap:8px;margin-bottom:14px}
+  .pl-main .bl-play{width:52px;height:52px}
+  .pl-main .pl-gen{min-height:46px;padding:0 22px}
+  .pl-main .outline{min-height:44px}
+
+  /* --- Perc Lab: grid tracks, slightly tighter --- */
+  .pl-grid{gap:4px}
+  .pl-head{gap:4px}
+  .pl .bl-hint{margin-top:12px}
+
+  /* --- Chord Starter: compact pills, 44px hit area via ::after --- */
+  .cm-pills{gap:6px}
+  .cm-pill{
+    position:relative;min-height:36px;padding:0 12px;
+    display:inline-flex;align-items:center;justify-content:center
+  }
+  .cm-pill::after{content:"";position:absolute;inset:-4px -2px}
+
+  /* --- Chord Starter: tighter groups --- */
+  .cm-settings{row-gap:14px;margin-bottom:14px}
+  .cm-field{gap:8px}
+  .cm-sound-row{gap:10px}
+  .cm-generate-row{gap:10px;padding:12px 0;margin-bottom:14px}
+  .cm-generate-row .cm-generate{min-height:46px;padding:0 22px}
+  .cm-generate-row .bl-play{width:50px;height:50px}
+  .cm-transport{margin-bottom:14px}
+
+  /* --- Ear Trainer: setup, chips, segments, hint --- */
+  #et-setup,#et-game,#et-result{padding:16px}
+  .et-lbl{margin:14px 0 8px}
+  .et-chips{gap:6px}
+  .et-chip{min-height:44px;padding:0 16px}
+  .et-seg button{min-height:44px}
+  .et-hint{margin:8px 0 14px}
+  .et-big{min-height:48px}
+  .et-modes{gap:12px;margin:18px 0 22px}
+  .et-mode{padding:18px}
+
+  /* --- Ear Trainer: game (HUD, A/B, answer buttons) --- */
+  .et-hud{margin-bottom:10px}
+  .et-deck{margin:10px 0 4px}
+  .et-ab{height:60px}
+  .et-opts{gap:10px}
+  .et-opt{min-height:64px;border-radius:16px}
+  .et-opt b{font-size:26px}
+  .is-btn .et-opt b{font-size:18px}
+  .et-res-actions{gap:8px;margin-bottom:14px}
+  .et-res-actions .button,.et-res-actions .outline{min-height:46px}
+
+  /* --- Mix Check page (mc-opt/mc-go live in mixcalc.css on upload, handled in upload section) --- */
+  .mc{padding:16px}
+  .mc-head .muted{margin-bottom:14px}
+  .mc-mode{margin-bottom:12px}
+  .mc-drop{min-height:150px;padding:20px 16px}
+}
+
+/* narrow phones: long action labels ("Publish to Community", "Download WAV + stems") fit one line */
+@media(max-width:420px){
+  .bl-actions>*,.pl .bl-actions .button,.pl .bl-actions .outline{padding:8px 6px;font-size:12.5px;letter-spacing:0}
+}
+
