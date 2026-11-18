@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   const fmt = iso => iso ? new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) + ", " + new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "";
 
-  const MAIL = "mailto:yardsyurr@gmail.com?subject=" + encodeURIComponent("Question about my order");
+  const MAIL = "mailto:hello@yardslovesyou.com?subject=" + encodeURIComponent("Question about my order");
   const errorView = (title, text, retry) => {
     const actions = retry ? [{ label: "Retry", onClick: () => { root.textContent = "Loading …"; load(); } }, { label: "Contact us", href: MAIL }] : [{ label: "Contact us", href: MAIL }, { label: "Back to home", href: "index.html" }];
     if (window.YLYState) window.YLYState.render(root, { icon: retry ? "alert" : "link", error: !!retry, title, text, actions });

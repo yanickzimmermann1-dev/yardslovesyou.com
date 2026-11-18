@@ -6,7 +6,7 @@
   if (!token) {
     btn.disabled = true;
     status.classList.add("danger");
-    status.innerHTML = 'This link is incomplete. Please use the unsubscribe link from one of our emails, or write to <a href="mailto:yardsyurr@gmail.com" style="color:var(--purple)">yardsyurr@gmail.com</a>.';
+    status.innerHTML = 'This link is incomplete. Please use the unsubscribe link from one of our emails, or write to <a href="mailto:hello@yardslovesyou.com" style="color:var(--purple)">hello@yardslovesyou.com</a>.';
     return;
   }
   btn.onclick = async () => {
@@ -21,7 +21,7 @@
     } catch (e) {
       btn.disabled = false; btn.textContent = "Yes, unsubscribe me";
       status.classList.add("danger");
-      status.innerHTML = 'That did not work. Please try again, or write to <a href="mailto:yardsyurr@gmail.com" style="color:var(--purple)">yardsyurr@gmail.com</a>.';
+      status.innerHTML = 'That did not work. Please try again, or write to <a href="mailto:hello@yardslovesyou.com" style="color:var(--purple)">hello@yardslovesyou.com</a>.';
     }
   };
 })();

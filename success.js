@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const box = $("confirm");
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-  const MAIL = "mailto:yardsyurr@gmail.com?subject=" + encodeURIComponent("Question about my order");
+  const MAIL = "mailto:hello@yardslovesyou.com?subject=" + encodeURIComponent("Question about my order");
   const fail = msg => {
     msg = msg ? String(msg).replace(/[.!?\s]*$/, ".") : "";
     const pending = /pending|not (yet )?(paid|complete)|unpaid|processing/i.test(String(msg || ""));

@@ -69,7 +69,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
     items.push(["Which payment methods can I use?",
       "Credit and debit cards, TWINT, PayPal, and Apple Pay or Google Pay where available. Payments are processed securely by Stripe."]);
     items.push(["I have a question that isn't answered here.",
-      `Just write to <a href="mailto:yardsyurr@gmail.com">yardsyurr@gmail.com</a> – I'm happy to help.`]);
+      `Just write to <a href="mailto:hello@yardslovesyou.com">hello@yardslovesyou.com</a> – I'm happy to help.`]);
     return items;
   };
 
