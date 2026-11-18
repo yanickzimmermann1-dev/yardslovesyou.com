@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (statusEl) statusEl.textContent = "Thanks! Your inquiry is in. I'll get back to you by email with a quote.";
       } catch (err) {
         console.error("Inquiry failed:", err);
-        fail("Error: " + err.message);
+        fail("Your inquiry couldn't be sent. Please try again \u2014 or email me if it keeps happening.");
         if (btn) { btn.disabled = false; btn.textContent = "Send inquiry"; }
       }
     });
@@ -211,19 +211,40 @@ document.addEventListener("DOMContentLoaded", () => {
       const songs = getSongs();
       const rush = !!(rushInput && rushInput.checked);
 
-      if (!file) {
-        alert("Please select a file to upload.");
-        return;
-      }
-      if (songs === null) { alert("Please enter a number of songs between 1 and " + P.MAX_SONGS + "."); return; }
-      if (!name || name.length > 100) { alert("Please enter your name (max. 100 characters)."); return; }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 254) { alert("Please enter a valid email address."); return; }
-      if (wishes.length > 2000) { alert("Your notes are too long (max. 2000 characters)."); return; }
+      const clearErr = el => {
+        if (!el) return;
+        el.removeAttribute("aria-invalid");
+        const n = document.getElementById(el.id + "-error");
+        if (n) n.textContent = "";
+      };
+      const invalid = (el, msg) => {
+        if (!el) { if (statusEl) statusEl.textContent = msg; return; }
+        let n = document.getElementById(el.id + "-error");
+        if (!n) {
+          n = document.createElement("p");
+          n.id = el.id + "-error"; n.className = "field-error"; n.setAttribute("role", "alert");
+          el.insertAdjacentElement("afterend", n);
+          const clear = () => clearErr(el);
+          el.addEventListener("input", clear); el.addEventListener("change", clear);
+        }
+        n.textContent = msg;
+        el.setAttribute("aria-invalid", "true");
+        el.setAttribute("aria-describedby", n.id);
+        el.focus();
+      };
+      [fileInput, songsInput, nameInput, emailInput, wishesInput].forEach(clearErr);
+      if (statusEl) { statusEl.textContent = ""; statusEl.setAttribute("role", "alert"); statusEl.setAttribute("aria-live", "polite"); }
+
+      if (!file) { invalid(fileInput, "Please select a file to upload."); return; }
+      if (songs === null) { invalid(songsInput, "Please enter a number of songs between 1 and " + P.MAX_SONGS + "."); return; }
+      if (!name || name.length > 100) { invalid(nameInput, "Please enter your name (max. 100 characters)."); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 254) { invalid(emailInput, "Please enter a valid email address."); return; }
+      if (wishes.length > 2000) { invalid(wishesInput, "Your notes are too long (max. 2000 characters)."); return; }
 
       // Format validation
       const lower = file.name.toLowerCase();
       if (wavAllowed() ? !(lower.endsWith(".wav") || lower.endsWith(".zip")) : !lower.endsWith(".zip")) {
-        alert(wavAllowed() ? "Please select a WAV file or a ZIP archive." : (songs > 1 ? "For several songs, please put all songs into one ZIP archive." : "Please select a valid ZIP archive."));
+        invalid(fileInput, wavAllowed() ? "Please select a WAV file or a ZIP archive." : (songs > 1 ? "For several songs, please put all songs into one ZIP archive." : "Please select a valid ZIP archive."));
         return;
       }
 
@@ -316,7 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (err) {
         console.error("Upload process aborted:", err);
         if (window.YLYUploadFX) window.YLYUploadFX.close();
-        if (statusEl) statusEl.textContent = "Error: " + err.message;
+        if (statusEl) statusEl.textContent = "Checkout couldn't start. Please try again \u2014 or email me if it keeps happening.";
         if (btn) {
           btn.disabled = false;
           btn.textContent = "Proceed to checkout";

@@ -117,8 +117,8 @@
     const { data, error } = await db.functions.invoke("delete-account", { body: { confirm: "DELETE" } });
     if (error || !data?.ok) { toast((data && data.error) || "Your account could not be deleted. Please contact us.", true); return; }
     await db.auth.signOut(); resetMe();
-    alert("Your account has been deleted.");
-    location.href = "community.html";
+    toast("Your account has been deleted.");
+    setTimeout(() => { location.href = "community.html"; }, 1500);
   });
 
   // ---------- Anzeige je nach Status ----------

@@ -375,6 +375,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
   async function buy(){
     const btns=[...new Set([$("buy-btn"),$("sticky-buy-btn"),...root.querySelectorAll("[data-buy]")])].filter(Boolean);
     btns.forEach(b=>{b.dataset.t=b.dataset.t||b.textContent;b.disabled=true;b.textContent="Redirecting …";});
+    const oldNote=root.querySelector(".checkout-note"); if(oldNote) oldNote.remove();
     window.ylyTrack&&ylyTrack("checkout-click",{id});
     try{
       const {data,error}=await db.functions.invoke("create-checkout",{body:promoBody()});
@@ -382,7 +383,9 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
       if(!data?.url) throw new Error(data?.error||"Checkout link missing.");
       if(!/^https:\/\//i.test(String(data.url))) throw new Error("Invalid checkout link.");
       location.href=data.url;
-    }catch(e){alert("Checkout failed: "+(e.message||e));btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.t||"Buy now";});}
+    }catch(e){console.error("Checkout failed:",e);btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.t||"Buy now";});
+      const row=root.querySelector(".pd-buy")||root.querySelector(".gd-buyrow")||(btns[0]&&btns[0].parentNode);
+      if(row){let n=root.querySelector(".checkout-note");if(!n){n=document.createElement("p");n.className="checkout-note";n.setAttribute("role","alert");row.insertAdjacentElement("afterend",n);}n.textContent="Checkout couldn't start. Please try again \u2014 or email me if it keeps happening.";}}
   }
 
   load();

@@ -207,3 +207,8 @@ main.wrap>.home-section:has(~ .home-section[hidden]):not(:has(~ .home-section:no
 .cart-upsell,.cart-hint,.promo-note{background:var(--surface-hi)!important}
 .cart-add-ic.in-cart,.cart-chip{background:rgba(var(--accent-rgb),.12)!important}
 .consent a,.hint a,.fineprint a,main p a:not(.button):not(.outline){color:var(--accent)}
+
+/* Inline errors (replace alert dialogs) */
+.field-error,.checkout-note{margin:6px 0 0;font-size:13px;line-height:1.5;color:#ffb8c7}
+.field-error:empty{display:none}
+[aria-invalid="true"]{border-color:#ffb8c7!important}

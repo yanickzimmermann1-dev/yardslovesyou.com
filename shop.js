@@ -156,7 +156,7 @@
   }
 
   async function buy(productId) {
-    const b=document.querySelector(`[data-buy="${CSS.escape(productId)}"]`); if(b){b.disabled=true;b.textContent="Redirecting …";}
+    const b=document.querySelector(`[data-buy="${CSS.escape(productId)}"]`); if(b){b.disabled=true;b.textContent="Redirecting …";const o=b.parentNode.querySelector(".checkout-note");if(o)o.remove();}
     window.ylyTrack&&ylyTrack("checkout-click",{id:productId});
     try{
       const {data,error}=await db.functions.invoke("create-checkout",{body:{product_id:productId}});
@@ -164,7 +164,7 @@
       if(!data?.url) throw new Error(data?.error||"Checkout link missing.");
       if(!/^https:\/\//i.test(String(data.url))) throw new Error("Invalid checkout link.");
       location.href=data.url;
-    }catch(e){alert("Checkout failed: "+(e.message||e));if(b){b.disabled=false;b.textContent="Buy";}}
+    }catch(e){console.error("Checkout failed:",e);if(b){b.disabled=false;b.textContent="Buy";let n=b.parentNode.querySelector(".checkout-note");if(!n){n=document.createElement("p");n.className="checkout-note";n.setAttribute("role","alert");b.insertAdjacentElement("afterend",n);}n.textContent="Checkout couldn't start. Please try again \u2014 or email me if it keeps happening.";}}
   }
 
   // Free Kit gegen E-Mail
