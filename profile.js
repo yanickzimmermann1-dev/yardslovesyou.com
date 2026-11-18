@@ -49,7 +49,7 @@
           <p class="pf-stats"><strong id="pf-followers">${followers.count ?? 0}</strong> followers · <strong>${following.count ?? 0}</strong> following · <strong>${(posts.data || []).length}</strong> posts</p>
         </div>
         <div class="pf-actions">
-          ${mine ? `<a class="outline" href="account.html">Edit profile</a>`
+          ${mine ? `<a class="outline" href="account.html">Edit profile</a>${m.admin ? `<a class="button" href="account.html#admin">Admin</a>` : ""}`
                  : `<button type="button" class="${iFollow ? "outline" : "button"}" id="pf-follow" data-on="${iFollow}">${iFollow ? "Following" : "Follow"}</button>
                     <button type="button" class="cp-icon" id="pf-report">Report</button>`}
           ${m?.admin && !mine ? `<button type="button" class="cp-icon danger" id="pf-hide" data-on="${p.hidden}">${p.hidden ? "Unhide profile" : "Hide profile"}</button>` : ""}

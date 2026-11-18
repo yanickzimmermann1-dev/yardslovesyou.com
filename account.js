@@ -137,9 +137,27 @@
     $("acc-dname").value = p.display_name || "";
     $("acc-bio").value = p.bio || ""; $("acc-bio-count").textContent = `${(p.bio || "").length}/160`;
     for (const [k] of LINKS) $("acc-link-" + k).value = (p.links && p.links[k]) || "";
-    $("acc-admin").classList.toggle("hidden", !m.admin);
-    $("acc-orders").classList.toggle("hidden", !m.admin);
+    $("admin").classList.toggle("hidden", !m.admin);
+    $("acc-admin-jump").classList.toggle("hidden", !m.admin);
+    if (m.admin) {
+      adminCount();
+      if (location.hash === "#admin") $("admin").scrollIntoView({ block: "start" });
+    }
     myPosts(m.user.id);
+  }
+
+  // ---------- Admin: Anzahl offener Bewertungen (Produkt + Service) ----------
+  async function adminCount() {
+    const n = async action => {
+      try {
+        const { data } = await db.functions.invoke("order-admin", { body: { action } });
+        return ((data && data.reviews) || []).filter(r => r.status === "pending").length;
+      } catch (_) { return 0; }
+    };
+    const total = (await n("reviews-list")) + (await n("service-reviews-list"));
+    const el = $("adm-rv-n");
+    el.textContent = total; el.hidden = !total;
+    el.setAttribute("aria-label", total + " pending");
   }
 
   // Nach dem Klick auf den Login-Link setzt Supabase die Sitzung selbst

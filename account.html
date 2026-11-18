@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://kmekgjllklwrxizqbrac.supabase.co" crossorigin>
   <link rel="dns-prefetch" href="https://kmekgjllklwrxizqbrac.supabase.co">
   <!-- css-src: styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css acct.css refresh.css logo-area.css unslop.css mobile-space.css -->
-  <link rel="stylesheet" href="css/b-92690a9b36.css" data-css="styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css acct.css refresh.css logo-area.css unslop.css mobile-space.css">
+  <link rel="stylesheet" href="css/b-d8ba80804a.css" data-css="styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css acct.css refresh.css logo-area.css unslop.css mobile-space.css">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="fx-gate.js?v=20261113g"></script>
 </head>
@@ -91,8 +91,18 @@
         </div>
         <div class="hero-actions">
           <a class="outline" id="acc-view" href="#">View my profile</a>
-          <a class="outline hidden" id="acc-admin" href="community-admin.html">Moderation</a>
-          <a class="outline hidden" id="acc-orders" href="order-admin.html">Orders</a>
+          <a class="button hidden" id="acc-admin-jump" href="#admin">Admin</a>
+        </div>
+      </div>
+
+      <div class="acc-card adm-hub hidden" id="admin" aria-labelledby="adm-title">
+        <h2 id="adm-title">Admin</h2>
+        <div class="adm-grid">
+          <a class="adm-tile" href="order-admin.html#reviews"><strong>Reviews<span class="rv-count" id="adm-rv-n" hidden></span></strong><span>Approve or reject new reviews</span></a>
+          <a class="adm-tile" href="order-admin.html"><strong>Orders</strong><span>Service orders, capacity, inquiries, stats</span></a>
+          <a class="adm-tile" href="product-admin.html"><strong>Products</strong><span>Edit shop products</span></a>
+          <a class="adm-tile" href="community-admin.html"><strong>Moderation</strong><span>Reported posts and profiles</span></a>
+          <a class="adm-tile" href="drop-admin.html"><strong>Sound Drop</strong><span>Send the newsletter drop</span></a>
         </div>
       </div>
 
