@@ -1,0 +1,64 @@
+/* home-v3.css - index.html as a person + portfolio home page (2026-11-18). Loaded right before unslop.css.
+   Opaque surfaces + 1px borders, no glow, no gradients, no motion. Area accents (Mixing pink, Sounds gold, Free turquoise,
+   Lab blue) are used only on tile borders, headings and buttons. */
+
+/* neutral "home" area = the default purple */
+body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--accent:#b68aff;--accent-ink:#180e23;--accent-hi:#c7a3ff;--accent-rgb:182,138,255}
+
+/* ---------- hero ---------- */
+.hero.hv3-hero{min-height:0;padding:clamp(32px,6vh,72px) 0 clamp(36px,6vh,64px)}
+.hero.hv3-hero .hx-h1{font-size:clamp(36px,7.4vw,84px);line-height:1.04;margin:18px 0 20px}
+.hero.hv3-hero .hx-h1 .hl{display:block;white-space:normal}
+.hero.hv3-hero .muted{max-width:560px}
+.hero.hv3-hero .hx-cta .button,.hero.hv3-hero .hx-cta .outline{min-height:48px;display:inline-flex;align-items:center;justify-content:center}
+@media(max-width:480px){
+  .hero.hv3-hero .hx-cta{flex-direction:column;align-items:stretch}
+}
+
+/* ---------- section heads with a link ---------- */
+.hv3-work .section-head{display:flex;flex-direction:row;align-items:flex-end;justify-content:space-between;gap:16px}
+.hv3-more{display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;font-weight:600}
+
+/* ---------- four tiles ---------- */
+.hv3-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.6vw,16px)}
+.hv3-tile{display:flex;flex-direction:column;gap:8px;padding:clamp(14px,2vw,20px);background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--t);border-radius:14px;min-width:0}
+.hv3-tile h3{font:600 clamp(15px,1.6vw,18px)/1.25 'Space Grotesk';margin:0;color:var(--t)}
+.hv3-tile p{margin:0 0 6px;font-size:13px;line-height:1.5;color:var(--muted);flex:1}
+.hv3-go{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 12px;border:1px solid var(--t);border-radius:10px;color:var(--t);font:600 13px 'DM Sans';text-align:center;background:transparent}
+.hv3-go:hover,.hv3-go:focus-visible{background:var(--t);color:var(--t-ink)}
+.hv3-go:focus-visible{outline:2px solid var(--t);outline-offset:2px}
+@media(max-width:860px){.hv3-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---------- featured release ---------- */
+.hv3-featured .pf-card-lg{border-radius:16px}
+
+/* ---------- Lab teaser (mini Chord Starter) ---------- */
+.hv3-lab-box{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(18px,3vw,32px);align-items:center;padding:clamp(18px,3vw,28px);background:var(--surface);border:1px solid var(--line);border-top:3px solid #8fa2ff;border-radius:16px}
+.hv3-lab-text .eyebrow{margin:0;color:#8fa2ff}
+.hv3-lab-text h2{font:600 clamp(22px,3vw,30px)/1.15 'Space Grotesk';letter-spacing:-.4px;margin:8px 0 10px}
+.hv3-lab-text .muted{margin:0 0 10px}
+.hv3-lab-text a{color:#8fa2ff;display:inline-flex;align-items:center;min-height:44px;font-weight:600}
+.hv3-chords{display:flex;flex-direction:column;gap:14px;min-width:0}
+.hv3-chords-ctl{display:flex;flex-wrap:wrap;gap:10px}
+.hv3-key{flex:0 0 auto;width:auto;min-width:120px;min-height:44px}
+.hv3-chords-ctl .button,.hv3-chords-ctl .outline{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.hv3-chords{--accent:#8fa2ff;--accent-ink:#0e1330;--accent-hi:#a9b8ff;--accent-rgb:143,162,255}
+.hv3-chords .button{background:#8fa2ff;color:#0e1330}
+.hv3-chords .outline{border-color:#8fa2ff;color:#8fa2ff}
+.hv3-chord-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.hv3-chord-list li{display:flex;align-items:center;justify-content:center;min-height:64px;padding:8px 4px;background:var(--bg);border:1px solid var(--line);border-radius:12px;font:600 clamp(17px,3.2vw,22px) 'Space Grotesk';color:var(--text);overflow-wrap:anywhere;text-align:center}
+.hv3-chord-list li.is-now{border-color:#8fa2ff;background:rgba(143,162,255,.14);color:#fff}
+@media(max-width:760px){.hv3-lab-box{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:380px){.hv3-chords-ctl>*{flex:1 1 100%}}
+
+/* ---------- newsletter (reuses .free-kit from free.html) ---------- */
+.hv3-news .free-kit{border-top:3px solid #5fe0d0}
+.hv3-news .free-kit .eyebrow{color:#5fe0d0}
+.hv3-news .free-kit-row .button{min-height:48px}
+.hv3-news .consent{min-height:44px;align-items:center}
+.hv3-news .consent input{margin-top:0}
+
+/* ---------- about ---------- */
+.contact-list a{min-height:44px}
+
+@media(prefers-reduced-motion:reduce){.hv3-chord-list li{transition:none}}

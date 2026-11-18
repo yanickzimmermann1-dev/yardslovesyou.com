@@ -364,3 +364,16 @@
   .bl-actions>*,.pl .bl-actions .button,.pl .bl-actions .outline{padding:8px 6px;font-size:12.5px;letter-spacing:0}
 }
 
+
+/* ===== nav v3 (2026-11-18): Home, Work, Mixing, Sounds, Free, Lab. Tab bar keeps 5 tabs, Free is desktop-only. ===== */
+@media(max-width:720px){
+  nav[aria-label="Main"] a.nav-free{display:none}
+}
+/* desktop dock: 6 items need less padding between 721px and 1100px */
+@media(min-width:721px) and (max-width:1100px){
+  .topbar nav[aria-label="Main"] a{padding:9px 8px;gap:5px;font-size:13px}
+}
+@media(min-width:721px) and (max-width:860px){
+  .topbar nav[aria-label="Main"] a svg{display:none}
+  .topbar nav[aria-label="Main"] a{padding:9px 10px}
+}
