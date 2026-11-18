@@ -42,6 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const serviceRadios = [...document.querySelectorAll('input[name="service"]')];
   const selectedService = () => serviceRadios.find(r => r.checked) || serviceRadios[0];
   const REVISIONS = { "mastering": 1, "stem-mastering": 1, "mixing": 3, "mix-master": 3 };
+  // Mix Feedback: schon 48 h, deshalb kein Rush; wird bei Mixing / Mix + Master innerhalb 30 Tagen angerechnet (serverseitig)
+  const NO_RUSH = { "mix-feedback": true };
+  const CREDITABLE = { "mixing": true, "mix-master": true };
 
   const getSongs = () => {
     const n = Number(songsInput ? songsInput.value : 1);
@@ -70,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const t = text("div", "up-total", ""); t.appendChild(text("span", "", "Total")); t.appendChild(text("span", "", chf(c.total)));
     summaryEl.appendChild(t);
     summaryEl.appendChild(text("p", "up-approx", P.approx(c.total) + " (approximate, you pay in CHF)"));
+    if (CREDITABLE[r.value]) summaryEl.appendChild(text("p", "up-approx", "Had a Mix Feedback in the last 30 days? CHF 29 is deducted at checkout (same email)."));
   }
 
   // Label, erlaubter Dateityp und Hinweis passend zu Service, Songs und Rush
@@ -78,6 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const trust = $("trust-text");
     const rev = REVISIONS[r.value];
     if (trust && rev) trust.textContent = rev + " revision" + (rev === 1 ? "" : "s") + " included · Track your order online · Secure checkout (TWINT, PayPal, card)";
+    if (trust && r.value === "mix-feedback") trust.textContent = "Feedback within 48 hours · Track your order online · Secure checkout (TWINT, PayPal, card)";
+    if (rushInput) {
+      const off = !!NO_RUSH[r.value];
+      if (off) rushInput.checked = false;
+      rushInput.disabled = off;
+      const box = rushInput.closest(".up-check");
+      if (box) { box.classList.toggle("is-off", off); box.title = off ? "Mix Feedback is already delivered within 48 hours." : ""; }
+    }
     if (!fileInput || !fileLabel) return;
     const songs = getSongs();
     const wav = wavAllowed();

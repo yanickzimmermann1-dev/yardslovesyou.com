@@ -8,7 +8,7 @@
   if (!sec || !cfg.SUPABASE_URL || String(cfg.SUPABASE_URL).indexOf("https://") !== 0 || !window.fetch) return;
 
   var KEY = "yly_sr_v1", TTL = 10 * 60 * 1000, LIMIT = 6;
-  var LABEL = { "mastering": "Mastering", "mix-master": "Mix + Master", "stem-mastering": "Stem Mastering", "mixing": "Mixing", "vocal-hook": "Vocal Hook", "vocal-mix": "Vocal Mix" };
+  var LABEL = { "mastering": "Mastering", "mix-master": "Mix + Master", "stem-mastering": "Stem Mastering", "mixing": "Mixing", "vocal-hook": "Vocal Hook", "vocal-mix": "Vocal Mix", "mix-feedback": "Mix Feedback" };
   var STAR = '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.7 6.1 20.8l1.2-6.5L2.5 9.7l6.6-.9z"/></svg>';
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }

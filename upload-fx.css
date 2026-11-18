@@ -41,3 +41,4 @@
 .up-booked-panel .muted{margin:0 0 10px;max-width:60ch}
 .up-booked-panel .hint{margin:0}
 .upload-form.is-booked{opacity:.45;pointer-events:none}
+.up-check.is-off{opacity:.45;cursor:not-allowed}
