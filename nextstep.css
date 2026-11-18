@@ -79,3 +79,14 @@ body .next-step .ns-actions a.outline[data-tone]{box-shadow:none}
 body .next-step .ns-actions a.outline[data-tone]:hover{box-shadow:inset 0 0 18px -4px rgba(var(--t-rgb),.35),0 10px 26px -14px rgba(var(--t-rgb),.6)}
 body .next-step .ns-actions a.outline[data-tone]:active{box-shadow:inset 0 0 14px rgba(var(--t-rgb),.4)}
 body .next-step .ns-actions a[data-tone]:focus-visible{outline-color:var(--t-c)}
+
+/* share/review buttons in the next-step box (buttons, not links) + live note */
+.ns-note{margin:6px 0 0;font-size:14px;color:var(--muted,#a9a3b8)}
+.ns-actions button.button,.ns-actions button.outline{cursor:pointer;font:inherit}
+body .next-step .ns-actions button.button[data-tone]{background:var(--t-c);color:var(--t-ink);border-color:transparent;box-shadow:none}
+body .next-step .ns-actions button.button[data-tone]:hover{filter:brightness(1.08)}
+body .next-step .ns-actions button.outline[data-tone]{color:var(--t-c);border-color:rgba(var(--t-rgb),.45);background:transparent;box-shadow:none}
+body .next-step .ns-actions button.outline[data-tone]:hover{background:rgba(var(--t-rgb),.1);border-color:rgba(var(--t-rgb),.7)}
+body .next-step .ns-actions button[data-tone]:focus-visible{outline:2px solid var(--t-c);outline-offset:2px}
+@media(max-width:720px){.ns-actions button.button,.ns-actions button.outline{width:100%}}
+.ns-note:empty{margin:0}

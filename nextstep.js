@@ -50,8 +50,8 @@
       shop: { line: 'Need a mix too?', btns: [['Upload your track', 'upload.html'], FREE] },
       product: { line: 'Looking for more?', btns: [SHOP, FREE] },
       upload: { line: 'While you wait: train your ears.', btns: [['Try the Ear Trainer', 'eartrainer.html'], ['Get the guide', 'shop.html']] },
-      success: { line: 'Your order is on its way. What next?', btns: [['Explore the Perc Lab', 'beatlab.html'], ['Back to shop', 'shop.html']] },
-      status: { line: 'Your order is on its way. What next?', btns: [['Explore the Perc Lab', 'beatlab.html'], ['Back to shop', 'shop.html']] },
+      success: { dyn: 'success' },   /* review + share, decided from the rendered page (see dynamic block below) */
+      status: { dyn: 'status' },
       about: { line: 'Hear what I do.', btns: [['Hear the difference', 'upload.html#hear']] },
       free: { line: 'Turn the sounds into music.', btns: [['Make loops with the free tools', 'community.html#tools'], ['Pro sounds: Essentials', 'essentials.html']] },
       mixcheck: { line: 'Want a pro to take it from here?', btns: [['Get your track mixed', 'upload.html'], ['Train your ears', 'eartrainer.html']] },
@@ -80,6 +80,34 @@
       if (/^(community|beatlab|chords|eartrainer|mixcheck|profile)\.html$/.test(h)) return 'lab';
       return 'home';
     }
+    function shareIt(opt, note) {
+      try { window.ylyTrack && window.ylyTrack('share-click', { page: page }); } catch (e) {}
+      var d = { title: 'yards \u2014 mixing & mastering', text: opt.text, url: opt.url };
+      var copied = function () { if (note) { note.textContent = 'Link copied'; setTimeout(function () { note.textContent = ''; }, 2500); } };
+      var fallback = function () {
+        try { navigator.clipboard.writeText(opt.url).then(copied, function () { legacyCopy(opt.url) && copied(); }); }
+        catch (e) { legacyCopy(opt.url) && copied(); }
+      };
+      if (navigator.share) { navigator.share(d).catch(function (e) { if (!e || e.name !== 'AbortError') fallback(); }); }
+      else fallback();
+    }
+    function legacyCopy(t) {
+      try { var i = doc.createElement('textarea'); i.value = t; i.setAttribute('readonly', ''); i.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+        body.appendChild(i); i.select(); var ok = doc.execCommand('copy'); body.removeChild(i); return ok; } catch (e) { return false; }
+    }
+    function fill(sec, c) {
+      var box = sec.querySelector('.ns-box'), ac = sec.querySelector('.ns-actions'), note = sec.querySelector('.ns-note');
+      sec.querySelector('.ns-line').textContent = c.line;
+      ac.textContent = '';
+      c.btns.slice(0, c.dyn ? 2 : 1).forEach(function (b, i) {
+        var isBtn = !b[1], a = doc.createElement(isBtn ? 'button' : 'a');
+        a.className = i ? 'outline' : 'button'; a.textContent = b[0];
+        if (isBtn) { a.type = 'button'; a.addEventListener('click', function () { b[2](note); }); }
+        else { a.href = b[1]; a.addEventListener('click', function () { track(page, b[1]); }); }
+        var t = b[3] || tone(b[1]); a.setAttribute('data-tone', t); if (!i) box.setAttribute('data-tone', t);
+        ac.appendChild(a);
+      });
+    }
     function build(c) {
       var sec = doc.createElement('section'); sec.className = 'next-step'; sec.setAttribute('aria-label', 'Next step');
       var box = doc.createElement('div'); box.className = 'ns-box';
@@ -87,17 +115,60 @@
       var ey = doc.createElement('p'); ey.className = 'eyebrow';
       var ic = doc.createElement('span'); ic.className = 'area-ico'; ic.setAttribute('aria-hidden', 'true');
       ey.appendChild(ic); ey.appendChild(doc.createTextNode('Next step'));
-      var ln = doc.createElement('p'); ln.className = 'ns-line'; ln.textContent = c.line;
-      tx.appendChild(ey); tx.appendChild(ln);
+      var ln = doc.createElement('p'); ln.className = 'ns-line';
+      var nt = doc.createElement('p'); nt.className = 'ns-note'; nt.setAttribute('role', 'status'); nt.setAttribute('aria-live', 'polite');
+      tx.appendChild(ey); tx.appendChild(ln); tx.appendChild(nt);
       var ac = doc.createElement('div'); ac.className = 'ns-actions';
-      c.btns.slice(0, 1).forEach(function (b, i) {
-        var a = doc.createElement('a'); a.className = i ? 'outline' : 'button'; a.href = b[1]; a.textContent = b[0];
-        var t = tone(b[1]); a.setAttribute('data-tone', t); if (!i) box.setAttribute('data-tone', t);
-        a.addEventListener('click', function () { track(page, b[1]); });
-        ac.appendChild(a);
-      });
       box.appendChild(tx); box.appendChild(ac); sec.appendChild(box);
+      fill(sec, c);
       return sec;
+    }
+
+    // success / status: review + share, decided from what the page rendered (async); re-evaluated on DOM changes
+    if (cfg.dyn) {
+      var main = doc.querySelector('main') || body, dsec = null, dkey = '', raf = 0;
+      var goto = function (el, focusEl) {
+        if (!el) return;
+        try { el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); } catch (e) { el.scrollIntoView(); }
+        try { (focusEl || el).focus({ preventScroll: true }); } catch (e) {}
+      };
+      var SHARE_HOME = { text: 'Got my track mixed by yards \u2014 worth a listen:', url: 'https://yardslovesyou.com/' };
+      var SHARE_SHOP = { text: 'Sounds & guides by yards:', url: 'https://yardslovesyou.com/shop.html' };
+      var shareBtn = function (o) { return ['Share yardslovesyou', null, function (n) { shareIt(o, n); }, 'home']; };
+      var decide = function () {
+        if (cfg.dyn === 'status') {
+          if (!main.querySelector('.st-card')) return null;                         // not rendered yet / error state
+          var rf = doc.getElementById('st-rv-form');
+          var rev = ['Leave a review', null, function () { goto(doc.getElementById('review'), doc.querySelector('#st-rate-5')); track(page, '#review'); }, 'home'];
+          return { dyn: 1, line: 'Enjoying it? Help other producers find it.', btns: [rf ? rev : ['Book your next song', 'upload.html'], shareBtn(SHARE_HOME)] };
+        }
+        if (main.querySelector('#get-download,.dl-item')) {                         // shop order
+          var slot = main.querySelector('.rv-slot');
+          var tgt = slot && !slot.querySelector('.rv-thanks') ? slot : null;
+          var sb = shareBtn(SHARE_SHOP), line = 'Enjoying it? Help other producers find it.';
+          if (!tgt) return { dyn: 1, line: line, btns: [sb] };
+          return { dyn: 1, line: line, btns: [['Leave a review', null, function () { goto(tgt, tgt.querySelector('button,input,textarea')); track(page, '#review'); }, 'home'], sb] };
+        }
+        if (main.querySelector('.tr-card, #tr-url') || main.querySelector('a.outline[href="index.html"]')) {   // service order
+          var tl = main.querySelector('.tr-card a.button[href]');
+          var sv = shareBtn(SHARE_HOME);
+          return { dyn: 1, line: 'Your track is in good hands.', btns: tl ? [['Track your order', tl.getAttribute('href')], sv] : [sv] };
+        }
+        return null;
+      };
+      var sync = function () {
+        raf = 0;
+        var c = decide();
+        if (!c) { if (dsec && dsec.parentNode) { dsec.parentNode.removeChild(dsec); } dsec = null; dkey = ''; return; }
+        var k = JSON.stringify([c.line, c.btns.map(function (b) { return [b[0], b[1]]; })]);
+        if (!dsec) { dsec = build(c); footer.parentNode.insertBefore(dsec, footer); reveal([dsec]); dkey = k; return; }
+        if (!dsec.parentNode) footer.parentNode.insertBefore(dsec, footer);
+        if (k !== dkey) { fill(dsec, c); dkey = k; }
+      };
+      var queue = function () { if (!raf) raf = requestAnimationFrame(sync); };
+      if (window.MutationObserver) new MutationObserver(queue).observe(main, { childList: true, subtree: true });
+      sync();
+      return;
     }
     var sec = build(cfg);
     footer.parentNode.insertBefore(sec, footer);
