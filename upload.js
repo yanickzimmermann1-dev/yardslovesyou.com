@@ -151,6 +151,69 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) { /* nothing shown on errors */ }
   })();
 
+  // ---------- Waitlist (only visible when booked out) ----------
+  const wlForm = $("up-waitlist");
+  if (wlForm) {
+    wlForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const emailEl = $("wl-email"), consentEl = $("wl-consent"), btn = $("wl-btn"), st = $("wl-status");
+      const say = (m, bad) => { if (st) { st.textContent = m; st.classList.toggle("is-error", !!bad); } };
+      const email = emailEl ? emailEl.value.trim() : "";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 254) { say("Please enter a valid email address.", true); if (emailEl) emailEl.focus(); return; }
+      if (!consentEl || !consentEl.checked) { say("Please tick the box so I know you want one email.", true); return; }
+      if (btn) btn.disabled = true;
+      say("");
+      try {
+        const { error } = await db.from("service_waitlist").insert({ email: email });
+        if (error && error.code !== "23505") throw error;
+        window.ylyTrack && ylyTrack("waitlist-join", {});
+        wlForm.reset();
+        say("You're on the list. I'll email you when slots open.");
+      } catch (err) {
+        console.error("Waitlist failed:", err);
+        say("That didn't work. Please try again, or email hello@yardslovesyou.com.", true);
+        if (btn) btn.disabled = false;
+      }
+    });
+  }
+
+  // ---------- Resume checkout from reminder email (?resume=<id>&t=<token>) ----------
+  (async function resumeCheckout() {
+    const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    let rid = null, tok = null;
+    try {
+      const q = new URLSearchParams(window.location.search);
+      rid = q.get("resume"); tok = q.get("t");
+      if (rid !== null || tok !== null) {
+        q.delete("resume"); q.delete("t");
+        const qs = q.toString();
+        history.replaceState(null, "", window.location.pathname + (qs ? "?" + qs : "") + window.location.hash);
+      }
+    } catch (e) { return; }
+    if (!rid || !tok) return;
+    const el = $("up-resume");
+    if (!el) return;
+    el.hidden = false;
+    el.classList.remove("is-error");
+    const fail = m => { el.classList.add("is-error"); el.textContent = m; };
+    if (!UUID.test(rid) || !UUID.test(tok)) { fail("This link has expired or the order is already paid. Upload again or email hello@yardslovesyou.com."); return; }
+    el.textContent = "Finishing your order\u2026";
+    window.ylyTrack && ylyTrack("resume-checkout", {});
+    try {
+      const { data, error } = await db.functions.invoke("create-submission-checkout", { body: { request_id: rid, resume_token: tok } });
+      let msg = data && data.error;
+      if (!msg && error) { try { msg = (await error.context.json()).error; } catch (_) {} }
+      if (!data || !data.url || !/^https:\/\//i.test(String(data.url))) {
+        if (msg && /fully booked/i.test(msg)) { fail(msg); return; }
+        throw new Error(msg || "no url");
+      }
+      window.location.href = data.url;
+    } catch (err) {
+      console.error("Resume failed:", err);
+      fail("This link has expired or the order is already paid. Upload again or email hello@yardslovesyou.com.");
+    }
+  })();
+
   // ---------- Custom beat inquiry (no payment, no upload) ----------
   if (inquiryForm) {
     inquiryForm.addEventListener("submit", async (e) => {

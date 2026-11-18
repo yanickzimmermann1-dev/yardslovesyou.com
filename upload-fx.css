@@ -19,3 +19,25 @@
 #upfx.rm .upfx-bar{display:block}
 #upfx.rm{transition-duration:.15s}
 @media(max-width:480px){.upfx-orb{width:104px;height:104px;margin-bottom:44px}.upfx-pct{font-size:30px}}
+
+/* Waitlist (booked out) + resume status */
+.up-waitlist{margin:14px 0 16px;max-width:460px}
+.up-waitlist h3{margin:0 0 10px;font:600 17px/1.3 'Space Grotesk',system-ui,sans-serif}
+.up-waitlist label:not(.consent){display:block;margin:0 0 6px;font-size:13px;color:var(--muted)}
+.up-waitlist .wl-row{display:flex;gap:8px;margin:0 0 10px}
+.up-waitlist .wl-row input{flex:1;min-width:0}
+.up-waitlist .consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);line-height:1.5;cursor:pointer}
+.up-waitlist .consent input{margin-top:3px;accent-color:var(--purple);width:16px;height:16px;flex-shrink:0;padding:0}
+.up-waitlist .wl-status{margin:8px 0 0;font-size:13px;line-height:1.5}
+.up-waitlist .wl-status:empty{display:none}
+.up-waitlist .wl-status.is-error,.up-resume.is-error{color:#ffb8c7}
+.up-resume{margin:0 0 1.2rem;padding:12px 16px;border:1px solid var(--border,#30263d);border-radius:12px;font-size:14px;line-height:1.5}
+.up-resume[hidden]{display:none}
+@media (max-width:480px){.up-waitlist .wl-row{flex-direction:column}}
+/* Booked-out panel (Stile lagen in upload-pink.css, das nicht geladen wird) */
+.up-slots[hidden],.up-booked-panel[hidden]{display:none}
+.up-booked-panel{margin:0 0 1.5rem;padding:clamp(18px,3vw,26px);border:1px solid rgba(226,146,218,.45);background:var(--panel);border-radius:16px}
+.up-booked-panel h2{margin:6px 0 8px;font:600 clamp(22px,3vw,28px)/1.2 'Space Grotesk',system-ui,sans-serif}
+.up-booked-panel .muted{margin:0 0 10px;max-width:60ch}
+.up-booked-panel .hint{margin:0}
+.upload-form.is-booked{opacity:.45;pointer-events:none}
