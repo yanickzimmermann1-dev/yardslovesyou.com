@@ -9,7 +9,7 @@
 
   /* ---------- portfolio ---------- */
   if (window.YLYPortfolio) {
-    window.YLYPortfolio.renderGrid($('work-grid'), { limit: 3 });
+    window.YLYPortfolio.renderGrid($('work-grid'), { limit: 8 });
     window.YLYPortfolio.renderFeatured($('featured-release'));
   }
 
