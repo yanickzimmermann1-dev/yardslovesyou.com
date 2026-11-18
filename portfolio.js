@@ -9,9 +9,9 @@
   var R2 = 'https://audio.yardslovesyou.com/'; // Cloudflare R2 (Bucket yards-media): neue Tracks + Cover hier hochladen
   var tracks = [
     { title: 'Flowing.mp<3', bpm: 158, role: 'Prod. by yards', cover: R2 + 'Flowing.jpg', audio: R2 + 'flowing158bpm.m4a', released: '2026-11-18' },
-    { title: 'TwoDays.mp<3', bpm: 132, role: 'Prod. by yards', cover: R2 + 'TwoDays.jpg', audio: '2 days 132bpm.wav', released: '2026-11-16' },
+    { title: 'TwoDays.mp<3', bpm: 132, role: 'Prod. by yards', cover: R2 + 'TwoDays.jpg', audio: R2 + 'twodays132bpm.m4a', released: '2026-11-16' },
     { title: 'MyFace.mp<3', bpm: 130, role: 'Prod. by yards', cover: R2 + 'MyFace.jpg', audio: 'sheknewmyface 130bpm.wav' },
-    { title: 'AngelsHell.mp<3', bpm: 148, role: 'Prod. by yards', cover: R2 + 'AngelsHell.jpg', audio: 'angelshell148bpm.wav' }
+    { title: 'AngelsHell.mp<3', bpm: 148, role: 'Prod. by yards', cover: R2 + 'AngelsHell.jpg', audio: R2 + 'angelshell148bpm.m4a' }
   ];
 
   var BARS = 30;
