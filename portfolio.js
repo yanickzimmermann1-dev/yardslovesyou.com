@@ -6,7 +6,9 @@
   'use strict';
   var cfg = window.APP_CONFIG || {};
   var COVER = 'media/coverart-portolio/';
+  var R2 = 'https://audio.yardslovesyou.com/'; // Cloudflare R2 (Bucket yards-media): neue Tracks + Cover hier hochladen
   var tracks = [
+    { title: 'Flowing.mp<3', bpm: 150, role: 'Prod. by yards', cover: R2 + 'flowing.jpg', audio: R2 + 'flowing150bpm.m4a', released: '2026-11-18' },
     { title: 'TwoDays.mp<3', bpm: 132, role: 'Prod. by yards', cover: COVER + '03c8dfc078c6e76b7bb5dfcd255e7e79.jpg', audio: '2 days 132bpm.wav', released: '2026-11-16' },
     { title: 'MyFace.mp<3', bpm: 130, role: 'Prod. by yards', cover: COVER + '01ebc2b7c246a9d0216220858b7a73fa.jpg', audio: 'sheknewmyface 130bpm.wav' },
     { title: 'AngelsHell.mp<3', bpm: 148, role: 'Prod. by yards', cover: COVER + 'f38cb3fc977a51f6c39843285503fb63.jpg', audio: 'angelshell148bpm.wav' }
@@ -19,10 +21,11 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
   function audioUrl(path) {
+    if (/^https:\/\//.test(path)) return path; // volle Adresse (R2) unveraendert
     var u = String(cfg.SUPABASE_URL || '').replace(/\/$/, '') + '/storage/v1/object/public/audio-files/' + encodeURIComponent(path);
     return window.YLYMedia ? window.YLYMedia.url(u) : u;
   }
-  function coverUrl(p) { return window.YLYMedia ? window.YLYMedia.url(p) : p; }
+  function coverUrl(p) { if (/^https:\/\//.test(p)) return p; return window.YLYMedia ? window.YLYMedia.url(p) : p; }
 
   function playerHtml(t) {
     var bars = '';
