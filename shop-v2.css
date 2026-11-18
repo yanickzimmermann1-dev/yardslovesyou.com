@@ -4,3 +4,7 @@
 .free-strip strong{color:var(--text,#fff);font-weight:600}
 .free-strip .button{white-space:nowrap;flex-shrink:0}
 @media (max-width:560px){.free-strip{margin-top:0}.free-strip .button{width:100%;text-align:center;justify-content:center}}
+
+/* Sterne-Zeile auf Shop-Karten (Bewertungen) */
+.product .p-rating{display:flex;align-items:center;gap:7px;margin-top:10px;color:var(--muted);font-size:12px;line-height:1}
+.product .p-rating-n{font-weight:600}

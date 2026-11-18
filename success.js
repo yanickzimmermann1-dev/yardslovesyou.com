@@ -123,6 +123,11 @@ document.addEventListener("DOMContentLoaded", () => {
           if (reviewed.includes(s.dataset.pid)) { s.remove(); return; }
           window.YLYReviews.widget(s, { db, sessionId, productId: s.dataset.pid, title: s.dataset.title });
         });
+        // Link aus der Review-Mail (#review): zum ersten Bewertungs-Widget scrollen
+        if (location.hash === "#review") {
+          const first = box.querySelector(".rv-slot");
+          if (first) setTimeout(() => { try { first.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (_) { first.scrollIntoView(); } }, 150);
+        }
       }
       return;
     }

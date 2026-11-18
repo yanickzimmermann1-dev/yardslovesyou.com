@@ -106,7 +106,7 @@
       box.innerHTML=ordered(list).map(card).join("");
     }
     box.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy));
-    mount3d(box);
+    mount3d(box); applyRatings(box);
     // "Play sounds" kommt aus soundpads.js: nur Produkte mit gueltigem shop_products.sound_preview
     // ({bucket, folder} oder files[]) bekommen die Pads. Ohne Preview bleibt der Weg ueber Cover/Titel
     // und den "Details"-Button im Card-Footer (immer vorhanden). Fehlende Clouds-Preview = Datenpflege
@@ -116,6 +116,28 @@
       box.animate([{opacity:0,transform:"scale(.985) translateY(6px)"},{opacity:1,transform:"none"}],{duration:380,easing:"cubic-bezier(.34,1.2,.64,1)"});
       box.querySelectorAll(".rv").forEach(el=>el.classList.add("in"));
     }
+  }
+
+  // Sterne-Zeile pro Karte (nur Produkte mit >=1 freigegebener Bewertung); Fehler still ignorieren
+  let ratings=null;
+  function applyRatings(box){
+    if(!ratings||!window.YLYReviews) return;
+    box=box||$("products");
+    box.querySelectorAll("article.product[data-pid]").forEach(a=>{
+      const r=ratings[a.dataset.pid]; if(!r||r.n<1||a.querySelector(".p-rating")) return;
+      const avg=r.sum/r.n, d=document.createElement("div"); d.className="p-rating";
+      d.innerHTML=YLYReviews.stars(avg,13)+`<span class="p-rating-n">${avg.toFixed(1)} (${r.n})</span>`;
+      const row=a.querySelector(".price-row"); if(row) a.insertBefore(d,row); else a.appendChild(d);
+    });
+  }
+  async function loadRatings(){
+    try{
+      const {data,error}=await db.from("product_reviews").select("product_id,rating").eq("status","approved").limit(1000);
+      if(error||!Array.isArray(data)) return;
+      const m={};
+      data.forEach(x=>{ const v=Number(x.rating); if(!x.product_id||!(v>=1&&v<=5)) return; const r=m[x.product_id]||(m[x.product_id]={sum:0,n:0}); r.sum+=v; r.n++; });
+      ratings=m; applyRatings();
+    }catch(_){}
   }
 
   function select(slug,push){
@@ -153,6 +175,7 @@
       e.preventDefault(); select(a.dataset.cat||null,true);
     });}
     select(new URLSearchParams(location.search).get("cat"),false);
+    if(!ratings) loadRatings();
   }
 
   async function buy(productId) {
