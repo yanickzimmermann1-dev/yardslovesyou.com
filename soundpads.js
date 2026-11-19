@@ -54,14 +54,14 @@
     const bucket = s.bucket || "coverart-products", folder = String(s.folder || "").replace(/^\/+|\/+$/g, "");
     const urlOf = n => { const u = db.storage.from(bucket).getPublicUrl((folder ? folder + "/" : "") + n).data.publicUrl; return window.YLYMedia ? window.YLYMedia.url(u) : u; };
     const pr = (async () => {
-      let names;
-      if (Array.isArray(s.files) && s.files.length) names = s.files.filter(n => typeof n === "string" && AUDIO_RE.test(n));
+      let names, ordered = false;
+      if (Array.isArray(s.files) && s.files.length) { names = s.files.filter(n => typeof n === "string" && AUDIO_RE.test(n)); ordered = true; }
       else {
         const { data, error } = await db.storage.from(bucket).list(folder, { limit: 1000, sortBy: { column: "name", order: "asc" } });
         if (error) throw error;
         names = (data || []).filter(x => x && x.id && x.name && x.name !== ".emptyFolderPlaceholder" && AUDIO_RE.test(x.name)).map(x => x.name);
       }
-      return pick(names, k).map(n => ({ name: n, url: urlOf(n) }));
+      return (ordered ? names.slice(0, k) : pick(names, k)).map(n => ({ name: n, url: urlOf(n) }));
     })();
     listCache.set(key, pr);
     pr.catch(() => listCache.delete(key));
@@ -88,6 +88,9 @@
     return bufCache.get(url);
   };
 
+  const LABELS = { HiHat: "Hi-hat", OpenHat: "Open hat" };
+  const labelOf = name => { const m = /^[A-Z0-9]+_([A-Za-z0-9]+)_/.exec(String(name || "")); return m ? (LABELS[m[1]] || m[1]) : ""; };
+
   const tracked = new Set();
   const track = p => {
     const id = String(p.id); if (tracked.has(id)) return; tracked.add(id);
@@ -95,7 +98,8 @@
   };
 
   /* ---------- one widget = a set of pads for one product ---------- */
-  function wire(root, padsEl, db, p, k) {
+  function wire(root, padsEl, db, p, k, o) {
+    o = o || {};
     const pads = [...padsEl.querySelectorAll(".sp-pad")];
     const active = {}; // pad index -> voice
     let entries = null, loading = null, prefetched = false;
@@ -105,7 +109,17 @@
         pads.forEach(b => b.classList.add("sp-loading"));
         loading = resolve(db, p, k).then(list => {
           entries = list;
-          pads.forEach((b, i) => { if (!list[i]) b.hidden = true; });
+          pads.forEach((b, i) => {
+            if (!list[i]) { b.hidden = true; return; }
+            if (o.labels) {
+              const lb = labelOf(list[i].name), t = b.querySelector(".sp-lab");
+              if (lb && t) {
+                t.textContent = lb; b.classList.add("sp-labeled");
+                const key = b.dataset.key;
+                b.setAttribute("aria-label", "Play " + lb + (key ? " (key " + key + ")" : ""));
+              }
+            }
+          });
           return list;
         }).catch(() => { entries = []; pads.forEach(b => { b.classList.add("sp-err"); b.title = "Sounds not available"; }); return []; })
           .finally(() => pads.forEach(b => b.classList.remove("sp-loading")));
@@ -160,12 +174,14 @@
       b.addEventListener("pointerdown", e => { if (e.button) return; touched = Date.now(); e.preventDefault(); e.stopPropagation(); play(i); });
       b.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); if (Date.now() - touched > 700) play(i); }); // keyboard / assistive click
     });
+    if (o.labels) ensure(); // labels need the list (names only, no audio fetch)
     root.addEventListener("keydown", e => {
       if (e.ctrlKey || e.metaKey || e.altKey || !/^[1-9]$/.test(e.key)) return;
       const t = e.target; if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName || "")) return;
       const i = +e.key - 1; if (!pads[i] || pads[i].hidden) return;
       play(i);
     });
+    return { play, prefetch, ensure, pads };
   }
 
   const padHtml = (n, title, cls) => Array.from({ length: n }, (_, i) =>
@@ -199,15 +215,55 @@
     });
   });
 
-  /* ---------- product page ---------- */
+  /* ---------- product page: drum pad with optional keyboard play ---------- */
+  const KEYS = ["Q", "W", "E", "R", "A", "S", "D", "F"];
+  let activeKb = null; // {off} of the currently armed drum pad on this page
+  const kbTracked = new Set();
   function mountProduct(el, p, opts) {
     const db = opts && opts.db; const s = p && cfgOf(p);
     if (!el || !db || !s) return;
     const base = Math.max(1, Number(s.count) || 6);
     const k = Math.min(8, base + 2, Array.isArray(s.files) && s.files.length ? s.files.length : 8);
-    el.className = "sp-row";
-    el.innerHTML = `<p class="eyebrow">Try the sounds</p><div class="sp-pads sp-pads-lg" role="group" aria-label="Sound preview pads">${padHtml(k, p.title, " sp-pad-lg")}</div><p class="fineprint sp-hint">Tap a pad to hear a one-shot from this kit.</p>`;
-    wire(el, el.querySelector(".sp-pads"), db, p, k);
+    const pads = Array.from({ length: k }, (_, i) =>
+      `<button type="button" class="sp-pad sp-pad-lg" data-key="${KEYS[i]}" aria-keyshortcuts="${KEYS[i]} ${i + 1}" aria-label="Play sound ${i + 1} of ${esc(p.title)} (key ${KEYS[i]})"><span class="sp-num" aria-hidden="true">${i + 1}</span><span class="sp-lab" aria-hidden="true"></span><span class="sp-key" aria-hidden="true">${KEYS[i]}</span></button>`).join("");
+    el.className = "sp-row sp-drum";
+    el.innerHTML = `<div class="sp-head"><p class="eyebrow">Try the sounds</p><button type="button" class="sp-kb" aria-pressed="false"><span class="sp-kb-dot" aria-hidden="true"></span><span class="sp-kb-t">Play with keyboard</span></button></div><div class="sp-pads sp-pads-lg" role="group" aria-label="Sound preview pads">${pads}</div><p class="fineprint sp-hint"><span class="sp-hint-kb">Tap a pad, or turn on the keyboard and play with Q W E R / A S D F.</span><span class="sp-hint-touch">Tap a pad to hear a one-shot from this kit.</span></p>`;
+    const api = wire(el, el.querySelector(".sp-pads"), db, p, k, { labels: true });
+    const btn = el.querySelector(".sp-kb"), txt = el.querySelector(".sp-kb-t");
+    let on = false;
+    const onKey = e => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === "Escape") { if (on) { e.preventDefault(); set(false); } return; }
+      if (e.repeat) return;
+      const t = e.target;
+      if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName || "") || t.isContentEditable)) return;
+      const i = KEYS.indexOf(String(e.key).toUpperCase());
+      if (i < 0 || i >= k || !api.pads[i] || api.pads[i].hidden) return;
+      e.preventDefault(); api.play(i);
+    };
+    const onVis = () => { if (document.hidden) set(false); };
+    function set(v) {
+      if (v === on) return; on = v;
+      btn.setAttribute("aria-pressed", v ? "true" : "false");
+      txt.textContent = v ? "Keyboard on \u00b7 Esc to stop" : "Play with keyboard";
+      el.classList.toggle("sp-armed", v);
+      if (v) {
+        if (activeKb && activeKb !== handle) activeKb.off();
+        activeKb = handle;
+        const c = getCtx(); try { if (c && c.state !== "running") c.resume(); } catch (_) {}
+        api.prefetch();
+        document.addEventListener("keydown", onKey);
+        document.addEventListener("visibilitychange", onVis);
+        const id = String(p.id);
+        if (!kbTracked.has(id)) { kbTracked.add(id); window.ylyTrack && ylyTrack("soundpad-keys", { product: id }); }
+      } else {
+        document.removeEventListener("keydown", onKey);
+        document.removeEventListener("visibilitychange", onVis);
+        if (activeKb === handle) activeKb = null;
+      }
+    }
+    const handle = { off: () => set(false) };
+    btn.addEventListener("click", () => set(!on));
   }
 
   window.SoundPads = { attach, mountProduct, stopAll, stats };
