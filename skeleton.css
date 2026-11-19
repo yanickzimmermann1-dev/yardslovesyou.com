@@ -45,3 +45,6 @@ html.bu-on :is(.cover,.pd-main,.pd-thumbs button):has(> img.bu:not(.bu-in)){back
 .rvl-d>span{display:flex;flex-direction:column;transform:translateY(0);transition:transform .9s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0)*60ms)}
 .rvl-d>span>i{font-style:normal;display:block;height:1.2em}
 .rvl-d.rvl-hold>span{transition:none}
+.rvl-d>span>i::before{content:attr(data-d)}
+.rvl-t{white-space:pre}
+.rvl-t::before{content:attr(data-t)}

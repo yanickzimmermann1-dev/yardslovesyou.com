@@ -94,12 +94,12 @@
       if (/\d/.test(ch)) {
         run = null;
         var d = mk('rvl-d'), col = document.createElement('span');
-        for (var k = 0; k < 10; k++) { var n = document.createElement('i'); n.textContent = k; col.appendChild(n); }
+        for (var k = 0; k < 10; k++) { var n = document.createElement('i'); n.setAttribute('data-d', k); col.appendChild(n); }
         d.appendChild(col); d.setAttribute('aria-hidden', 'true'); el.appendChild(d);
         it.cols.push({ col: col, d: +ch, i: it.cols.length });
       } else {
-        if (!run) { run = mk(''); run.setAttribute('aria-hidden', 'true'); el.appendChild(run); }
-        run.textContent += ch;
+        if (!run) { run = mk('rvl-t'); run.setAttribute('aria-hidden', 'true'); run.setAttribute('data-t', ''); el.appendChild(run); }
+        run.setAttribute('data-t', run.getAttribute('data-t') + ch);
       }
     }
     var r = el.getBoundingClientRect();
