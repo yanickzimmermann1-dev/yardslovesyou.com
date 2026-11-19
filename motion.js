@@ -193,7 +193,7 @@
           });
         }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
 
-        var scanQueued = false;
+        var scanQueued = false, initialScan = true;
         var scan = function () {
           scanQueued = false;
           try {
@@ -206,7 +206,7 @@
               if (el.hasAttribute('data-hs')) continue; // home-scroll.js animiert dieses Element selbst
               if (el.closest(RV_SKIP)) continue;
               // Ankunft per Seitenübergang: Elemente im ersten Viewport starten im Endzustand (kein Einblenden/Verschieben)
-              if (arrived && performance.now() < 3000) {
+              if (initialScan || performance.now() < 3000) {
                 var br = el.getBoundingClientRect();
                 if (br.bottom > 0 && br.top < window.innerHeight) { inView.push(el); continue; }
               }
@@ -237,6 +237,7 @@
           requestAnimationFrame(scan);
         };
         scan();
+        initialScan = false;
         // Später gerenderte Listen (Shop, Community, Mix Check) einsammeln
         try {
           new MutationObserver(queueScan).observe(body, { childList: true, subtree: true });

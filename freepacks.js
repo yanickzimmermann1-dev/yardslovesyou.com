@@ -110,7 +110,7 @@
 
   // ---- Hub ----
   function renderHub(rows) {
-    var eps = episodesOf(rows), sec = $("series");
+    var eps = episodesOf(rows).filter(function (r) { return !r.coming_soon; }), sec = $("series");
     if (!sec || !eps.length) return;
     var grid = $("series-grid");
     grid.innerHTML = eps.map(function (r) {
@@ -127,6 +127,7 @@
         (r.place ? '<p class="muted fp-place">' + esc(r.place) + "</p>" : "") + action + "</div></article>";
     }).join("");
     sec.classList.remove("hidden");
+    mountSuggest(hubSuggest);
   }
 
   // ---- Fokus ----
@@ -138,7 +139,6 @@
     root.classList.remove("fp-focus");
     var f = $("fp-focus"); if (f) f.classList.add("hidden");
     doc.title = baseTitle; if (metaDesc) metaDesc.setAttribute("content", baseDesc);
-    mountSuggest(hubSuggest);
     loadRows().then(renderHub);
   }
   function renderFocus(p) {
@@ -227,7 +227,7 @@
   }
 
   function start() {
-    if (ep === null || ep === "") { root.classList.remove("fp-focus"); mountSuggest(hubSuggest); loadRows().then(renderHub); return; }
+    if (ep === null || ep === "") { root.classList.remove("fp-focus"); loadRows().then(renderHub); return; }
     loadRows().then(function (rows) {
       var pick = null;
       if (ep === "latest") {

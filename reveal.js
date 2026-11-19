@@ -24,14 +24,14 @@
   var ROLL = '[data-roll], .price, .mc-price, .stat-value, .stat-num';
   var SKIP = '.hero, [data-hs], .intro, #intro, [class*="intro-"], .holo, [class*="holo"], dialog, .sk, .sk-card, [hidden], .pd-sticky, .cart-drawer, #cart-drawer, script, style';
   var items = [], seen = (typeof WeakSet === 'function') ? new WeakSet() : null;
-  var io = null;
+  var io = null, firstScan = false;
 
   function eligible(el) {
     if (seen && seen.has(el)) return false;
     var sk = el.closest(SKIP); if (sk && sk !== root && sk !== body) return false;
     if (!el.getClientRects().length) return false;
     if (!(el.textContent || '').trim()) return false;
-    if (arrived && (performance.now() - T0) < 3000) {
+    if (firstScan || (performance.now() - T0) < 3000) {
       var r = el.getBoundingClientRect();
       if (r.bottom > 0 && r.top < window.innerHeight) { if (seen) seen.add(el); return false; }
     }
@@ -149,7 +149,9 @@
         });
       }, { threshold: 0.2, rootMargin: '0px 0px -5% 0px' });
     } else return;
+    firstScan = true;
     scan();
+    firstScan = false;
   }
 
   var queued = false, pending = [];

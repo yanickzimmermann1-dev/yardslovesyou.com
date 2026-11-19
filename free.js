@@ -58,12 +58,8 @@
     const today = new Date().toISOString().slice(0, 10);
     const { data } = await db.from("sound_drops").select("title,description,preview_path,release_date")
       .eq("published", true).lte("release_date", today).order("release_date", { ascending: false }).limit(1).maybeSingle();
-    if (!data) {
-      $("drop-title").textContent = "First drop coming soon.";
-      $("drop-desc").textContent = "Sign up now and get the first royalty-free Sound Drop from YARDSLOVESYOU the day it lands.";
-      $("drop-btn").textContent = "Sign me up";
-      return;
-    }
+    if (!data) return;
+    $("sound-drop").classList.remove("hidden");
     $("drop-title").textContent = data.title;
     if (data.description) $("drop-desc").textContent = data.description;
     if (data.preview_path) setupPreview(media(data.preview_path));

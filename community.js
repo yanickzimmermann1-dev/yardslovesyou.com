@@ -31,6 +31,8 @@
     return { data };
   }
 
+  const setBlock = on => document.querySelectorAll(".cm-block").forEach(el => el.classList.toggle("hidden", !on));
+
   let seq = 0;
   async function load(reset) {
     if (loading && !reset) return;
@@ -46,7 +48,9 @@
         const posts = res.data.filter(p => p.id !== sharedId);
         const m = await me(), liked = await likedSet(posts.map(p => p.id));
         if (my !== seq) return;
-        if (reset && !posts.length) {
+        const empty = reset && !posts.length;
+        if (reset) setBlock(!(empty && tab === "new" && filter === "all" && !sharedId));
+        if (empty) {
           if (filter !== "all") S(feed, { icon: "wave", title: filter === "beat" ? "No beats here yet" : "No chord ideas here yet", text: "Nothing matches this filter yet. Be the first to publish one.", actions: [filter === "beat" ? { label: "Make a loop in the Perc Lab", href: "beatlab.html" } : { label: "Write chords", href: "chords.html" }, { label: "Show all posts", onClick: () => goFilter("all") }] });
           else S(feed, { icon: "wave", title: "Nothing here yet", text: "Be the first: make a beat or chords, then hit Publish to share it with the community.", actions: [{ label: "Make a loop in the Perc Lab", href: "beatlab.html" }, { label: "Write chords", href: "chords.html" }] });
         }
