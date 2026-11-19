@@ -1,7 +1,17 @@
 #!/usr/bin/env python3
-"""Erzeugt statische Produktseiten (z.B. essentials.html) aus product.html + Supabase,
-schreibt products-map.js und aktualisiert die Produkt-URLs in sitemap.xml.
-Nur Python-Standardbibliothek. Aufruf aus dem Repo-Stammordner: python3 tools/gen-product-pages.py"""
+"""Erzeugt statische Produktseiten (essentials.html, guide-*.html, ...) aus product.html + Supabase,
+schreibt products-map.js und ergaenzt fehlende Produkt-URLs in sitemap.xml.
+Nur Python-Standardbibliothek. Aufruf aus dem Repo-Stammordner: python3 tools/gen-product-pages.py
+
+KURZANLEITUNG
+  Liest:     Supabase shop_products (read-only GET, Key aus config.js), product.html (Vorlage inkl. Script-
+             Liste/?v=-Versionen/CSS-Marker), media.js, products-map.js (bestehende Seitennamen), vorhandene
+             Produktseiten (nur: ob sample.js drin ist).
+  Schreibt:  <slug>.html je Produkt, products-map.js, sitemap.xml (bestehende Eintraege/lastmod bleiben).
+  Danach:    python3 tools/build.py (setzt das CSS-Bundle/den Hash), dann `git diff` pruefen, erst dann pushen.
+  Stabil:    Bei unveraendertem DB-Stand liefert der Lauf (+ build.py) einen leeren git diff.
+  Seitennamen: stehen in products-map.js und bleiben erhalten; nur NEUE Produkte werden per slugify(title) benannt.
+  Handpflege: PAGE_OVERRIDES (unten) haelt Abweichungen, die nicht aus der DB kommen (Bild-URL, Zusatzbilder)."""
 import html, json, re, sys, urllib.request, urllib.parse
 from pathlib import Path
 
@@ -25,6 +35,14 @@ def fetch_products():
     req = urllib.request.Request(base + "/rest/v1/shop_products?" + q, headers={"apikey": key, "Authorization": "Bearer " + key})
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.load(r)
+
+
+# Abweichungen von der DB, die auf den aktuellen Seiten bewusst so stehen (Schluessel = Seitenname).
+#   "images": exakte Bild-URL-Liste fuer og:image/twitter:image/JSON-LD/<img> (erste = Hauptbild)
+PAGE_OVERRIDES = {
+    "clouds-vol-01": {"images": ["https://kmekgjllklwrxizqbrac.supabase.co/storage/v1/object/public/coverart-products/clouds-vol-01.jpg"]},
+}
+SAMPLE_TAG = re.compile(r'[ \t]*<script src="sample\.js[^"]*" defer></script>\n')
 
 
 def slugify(t):
@@ -78,8 +96,12 @@ def build_page(tpl, p, slug, files):
     e = html.escape
     desc = short_desc(p)
     url = "%s/%s.html" % (SITE, slug)
-    imgs = image_urls(p, files)
+    imgs = PAGE_OVERRIDES.get(slug, {}).get("images") or image_urls(p, files)
     img = imgs[0] if imgs else SITE + "/og-image.jpg"
+    # Guide-Cover (guides/NN-name.jpg) haben ein Vorschaubild "<name>-preview.jpg" -> zusaetzlich im JSON-LD
+    ld_imgs = list(imgs) or [img]
+    if re.search(r"/guides/\d\d-[^/]+\.jpg$", img):
+        ld_imgs.append(img[:-4] + "-preview.jpg")
     cur = (p.get("currency") or "CHF").upper()
     head = (
         '<title>%s · YARDSLOVESYOU</title>\n'
@@ -102,7 +124,7 @@ def build_page(tpl, p, slug, files):
     ) % (e(title), e(desc), url, e(title), e(desc), url, e(img), e(title), e(desc), e(img))
     ld = {
         "@context": "https://schema.org", "@type": "Product", "name": title, "description": desc,
-        "image": imgs or [img], "sku": p["id"], "url": url,
+        "image": ld_imgs, "sku": p["id"], "url": url,
         "brand": {"@type": "Brand", "name": "YARDSLOVESYOU"},
         "offers": {"@type": "Offer", "url": url, "price": "%.2f" % (p["price_cents"] / 100), "priceCurrency": cur,
                    "availability": "https://schema.org/InStock"},
@@ -112,6 +134,11 @@ def build_page(tpl, p, slug, files):
     if not pat.search(tpl):
         sys.exit("product.html: Head-Block nicht gefunden")
     out = pat.sub(lambda m: head, tpl, count=1)
+
+    # sample.js: bei bestehenden Seiten so lassen wie aktuell (nicht jedes Produkt hat Hoerproben), neue Seiten: Vorlage
+    cur_page = ROOT / (slug + ".html")
+    if cur_page.exists() and "sample.js" not in cur_page.read_text(encoding="utf-8"):
+        out = SAMPLE_TAG.sub("", out)
 
     out = out.replace('<body data-area="shop">', '<body data-area="shop" data-product-id="%s">' % e(p["id"]), 1)
 
@@ -147,15 +174,15 @@ def update_map(slugs):
 
 
 def update_sitemap(slugs):
+    """Bestehende Eintraege (Reihenfolge, lastmod) bleiben unveraendert; nur fehlende Seiten werden ergaenzt."""
     f = ROOT / "sitemap.xml"
     s = f.read_text(encoding="utf-8")
     s = re.sub(r'[ \t]*<url><loc>%s/product\.html\?id=[^<]*</loc>.*?</url>\n' % re.escape(SITE), "", s)
-    old = {m.group(1): m.group(0) for m in re.finditer(r'[ \t]*<url><loc>%s/([a-z0-9-]+)\.html</loc>.*?</url>\n' % re.escape(SITE), s)}
-    for slug in sorted(slugs.values()):
-        s = re.sub(r'[ \t]*<url><loc>%s/%s\.html</loc>.*?</url>\n' % (re.escape(SITE), re.escape(slug)), "", s)
-    entries = "".join('  <url><loc>%s/%s.html</loc><lastmod>%s</lastmod><priority>0.8</priority></url>\n' % (SITE, slug, LASTMOD) for slug in sorted(slugs.values()))
-    anchor = re.search(r'[ \t]*<url><loc>%s/community-guidelines\.html' % re.escape(SITE), s)
-    s = s[:anchor.start()] + entries + s[anchor.start():] if anchor else s.replace("</urlset>", entries + "</urlset>")
+    entries = "".join('  <url><loc>%s/%s.html</loc><lastmod>%s</lastmod><priority>0.8</priority></url>\n' % (SITE, slug, LASTMOD)
+                      for slug in sorted(slugs.values()) if "<loc>%s/%s.html</loc>" % (SITE, slug) not in s)
+    if entries:
+        anchor = re.search(r'[ \t]*<url><loc>%s/community-guidelines\.html' % re.escape(SITE), s)
+        s = s[:anchor.start()] + entries + s[anchor.start():] if anchor else s.replace("</urlset>", entries + "</urlset>")
     f.write_text(s, encoding="utf-8")
 
 
@@ -187,10 +214,10 @@ def main():
     local = load_local(src) if (local_mode or src.exists()) else []
     forced = {p["id"]: p["slug"] for p in local if p.get("slug")}
     products = local if local_mode else fetch_products()
-    slugs = current_slugs() if local_mode else {}
+    slugs = current_slugs()
     for p in products:
-        slug = forced.get(p["id"]) or slugify(p["title"])
-        if p["id"] not in forced and (slug in ("product", "shop", "index") or slug in slugs.values()):
+        slug = forced.get(p["id"]) or slugs.get(p["id"]) or slugify(p["title"])
+        if p["id"] not in forced and p["id"] not in slugs and (slug in ("product", "shop", "index") or slug in slugs.values()):
             slug += "-" + p["id"][:4]
         slugs[p["id"]] = slug
         (ROOT / (slug + ".html")).write_text(build_page(tpl, p, slug, files), encoding="utf-8")
