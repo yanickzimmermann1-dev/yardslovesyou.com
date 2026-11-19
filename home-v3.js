@@ -10,7 +10,6 @@
   /* ---------- portfolio ---------- */
   if (window.YLYPortfolio) {
     window.YLYPortfolio.renderGrid($('work-grid'), { limit: 8 });
-    window.YLYPortfolio.renderFeatured($('featured-release'));
   }
 
   /* ---------- mini Chord Starter (natural minor, triads; same theory as chords.js) ---------- */
