@@ -29,7 +29,7 @@
 
   function loadDemo() {
     if (!demoPromise) {
-      demoPromise = fetch(BASE + "demo.json?v=20261122c", { cache: "force-cache" }).then(function (r) {
+      demoPromise = fetch(BASE + "demo.json?v=20261123a", { cache: "force-cache" }).then(function (r) {
         if (!r.ok) throw new Error("Could not load the demo sounds (" + r.status + ").");
         return r.json();
       }).catch(function (e) { demoPromise = null; throw e; });

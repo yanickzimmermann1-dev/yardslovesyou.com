@@ -312,7 +312,7 @@
     $("gb-summary").textContent = `Found ${hits.length} sound${hits.length === 1 ? "" : "s"} in ${S.files.length} track${S.files.length === 1 ? "" : "s"}`;
     const demo = !!S.session.demo;
     $("gb-banner").classList.toggle("hidden", !demo);
-    $("gb-banner-extra").textContent = "Drop your own stems to analyse them for real.";
+    $("gb-banner-extra").innerHTML = `these sounds come from <a href="${esc("clouds-vol-01.html")}">Clouds Vol. 01</a>, our drum kit. Drop your own stems to analyse them for real.`;
     grid.innerHTML = ""; Object.keys(cards).forEach(k => delete cards[k]);
     if (!hits.length) {
       grid.innerHTML = "";
