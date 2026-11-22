@@ -26,7 +26,7 @@
       status.classList.remove("danger"); status.textContent = "";
       const addr = email.value.trim();
       if (!EMAIL_RE.test(addr)) { status.textContent = "Please enter a valid email address."; status.classList.add("danger"); return; }
-      if (requireConsent && !consent.checked) { status.textContent = "Please tick the box to receive the Sound Drop."; status.classList.add("danger"); return; }
+      if (requireConsent && !consent.checked) { status.textContent = "Please tick the box to get emails from YARDSLOVESYOU."; status.classList.add("danger"); return; }
       const label = button.textContent;
       button.disabled = true; button.textContent = busy;
       try {

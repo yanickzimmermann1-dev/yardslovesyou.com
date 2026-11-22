@@ -11,3 +11,8 @@
 .sg-hint a{color:var(--purple)}
 .sg-card #sg-status{margin:8px 0 0;min-height:1.2em}
 .sg a:focus-visible,.sg button:focus-visible,.sg input:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+
+/* Text link under the buy row: jumps to the free sample form */
+.sg-jump{margin:12px 0 0;font-size:14px}
+.sg-jump a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.sg-jump a:hover{color:var(--purple)}

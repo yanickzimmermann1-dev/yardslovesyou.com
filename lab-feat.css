@@ -1,4 +1,0 @@
-/* featured tile (Gumball, community.html only): full width on top, same card as the others + a small "New" label */
-.ep-grid.ep-4 .ep-feat{grid-column:1/-1}
-.ep-feat p{max-width:64ch}
-.ep-new{position:absolute;top:clamp(22px,2.6vw,30px);right:clamp(22px,2.6vw,30px);padding:3px 10px;border-radius:999px;border:1px solid rgba(var(--ep-rgb),.5);color:var(--ep-c);font:600 12px 'DM Sans',sans-serif}

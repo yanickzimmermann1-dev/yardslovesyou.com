@@ -35,7 +35,7 @@
     shown = n;
     pill.querySelector(".live-num").textContent = n;
     pill.querySelector(".live-label").textContent = n === 1 ? "producer" : "producers";
-    pill.title = `${n} producers are on the Perc Lab, Chord Starter or Community right now`;
+    pill.title = `${n} producers are in the Lab right now`;
   }
 
   const channel = db.channel("producers-online", { config: { presence: { key: id } } });

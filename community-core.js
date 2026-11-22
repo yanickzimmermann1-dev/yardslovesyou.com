@@ -1,7 +1,7 @@
 /* =====================================================================
    COMMUNITY – gemeinsame Funktionen (Login, Profile, Beitragskarten)
    Wird von community.html, profile.html, account.html, community-admin.html
-   sowie vom "Publish"-Button im Beat Lab und Chord & Melody Starter genutzt.
+   sowie vom Upload im Lab, Gumball und dem "Publish"-Button im Chord Starter genutzt.
    ===================================================================== */
 window.YLY = (() => {
   const cfg = window.APP_CONFIG || {};
@@ -18,7 +18,7 @@ window.YLY = (() => {
     ["spotify", "Spotify", /^https:\/\/open\.spotify\.com\//i],
     ["beatstars", "BeatStars", /^https:\/\/(www\.)?beatstars\.com\//i],
   ];
-  const POST_SELECT = "id,type,title,data,remix_of,like_count,featured,hidden,created_at,user_id," +
+  const POST_SELECT = "id,type,title,data,tags,remix_of,like_count,featured,hidden,created_at,user_id," +
     "author:profiles!posts_user_id_fkey(handle,display_name)," +
     "parent:remix_of(id,title,author:profiles!posts_user_id_fkey(handle))";
 
@@ -53,8 +53,8 @@ window.YLY = (() => {
     for (const [sec, l] of u) if (s >= sec) return Math.floor(s / sec) + l + " ago";
     return "just now";
   }
-  const toolUrl = p => p.type === "beat" ? `beatlab.html#b=${p.data}` : `chords.html#c=${p.data}`;
-  const remixUrl = p => p.type === "beat" ? `beatlab.html?remix=${p.id}#b=${p.data}` : `chords.html?remix=${p.id}#c=${p.data}`;
+  const toolUrl = p => `chords.html#c=${p.data}`;
+  const remixUrl = p => `chords.html?remix=${p.id}#c=${p.data}`;
   const postLink = id => `${location.origin}/community.html?post=${id}`;
 
   // Vorschau eines Beats (Raster) bzw. einer Akkord-Idee (Eckdaten)
@@ -96,26 +96,111 @@ window.YLY = (() => {
     } catch (_) { return ""; }
   }
 
-  // ---------- Beitragskarte ----------
+  // ---------- Audio-Beitraege (Loops / Gumball) ----------
+  const TYPE_LABEL = { audio: "Loop", chords: "Chords", gumball: "Gumball", beat: "Beat" };
+  const AUDIO_RE = /^https:\/\/audio\.yardslovesyou\.com\/lab\/[0-9a-f-]{36}\/[0-9a-f-]{36}\.m4a$/i;
+  const TAG_RE = /^[a-z0-9][a-z0-9 -]{0,18}[a-z0-9]$/;
+  // data kann Text oder jsonb sein: immer als Objekt lesen (oder null)
+  const pdata = p => {
+    let d = p.data;
+    if (typeof d === "string") { try { d = JSON.parse(d); } catch (_) { return null; } }
+    return d && typeof d === "object" ? d : null;
+  };
+  const fmtDur = s => { s = Math.round(+s || 0); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+  const PLAY_SVG = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
+  const PAUSE_SVG = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5.5" width="4" height="13" rx="1"/><rect x="13.5" y="5.5" width="4" height="13" rx="1"/></svg>';
+  let waveN = 0;
+  function waveSvg(peaks) {
+    const pk = (Array.isArray(peaks) ? peaks : []).slice(0, 200).map(v => Math.max(0, Math.min(255, +v || 0)));
+    if (!pk.length) return "";
+    const d = pk.map((v, i) => { const h = Math.max(1.5, v / 255 * 14); return `M${i + .5} ${(16 - h).toFixed(1)}V${(16 + h).toFixed(1)}`; }).join("");
+    const id = "wc" + (++waveN);
+    return `<svg class="lp-wave" viewBox="0 0 ${pk.length} 32" preserveAspectRatio="none" width="100%" height="48" aria-hidden="true" style="color:var(--accent,#8fa2ff);display:block"><defs><clipPath id="${id}"><rect class="lp-clip" x="0" y="0" width="0" height="32"/></clipPath></defs><path d="${d}" stroke="currentColor" stroke-opacity=".3" stroke-width=".7" fill="none"/><path d="${d}" stroke="currentColor" stroke-width=".7" fill="none" clip-path="url(#${id})"/></svg>`;
+  }
+  const tagsOf = p => (Array.isArray(p.tags) ? p.tags : []).filter(t => typeof t === "string" && TAG_RE.test(t)).slice(0, 5);
+  const tagsHtml = p => { const t = tagsOf(p); return t.length ? `<p class="lp-tags">${t.map(x => `<a class="lp-tag" href="community.html?tag=${encodeURIComponent(x)}" data-tag="${esc(x)}">#${esc(x)}</a>`).join("")}</p>` : ""; };
+  function audioBlock(p) {
+    const d = pdata(p);
+    if (!d || !AUDIO_RE.test(String(d.url || ""))) return `<p class="cp-meta">This sound is no longer available.</p>`;
+    const meta = [d.duration ? fmtDur(d.duration) : "", d.bpm ? +d.bpm + " BPM" : "", d.key ? esc(d.key) : ""].filter(Boolean).join(" \u00b7 ");
+    const sounds = p.type === "gumball" && Array.isArray(d.sounds) && d.sounds.length
+      ? `<p class="cp-meta">${d.sounds.slice(0, 12).map(x => esc(String(x).slice(0, 24))).join(" \u00b7 ")}</p>` : "";
+    return `<div class="lp-deck">
+        <button type="button" class="lp-play" data-play="${esc(d.url)}" aria-label="Play ${esc(p.title)}">${PLAY_SVG}</button>
+        <div class="lp-wavebox" data-seek>${waveSvg(d.peaks)}</div>
+        ${meta ? `<span class="lp-dur">${meta}</span>` : ""}
+      </div>${sounds}`;
+  }
+
+  // Ein gemeinsamer Player: es spielt immer nur ein Beitrag
+  const player = { a: null, btn: null };
+  const setPlayState = (btn, on) => { if (btn) { btn.innerHTML = on ? PAUSE_SVG : PLAY_SVG; btn.classList.toggle("is-on", on); btn.closest(".cp")?.classList.toggle("is-playing", on); } };
+  function setClip(btn, ratio) {
+    const r = btn && btn.closest(".cp")?.querySelector(".lp-clip"); if (!r) return;
+    const w = r.ownerSVGElement.viewBox.baseVal.width; r.setAttribute("width", String(Math.max(0, Math.min(1, ratio)) * w));
+  }
+  function stopPlayer() { if (player.a) player.a.pause(); setPlayState(player.btn, false); setClip(player.btn, 0); player.btn = null; }
+  function togglePlay(btn, seekTo) {
+    if (!player.a) {
+      const a = player.a = new Audio(); a.preload = "none";
+      a.addEventListener("timeupdate", () => { if (a.duration) setClip(player.btn, a.currentTime / a.duration); });
+      a.addEventListener("ended", stopPlayer);
+      a.addEventListener("error", () => { stopPlayer(); toast("This sound could not be played.", true); });
+    }
+    const a = player.a;
+    if (player.btn === btn) {
+      if (seekTo != null && a.duration) { a.currentTime = seekTo * a.duration; if (a.paused) { a.play(); setPlayState(btn, true); } return; }
+      if (!a.paused) { a.pause(); setPlayState(btn, false); return; }
+      a.play().catch(() => {}); setPlayState(btn, true); return;
+    }
+    stopPlayer(); player.btn = btn; a.src = btn.dataset.play; setPlayState(btn, true);
+    if (seekTo != null) a.addEventListener("loadedmetadata", () => { a.currentTime = seekTo * a.duration; }, { once: true });
+    a.play().catch(() => { stopPlayer(); toast("This sound could not be played.", true); });
+  }
+
+  // Aufruf der Edge Function lab-upload (Upload-URL holen, Datei loeschen)
+  async function labFn(body) {
+    const { data } = await db.auth.getSession();
+    const tok = data.session?.access_token;
+    if (!tok) throw new Error("Please sign in first.");
+    let res;
+    try {
+      res = await fetch(cfg.SUPABASE_URL + "/functions/v1/lab-upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + tok, apikey: cfg.SUPABASE_PUBLISHABLE_KEY },
+        body: JSON.stringify(body)
+      });
+    } catch (_) { throw new Error("The upload service is not reachable. Please try again."); }
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(j.error || "The upload service answered with an error (" + res.status + ").");
+    return j;
+  }
+
+  // ---------- Beitragskarte (Patch) ----------
   function postCard(p, ctx = {}) {
     const mine = ctx.me && ctx.me.user.id === p.user_id;
     const liked = ctx.liked && ctx.liked.has(p.id);
     const by = p.author ? `<a href="profile.html?u=${encodeURIComponent(p.author.handle)}">@${esc(p.author.handle)}</a>` : "unknown";
-    const parent = p.parent ? ` · remix of <a href="community.html?post=${encodeURIComponent(p.parent.id)}">${esc(p.parent.title)}</a>${p.parent.author ? ` by @${esc(p.parent.author.handle)}` : ""}` : "";
+    const parent = p.parent ? ` \u00b7 remix of <a href="community.html?post=${encodeURIComponent(p.parent.id)}">${esc(p.parent.title)}</a>${p.parent.author ? ` by @${esc(p.parent.author.handle)}` : ""}` : "";
+    const isAudio = p.type === "audio" || p.type === "gumball";
+    const ad = isAudio ? pdata(p) : null;
+    const body = isAudio ? audioBlock(p) : preview(p);
+    const open = p.type === "chords"
+      ? `<a class="button cp-btn" href="${esc(toolUrl(p))}">Open</a><a class="outline cp-btn" href="${esc(remixUrl(p))}">Remix</a>` : "";
     return `
-      <article class="cp ${p.hidden ? "is-hidden" : ""}" data-id="${esc(p.id)}">
+      <article class="cp lp lp-${esc(p.type)} ${p.hidden ? "is-hidden" : ""}" data-id="${esc(p.id)}" data-type="${esc(p.type)}"${ad && AUDIO_RE.test(String(ad.url || "")) ? ` data-audio="${esc(ad.url)}"` : ""}>
         <div class="cp-head">
-          <span class="cp-type ${esc(p.type)}">${p.type === "beat" ? "Beat" : "Chords"}</span>
+          <span class="cp-type ${esc(p.type)}">${TYPE_LABEL[p.type] || esc(p.type)}</span>
           ${p.featured ? `<span class="cp-feat">Featured</span>` : ""}
           ${p.hidden ? `<span class="cp-hidden-tag">Hidden</span>` : ""}
           <span class="cp-time">${timeAgo(p.created_at)}</span>
         </div>
         <h3><a href="community.html?post=${encodeURIComponent(p.id)}">${esc(p.title)}</a></h3>
         <p class="cp-by">by ${by}${parent}</p>
-        ${preview(p)}
+        ${body}
+        ${tagsHtml(p)}
         <div class="cp-actions">
-          <a class="button cp-btn" href="${esc(toolUrl(p))}">Play</a>
-          <a class="outline cp-btn" href="${esc(remixUrl(p))}">Remix</a>
+          ${open}
           <button type="button" class="cp-like ${liked ? "liked" : ""}" data-like="${esc(p.id)}" aria-pressed="${!!liked}" aria-label="Like"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-2px;margin-right:5px"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 4.8 6.6 4.8c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.6 0 5.7 3.7 4.2 7C19.5 16.4 12 21 12 21z"/></svg><span>${+p.like_count || 0}</span></button>
           <button type="button" class="cp-icon" data-share="${esc(p.id)}" title="Copy link">Share</button>
           ${mine ? `<button type="button" class="cp-icon danger" data-delete="${esc(p.id)}">Delete</button>`
@@ -137,6 +222,16 @@ window.YLY = (() => {
   // Klicks auf den Karten (Like, Teilen, Melden, Löschen, Admin)
   function bindActions(container, onChange, toast) {
     container.addEventListener("click", async e => {
+      const tg = e.target.closest("a[data-tag]");
+      if (tg && YLY_API.onTag) { e.preventDefault(); YLY_API.onTag(tg.dataset.tag); return; }
+      const pb = e.target.closest("button[data-play]");
+      if (pb) { togglePlay(pb); return; }
+      const wv = e.target.closest("[data-seek]");
+      if (wv) {
+        const btn = wv.closest(".cp")?.querySelector("button[data-play]");
+        if (btn) { const r = wv.getBoundingClientRect(); togglePlay(btn, Math.max(0, Math.min(1, (e.clientX - r.left) / r.width))); }
+        return;
+      }
       const b = e.target.closest("button[data-like],button[data-share],button[data-report],button[data-delete],button[data-feature],button[data-hide]");
       if (!b) return;
       const m = await me();
@@ -165,9 +260,12 @@ window.YLY = (() => {
           toast("Thanks – we'll take a look.");
         } else if (b.dataset.delete) {
           if (!confirm("Delete this post? This can't be undone.")) return;
+          const card = b.closest(".cp"), file = card?.dataset.audio;
           const { error } = await db.from("posts").delete().eq("id", b.dataset.delete);
           if (error) throw error;
-          b.closest(".cp")?.remove(); toast("Post deleted.");
+          if (file) { try { await labFn({ action: "delete", url: file }); } catch (_) { /* post is gone; a leftover file is harmless */ } }
+          if (player.btn && card && card.contains(player.btn)) stopPlayer();
+          card?.remove(); toast("Post deleted.");
         } else if (b.dataset.feature) {
           const { error } = await db.from("posts").update({ featured: b.dataset.on !== "true" }).eq("id", b.dataset.feature);
           if (error) throw error;
@@ -193,5 +291,6 @@ window.YLY = (() => {
 
   const yearEl = $("year"); if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  return { db, $, esc, me, resetMe, loginUrl, renderAuthChip, timeAgo, postCard, likedSet, bindActions, toast, POST_SELECT, LINKS, toolUrl, remixUrl };
+  const YLY_API = { db, $, esc, me, resetMe, loginUrl, renderAuthChip, timeAgo, postCard, likedSet, bindActions, toast, POST_SELECT, LINKS, toolUrl, remixUrl, labFn, pdata, fmtDur, tagsOf, TAG_RE, AUDIO_RE, onTag: null, stopPlayer };
+  return YLY_API;
 })();

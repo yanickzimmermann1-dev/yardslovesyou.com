@@ -61,7 +61,7 @@
       ? posts.data.map(x => postCard(x, { me: m, liked })).join("")
       : "";
     if (!(posts.data || []).length) S(list, mine
-      ? { icon: "wave", title: "No posts yet", text: "Make a beat or chords and hit Publish to share your first post.", actions: [{ label: "Create your first post", href: "beatlab.html" }, { label: "Write chords", href: "chords.html" }] }
+      ? { icon: "wave", title: "No posts yet", text: "Make a chord progression and hit Publish to share your first post.", actions: [{ label: "Write chords", href: "chords.html" }, { label: "Open Gumball", href: "gumball.html" }] }
       : { icon: "wave", title: "No posts yet", text: "This producer hasn't published anything yet. See what the community is making.", actions: [{ label: "Explore the community", href: "community.html" }] });
 
     $("pf-follow")?.addEventListener("click", follow);

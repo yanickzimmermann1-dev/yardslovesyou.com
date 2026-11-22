@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://audio.yardslovesyou.com https://*.r2.cloudflarestorage.com https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0d0b12">
   <title>Lab: Free Music Tools & Community · YARDSLOVESYOU</title>
-  <meta name="description" content="The YARDSLOVESYOU Lab: free music tools for producers (Perc Lab, Chord Starter, Ear Trainer, Mix Check) plus a community feed of loops and chord ideas.">
+  <meta name="description" content="The YARDSLOVESYOU Lab: four free music tools for producers (Chord Starter, Gumball, Mix Check, Ear Trainer) plus Patches: loops, chords and sound packs shared by the community.">
   <link rel="canonical" href="https://yardslovesyou.com/community.html">
   <script type="application/ld+json">
   {
@@ -18,7 +18,7 @@
         "@id": "https://yardslovesyou.com/community.html#webpage",
         "url": "https://yardslovesyou.com/community.html",
         "name": "Lab: Free Music Tools & Community · YARDSLOVESYOU",
-        "description": "Free music tools for producers: Perc Lab, Chord Starter, Ear Trainer, Mix Check and Gumball.",
+        "description": "Free music tools for producers: Chord Starter, Gumball, Mix Check and Ear Trainer, plus a community feed of loops and chord ideas.",
         "inLanguage": "en",
         "isPartOf": {
           "@id": "https://yardslovesyou.com/#website"
@@ -58,27 +58,6 @@
             "position": 1,
             "item": {
               "@type": "WebApplication",
-              "name": "Perc Lab",
-              "description": "Free online percussion loop maker for trap, drill, afrobeats and more. Export MIDI or WAV stems.",
-              "url": "https://yardslovesyou.com/beatlab.html",
-              "applicationCategory": "MultimediaApplication",
-              "operatingSystem": "Web",
-              "inLanguage": "en",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "CHF"
-              },
-              "publisher": {
-                "@id": "https://yardslovesyou.com/#organization"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "item": {
-              "@type": "WebApplication",
               "name": "Chord Starter",
               "description": "Free chord progression generator with piano roll and MIDI export for your DAW.",
               "url": "https://yardslovesyou.com/chords.html",
@@ -97,15 +76,16 @@
           },
           {
             "@type": "ListItem",
-            "position": 3,
+            "position": 2,
             "item": {
               "@type": "WebApplication",
-              "name": "Ear Trainer",
-              "description": "Free ear training game for producers and mix engineers: spot boosted frequencies, compression, reverb and more.",
-              "url": "https://yardslovesyou.com/eartrainer.html",
+              "name": "Gumball",
+              "description": "Free one-shot finder and sample pack builder: drop your stems, pick the kicks, snares and hats, roll a flavour and download a pack.",
+              "url": "https://yardslovesyou.com/gumball.html",
               "applicationCategory": "MultimediaApplication",
-              "operatingSystem": "Web",
+              "operatingSystem": "Any (web browser)",
               "inLanguage": "en",
+              "isAccessibleForFree": true,
               "offers": {
                 "@type": "Offer",
                 "price": "0",
@@ -118,7 +98,7 @@
           },
           {
             "@type": "ListItem",
-            "position": 4,
+            "position": 3,
             "item": {
               "@type": "WebApplication",
               "name": "Mix Check",
@@ -139,16 +119,15 @@
           },
           {
             "@type": "ListItem",
-            "position": 5,
+            "position": 4,
             "item": {
               "@type": "WebApplication",
-              "name": "Gumball",
-              "description": "Free one-shot finder and sample pack builder: drop your stems, pick the kicks, snares and hats, roll a flavour and download a pack.",
-              "url": "https://yardslovesyou.com/gumball.html",
+              "name": "Ear Trainer",
+              "description": "Free ear training game for producers and mix engineers: spot boosted frequencies, compression, reverb and more.",
+              "url": "https://yardslovesyou.com/eartrainer.html",
               "applicationCategory": "MultimediaApplication",
-              "operatingSystem": "Any (web browser)",
+              "operatingSystem": "Web",
               "inLanguage": "en",
-              "isAccessibleForFree": true,
               "offers": {
                 "@type": "Offer",
                 "price": "0",
@@ -172,7 +151,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="YARDSLOVESYOU">
   <meta property="og:title" content="YARDSLOVESYOU Lab: free music tools & community">
-  <meta property="og:description" content="Make loops, chords and mixes with free tools, then share them with the community.">
+  <meta property="og:description" content="Make chords, find one-shots and check your mix with free tools, then drop your loops into the community.">
   <meta property="og:url" content="https://yardslovesyou.com/community.html">
   <meta property="og:image" content="https://yardslovesyou.com/og-image-v2.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -182,8 +161,8 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://kmekgjllklwrxizqbrac.supabase.co" crossorigin>
   <link rel="dns-prefetch" href="https://kmekgjllklwrxizqbrac.supabase.co">
-  <!-- css-src: styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css acct.css refresh.css logo-area.css lab-feat.css unslop.css mobile-space.css -->
-  <link rel="stylesheet" href="css/b-6371732a59.css" data-css="styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css acct.css refresh.css logo-area.css lab-feat.css unslop.css mobile-space.css">
+  <!-- css-src: styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css acct.css refresh.css logo-area.css lab-rack.css unslop.css mobile-space.css -->
+  <link rel="stylesheet" href="css/b-2bf1bd8087.css" data-css="styles.css states.css cart.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css acct.css refresh.css logo-area.css lab-rack.css unslop.css mobile-space.css">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="fx-gate.js?v=20261113g"></script>
 </head>
@@ -196,7 +175,6 @@
       <a href="work.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 5.5a6.5 6.5 0 0 1 6.5 6.5"/></svg><span>Work</span></a>
       <a href="upload.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v5M6 13v7M12 4v9M12 17v3M18 4v3M18 11v9"/><circle cx="6" cy="11" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="18" cy="9" r="2"/></svg><span>Mixing</span></a>
       <a href="shop.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span>Sounds</span></a>
-      <a class="nav-free" href="free.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18v-3H3zM12 6v14"/><path d="M12 6c-1-3-5-3.5-5-1.2C7 6.2 9 6 12 6Zm0 0c1-3 5-3.5 5-1.2 0 1.4-2 1.2-5 1.2Z"/></svg><span>Free</span></a>
       <a class="active" aria-current="page" href="community.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5h5"/><path d="M10.5 3.5v6L5 19a1.5 1.5 0 0 0 1.3 2.2h11.4A1.5 1.5 0 0 0 19 19l-5.5-9.5v-6"/><path d="M7.5 15h9"/></svg><span>Lab</span></a>
     </nav>
     <a class="acct-link" href="account.html" data-acct title="Sign in or create an account"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5"/></svg><span class="acct-t">Sign in</span></a>
@@ -208,83 +186,111 @@
       <div>
         <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>LAB</p>
         <h1>Make it. <span>Share it.</span></h1>
-        <p class="muted">Free music tools to make loops, write chords and check your mix, plus a community to share them with.</p>
+        <p class="muted">Four free tools for your sessions, and a place to drop your own loops. Upload a sound, tag it, and let the community play it.</p>
+        <div class="hero-actions lab-cta">
+          <button type="button" class="button" id="cm-drop-hero">Drop a loop</button>
+          <a class="outline" href="#tools">Open the rack</a>
+        </div>
       </div>
       <div class="cm-auth" id="cm-auth"></div>
     </section>
 
     <section class="lab-tools" id="tools" aria-labelledby="tools-title">
       <div class="lab-head">
-        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>LAB</p>
-        <h2 id="tools-title">Make something</h2>
-        <p class="muted">Five free tools, no sign-up needed. Make a loop, write chords, train your ears, check your mix or find the one-shots in your stems.</p>
+        <h2 id="tools-title">The rack</h2>
+        <p class="muted">Four free tools, no sign-up needed. Everything runs in your browser.</p>
       </div>
-      <div class="ep-grid ep-4">
-        <div class="ep-card ep-lab ep-feat">
-          <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9.5" r="6.5"/><circle cx="9.8" cy="8" r="1.3"/><circle cx="14" cy="10.8" r="1.3"/><path d="M7 16.5h10V21H7z"/><path d="M12 18.2h.01"/></svg></span>
-          <span class="ep-new">New</span>
-          <h3>Gumball</h3>
-          <p>Drop your stems and find the kicks, snares and hats inside. Roll a flavour, pick your favourites, download a pack.</p>
-          <a class="ep-go" href="gumball.html">Find sounds <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        </div>
-        <div class="ep-card ep-lab">
-          <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h2M7 8v8M11 5v14M15 8v8M19 10v4M21 12h0"/></svg></span>
-          <h3>Perc Lab</h3>
-          <p>Generate percussion loops by genre and mood. Lock what you like, export MIDI or WAV.</p>
-          <a class="ep-go" href="beatlab.html">Make a loop <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        </div>
-        <div class="ep-card ep-lab">
-          <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17V7l8 3v10l-8-3ZM12 10l8-3v10l-8 3"/></svg></span>
-          <h3>Chord Starter</h3>
-          <p>Chord progressions in one click. Shape them in the piano roll and take the MIDI to your DAW.</p>
-          <a class="ep-go" href="chords.html">Make chords <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        </div>
-        <div class="ep-card ep-lab">
-          <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg></span>
-          <h3>Ear Trainer</h3>
-          <p>A daily A/B ear training game: spot EQ, compression, reverb and more.</p>
-          <a class="ep-go" href="eartrainer.html">Train your ears <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        </div>
-        <div class="ep-card ep-lab">
-          <span class="ep-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v5M6 13v7M12 4v9M12 17v3M18 4v3M18 11v9"/><circle cx="6" cy="11" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="18" cy="9" r="2"/></svg></span>
-          <h3>Mix Check</h3>
-          <p>Drop a track and check loudness, peaks, dynamics, balance and stereo. Runs in your browser.</p>
-          <a class="ep-go" href="mixcheck.html">Check a mix <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        </div>
+      <div class="rack">
+        <article class="unit">
+          <span class="ear" aria-hidden="true"><i class="screw"></i><i class="screw"></i></span>
+          <div class="unit-face">
+            <header class="unit-label"><h3>Chord Starter</h3><span class="unit-io">MIDI out</span></header>
+            <p class="unit-desc">Chord progressions in one click. Shape them in the piano roll and take the MIDI to your DAW.</p>
+            <div class="unit-ctl" aria-hidden="true"><span class="leds"><i class="led on"></i><i class="led"></i></span><span class="knobs"><i class="knob" style="--r:-40deg"></i><i class="knob" style="--r:30deg"></i></span></div>
+            <a class="unit-go" href="chords.html" aria-label="Open Chord Starter"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v8"/><path d="M6.6 6.8a8 8 0 1 0 10.8 0"/></svg><span>Open</span></a>
+          </div>
+          <span class="ear" aria-hidden="true"><i class="screw"></i><i class="screw"></i></span>
+        </article>
+        <svg class="cable" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true"><path d="M930 0 C930 52 70 -12 70 40" fill="none" vector-effect="non-scaling-stroke"/></svg>
+        <article class="unit">
+          <span class="ear" aria-hidden="true"><i class="screw"></i><i class="screw"></i></span>
+          <div class="unit-face">
+            <header class="unit-label"><h3>Gumball</h3><span class="unit-io">Stems in, one-shots out</span></header>
+            <p class="unit-desc">Drop your stems and find the kicks, snares and hats inside. Roll a flavour, pick your favourites, download a pack.</p>
+            <div class="unit-ctl" aria-hidden="true"><span class="leds"><i class="led on"></i><i class="led on"></i></span><span class="knobs"><i class="knob" style="--r:20deg"></i><i class="knob" style="--r:-70deg"></i></span></div>
+            <a class="unit-go" href="gumball.html" aria-label="Open Gumball"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v8"/><path d="M6.6 6.8a8 8 0 1 0 10.8 0"/></svg><span>Open</span></a>
+          </div>
+          <span class="ear" aria-hidden="true"><i class="screw"></i><i class="screw"></i></span>
+        </article>
+        <svg class="cable" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true"><path d="M930 0 C930 52 70 -12 70 40" fill="none" vector-effect="non-scaling-stroke"/></svg>
+        <article class="unit">
+          <span class="ear" aria-hidden="true"><i class="screw"></i><i class="screw"></i></span>
+          <div class="unit-face">
+            <header class="unit-label"><h3>Mix Check</h3><span class="unit-io">Track in, report out</span></header>
+            <p class="unit-desc">Drop a track and check loudness, peaks, dynamics, balance and stereo. Runs in your browser.</p>
+            <div class="unit-ctl" aria-hidden="true"><span class="leds"><i class="led on"></i><i class="led"></i></span><span class="knobs"><i class="knob" style="--r:60deg"></i><i class="knob" style="--r:-20deg"></i></span></div>
+            <a class="unit-go" href="mixcheck.html" aria-label="Open Mix Check"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v8"/><path d="M6.6 6.8a8 8 0 1 0 10.8 0"/></svg><span>Open</span></a>
+          </div>
+          <span class="ear" aria-hidden="true"><i class="screw"></i><i class="screw"></i></span>
+        </article>
+        <svg class="cable" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true"><path d="M930 0 C930 52 70 -12 70 40" fill="none" vector-effect="non-scaling-stroke"/></svg>
+        <article class="unit">
+          <span class="ear" aria-hidden="true"><i class="screw"></i><i class="screw"></i></span>
+          <div class="unit-face">
+            <header class="unit-label"><h3>Ear Trainer</h3><span class="unit-io">A / B</span></header>
+            <p class="unit-desc">A daily A/B ear training game: spot EQ, compression, reverb and more.</p>
+            <div class="unit-ctl" aria-hidden="true"><span class="leds"><i class="led"></i><i class="led on"></i></span><span class="knobs"><i class="knob" style="--r:-10deg"></i><i class="knob" style="--r:45deg"></i></span></div>
+            <a class="unit-go" href="eartrainer.html" aria-label="Open Ear Trainer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v8"/><path d="M6.6 6.8a8 8 0 1 0 10.8 0"/></svg><span>Open</span></a>
+          </div>
+          <span class="ear" aria-hidden="true"><i class="screw"></i><i class="screw"></i></span>
+        </article>
       </div>
     </section>
 
-    <section class="lab-community cm-block" id="community" aria-labelledby="community-title">
+    <section class="lab-patches" id="patches" aria-labelledby="patches-title">
       <div class="lab-head">
-        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>COMMUNITY</p>
-        <h2 id="community-title">Community</h2>
-        <p class="muted">Loops and chord ideas shared from the tools. Press play, leave a like, follow and remix.</p>
+        <h2 id="patches-title">Patches</h2>
+        <p class="muted">Loops, chords and Gumball packs from the community. Press play, search by tag, leave a like.</p>
       </div>
+
+      <div class="pt-drop" id="drop">
+        <div class="pt-drop-t">
+          <strong>Drop a loop</strong>
+          <span>MP3 or WAV, up to 30 seconds. Longer files? Pick the best 30 seconds. We convert it right here in your browser.</span>
+        </div>
+        <button type="button" class="button" id="cm-drop">Choose a file</button>
+      </div>
+
+      <section class="cm-shared-wrap hidden" id="cm-shared-wrap" aria-label="Shared post">
+        <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>SHARED WITH YOU</p>
+        <div class="cp-list" id="cm-shared"></div>
+      </section>
+
+      <div class="pt-tools">
+        <form class="pt-search" id="cm-search" role="search" novalidate>
+          <label class="sr-only" for="cm-q">Search patches</label>
+          <input id="cm-q" type="search" placeholder="Search titles or #tags" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="40">
+        </form>
+        <div class="cm-pills" id="cm-filter" role="group" aria-label="Filter by type">
+          <button type="button" class="cm-pill active" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="cm-pill" data-filter="audio" aria-pressed="false">Loops</button>
+          <button type="button" class="cm-pill" data-filter="chords" aria-pressed="false">Chords</button>
+          <button type="button" class="cm-pill" data-filter="gumball" aria-pressed="false">Gumball</button>
+        </div>
+        <div class="cm-tabs" id="cm-tabs" role="tablist" aria-label="Sort">
+          <button type="button" class="cm-tab active" data-tab="new" role="tab" aria-selected="true">New</button>
+          <button type="button" class="cm-tab" data-tab="top" role="tab" aria-selected="false">Top</button>
+          <button type="button" class="cm-tab" data-tab="following" role="tab" aria-selected="false">Following</button>
+        </div>
+      </div>
+      <p class="pt-active hidden" id="cm-active"></p>
+
+      <section class="cp-list lab-feed" id="cm-feed" aria-live="polite"></section>
+      <div style="text-align:center;margin:24px 0 10px">
+        <button type="button" class="outline hidden" id="cm-more">Load more</button>
+      </div>
+      <p class="fineprint">Be kind and keep it about the music. Only share sounds you have the rights to. Read the <a class="cp-link" href="community-guidelines.html">Community Guidelines</a>.</p>
     </section>
-
-    <section class="cm-shared-wrap hidden" id="cm-shared-wrap" aria-label="Shared post">
-      <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>SHARED WITH YOU</p>
-      <div class="cp-list" id="cm-shared"></div>
-    </section>
-
-    <div class="cm-toolbar cm-block">
-      <div class="cm-tabs" id="cm-tabs" role="tablist">
-        <button type="button" class="cm-tab active" data-tab="new" role="tab" aria-selected="true">New</button>
-        <button type="button" class="cm-tab" data-tab="trending" role="tab" aria-selected="false">Trending</button>
-        <button type="button" class="cm-tab" data-tab="following" role="tab" aria-selected="false">Following</button>
-      </div>
-      <div class="cm-pills" id="cm-filter">
-        <button type="button" class="cm-pill active" data-filter="all">All</button>
-        <button type="button" class="cm-pill" data-filter="beat">Beats</button>
-        <button type="button" class="cm-pill" data-filter="chords">Chords</button>
-      </div>
-    </div>
-
-    <section class="cp-list cm-block" id="cm-feed" aria-live="polite"></section>
-    <div class="cm-block" style="text-align:center;margin:24px 0 10px">
-      <button type="button" class="outline hidden" id="cm-more">Load more</button>
-    </div>
-    <p class="fineprint cm-block">Be kind and keep it about the music. Read the <a class="cp-link" href="community-guidelines.html">Community Guidelines</a>.</p>
 
   </main>
 
@@ -311,16 +317,20 @@
   <script defer src="config.js?v=20261114zl"></script>
   <script defer src="products-map.js?v=20261117a"></script>
   <script defer src="media.js?v=20261119b"></script>
-  <script defer src="community-core.js"></script>
-  <script defer src="community.js?v=20261119a"></script>
-  <script defer src="presence.js"></script>
+  <script defer src="vendor/mp4-muxer.min.js?v=20261122a"></script>
+  <script defer src="m4a-encode.js?v=20261122a"></script>
+  <script defer src="community-core.js?v=20261122a"></script>
+  <script defer src="lab-tags.js?v=20261122a"></script>
+  <script defer src="lab-upload.js?v=20261122a"></script>
+  <script defer src="community.js?v=20261122a"></script>
+  <script defer src="presence.js?v=20261122a"></script>
   <script src="cart.js?v=20261117a" defer></script>
   <script src="nav.js?v=20261117a" defer></script>
   <script src="fx.js?v=20261114ze" defer></script>
   <script src="uisound.js?v=20261113m" defer></script>
   <script src="motion.js?v=20261119a" defer></script>
   <script src="thread.js?v=20261115a" defer></script>
-  <script src="nextstep.js?v=20261118n" defer></script>
+  <script src="nextstep.js?v=20261122a" defer></script>
   <script src="reveal.js?v=20261119e" defer></script>
   <script src="footerword.js?v=20261113l" defer></script>
 </body>

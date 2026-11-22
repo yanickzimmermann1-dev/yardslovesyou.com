@@ -12,7 +12,7 @@
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var track = function (n, d) { try { if (window.ylyTrack) window.ylyTrack(n, d); } catch (e) {} };
 
-  (function () { if (!document.querySelector('link[href^="sample.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'sample.css?v=20261117a'; document.head.appendChild(l); } })();
+  (function () { if (!document.querySelector('link[href^="sample.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'sample.css?v=20261122a'; document.head.appendChild(l); } })();
 
   function build() {
     if (document.getElementById('sample-gate')) return;
@@ -31,6 +31,30 @@
       '</form></div>';
     root.parentNode.insertBefore(sec, root.nextSibling);
     wire();
+    jumpLink();
+  }
+
+  // Small text link under the Buy / Add-to-cart row: scrolls to the form and focuses the email field.
+  function jumpLink() {
+    var place = function () {
+      var row = root.querySelector('.gd-buyrow') || root.querySelector('.pd-buy');
+      if (!row || !document.getElementById('sg-form')) return;
+      if (row.parentNode.querySelector('.sg-jump')) return;
+      var p = document.createElement('p');
+      p.className = 'sg-jump';
+      p.innerHTML = '<a href="#sample-gate">Read a free sample page \u2193</a>';
+      row.parentNode.insertBefore(p, row.nextSibling);
+      p.firstChild.addEventListener('click', function (e) {
+        e.preventDefault();
+        var f = document.getElementById('sg-form'), em = document.getElementById('sg-email');
+        var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (f && f.scrollIntoView) f.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+        setTimeout(function () { try { if (em) em.focus({ preventScroll: true }); } catch (x) {} }, reduce ? 0 : 500);
+        track('sample-jump', { pack: pack });
+      });
+    };
+    place();
+    if (window.MutationObserver) new MutationObserver(place).observe(root, { childList: true, subtree: true });
   }
 
   function wire() {

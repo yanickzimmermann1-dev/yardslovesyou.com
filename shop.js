@@ -63,6 +63,57 @@
         </div>
       </article>`;
 
+  // "Free"-Filter: Essentials Lite (E-Mail-Formular unten auf der Seite) + Sample-Seiten der Guides (Filter Guides)
+  const FREE_N=2;
+  const guideSlug=()=>{ const c=cats.find(x=>catRank(x)===2); return c?c.slug:null; };
+  const freeCards=()=>{
+    const g=guideSlug();
+    const kit=`
+      <article class="product product-free" data-free-card="kit">
+        <a class="product-link cover-link" href="#free-kit" data-free="kit" aria-label="Essentials Lite, free percussion kit">
+          <div class="cover free-cover"><img src="3d-essentials-front.png" alt="Essentials Lite" width="530" height="725" loading="lazy" decoding="async"></div>
+        </a>
+        <div class="p-under"><span class="badge">Free</span></div>
+        <a class="product-link" href="#free-kit" data-free="kit">
+          <h3>Essentials Lite</h3>
+          <p>20 hand-crafted percussion one-shots. The download link lands in your inbox.</p>
+          <p class="tag-line"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Royalty-free</p>
+        </a>
+        <div class="price-row">
+          <span class="price-wrap"><span class="price">Free</span></span>
+          <div class="row-actions"><a class="button" href="#free-kit" data-free="kit">Get it free</a></div>
+        </div>
+      </article>`;
+    const samples=g?`
+      <article class="product product-free" data-free-card="guides">
+        <a class="product-link cover-link" href="${catUrl(g)}" data-free="guides" aria-label="Free sample pages of every guide">
+          <div class="cover free-cover free-cover-text" aria-hidden="true"><span>FREE<small>sample pages</small></span></div>
+        </a>
+        <div class="p-under"><span class="badge">Free</span></div>
+        <a class="product-link" href="${catUrl(g)}" data-free="guides">
+          <h3>Free sample pages of every guide</h3>
+          <p>Open any guide and have a sample page sent to your inbox before you buy.</p>
+        </a>
+        <div class="price-row">
+          <span class="price-wrap"><span class="price">Free</span></span>
+          <div class="row-actions"><a class="button" href="${catUrl(g)}" data-free="guides">See guides</a></div>
+        </div>
+      </article>`:"";
+    return kit+samples;
+  };
+  const freeN=()=>guideSlug()?FREE_N:1;
+  const goKit=()=>{
+    const f=$("free-kit"); if(!f) return;
+    f.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"});
+    setTimeout(()=>{ try{$("free-kit-email").focus({preventScroll:true});}catch(_){} },reduce?0:450);
+  };
+  const bindFree=box=>box.querySelectorAll("[data-free]").forEach(a=>a.addEventListener("click",e=>{
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button) return;
+    e.preventDefault();
+    if(a.dataset.free==="kit") goKit(); else select(guideSlug(),true);
+  }));
+  const scrollToGrid=()=>{ const t=$("downloads"); if(t&&t.scrollIntoView) t.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"}); };
+
   // Kategorie-Rang anhand von Slug/Name (kein fester Slug bekannt, daher Stichworte)
   const catRank=c=>{ const t=`${c.slug||""} ${c.name||""}`.toLowerCase();
     return /kit|sound|sample|one-?shot|drum|perc/.test(t)?0:/bundle/.test(t)?1:/guide|book|pdf/.test(t)?2:3; };
@@ -70,15 +121,15 @@
   const featured=p=>/^the last yards$/i.test(String(p.title||"").trim())?0:1;
   const ordered=list=>list.map((p,i)=>({p,i})).sort((a,b)=>featured(a.p)-featured(b.p)||a.i-b.i).map(x=>x.p);
 
-  const catUrl=slug=>slug?`shop.html?cat=${encodeURIComponent(slug)}`:"shop.html";
+  const catUrl=slug=>slug==="free"?"shop.html#free":slug?`shop.html?cat=${encodeURIComponent(slug)}`:"shop.html";
 
   function renderBar(){
     const bar=$("cat-bar");
     if(!bar) return;
-    if(cats.length<2){bar.hidden=true;bar.innerHTML="";return;}
+    if(!products.length){bar.hidden=true;bar.innerHTML="";return;}
     const chip=(slug,label,n)=>`<a class="cat-chip${(sel||"")===(slug||"")?" active":""}" href="${catUrl(slug)}" data-cat="${esc(slug||"")}"${(sel||"")===(slug||"")?' aria-current="true"':""}>${esc(label)}<span class="cat-n">${n}</span></a>`;
     bar.hidden=false;
-    bar.innerHTML=`<div class="cat-scroll" role="group" aria-label="Filter by category">${chip("","All",products.length)}${cats.map(c=>chip(c.slug,c.name,c.n)).join("")}</div>`;
+    bar.innerHTML=`<div class="cat-scroll" role="group" aria-label="Filter by category">${chip("","All",products.length+freeN())}${cats.map(c=>chip(c.slug,c.name,c.n)).join("")}${chip("free","Free",freeN())}</div>`;
     const on=bar.querySelector(".active"); // aktiven Chip bei schmalem Screen sichtbar halten
     if(on&&on.scrollIntoView) { const sc=bar.firstElementChild; sc.scrollLeft=Math.max(0,on.offsetLeft-16); }
   }
@@ -86,10 +137,18 @@
   function renderGrid(animate){
     const box=$("products"); box.removeAttribute("aria-busy");
     if(!products.length){handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];box.className="product-grid";$("shop-count").textContent="";S(box,{icon:"box",title:"No products yet",text:"New packs are on the way. Check back soon, or reload to see if something just landed.",actions:[{label:"Retry",onClick:()=>load()},{label:"Back to home",href:"index.html"}]});return;}
+    if(sel==="free"){
+      handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];
+      $("shop-count").textContent=`${freeN()} free`;
+      box.className="product-grid"; box.innerHTML=freeCards(); bindFree(box);
+      if(animate&&!reduce&&box.animate) box.animate([{opacity:0,transform:"scale(.985) translateY(6px)"},{opacity:1,transform:"none"}],{duration:380,easing:"cubic-bezier(.34,1.2,.64,1)"});
+      return;
+    }
     const grouped=cats.length>=2&&!sel;
     let list=products;
     if(cats.length>=2&&sel) list=products.filter(p=>p.category===sel);
-    $("shop-count").textContent=`${list.length} ${list.length===1?"product":"products"}`;
+    const total=list.length+(sel?0:freeN());
+    $("shop-count").textContent=`${total} ${total===1?"product":"products"}`;
     if(!list.length){handles.forEach(h=>{ try{h.destroy();}catch(_){} }); handles=[];box.className="product-grid";S(box,{icon:"box",title:"Nothing in this category yet",text:"This category has no products at the moment. Try another one or browse everything.",actions:[{label:"Browse all",onClick:()=>select(null,true)},{label:"Try another category",onClick:()=>{const c=cats.find(x=>x.slug!==sel);select(c?c.slug:null,true);}}]});return;}
     if(grouped){
       const groups=cats.map(c=>({name:c.name,tagline:c.tagline,items:ordered(products.filter(p=>p.category===c.slug))}));
@@ -100,11 +159,16 @@
         <section class="cat-section">
           <div class="cat-head"><h3>${esc(g.name)}</h3>${g.tagline?`<p class="muted">${esc(g.tagline)}</p>`:""}</div>
           <div class="product-grid">${g.items.map(card).join("")}</div>
-        </section>`).join("");
+        </section>`).join("")+`
+        <section class="cat-section">
+          <div class="cat-head"><h3>Free</h3><p class="muted">Free kit and guide samples</p></div>
+          <div class="product-grid">${freeCards()}</div>
+        </section>`;
     }else{
       box.className="product-grid";
-      box.innerHTML=ordered(list).map(card).join("");
+      box.innerHTML=ordered(list).map(card).join("")+(sel?"":freeCards());
     }
+    bindFree(box);
     box.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy));
     mount3d(box); applyRatings(box);
     // "Play sounds" kommt aus soundpads.js: nur Produkte mit gueltigem shop_products.sound_preview
@@ -141,9 +205,9 @@
   }
 
   function select(slug,push){
-    sel=cats.some(c=>c.slug===slug)?slug:null;
+    sel=slug==="free"||cats.some(c=>c.slug===slug)?slug:null;
     if(push){
-      try{history.replaceState(null,"",sel?`?cat=${encodeURIComponent(sel)}`:location.pathname);}catch(_){}
+      try{history.replaceState(null,"",sel==="free"?location.pathname+"#free":sel?`?cat=${encodeURIComponent(sel)}`:location.pathname);}catch(_){}
     }
     renderBar(); renderGrid(push);
   }
@@ -174,7 +238,9 @@
       if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button) return;
       e.preventDefault(); select(a.dataset.cat||null,true);
     });}
-    select(new URLSearchParams(location.search).get("cat"),false);
+    const wantFree=/^#free$/i.test(location.hash);
+    select(wantFree?"free":new URLSearchParams(location.search).get("cat"),false);
+    if(wantFree) setTimeout(scrollToGrid,60);
     if(!ratings) loadRatings();
   }
 
@@ -210,6 +276,7 @@
           throw new Error(msg);
         }
         if(!data?.ok) throw new Error(data?.error||"Something went wrong.");
+        window.ylyTrack&&ylyTrack("freekit-signup");
         status.textContent=data.already_sent
           ? "We just sent it to you – please check your inbox (and spam folder)."
           : "Done! Check your inbox for the download link (and your spam folder, just in case).";
@@ -221,6 +288,14 @@
       }
     };
   }
+
+  // Hero-Box "Not sure yet?" und #free-Links: Free-Filter waehlen und zum Raster scrollen
+  document.addEventListener("click",e=>{
+    const a=e.target.closest&&e.target.closest("a[data-to-free]");
+    if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button||!products.length) return;
+    e.preventDefault(); select("free",true); scrollToGrid();
+  });
+  addEventListener("hashchange",()=>{ if(/^#free$/i.test(location.hash)&&products.length){ select("free",false); scrollToGrid(); } });
 
   // Ältere Kauf-Links (shop.html?success=1&session_id=...) funktionieren weiterhin
   const params=new URLSearchParams(location.search);

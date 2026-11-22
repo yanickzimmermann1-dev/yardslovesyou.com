@@ -55,11 +55,10 @@
       about: { line: 'Hear what I do.', btns: [['Hear the difference', 'upload.html#hear']] },
       free: { line: 'Turn the sounds into music.', btns: [['Make loops with the free tools', 'community.html#tools'], ['Pro sounds: Essentials', 'essentials.html']] },
       mixcheck: { line: 'Want a pro to take it from here?', btns: [['Get your track mixed', 'upload.html'], ['Train your ears', 'eartrainer.html']] },
-      beatlab: { line: 'Like the sounds? Take the loop further.', btns: [['Write chords for your loop', 'chords.html'], LAB] },
-      chords: { line: 'Add percussion to your chords.', btns: [['Open the Perc Lab', 'beatlab.html'], LAB] },
+      chords: { line: 'Find the sounds for your chords.', btns: [['Open Gumball', 'gumball.html'], LAB] },
       eartrainer: { line: 'Hear it in a real mix.', btns: [['Hear the difference', 'upload.html#hear'], ['Get your track mixed', 'upload.html']] },
-      community: { line: 'Make something new.', btns: [['Perc Lab', 'beatlab.html'], ['Chord Starter', 'chords.html']] },
-      profile: { line: 'Make something new.', btns: [['Perc Lab', 'beatlab.html'], ['Chord Starter', 'chords.html']] },
+      community: { line: 'Make something new.', btns: [['Gumball', 'gumball.html'], ['Chord Starter', 'chords.html']] },
+      profile: { line: 'Make something new.', btns: [['Gumball', 'gumball.html'], ['Chord Starter', 'chords.html']] },
       account: { line: 'Your next stop.', btns: [['Go to the Lab', 'community.html']] },
       imprint: LEGAL, privacy: LEGAL, license: LEGAL, security: LEGAL, contributing: LEGAL,
       'code-of-conduct': LEGAL, 'community-guidelines': LEGAL
@@ -77,7 +76,7 @@
       if (h === 'upload.html') return 'service';
       if (/^(shop|product|essentials|the-last-yards)\.html$/.test(h)) return 'shop';
       if (h === 'free.html') return 'free';
-      if (/^(community|beatlab|chords|eartrainer|mixcheck|profile)\.html$/.test(h)) return 'lab';
+      if (/^(community|gumball|chords|eartrainer|mixcheck|profile)\.html$/.test(h)) return 'lab';
       return 'home';
     }
     function shareIt(opt, note) {
@@ -183,7 +182,7 @@
         if (!guide && !pr.querySelector('#add-cart-btn')) return;
         done = true;
         var c = guide ? { line: 'Train your ears with the free Ear Trainer.', btns: [['Open the Ear Trainer', 'eartrainer.html'], SHOP] }
-                      : { line: 'Make loops with these sounds in the Perc Lab.', btns: [['Open the Perc Lab', 'beatlab.html'], SHOP] };
+                      : { line: 'Sort your own sample folders with Gumball.', btns: [['Open Gumball', 'gumball.html'], SHOP] };
         var n = build(c); sec.parentNode.replaceChild(n, sec); sec = n; n.classList.add('ns-rv', 'ns-in');
       };
       if (pr && window.MutationObserver) { new MutationObserver(apply).observe(pr, { childList: true, subtree: true }); apply(); }

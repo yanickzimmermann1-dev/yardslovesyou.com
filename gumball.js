@@ -633,6 +633,7 @@
     $("gb-mail").classList.add("hidden");
     $("gb-back2").classList.toggle("hidden", !!S.built);
     renderTree($("gb-tree"), false);
+    $("gb-share-box").classList.toggle("hidden", !n || !!(S.session && S.session.demo));   // demo sounds are not shared
     if (S.built) { fillDone(); }
     else if (!S.building) {
       if (S.unlocked) buildZip();
@@ -665,7 +666,7 @@
     } finally { btn.disabled = false; if (btn.textContent !== "Unlocked") btn.textContent = label; else btn.textContent = label; }
   });
 
-  // Same call as beatlab.js: the free-kit function also emails the free Essentials Lite kit, so the card copy says so.
+  // Same call as the other free tools: the free-kit function also emails the free Essentials Lite kit, so the card copy says so.
   async function registerEmail(email, marketing_consent) {
     const cfg = window.APP_CONFIG || {};
     if (!window.supabase) throw new Error("Service is not available right now.");
@@ -745,6 +746,48 @@
     nameIn.value = ""; clearErrors(); setPanel(false);
     renderSlots(); setStep(1);
     say("Started a new pack.");
+  });
+
+  // ---------------------------------------------------------------- Share to Lab
+  // Short preview (max 30 s): the picked sounds one after another with small gaps, rendered offline.
+  const SHARE_RATE = 44100, SHARE_MAX = 30, SHARE_GAP = 0.22, SHARE_SOUND_MAX = 2.5;
+  async function renderPreview() {
+    const plan = buildPlan(), items = [];
+    let t = 0;
+    for (const en of plan.entries) {
+      const buf = await decoded(en.hitId, en.variantId || null);
+      const len = Math.min(buf.duration, SHARE_SOUND_MAX);
+      if (t + len > SHARE_MAX) break;
+      items.push({ buf, at: t, len, en });
+      t += len + SHARE_GAP;
+    }
+    if (!items.length) throw new Error("Nothing to preview.");
+    const total = Math.min(SHARE_MAX, Math.max(0.5, t - SHARE_GAP));
+    const oc = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(2, Math.ceil(total * SHARE_RATE), SHARE_RATE);
+    for (const it of items) {
+      const src = oc.createBufferSource(), g = oc.createGain();
+      src.buffer = it.buf; src.connect(g); g.connect(oc.destination);
+      const end = it.at + it.len;
+      g.gain.setValueAtTime(1, it.at); g.gain.setValueAtTime(1, Math.max(it.at, end - 0.03)); g.gain.linearRampToValueAtTime(0, end);   // short fade, no click
+      src.start(it.at); src.stop(end);
+    }
+    const out = await oc.startRendering();
+    let peak = 0;
+    for (let c = 0; c < out.numberOfChannels; c++) { const d = out.getChannelData(c); for (let i = 0; i < d.length; i++) { const v = Math.abs(d[i]); if (v > peak) peak = v; } }
+    if (peak > 0) { const k = 0.9 / peak; for (let c = 0; c < out.numberOfChannels; c++) { const d = out.getChannelData(c); for (let i = 0; i < d.length; i++) d[i] *= k; } }
+    return { buffer: out, sounds: items.map(it => T[it.en.type].label + (it.en.variant ? " (" + it.en.variant.flavour + ")" : "")) };
+  }
+  $("gb-share").addEventListener("click", async () => {
+    const btn = $("gb-share"), st = $("gb-share-status");
+    st.classList.remove("danger"); st.textContent = "";
+    if (!window.LabUpload) { st.textContent = "Sharing is not available right now."; st.classList.add("danger"); return; }
+    btn.disabled = true; const label = btn.textContent; btn.textContent = "Rendering \u2026";
+    try {
+      const r = await renderPreview();
+      track("gumball-share");
+      await window.LabUpload.open({ buffer: r.buffer, type: "gumball", title: packName(), sounds: r.sounds, sourceLabel: "Preview of your pack" });
+    } catch (e) { st.textContent = (e && e.message) || "The preview could not be made."; st.classList.add("danger"); }
+    finally { btn.disabled = false; btn.textContent = label; }
   });
 
   // ---------------------------------------------------------------- init

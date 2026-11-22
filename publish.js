@@ -1,16 +1,16 @@
 /* =====================================================================
-   "Publish to Community" im Beat Lab und im Chord & Melody Starter
-   Liest das aktuelle Muster aus der Adresse (#b=… bzw. #c=…) und speichert
+   "Publish to Community" im Chord Starter
+   Liest das aktuelle Muster aus der Adresse (#c=…) und speichert
    es als Beitrag. Gespeichert wird nur das Muster, keine Audiodatei.
    ===================================================================== */
 (() => {
   const { db, $, esc, me, loginUrl, toast } = window.YLY;
   const btn = $("pub-btn"), dlg = $("pub-dialog");
   if (!btn || !dlg) return;
+  const tagBox = $("pub-tags"), tags = tagBox && window.LabTags ? window.LabTags.mount(tagBox, { max: 5 }) : null;
   const remixOf = new URLSearchParams(location.search).get("remix");
   const current = () => {
     const h = location.hash;
-    if (h.startsWith("#b=")) return { type: "beat", data: h.slice(3) };
     if (h.startsWith("#c=")) return { type: "chords", data: h.slice(3) };
     return null;
   };
@@ -22,7 +22,6 @@
     if (!current()) { toast("Make something first, then publish it.", true); return; }
     $("pub-handle").textContent = "@" + m.profile.handle;
     $("pub-remix").classList.toggle("hidden", !remixOf);
-    if (!$("pub-title").value && current().type === "beat") $("pub-title").value = "Percussion loop";
     $("pub-status").textContent = ""; $("pub-done").classList.add("hidden"); $("pub-form").classList.remove("hidden");
     if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
     $("pub-title").focus();
@@ -39,10 +38,11 @@
     go.disabled = true; go.textContent = "Publishing …";
     try {
       const row = { user_id: m.user.id, type: c.type, title: title.slice(0, 60), data: c.data };
+      const t = tags ? tags.get() : [];
+      if (t.length) row.tags = t;
       if (remixOf && /^[0-9a-f-]{36}$/i.test(remixOf)) row.remix_of = remixOf;
       const { data, error } = await db.from("posts").insert(row).select("id").single();
       if (error) throw new Error(/limit/i.test(error.message) ? "You've reached today's post limit. Please try again tomorrow." : error.message);
-      if (c.type === "beat") window.ylyTrack && ylyTrack("perclab-publish");
       $("pub-form").classList.add("hidden");
       $("pub-done").classList.remove("hidden");
       $("pub-link").href = `community.html?post=${data.id}`;

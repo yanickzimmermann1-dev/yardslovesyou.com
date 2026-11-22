@@ -103,7 +103,7 @@
       status.classList.remove('danger'); status.textContent = '';
       var addr = email.value.trim();
       if (!EMAIL_RE.test(addr)) { fail('Please enter a valid email address.'); email.focus(); return; }
-      if (!consent.checked) { fail('Please tick the box to get the kit and the Sound Drop.'); return; }
+      if (!consent.checked) { fail('Please tick the box to get the kit and news by email.'); return; }
       if (!cfg.SUPABASE_URL) { fail('Service is not available right now. Please try again.'); return; }
       var label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending …';
       call('free-kit', { email: addr, marketing_consent: true }).then(function (res) {
