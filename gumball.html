@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://cloud.umami.is; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' blob: data: https:; font-src 'self'; connect-src 'self' https://kmekgjllklwrxizqbrac.supabase.co wss://kmekgjllklwrxizqbrac.supabase.co https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0b12">
+  <title>Gumball: Free One-Shot Finder & Sample Pack Builder · YARDSLOVESYOU</title>
+  <meta name="description" content="Drop your stems and Gumball finds the kicks, snares, hats and more inside them. Pick your favourites, roll a flavour and download a pack. Free, in your browser.">
+  <link rel="canonical" href="https://yardslovesyou.com/gumball.html">
+  <link rel="icon" href="favicon.svg?v=4" type="image/svg+xml">
+  <link rel="icon" href="favicon.png?v=4" type="image/png" sizes="192x192">
+  <link rel="icon" href="favicon-32.png?v=4" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="YARDSLOVESYOU">
+  <meta property="og:title" content="Gumball: free one-shot finder & pack builder · YARDSLOVESYOU">
+  <meta property="og:description" content="Turn your stems into a sample pack. Free, private, in your browser.">
+  <meta property="og:url" content="https://yardslovesyou.com/gumball.html">
+  <meta property="og:image" content="https://yardslovesyou.com/og-image-v2.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gumball: free one-shot finder & pack builder · YARDSLOVESYOU">
+  <meta name="twitter:description" content="Turn your stems into a sample pack. Free, private, in your browser.">
+  <meta name="twitter:image" content="https://yardslovesyou.com/og-image-v2.jpg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://yardslovesyou.com/gumball.html#app",
+        "name": "Gumball",
+        "url": "https://yardslovesyou.com/gumball.html",
+        "description": "Free one-shot finder and sample pack builder. Drop your stems, Gumball finds the kicks, snares, hats and more, you roll a flavour and download a pack. Runs in your browser; your audio is not uploaded.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any (web browser)",
+        "inLanguage": "en",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CHF" },
+        "publisher": { "@id": "https://yardslovesyou.com/#organization" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://yardslovesyou.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://yardslovesyou.com/community.html" },
+          { "@type": "ListItem", "position": 3, "name": "Gumball", "item": "https://yardslovesyou.com/gumball.html" }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preload" href="font-dmsans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="font-spacegrotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://kmekgjllklwrxizqbrac.supabase.co" crossorigin>
+  <link rel="dns-prefetch" href="https://kmekgjllklwrxizqbrac.supabase.co">
+  <!-- css-src: styles.css states.css cart.css stepper.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css acct.css refresh.css logo-area.css gumball.css unslop.css mobile-space.css -->
+  <link rel="stylesheet" href="css/b-abd44681c2.css" data-css="styles.css states.css cart.css stepper.css fx.css skeleton.css footerword.css uisound.css sections.css thread.css nextstep.css mobile.css trust.css acct.css refresh.css logo-area.css gumball.css unslop.css mobile-space.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js" integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="fx-gate.js?v=20261113g"></script>
+</head>
+<body data-area="lab">
+
+  <header class="topbar">
+    <a class="brand" href="/">YARDS<span>LOVESYOU</span></a>
+    <nav aria-label="Main">
+      <a href="/"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v10h12V10"/><path d="M10 20v-5.5h4V20"/></svg><span>Home</span></a>
+      <a href="work.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 5.5a6.5 6.5 0 0 1 6.5 6.5"/></svg><span>Work</span></a>
+      <a href="upload.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v5M6 13v7M12 4v9M12 17v3M18 4v3M18 11v9"/><circle cx="6" cy="11" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="18" cy="9" r="2"/></svg><span>Mixing</span></a>
+      <a href="shop.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span>Sounds</span></a>
+      <a class="nav-free" href="free.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18v-3H3zM12 6v14"/><path d="M12 6c-1-3-5-3.5-5-1.2C7 6.2 9 6 12 6Zm0 0c1-3 5-3.5 5-1.2 0 1.4-2 1.2-5 1.2Z"/></svg><span>Free</span></a>
+      <a class="active" aria-current="page" href="community.html"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5h5"/><path d="M10.5 3.5v6L5 19a1.5 1.5 0 0 0 1.3 2.2h11.4A1.5 1.5 0 0 0 19 19l-5.5-9.5v-6"/><path d="M7.5 15h9"/></svg><span>Lab</span></a>
+    </nav>
+    <a class="acct-link" href="account.html" data-acct title="Sign in or create an account"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5"/></svg><span class="acct-t">Sign in</span></a>
+  </header>
+
+  <main class="wrap">
+
+    <section class="hero compact">
+      <a class="back-link" href="community.html#tools" style="margin-top:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m15 6-6 6 6 6"/></svg> Lab</a>
+      <p class="eyebrow" style="margin-top:18px"><span class="area-ico" aria-hidden="true"></span>LAB · FREE TOOL</p>
+      <h1>Gumball</h1>
+      <p class="muted">Drop your stems and Gumball finds the one-shots hiding in them: kicks, snares, hats, 808s and more. Pick your favourites, roll a flavour on any of them, and take the pack home.</p>
+    </section>
+
+    <nav class="up-stepper gb-stepper" id="gb-stepper" aria-label="Progress"><ol>
+      <li data-step="1" class="current"><button type="button" class="up-step" aria-current="step"><span class="n"><span>1</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span><span class="l">Add tracks</span></button></li>
+      <li data-step="2"><button type="button" class="up-step" disabled><span class="n"><span>2</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span><span class="l">Pick sounds</span></button></li>
+      <li data-step="3"><button type="button" class="up-step" disabled><span class="n"><span>3</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span><span class="l">Download pack</span></button></li>
+    </ol></nav>
+
+    <section class="gb" id="gumball" aria-label="Gumball">
+
+      <!-- ===== Step 1: add tracks ===== -->
+      <div class="gb-step" id="gb-s1" aria-labelledby="gb-h1">
+        <h2 id="gb-h1" tabindex="-1">Add your tracks</h2>
+        <p class="muted gb-lead">Up to 8 stems, recordings or foley, up to 3 minutes each. Full songs work less well: Gumball is built for single sounds.</p>
+
+        <div class="gb-mobile-note" id="gb-mobile-note">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+          <div>
+            <h3>Gumball works best on a computer</h3>
+            <p class="muted">That is where your stems are. You can still play with the example pack here.</p>
+            <button type="button" class="button" id="gb-demo-m">Play the example pack</button>
+          </div>
+        </div>
+
+        <div class="gb-s1-grid">
+          <div class="gb-drop-col">
+            <label class="mc-drop gb-drop" id="gb-drop" for="gb-file">
+              <input id="gb-file" type="file" multiple accept=".wav,.mp3,.aif,.aiff,.m4a,audio/wav,audio/mpeg,audio/mp4,audio/aiff,audio/x-aiff">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+              <strong>Drop your tracks here</strong>
+              <span>or click to choose files · WAV, MP3, AIFF, M4A · max. 3 min each</span>
+              <span class="mc-private">Your files never leave your device. The analysis runs in your browser.</span>
+            </label>
+            <ul class="gb-errors" id="gb-errors" role="alert" aria-label="Problems with your files"></ul>
+          </div>
+
+          <div class="gb-slots-col">
+            <div class="gb-slots-head"><h3>Your tracks</h3><span class="muted" id="gb-count">0 of 8</span></div>
+            <ol class="gb-slots" id="gb-slots" aria-label="Track slots"></ol>
+          </div>
+        </div>
+
+        <div class="mc-progress hidden gb-scan" id="gb-scan" aria-live="polite">
+          <div class="progress-head"><span id="gb-scan-text">Analysing …</span><span id="gb-scan-pct">0%</span></div>
+          <div class="progress-track"><div class="progress-fill" id="gb-scan-fill"></div></div>
+        </div>
+        <p class="mc-error hidden" id="gb-scan-err" role="alert"></p>
+
+        <div class="gb-actions" id="gb-actions">
+          <button type="button" class="button" id="gb-find" disabled>Find sounds</button>
+          <button type="button" class="outline" id="gb-demo">Try it with demo stems</button>
+        </div>
+        <p class="hint gb-demo-hint">No stems at hand? The demo loads 8 example tracks so you can try everything right away.</p>
+      </div>
+
+      <!-- ===== Step 2: pick sounds ===== -->
+      <div class="gb-step hidden" id="gb-s2" aria-labelledby="gb-h2">
+        <div class="gb-head">
+          <div>
+            <h2 id="gb-h2" tabindex="-1">Pick your sounds</h2>
+            <p class="muted gb-lead" id="gb-summary">Found 0 sounds in 0 tracks</p>
+          </div>
+          <button type="button" class="outline" id="gb-back1"><span>Back<span class="gb-opt"> to tracks</span></span></button>
+        </div>
+
+        <div class="gb-banner" id="gb-banner" role="note">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <p><strong>Demo mode: these are example sounds.</strong> <span id="gb-banner-extra"></span></p>
+        </div>
+
+        <div class="gb-toolbar">
+          <div class="cm-pills" id="gb-chips" role="group" aria-label="Filter by type"></div>
+          <div class="gb-quick">
+            <button type="button" class="outline" id="gb-best"><span>Pick best<span class="gb-opt"> of each type</span></span></button>
+            <button type="button" class="outline" id="gb-clear">Clear</button>
+          </div>
+        </div>
+
+        <div class="gb-grid" id="gb-grid" role="list" aria-label="Sounds found"></div>
+        <p class="gb-empty hidden" id="gb-empty">No sounds of this type. Try another filter.</p>
+
+        <details class="gb-keys">
+          <summary>Keyboard shortcuts</summary>
+          <ul>
+            <li><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> move between sounds</li>
+            <li><kbd>Space</kbd> play or stop</li>
+            <li><kbd>Enter</kbd> add to or remove from your pack</li>
+            <li><kbd>D</kbd> roll a flavour</li>
+            <li><kbd>Esc</kbd> stop playback</li>
+          </ul>
+        </details>
+      </div>
+
+      <!-- ===== Step 3: download ===== -->
+      <div class="gb-step hidden" id="gb-s3" aria-labelledby="gb-h3">
+        <div class="gb-head">
+          <div>
+            <h2 id="gb-h3" tabindex="-1">Download your pack</h2>
+            <p class="muted gb-lead" id="gb-s3-intro"></p>
+          </div>
+          <button type="button" class="outline" id="gb-back2">Back to sounds</button>
+        </div>
+
+        <div class="gb-s3-grid">
+          <div class="gb-s3-main">
+            <form class="mc-mail gb-mail hidden" id="gb-mail" novalidate>
+              <div>
+                <h3>Free with your email <span>– one time</span></h3>
+                <p class="muted">We will also send you Essentials Lite, our free starter kit. Enter your email once; after that your packs download right away.</p>
+              </div>
+              <div class="free-kit-form">
+                <label class="sr-only" for="gb-email">Email address</label>
+                <div class="free-kit-row">
+                  <input id="gb-email" type="email" placeholder="your@email.com" autocomplete="email" required>
+                  <button id="gb-send" class="button" type="submit">Unlock &amp; download</button>
+                </div>
+                <label class="consent">
+                  <input id="gb-consent" type="checkbox">
+                  <span>Yes, also send me the monthly Sound Drop, new releases and deals. I can unsubscribe at any time.</span>
+                </label>
+                <p class="hint">We use your email to unlock the download and to send you Essentials Lite. See our <a href="privacy.html">privacy policy</a>.</p>
+                <p id="gb-mail-status" class="status" role="status"></p>
+              </div>
+            </form>
+
+            <div class="gb-build hidden" id="gb-build" aria-live="polite">
+              <div class="progress-head"><span id="gb-build-text">Building your pack …</span><span id="gb-build-pct">0%</span></div>
+              <div class="progress-track"><div class="progress-fill" id="gb-build-fill"></div></div>
+            </div>
+
+            <div class="gb-fail hidden" id="gb-fail" role="alert">
+              <p class="mc-error" id="gb-fail-text"></p>
+              <button type="button" class="button" id="gb-retry">Try again</button>
+            </div>
+
+            <div class="gb-done hidden" id="gb-done">
+              <div class="gb-done-head">
+                <span class="gb-done-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg></span>
+                <div>
+                  <h3 id="gb-done-name">Your pack is ready</h3>
+                  <p class="muted" id="gb-done-meta"></p>
+                </div>
+              </div>
+              <p class="hint" id="gb-done-hint">It should be in your downloads folder. Nothing was uploaded: your pack was built on this device.</p>
+              <div class="gb-actions">
+                <button type="button" class="outline" id="gb-again">Download again</button>
+                <button type="button" class="outline" id="gb-new">Start a new pack</button>
+              </div>
+            </div>
+          </div>
+
+          <aside class="gb-tree-wrap" aria-label="Pack contents">
+            <h3>What is in the pack</h3>
+            <div id="gb-tree"></div>
+          </aside>
+        </div>
+
+        <div class="gb-next hidden" id="gb-next">
+          <div class="ns-box">
+            <div class="ns-text">
+              <p class="eyebrow"><span class="area-ico" aria-hidden="true"></span>NEXT STEP</p>
+              <p class="ns-line">Made a beat with your pack? Get it mixed.</p>
+              <p class="ns-note muted">Send your stems to Yards and get a mix that sits right.</p>
+            </div>
+            <div class="ns-actions">
+              <a class="button" href="upload.html">Get it mixed</a>
+              <a class="outline" href="mixcheck.html">Check a mix for free</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="sr-only" id="gb-live" role="status" aria-live="polite"></p>
+    </section>
+
+  </main>
+
+  <!-- Pack bar: fixed to the bottom of the viewport during steps 2 and 3 -->
+  <div class="gb-bar hidden" id="gb-bar" role="region" aria-label="Your pack">
+    <div class="gb-panel hidden" id="gb-panel" aria-label="Pack contents">
+      <div class="gb-panel-in" id="gb-panel-list"></div>
+    </div>
+    <div class="gb-bar-row">
+      <div class="gb-name">
+        <label class="sr-only" for="gb-pname">Pack name</label>
+        <input id="gb-pname" type="text" maxlength="60" placeholder="Pack name" autocomplete="off" spellcheck="false">
+        <button type="button" class="outline gb-gen" id="gb-gen" title="Generate a pack name" aria-label="Generate a pack name"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="15" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg><span>Generate</span></button>
+      </div>
+      <button type="button" class="gb-toggle" id="gb-toggle" aria-expanded="false" aria-controls="gb-panel"><span id="gb-n">0 sounds</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+      <button type="button" class="button" id="gb-dl" disabled>Download pack</button>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer-copy">© <span id="year">2026</span> YARDSLOVESYOU &lt;3</p>
+    <nav class="footer-links" aria-label="Legal">
+    <a href="about.html">About</a>
+    <a href="imprint.html">Imprint</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="license.html">License</a>
+    <a href="code-of-conduct.html">Code of Conduct</a>
+    <a href="security.html">Security</a>
+    </nav>
+    <nav class="footer-social" aria-label="Social media">
+      <a href="https://www.instagram.com/yardslovesyou/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></a>
+      <a href="https://www.youtube.com/@yardslovesyou" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.2v5.6l5-2.8z" fill="currentColor" stroke="none"/></svg></a>
+    </nav>
+  </footer>
+
+  <script defer src="states.js?v=20261113q"></script>
+
+  <script defer src="config.js?v=20261114zl"></script>
+  <script defer src="products-map.js?v=20261117a"></script>
+  <script defer src="media.js?v=20261119b"></script>
+  <script defer src="gumball-engine.js?v=20261122c"></script>
+  <script defer src="gumball.js?v=20261122c"></script>
+  <script src="cart.js?v=20261117a" defer></script>
+  <script src="nav.js?v=20261117a" defer></script>
+  <script src="fx.js?v=20261114ze" defer></script>
+  <script src="uisound.js?v=20261113m" defer></script>
+  <script src="motion.js?v=20261119a" defer></script>
+  <script src="thread.js?v=20261115a" defer></script>
+  <script src="nextstep.js?v=20261118n" defer></script>
+  <script src="reveal.js?v=20261119e" defer></script>
+  <script src="footerword.js?v=20261113l" defer></script>
+</body>
+</html>
