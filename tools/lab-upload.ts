@@ -64,9 +64,9 @@ function amzDates() {
 type R2 = { account: string; keyId: string; secret: string; bucket: string; publicBase: string };
 
 function r2Config(): R2 {
-  const account = Deno.env.get("R2_ACCOUNT_ID") || "";
-  const keyId = Deno.env.get("R2_ACCESS_KEY_ID") || "";
-  const secret = Deno.env.get("R2_SECRET_ACCESS_KEY") || "";
+  const account = (Deno.env.get("R2_ACCOUNT_ID") || "").trim();
+  const keyId = (Deno.env.get("R2_ACCESS_KEY_ID") || "").trim();
+  const secret = (Deno.env.get("R2_SECRET_ACCESS_KEY") || "").trim();
   if (!account || !keyId || !secret) throw new Error("R2 is not configured");
   return {
     account, keyId, secret,
