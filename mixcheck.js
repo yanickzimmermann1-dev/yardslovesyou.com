@@ -259,7 +259,7 @@
   }
 
   // ---------- Bewertung (Regeln) ----------
-  // Jede Prüfung liefert einen Code. Texte dazu stehen in free.js (kurz) und in der E-Mail (ausführlich).
+  // Jede Prüfung liefert einen Code. Texte dazu stehen in mixcheck-page.js (kurz) und in der E-Mail (ausführlich).
   const f1 = n => (Math.round(n * 10) / 10).toFixed(1).replace("-", "-");
   const sign = n => (n >= 0 ? "+" : "-") + Math.abs(Math.round(n * 10) / 10).toFixed(1);
 
