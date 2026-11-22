@@ -62,3 +62,7 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 .contact-list a{min-height:44px}
 
 @media(prefers-reduced-motion:reduce){.hv3-chord-list li{transition:none}}
+/* Mixing tile: inline text link in paragraph */
+.hv3-sub{color:var(--t);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.hv3-sub:hover{opacity:.8}
+.hv3-sub:focus-visible{outline:2px solid var(--t);outline-offset:2px;border-radius:4px}
