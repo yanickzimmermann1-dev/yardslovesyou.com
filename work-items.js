@@ -23,7 +23,7 @@
     r2: R2,
     items: [
       // --- finished tracks (gleiche Dateien wie portfolio.js) ---
-      { type: 'audio', title: 'Pretty.mp<3', file: 'pretty125bpm.m4a', cover: 'pretty.jpg', date: '2026-11-18', tags: ['track'], bpm: 125 },
+      { type: 'audio', title: 'Pretty.mp<3', file: 'pretty125bpm.m4a', cover: 'pretty.jpg?v=2', date: '2026-11-18', tags: ['track'], bpm: 125 },
       { type: 'audio', title: 'Crack.mp<3', file: 'crack180bpm.m4a', cover: 'crack.jpg', date: '2026-11-18', tags: ['track'], bpm: 180 },
       { type: 'audio', title: 'Flowing.mp<3', file: 'flowing158bpm.m4a', cover: 'Flowing.jpg', date: '2026-11-18', tags: ['track'], bpm: 158 },
       { type: 'audio', title: 'TwoDays.mp<3', file: 'twodays132bpm.m4a', cover: 'TwoDays.jpg', date: '2026-11-16', tags: ['track'], bpm: 132 },

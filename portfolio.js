@@ -8,7 +8,7 @@
   var COVER = 'media/coverart-portolio/';
   var R2 = 'https://audio.yardslovesyou.com/'; // Cloudflare R2 (Bucket yards-media): neue Tracks + Cover hier hochladen
   var tracks = [
-    { title: 'Pretty.mp<3', bpm: 125, role: 'Prod. by yards', cover: R2 + 'pretty.jpg', audio: R2 + 'pretty125bpm.m4a', released: '2026-11-18' },
+    { title: 'Pretty.mp<3', bpm: 125, role: 'Prod. by yards', cover: R2 + 'pretty.jpg?v=2', audio: R2 + 'pretty125bpm.m4a', released: '2026-11-18' },
     { title: 'Crack.mp<3', bpm: 180, role: 'Prod. by yards', cover: R2 + 'crack.jpg', audio: R2 + 'crack180bpm.m4a', released: '2026-11-18' },
     { title: 'Flowing.mp<3', bpm: 158, role: 'Prod. by yards', cover: R2 + 'Flowing.jpg', audio: R2 + 'flowing158bpm.m4a', released: '2026-11-18' },
     { title: 'TwoDays.mp<3', bpm: 132, role: 'Prod. by yards', cover: R2 + 'TwoDays.jpg', audio: R2 + 'twodays132bpm.m4a', released: '2026-11-16' },
