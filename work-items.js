@@ -23,12 +23,12 @@
     r2: R2,
     items: [
       // --- finished tracks (gleiche Dateien wie portfolio.js) ---
-      { type: 'audio', title: 'Pretty.mp<3', file: 'pretty125bpm.m4a', cover: 'pretty.jpg?v=2', date: '2026-11-18', tags: ['track'], bpm: 125 },
-      { type: 'audio', title: 'Crack.mp<3', file: 'crack180bpm.m4a', cover: 'crack.jpg', date: '2026-11-18', tags: ['track'], bpm: 180 },
-      { type: 'audio', title: 'Flowing.mp<3', file: 'flowing158bpm.m4a', cover: 'Flowing.jpg', date: '2026-11-18', tags: ['track'], bpm: 158 },
-      { type: 'audio', title: 'TwoDays.mp<3', file: 'twodays132bpm.m4a', cover: 'TwoDays.jpg', date: '2026-11-16', tags: ['track'], bpm: 132 },
-      { type: 'audio', title: 'MyFace.mp<3', file: 'myface130bpm.m4a?v=2', cover: 'MyFace.jpg', date: '', tags: ['track'], bpm: 130 },
-      { type: 'audio', title: 'AngelsHell.mp<3', file: 'angelshell148bpm.m4a', cover: 'AngelsHell.jpg', date: '', tags: ['track'], bpm: 148 },
+      { type: 'audio', title: 'Pretty.mp<3', file: 'pretty125bpm.m4a', cover: 'pretty.jpg?v=3', date: '2026-11-18', tags: ['track'], bpm: 125 },
+      { type: 'audio', title: 'Crack.mp<3', file: 'crack180bpm.m4a', cover: 'Crack.jpg?v=3', date: '2026-11-18', tags: ['track'], bpm: 180 },
+      { type: 'audio', title: 'Flowing.mp<3', file: 'flowing158bpm.m4a', cover: 'Flowing.jpg?v=3', date: '2026-11-18', tags: ['track'], bpm: 158 },
+      { type: 'audio', title: 'TwoDays.mp<3', file: 'twodays132bpm.m4a', cover: 'TwoDays.jpg?v=3', date: '2026-11-16', tags: ['track'], bpm: 132 },
+      { type: 'audio', title: 'MyFace.mp<3', file: 'myface130bpm.m4a?v=2', cover: 'MyFace.jpg?v=3', date: '', tags: ['track'], bpm: 130 },
+      { type: 'audio', title: 'AngelsHell.mp<3', file: 'angelshell148bpm.m4a', cover: 'AngelsHell.jpg?v=3', date: '', tags: ['track'], bpm: 148 },
       // --- studio ---
       { type: 'image', title: 'Console', file: 'about-img/console.jpg', date: '', tags: ['studio'], alt: 'Mixing console in the studio' },
       { type: 'image', title: 'Drum session', file: 'about-img/drum-session.jpg', date: '', tags: ['studio'], alt: 'Drum session in the live room' },
