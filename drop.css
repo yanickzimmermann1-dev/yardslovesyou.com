@@ -72,6 +72,9 @@
 .dr-dialog input[type=url]{width:100%;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:400 15px 'DM Sans',sans-serif}
 .dr-dialog .field>span em{font-style:normal;font-weight:400;color:var(--muted)}
 
+.dr-share{display:flex;gap:8px;margin:12px 0}
+.dr-share input{flex:1;min-width:0;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:400 14px 'DM Sans',sans-serif}
+
 @media (max-width:720px){
   .dr.dr-big{grid-template-columns:1fr}
   .dr.dr-big .dr-cover{aspect-ratio:2/1}

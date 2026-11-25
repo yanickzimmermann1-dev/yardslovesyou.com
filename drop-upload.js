@@ -11,6 +11,8 @@ window.DropUpload = (() => {
   const ACCEPT = ".mp3,.wav,.m4a,.aac,.flac,.ogg,audio/*";
   const COLOR_NAMES = { violet: "Violet", ice: "Ice", mint: "Mint", gold: "Gold", rose: "Rose", mono: "Mono" };
   const STYLE_NAMES = { solid: "Solid", outline: "Outline", tape: "Tape" };
+  // Farben wie in drop.css: [Farbe, Schrift auf Farbe]
+  const HEX = { violet: ["#b68aff", "#180e23"], ice: ["#8fd3ff", "#06202e"], mint: ["#5fe0b0", "#062a1e"], gold: ["#d4b46e", "#1c1608"], rose: ["#ff8fb1", "#2e0a16"], mono: ["#e9e4ef", "#141118"] };
   const Y = () => window.YLY, M = () => window.M4A;
   const $ = id => document.getElementById(id);
   const fmt = s => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
@@ -71,7 +73,8 @@ window.DropUpload = (() => {
       </form>
       <div class="hidden" id="dr-done">
         <h3>Your drop is live.</h3>
-        <p class="muted">It's on your profile and in the Lab. Share the link.</p>
+        <p class="muted">It's on your profile and in the Lab. Share the link, it shows your cover on Instagram and WhatsApp.</p>
+        <div class="dr-share hidden" id="dr-share"><input id="dr-share-url" type="text" readonly aria-label="Share link"><button type="button" class="outline" id="dr-share-copy">Copy</button></div>
         <div class="hero-actions"><a class="button" id="dr-link-out" href="/lab">View drop</a><button type="button" class="outline" id="dr-close2">Close</button></div>
       </div>`;
     document.body.appendChild(dlg);
@@ -92,6 +95,63 @@ window.DropUpload = (() => {
     $("dr-title").addEventListener("input", renderLive);
     dlg.querySelectorAll('input[name="dr-c"],input[name="dr-s"]').forEach(r => r.addEventListener("change", renderLive));
     $("dr-form").addEventListener("submit", e => { e.preventDefault(); publish(); });
+    $("dr-share-copy").onclick = async () => {
+      const v = $("dr-share-url").value;
+      try { await navigator.clipboard.writeText(v); Y().toast("Link copied!"); } catch (_) { $("dr-share-url").select(); }
+    };
+  }
+
+  // ---------- Vorschaubild 1200x630 (Open Graph), gleicher Look wie das Cover ----------
+  function wrap(g, text, maxW) {
+    const words = String(text).split(/\s+/).filter(Boolean), lines = [];
+    let cur = "";
+    words.forEach(w => { const t = cur ? cur + " " + w : w; if (g.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  async function ogImage(title, handle, th) {
+    try { await Promise.all([document.fonts.load('600 100px "Space Grotesk"'), document.fonts.load('700 24px "DM Sans"'), document.fonts.load('500 30px "DM Sans"')]); } catch (_) {}
+    const W = 1200, H = 630, P = 72, cv = document.createElement("canvas");
+    cv.width = W; cv.height = H;
+    const g = cv.getContext("2d"), [c, ink] = HEX[th.c] || HEX.violet, dark = "#0f0c15", light = "#f5f0fb";
+    let bg = c, fg = ink, tfg = ink;
+    if (th.s === "outline") { bg = dark; fg = c; tfg = c; }
+    if (th.s === "tape") { bg = dark; fg = light; tfg = ink; }
+    g.fillStyle = bg; g.fillRect(0, 0, W, H);
+    if (th.s === "outline") { g.strokeStyle = c; g.lineWidth = 12; g.strokeRect(6, 6, W - 12, H - 12); }
+    if (th.s === "tape") { g.fillStyle = c; g.fillRect(0, H * 0.28, W, H * 0.44); }
+
+    g.textBaseline = "alphabetic"; g.fillStyle = fg;
+    if ("letterSpacing" in g) g.letterSpacing = "6px";
+    g.font = '700 24px "DM Sans", sans-serif'; g.fillText("DROP", P, P + 18);
+    if ("letterSpacing" in g) g.letterSpacing = "0px";
+
+    // Titel: groesste Schrift, die in max. 3 Zeilen passt
+    let size = 120, lines = [];
+    for (; size >= 56; size -= 6) {
+      g.font = `600 ${size}px "Space Grotesk", sans-serif`;
+      lines = wrap(g, title, W - P * 2);
+      if (lines.length <= 3 && lines.every(l => g.measureText(l).width <= W - P * 2)) break;
+    }
+    lines = lines.slice(0, 3);
+    const lh = size * 1.02, top = H / 2 - (lines.length * lh) / 2 + size * 0.78;
+    g.fillStyle = tfg;
+    lines.forEach((l, i) => g.fillText(l, P, top + i * lh, W - P * 2));
+
+    g.fillStyle = fg; g.font = '500 30px "DM Sans", sans-serif'; g.fillText("@" + handle, P, H - P + 8);
+    g.textAlign = "right"; g.font = '700 22px "DM Sans", sans-serif'; g.fillText("YARDSLOVESYOU", W - P, H - P + 6);
+    return cv.toDataURL("image/png");
+  }
+
+  // Share-Seite fuer den aktuellen Drop erzeugen/aktualisieren -> Link
+  async function share() {
+    const y = Y(), m = await y.me();
+    if (!m || !m.profile) throw new Error("Please sign in first.");
+    const { data: cur } = await y.db.from("posts").select("title,data").eq("user_id", m.user.id).eq("type", "drop").maybeSingle();
+    if (!cur) throw new Error("You don't have a drop yet.");
+    const image = await ogImage(cur.title || "Drop", m.profile.handle, y.dropTheme(y.pdata(cur) || {}));
+    const j = await y.labFn({ action: "share", image });
+    return j.url;
   }
 
   const theme = () => ({
@@ -190,6 +250,12 @@ window.DropUpload = (() => {
       const row = Array.isArray(res) ? res[0] : res;
       if (row && row.old_url && row.old_url !== publicUrl) { try { await y.labFn({ action: "delete", url: row.old_url }); } catch (_) { /* alte Datei bleibt liegen, harmlos */ } }
 
+      // Share-Seite mit Vorschaubild (Fehler hier stoppen den Drop nicht)
+      let shareUrl = "";
+      try { progress("Creating share link …", 0.95); shareUrl = await share(); } catch (_) {}
+      $("dr-share").classList.toggle("hidden", !shareUrl);
+      $("dr-share-url").value = shareUrl;
+
       progress("Done", 1);
       $("dr-form").classList.add("hidden"); $("dr-rule").classList.add("hidden"); $("dr-done").classList.remove("hidden");
       if (row && row.id) $("dr-link-out").href = "/lab?post=" + row.id;
@@ -244,5 +310,5 @@ window.DropUpload = (() => {
     M().supported().then(ok => { if (!ok) { $("dr-drop").querySelector("strong").textContent = M().NO_SUPPORT; } });
   }
 
-  return { open };
+  return { open, share, ogImage };
 })();

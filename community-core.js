@@ -217,10 +217,12 @@ window.YLY = (() => {
   }
 
   // ---------- Drop-Karte (1 Track pro Account, eigenes Design) ----------
-  const actionsHtml = (p, ctx, liked, mine) => `
+  const SHARE_BASE = "https://audio.yardslovesyou.com/d/";
+  const dropShareUrl = handle => /^[a-z0-9_]{3,20}$/i.test(String(handle || "")) ? SHARE_BASE + String(handle).toLowerCase() : "";
+  const actionsHtml = (p, ctx, liked, mine, shareUrl) => `
         <div class="cp-actions">
           <button type="button" class="cp-like ${liked ? "liked" : ""}" data-like="${esc(p.id)}" aria-pressed="${!!liked}" aria-label="Like"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-2px;margin-right:5px"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 4.8 6.6 4.8c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.6 0 5.7 3.7 4.2 7C19.5 16.4 12 21 12 21z"/></svg><span>${+p.like_count || 0}</span></button>
-          <button type="button" class="cp-icon" data-share="${esc(p.id)}" title="Copy link">Share</button>
+          <button type="button" class="cp-icon" data-share="${esc(p.id)}"${shareUrl ? ` data-share-url="${esc(shareUrl)}"` : ""}${mine ? " data-mine" : ""} title="Copy link">Share</button>
           ${mine ? `<button type="button" class="cp-icon" data-drop-edit>Change drop</button><button type="button" class="cp-icon danger" data-delete="${esc(p.id)}">Delete</button>`
                  : `<button type="button" class="cp-icon" data-report="${esc(p.id)}">Report</button>`}
           ${ctx.me?.admin ? `<button type="button" class="cp-icon" data-feature="${esc(p.id)}" data-on="${!!p.featured}">${p.featured ? "Unfeature" : "Feature"}</button>
@@ -260,7 +262,7 @@ window.YLY = (() => {
           ${credits ? `<p class="dr-credits"><span>Credits</span> ${esc(credits)}</p>` : ""}
           ${link ? `<p class="dr-link"><a href="${esc(link)}" target="_blank" rel="noopener noreferrer nofollow ugc">Listen on ${esc(linkHost(link))} &nearr;</a></p>` : ""}
           ${tagsHtml(p)}
-          ${actionsHtml(p, ctx, o.liked, o.mine)}
+          ${actionsHtml(p, ctx, o.liked, o.mine, dropShareUrl(p.author && p.author.handle))}
         </div>
       </article>`;
   }
@@ -292,7 +294,12 @@ window.YLY = (() => {
       const m = await me();
       try {
         if (b.dataset.share) {
-          const url = postLink(b.dataset.share);
+          let url = b.dataset.shareUrl || postLink(b.dataset.share);
+          // Eigener Drop: Share-Seite (Vorschaubild) vorher aktualisieren
+          if (b.dataset.shareUrl && b.hasAttribute("data-mine") && window.DropUpload) {
+            b.disabled = true;
+            try { url = await window.DropUpload.share(); } catch (_) { url = postLink(b.dataset.share); } finally { b.disabled = false; }
+          }
           try { await navigator.clipboard.writeText(url); toast("Link copied!"); } catch (_) { prompt("Copy this link:", url); }
           return;
         }
@@ -346,6 +353,6 @@ window.YLY = (() => {
 
   const yearEl = $("year"); if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  const YLY_API = { db, $, esc, me, resetMe, loginUrl, renderAuthChip, timeAgo, postCard, likedSet, bindActions, toast, POST_SELECT, LINKS, toolUrl, remixUrl, labFn, pdata, fmtDur, tagsOf, TAG_RE, AUDIO_RE, onTag: null, stopPlayer, dropCover, dropTheme, DROP_COLORS, DROP_STYLES, LINK_RE };
+  const YLY_API = { db, $, esc, me, resetMe, loginUrl, renderAuthChip, timeAgo, postCard, likedSet, bindActions, toast, POST_SELECT, LINKS, toolUrl, remixUrl, labFn, pdata, fmtDur, tagsOf, TAG_RE, AUDIO_RE, onTag: null, stopPlayer, dropShareUrl, dropCover, dropTheme, DROP_COLORS, DROP_STYLES, LINK_RE };
   return YLY_API;
 })();
