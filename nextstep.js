@@ -31,6 +31,7 @@
     function track(from, to) { try { window.ylyTrack && window.ylyTrack('nextstep-click', { from: from, to: to }); } catch (e) {} }
 
     var page = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '') || 'index';
+    page = { mixing: 'upload', lab: 'community' }[page] || page; // neue URLs /mixing und /lab
     if (body.hasAttribute('data-product-id')) page = 'product';
 
     // entry cards on home
@@ -42,24 +43,24 @@
 
     if (!footer || doc.querySelector('.next-step')) return;
 
-    var UP = ['Send your track', 'upload.html'], SHOP = ['Browse the shop', 'shop.html'], FREE = ['Try the Lab tools', 'community.html#tools'];
-    var LAB = ['Share in the Lab', 'community.html#community'], HOME = ['Back to home', '/'];
+    var UP = ['Send your track', '/mixing'], SHOP = ['Browse the shop', 'shop.html'], FREE = ['Try the Lab tools', '/lab#tools'];
+    var LAB = ['Share in the Lab', '/lab#community'], HOME = ['Back to home', '/'];
     var LEGAL = { line: 'Looking for something else?', btns: [HOME, ['Shop', 'shop.html']] };
     var MAP = {
-      index: { line: 'Ready? Send your track.', btns: [['Upload your track', 'upload.html'], ['Browse the shop', 'shop.html']] },
-      shop: { line: 'Need a mix too?', btns: [['Upload your track', 'upload.html'], FREE] },
+      index: { line: 'Ready? Send your track.', btns: [['Upload your track', '/mixing'], ['Browse the shop', 'shop.html']] },
+      shop: { line: 'Need a mix too?', btns: [['Upload your track', '/mixing'], FREE] },
       product: { line: 'Looking for more?', btns: [SHOP, FREE] },
       upload: { line: 'While you wait: train your ears.', btns: [['Try the Ear Trainer', 'eartrainer.html'], ['Get the guide', 'shop.html']] },
       success: { dyn: 'success' },   /* review + share, decided from the rendered page (see dynamic block below) */
       status: { dyn: 'status' },
-      about: { line: 'Hear what I do.', btns: [['Hear the difference', 'upload.html#hear']] },
-      free: { line: 'Turn the sounds into music.', btns: [['Make loops with the free tools', 'community.html#tools'], ['Pro sounds: Essentials', 'essentials.html']] },
-      mixcheck: { line: 'Want a pro to take it from here?', btns: [['Get your track mixed', 'upload.html'], ['Train your ears', 'eartrainer.html']] },
+      about: { line: 'Hear what I do.', btns: [['Hear the difference', '/mixing#hear']] },
+      free: { line: 'Turn the sounds into music.', btns: [['Make loops with the free tools', '/lab#tools'], ['Pro sounds: Essentials', 'essentials.html']] },
+      mixcheck: { line: 'Want a pro to take it from here?', btns: [['Get your track mixed', '/mixing'], ['Train your ears', 'eartrainer.html']] },
       chords: { line: 'Find the sounds for your chords.', btns: [['Open Gumball', 'gumball.html'], LAB] },
-      eartrainer: { line: 'Hear it in a real mix.', btns: [['Hear the difference', 'upload.html#hear'], ['Get your track mixed', 'upload.html']] },
+      eartrainer: { line: 'Hear it in a real mix.', btns: [['Hear the difference', '/mixing#hear'], ['Get your track mixed', '/mixing']] },
       community: { line: 'Make something new.', btns: [['Gumball', 'gumball.html'], ['Chord Starter', 'chords.html']] },
       profile: { line: 'Make something new.', btns: [['Gumball', 'gumball.html'], ['Chord Starter', 'chords.html']] },
-      account: { line: 'Your next stop.', btns: [['Go to the Lab', 'community.html']] },
+      account: { line: 'Your next stop.', btns: [['Go to the Lab', '/lab']] },
       imprint: LEGAL, privacy: LEGAL, license: LEGAL, security: LEGAL, contributing: LEGAL,
       'code-of-conduct': LEGAL, 'community-guidelines': LEGAL
     };
@@ -73,10 +74,10 @@
     // Farbe des Ziels: Upload pink, Shop gold, Free tuerkis, Lab blau, sonst lila
     function tone(href) {
       var h = String(href || '').split(/[?#]/)[0].replace(/^\//, '');
-      if (h === 'upload.html') return 'service';
+      if (h === 'mixing' || h === 'mixing.html') return 'service';
       if (/^(shop|product|essentials|the-last-yards)\.html$/.test(h)) return 'shop';
       if (h === 'free.html') return 'free';
-      if (/^(community|gumball|chords|eartrainer|mixcheck|profile)\.html$/.test(h)) return 'lab';
+      if (h === 'lab' || /^(lab|gumball|chords|eartrainer|mixcheck|profile)\.html$/.test(h)) return 'lab';
       return 'home';
     }
     function shareIt(opt, note) {
@@ -139,7 +140,7 @@
           if (!main.querySelector('.st-card')) return null;                         // not rendered yet / error state
           var rf = doc.getElementById('st-rv-form');
           var rev = ['Leave a review', null, function () { goto(doc.getElementById('review'), doc.querySelector('#st-rate-5')); track(page, '#review'); }, 'home'];
-          return { dyn: 1, line: 'Enjoying it? Help other producers find it.', btns: [rf ? rev : ['Book your next song', 'upload.html'], shareBtn(SHARE_HOME)] };
+          return { dyn: 1, line: 'Enjoying it? Help other producers find it.', btns: [rf ? rev : ['Book your next song', '/mixing'], shareBtn(SHARE_HOME)] };
         }
         if (main.querySelector('#get-download,.dl-item')) {                         // shop order
           var slot = main.querySelector('.rv-slot');

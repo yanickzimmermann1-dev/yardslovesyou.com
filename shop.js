@@ -188,7 +188,7 @@
     if(!ratings||!window.YLYReviews) return;
     box=box||$("products");
     box.querySelectorAll("article.product[data-pid]").forEach(a=>{
-      const r=ratings[a.dataset.pid]; if(!r||r.n<1||a.querySelector(".p-rating")) return;
+      const r=ratings[a.dataset.pid]; if(!r||r.n<5||a.querySelector(".p-rating")) return; // Sterne erst ab 5 Bewertungen
       const avg=r.sum/r.n, d=document.createElement("div"); d.className="p-rating";
       d.innerHTML=YLYReviews.stars(avg,13)+`<span class="p-rating-n">${avg.toFixed(1)} (${r.n})</span>`;
       const row=a.querySelector(".price-row"); if(row) a.insertBefore(d,row); else a.appendChild(d);

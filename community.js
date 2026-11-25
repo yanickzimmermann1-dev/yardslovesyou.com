@@ -10,7 +10,7 @@
   const cleanTag = s => (window.LabTags ? window.LabTags.clean(s) : String(s || "").toLowerCase().replace(/[^a-z0-9 -]/g, "").trim());
   const cleanText = s => String(s || "").replace(/[^\p{L}\p{N} _-]/gu, "").replace(/\s+/g, " ").trim().slice(0, 40);
 
-  // Einzelner geteilter Beitrag (community.html?post=...)
+  // Einzelner geteilter Beitrag (/lab?post=...)
   const sharedId = new URLSearchParams(location.search).get("post");
 
   // ---------- Suche & Filter im Zustand + URL (?q= / ?tag= / ?type=) ----------
@@ -113,7 +113,7 @@
   async function loadShared() {
     if (!sharedId || !/^[0-9a-f-]{36}$/i.test(sharedId)) return;
     const { data } = await db.from("posts").select(select()).eq("id", sharedId).maybeSingle();
-    if (!data) { S($("cm-shared"), { icon: "box", title: "This patch is no longer available", text: "It may have been deleted or hidden. The latest patches are just below.", actions: [{ label: "Back to the feed", href: "community.html" }] }); $("cm-shared-wrap").classList.remove("hidden"); return; }
+    if (!data) { S($("cm-shared"), { icon: "box", title: "This patch is no longer available", text: "It may have been deleted or hidden. The latest patches are just below.", actions: [{ label: "Back to the feed", href: "/lab" }] }); $("cm-shared-wrap").classList.remove("hidden"); return; }
     const m = await me(), liked = await likedSet([data.id]);
     $("cm-shared").innerHTML = postCard(data, { me: m, liked });
     $("cm-shared-wrap").classList.remove("hidden");

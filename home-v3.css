@@ -66,3 +66,24 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 .hv3-sub{color:var(--t);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .hv3-sub:hover{opacity:.8}
 .hv3-sub:focus-visible{outline:2px solid var(--t);outline-offset:2px;border-radius:4px}
+
+/* Startseite: 3 neueste Tracks ohne Ueberschrift, kleiner Link darunter */
+.hv3-allwork{margin:14px 0 0;text-align:right}
+
+/* Lab: nur noch ein schmaler Link */
+.hv3-lab-link{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;padding:16px 20px;background:var(--surface,var(--panel));border:1px solid var(--line);border-left:3px solid #8fa2ff;border-radius:14px;transition:border-color .2s}
+.hv3-lab-link:hover,.hv3-lab-link:focus-visible{border-color:#8fa2ff}
+.hv3-lab-link .eyebrow{margin:0;color:#8fa2ff}
+.hv3-lab-link strong{font-weight:500;font-size:15px;flex:1 1 260px}
+.hv3-lab-go{color:#8fa2ff;font-weight:600;font-size:14px;white-space:nowrap}
+
+/* Custom Beat auf der Startseite */
+.hv3-cb{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(18px,3vw,36px);align-items:start;margin:0}
+.hv3-cb h2{font:600 clamp(24px,3vw,30px)/1.15 'Space Grotesk';letter-spacing:-.4px;margin:8px 0 10px}
+.hv3-cb .eyebrow{margin:0}
+.hv3-cb .muted{margin:0 0 10px}
+.hv3-cb .button{align-self:flex-start}
+.hv3-cb .status{margin:0}
+.hv3-cb .status.danger{color:#ffb8c7}
+.up-opts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media(max-width:760px){.hv3-cb{grid-template-columns:1fr}.up-opts{grid-template-columns:1fr}}

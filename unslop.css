@@ -212,3 +212,7 @@ main.wrap>.home-section:has(~ .home-section[hidden]):not(:has(~ .home-section:no
 .field-error,.checkout-note{margin:6px 0 0;font-size:13px;line-height:1.5;color:#ffb8c7}
 .field-error:empty{display:none}
 [aria-invalid="true"]{border-color:#ffb8c7!important}
+
+/* Hero ohne Einblendung: Text, Buttons und Wellenlinie stehen sofort da (kein Grau beim Laden) */
+.hero.hx .hx-tilt,.hero.hx .hx-wave,.hero.hx .hw,.hx-cta>*{animation:none!important}
+html:not(.intro-on) .hero.hx .hx-tilt,html:not(.intro-on) .hero.hx .hx-wave{opacity:1}

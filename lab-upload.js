@@ -58,7 +58,7 @@ window.LabUpload = (() => {
       <div class="hidden" id="lu-done">
         <h3>It's in the Lab.</h3>
         <p class="muted">Your patch is live. Share the link with your friends.</p>
-        <div class="hero-actions"><a class="button" id="lu-link" href="community.html">View patch</a><button type="button" class="outline" id="lu-close2">Close</button></div>
+        <div class="hero-actions"><a class="button" id="lu-link" href="/lab">View patch</a><button type="button" class="outline" id="lu-close2">Close</button></div>
       </div>`;
     document.body.appendChild(dlg);
     tags = window.LabTags.mount($("lu-tags"), { max: 5 });
@@ -205,7 +205,7 @@ window.LabUpload = (() => {
 
       progress("Done", 1);
       $("lu-form").classList.add("hidden"); $("lu-done").classList.remove("hidden");
-      $("lu-link").href = "community.html?post=" + ins.id;
+      $("lu-link").href = "/lab?post=" + ins.id;
       window.ylyTrack && ylyTrack("lab-upload", { type: S.type });
       window.dispatchEvent(new CustomEvent("lab:posted", { detail: { id: ins.id } }));
       if (S.opts.onDone) S.opts.onDone(ins.id);
@@ -222,7 +222,7 @@ window.LabUpload = (() => {
   async function open(opts = {}) {
     const y = Y(); if (!y) return;
     const m = await y.me();
-    if (!m) { location.href = y.loginUrl(location.origin + "/community.html#drop"); return; }
+    if (!m) { location.href = y.loginUrl(location.origin + "/lab#drop"); return; }
     if (!m.profile) { location.href = "account.html?next=" + encodeURIComponent(location.href); return; }
     build(); reset(); S.opts = opts; S.type = opts.type || "audio"; S.sounds = opts.sounds || null;
     $("lu-h").textContent = S.type === "gumball" ? "Share to the Lab" : "Drop a loop";

@@ -12,7 +12,7 @@
     if (error) { $("adm-reports").innerHTML = `<li class="danger">${esc(error.message)}</li>`; return; }
     $("adm-count").textContent = `(${data.length})`;
     $("adm-reports").innerHTML = data.length ? data.map(r => {
-      const target = r.post ? `Beitrag <a href="community.html?post=${encodeURIComponent(r.post.id)}" target="_blank" rel="noopener noreferrer">${esc(r.post.title)}</a> von @${esc(r.post.author?.handle || "?")}${r.post.hidden ? " (ausgeblendet)" : ""}`
+      const target = r.post ? `Beitrag <a href="/lab?post=${encodeURIComponent(r.post.id)}" target="_blank" rel="noopener noreferrer">${esc(r.post.title)}</a> von @${esc(r.post.author?.handle || "?")}${r.post.hidden ? " (ausgeblendet)" : ""}`
         : r.profile ? `Profil <a href="profile.html?u=${encodeURIComponent(r.profile.handle)}" target="_blank" rel="noopener noreferrer">@${esc(r.profile.handle)}</a>${r.profile.hidden ? " (ausgeblendet)" : ""}`
         : "Bereits gelöscht";
       return `<li>

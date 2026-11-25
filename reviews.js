@@ -60,7 +60,8 @@
 
     // Zusammenfassung unter Titel/Preis
     var buyRow = root.querySelector(".pd-buy") || root.querySelector(".gd-buyrow");
-    if (buyRow && !root.querySelector(".rv-sum")) {
+    var MIN_AVG = 5; // Durchschnitt/Sterne erst ab 5 Bewertungen zeigen, einzelne Bewertungen immer
+    if (n >= MIN_AVG && buyRow && !root.querySelector(".rv-sum")) {
       var b = document.createElement("button");
       b.type = "button"; b.className = "rv-sum";
       b.innerHTML = stars(avg, 16) + "<span><b>" + avgTxt + "</b> · " + cnt + "</span>";
@@ -86,9 +87,9 @@
     for (var k = 5; k >= 1; k--) {
       bars += '<li><span>' + k + '</span><span class="rv-bar" aria-hidden="true"><i style="width:' + (dist[k] / n * 100).toFixed(1) + '%"></i></span><em>' + dist[k] + "</em></li>";
     }
-    sec.innerHTML = '<h2 id="rv-h">Reviews</h2>' +
+    sec.innerHTML = '<h2 id="rv-h">Reviews</h2>' + (n < MIN_AVG ? "" :
       '<div class="rv-top"><div class="rv-avg"><span class="rv-avg-num">' + avgTxt + '</span><span class="rv-avg-meta">' + stars(avg, 18) + "<span>" + cnt + "</span></span></div>" +
-      '<ul class="rv-dist" aria-label="Rating distribution">' + bars + "</ul></div>" +
+      '<ul class="rv-dist" aria-label="Rating distribution">' + bars + "</ul></div>") +
       '<ul class="rv-list"></ul>' +
       (n > PAGE ? '<button type="button" class="outline rv-more">Show more</button>' : "");
     var ul = sec.querySelector(".rv-list"), more = sec.querySelector(".rv-more");

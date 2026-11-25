@@ -1,4 +1,4 @@
-/* home-v3.js - index.html (home): selected work, featured release, mini Chord Starter, newsletter signup.
+/* home-v3.js - index.html (home): 3 latest tracks, newsletter signup, custom beat inquiry (mini Chord Starter code stays, runs only if its markup exists).
    Needs config.js, media.js and portfolio.js before it (all deferred, in this order). No autoplay. No inline code (CSP). */
 (function () {
   'use strict';
@@ -9,7 +9,7 @@
 
   /* ---------- portfolio ---------- */
   if (window.YLYPortfolio) {
-    window.YLYPortfolio.renderGrid($('work-grid'), { limit: 8 });
+    window.YLYPortfolio.renderGrid($('work-grid'), { limit: 3 });
   }
 
   /* ---------- mini Chord Starter (natural minor, triads; same theory as chords.js) ---------- */
@@ -103,21 +103,58 @@
       status.classList.remove('danger'); status.textContent = '';
       var addr = email.value.trim();
       if (!EMAIL_RE.test(addr)) { fail('Please enter a valid email address.'); email.focus(); return; }
-      if (!consent.checked) { fail('Please tick the box to get the kit and news by email.'); return; }
+      var news = !!consent.checked; // optional: the kit comes either way, news only with the box ticked
       if (!cfg.SUPABASE_URL) { fail('Service is not available right now. Please try again.'); return; }
       var label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending …';
-      call('free-kit', { email: addr, marketing_consent: true }).then(function (res) {
+      call('free-kit', { email: addr, marketing_consent: news }).then(function (res) {
         if (!res.ok) throw new Error(res.j.error || 'Something went wrong.');
         try { if (window.ylyTrack) window.ylyTrack('freekit-signup'); } catch (x) {}
         // monthly Sound Drop subscription; the kit mail is already out, so a failure here is not shown as an error
+        if (!news) return res;
         return call('sound-drop', { email: addr, marketing_consent: true, action: 'subscribe' }).catch(function () {}).then(function () { return res; });
       }).then(function (res) {
-        status.textContent = res.j.already_sent ? 'We just sent it to you. Please check your inbox (and spam folder).' : 'You are in. Check your inbox (and spam folder) for the free kit, and confirm your subscription in that email.';
+        status.textContent = res.j.already_sent ? 'We just sent it to you. Please check your inbox (and spam folder).' : 'Done! Check your inbox (and spam folder) for the download link.' + (news ? ' Please confirm your subscription in that email.' : '');
         email.value = ''; consent.checked = false;
       }).catch(function (err) {
         var m = String(err && err.message || 'Something went wrong.');
         fail(/try again|try another/i.test(m) ? m : m.replace(/[.!?\s]*$/, '') + '. Please try again.');
       }).then(function () { btn.disabled = false; btn.textContent = label; });
+    });
+  })();
+
+  /* ---------- custom beat inquiry (same edge function and checks as before on /mixing) ---------- */
+  (function () {
+    var form = $('inquiry-form'); if (!form) return;
+    var btn = $('inq-btn'), statusEl = $('inq-status');
+    function v(id) { return $(id) ? $(id).value.trim() : ''; }
+    function fail(m) { statusEl.textContent = m; statusEl.classList.add('danger'); }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      statusEl.textContent = ''; statusEl.classList.remove('danger');
+      var body = {
+        service_type: 'custom-beat', name: v('inq-name'), email: v('inq-email'), description: v('inq-desc'),
+        links: v('inq-links'), budget: v('inq-budget'), deadline: v('inq-deadline'), website: v('inq-website')
+      };
+      if (!body.name || body.name.length > 100) return fail('Please enter your name (max. 100 characters).');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(body.email) || body.email.length > 254) return fail('Please enter a valid email address.');
+      if (body.description.length < 10) return fail('Please describe the vibe you are looking for (at least 10 characters).');
+      if (body.description.length > 3000 || body.links.length > 1000 || body.budget.length > 60 || body.deadline.length > 100) return fail('One of your entries is too long.');
+      if (!cfg.SUPABASE_URL) return fail('Service is not available right now. Please try again.');
+      btn.disabled = true; btn.textContent = 'Sending...';
+      var h = { 'Content-Type': 'application/json', apikey: cfg.SUPABASE_PUBLISHABLE_KEY };
+      if (String(cfg.SUPABASE_PUBLISHABLE_KEY).split('.').length === 3) h.Authorization = 'Bearer ' + cfg.SUPABASE_PUBLISHABLE_KEY;
+      fetch(cfg.SUPABASE_URL + '/functions/v1/service-inquiry', { method: 'POST', headers: h, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || (j && j.error)) throw new Error((j && j.error) || 'failed'); }); })
+        .then(function () {
+          try { if (window.ylyTrack) window.ylyTrack('custom-beat-inquiry', {}); } catch (x) {}
+          form.reset();
+          btn.textContent = 'Inquiry sent';
+          statusEl.textContent = "Thanks! Your inquiry is in. I'll get back to you by email with a quote.";
+        })
+        .catch(function () {
+          fail("Your inquiry couldn't be sent. Please try again, or email hello@yardslovesyou.com if it keeps happening.");
+          btn.disabled = false; btn.textContent = 'Send inquiry';
+        });
     });
   })();
 })();

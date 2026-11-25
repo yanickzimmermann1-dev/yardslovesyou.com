@@ -186,7 +186,7 @@
     window.addEventListener("storage", sync, { signal: ctl.signal });
     const iv = setInterval(sync, 700); ctl.signal.addEventListener("abort", () => clearInterval(iv));
     getRating(String(p.id)).then(r => {
-      if (my !== tok || !r) return;
+      if (my !== tok || !r || r.n < 5) return; // Sterne erst ab 5 Bewertungen
       const el = body.querySelector(".qv-rate"); if (!el) return;
       el.hidden = false; el.innerHTML = stars(r.avg, 16) + '<span>' + r.avg.toFixed(1) + " (" + r.n + (r.n === 1 ? " review" : " reviews") + ")</span>";
     });

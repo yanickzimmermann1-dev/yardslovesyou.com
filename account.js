@@ -97,7 +97,7 @@
     $("acc-posts").innerHTML = (data || []).length ? data.map(p => `
       <li>
         <span class="cp-type ${esc(p.type)}">${p.type === "beat" ? "Beat" : "Chords"}</span>
-        <a href="community.html?post=${encodeURIComponent(p.id)}">${esc(p.title)}</a>
+        <a href="/lab?post=${encodeURIComponent(p.id)}">${esc(p.title)}</a>
         <span class="muted">${timeAgo(p.created_at)} · ${+p.like_count || 0} likes${p.hidden ? " · hidden by moderation" : ""}</span>
         <button type="button" class="cp-icon danger" data-del="${esc(p.id)}">Delete</button>
       </li>`).join("") : '<li class="muted">No posts yet. Make something in the <a class="cp-link" href="gumball.html">Gumball</a> or the <a class="cp-link" href="chords.html">Chord Starter</a> and hit Publish.</li>';
@@ -110,7 +110,7 @@
   });
 
   // ---------- Abmelden & Konto löschen ----------
-  $("acc-logout").addEventListener("click", async () => { await db.auth.signOut(); resetMe(); location.href = "community.html"; });
+  $("acc-logout").addEventListener("click", async () => { await db.auth.signOut(); resetMe(); location.href = "/lab"; });
   $("acc-delete").addEventListener("click", async () => {
     const t = prompt('This permanently deletes your profile, all your posts, likes and follows.\nType DELETE to confirm.');
     if (t !== "DELETE") return;
@@ -118,7 +118,7 @@
     if (error || !data?.ok) { toast((data && data.error) || "Your account could not be deleted. Please contact us.", true); return; }
     await db.auth.signOut(); resetMe();
     toast("Your account has been deleted.");
-    setTimeout(() => { location.href = "community.html"; }, 1500);
+    setTimeout(() => { location.href = "/lab"; }, 1500);
   });
 
   // ---------- Anzeige je nach Status ----------

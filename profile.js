@@ -4,8 +4,8 @@
   const box = $("pf-box"), list = $("pf-posts");
   let profile = null;
   const S = (el, o) => { if (window.YLYState) window.YLYState.render(el, o); else if (el) el.textContent = (o.title || "") + " " + (o.text || ""); };
-  const notFound = () => { S(box, { icon: "users", title: "Profile not found", text: "We couldn't find anyone with that handle. Check the link or browse the community.", actions: [{ label: "Explore the community", href: "community.html" }, { label: "Back to home", href: "index.html" }] }); list.innerHTML = ""; };
-  const failed = () => { S(box, { icon: "alert", error: true, title: "The profile could not be loaded", text: "Something went wrong or your connection dropped. Please try again.", actions: [{ label: "Retry", onClick: () => load() }, { label: "Explore the community", href: "community.html" }] }); list.innerHTML = ""; };
+  const notFound = () => { S(box, { icon: "users", title: "Profile not found", text: "We couldn't find anyone with that handle. Check the link or browse the community.", actions: [{ label: "Explore the community", href: "/lab" }, { label: "Back to home", href: "index.html" }] }); list.innerHTML = ""; };
+  const failed = () => { S(box, { icon: "alert", error: true, title: "The profile could not be loaded", text: "Something went wrong or your connection dropped. Please try again.", actions: [{ label: "Retry", onClick: () => load() }, { label: "Explore the community", href: "/lab" }] }); list.innerHTML = ""; };
 
   async function load() {
     if (!profile) {
@@ -62,7 +62,7 @@
       : "";
     if (!(posts.data || []).length) S(list, mine
       ? { icon: "wave", title: "No posts yet", text: "Make a chord progression and hit Publish to share your first post.", actions: [{ label: "Write chords", href: "chords.html" }, { label: "Open Gumball", href: "gumball.html" }] }
-      : { icon: "wave", title: "No posts yet", text: "This producer hasn't published anything yet. See what the community is making.", actions: [{ label: "Explore the community", href: "community.html" }] });
+      : { icon: "wave", title: "No posts yet", text: "This producer hasn't published anything yet. See what the community is making.", actions: [{ label: "Explore the community", href: "/lab" }] });
 
     $("pf-follow")?.addEventListener("click", follow);
     $("pf-report")?.addEventListener("click", report);

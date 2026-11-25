@@ -1,6 +1,6 @@
 /* =====================================================================
    COMMUNITY – gemeinsame Funktionen (Login, Profile, Beitragskarten)
-   Wird von community.html, profile.html, account.html, community-admin.html
+   Wird von /lab, profile.html, account.html, community-admin.html
    sowie vom Upload im Lab, Gumball und dem "Publish"-Button im Chord Starter genutzt.
    ===================================================================== */
 window.YLY = (() => {
@@ -55,7 +55,7 @@ window.YLY = (() => {
   }
   const toolUrl = p => `chords.html#c=${p.data}`;
   const remixUrl = p => `chords.html?remix=${p.id}#c=${p.data}`;
-  const postLink = id => `${location.origin}/community.html?post=${id}`;
+  const postLink = id => `${location.origin}/lab?post=${id}`;
 
   // Vorschau eines Beats (Raster) bzw. einer Akkord-Idee (Eckdaten)
   // Namen für das neue Percussion-Format (Reihenfolge wie in beatlab.js!)
@@ -118,7 +118,7 @@ window.YLY = (() => {
     return `<svg class="lp-wave" viewBox="0 0 ${pk.length} 32" preserveAspectRatio="none" width="100%" height="48" aria-hidden="true" style="color:var(--accent,#8fa2ff);display:block"><defs><clipPath id="${id}"><rect class="lp-clip" x="0" y="0" width="0" height="32"/></clipPath></defs><path d="${d}" stroke="currentColor" stroke-opacity=".3" stroke-width=".7" fill="none"/><path d="${d}" stroke="currentColor" stroke-width=".7" fill="none" clip-path="url(#${id})"/></svg>`;
   }
   const tagsOf = p => (Array.isArray(p.tags) ? p.tags : []).filter(t => typeof t === "string" && TAG_RE.test(t)).slice(0, 5);
-  const tagsHtml = p => { const t = tagsOf(p); return t.length ? `<p class="lp-tags">${t.map(x => `<a class="lp-tag" href="community.html?tag=${encodeURIComponent(x)}" data-tag="${esc(x)}">#${esc(x)}</a>`).join("")}</p>` : ""; };
+  const tagsHtml = p => { const t = tagsOf(p); return t.length ? `<p class="lp-tags">${t.map(x => `<a class="lp-tag" href="/lab?tag=${encodeURIComponent(x)}" data-tag="${esc(x)}">#${esc(x)}</a>`).join("")}</p>` : ""; };
   function audioBlock(p) {
     const d = pdata(p);
     if (!d || !AUDIO_RE.test(String(d.url || ""))) return `<p class="cp-meta">This sound is no longer available.</p>`;
@@ -181,7 +181,7 @@ window.YLY = (() => {
     const mine = ctx.me && ctx.me.user.id === p.user_id;
     const liked = ctx.liked && ctx.liked.has(p.id);
     const by = p.author ? `<a href="profile.html?u=${encodeURIComponent(p.author.handle)}">@${esc(p.author.handle)}</a>` : "unknown";
-    const parent = p.parent ? ` \u00b7 remix of <a href="community.html?post=${encodeURIComponent(p.parent.id)}">${esc(p.parent.title)}</a>${p.parent.author ? ` by @${esc(p.parent.author.handle)}` : ""}` : "";
+    const parent = p.parent ? ` \u00b7 remix of <a href="/lab?post=${encodeURIComponent(p.parent.id)}">${esc(p.parent.title)}</a>${p.parent.author ? ` by @${esc(p.parent.author.handle)}` : ""}` : "";
     const isAudio = p.type === "audio" || p.type === "gumball";
     const ad = isAudio ? pdata(p) : null;
     const body = isAudio ? audioBlock(p) : preview(p);
@@ -195,7 +195,7 @@ window.YLY = (() => {
           ${p.hidden ? `<span class="cp-hidden-tag">Hidden</span>` : ""}
           <span class="cp-time">${timeAgo(p.created_at)}</span>
         </div>
-        <h3><a href="community.html?post=${encodeURIComponent(p.id)}">${esc(p.title)}</a></h3>
+        <h3><a href="/lab?post=${encodeURIComponent(p.id)}">${esc(p.title)}</a></h3>
         <p class="cp-by">by ${by}${parent}</p>
         ${body}
         ${tagsHtml(p)}

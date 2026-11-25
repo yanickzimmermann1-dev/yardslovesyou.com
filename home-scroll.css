@@ -6,19 +6,19 @@ body::before{
   background:
     radial-gradient(ellipse 70% 60% at 25% 35%, rgba(13,11,18,.55), rgba(13,11,18,0) 70%),
     linear-gradient(rgba(13,11,18,.68),rgba(13,11,18,.88)),
-    url("bg-clean-1920.jpg") center / cover no-repeat;
+    url("bg-clean-v2-1920.jpg") center / cover no-repeat;
 }
 @media(max-width:760px){
   body::before{
     background:
       linear-gradient(rgba(13,11,18,.80),rgba(13,11,18,.92)),
-      url("bg-clean-1920.jpg") center / cover no-repeat;
+      url("bg-clean-v2-1920.jpg") center / cover no-repeat;
   }
 }
 .bg-blur{
   background:
     linear-gradient(rgba(13,11,18,.62),rgba(13,11,18,.86)),
-    url("bg-clean-960.jpg") center / cover no-repeat;
+    url("bg-clean-v2-960.jpg") center / cover no-repeat;
 }
 .hs-dia{position:fixed;left:0;top:0;width:464px;height:680px;z-index:-1;pointer-events:none;transform-origin:0 0;contain:layout style}
 .hs-pend{position:absolute;left:0;top:0;width:464px;height:680px;transform-origin:453px 0}

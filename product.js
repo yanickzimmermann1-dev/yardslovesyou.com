@@ -48,7 +48,7 @@ function trustLine(p,compact){const t=['Instant download',p&&p.royalty_free?'Roy
   const cartBtn=(cls,idAttr,p,images,extra)=>`<button class="${cls}" ${idAttr?`id="${idAttr}" `:""}type="button" ${cartAttrs(p,images)}${extra||""}>${CART_IC}<span class="cart-lbl">Add to cart</span></button>`;
 
   // Cross-Sell zum Mixing-Service direkt unter Preis/Kauf (crosssell.js zeigt nur andere Produkte, keine Dienstleistung)
-  const MIX_LINE='<p class="pd-mixline">Got a beat or song to finish? <a href="upload.html">Get it mixed &amp; mastered by yards<span aria-hidden="true"> →</span></a></p>';
+  const MIX_LINE='<p class="pd-mixline">Got a beat or song to finish? <a href="/mixing">Get it mixed &amp; mastered by yards<span aria-hidden="true"> →</span></a></p>';
 
   // Info-Zeile: "120 sounds · 24-bit WAV · 350 MB" -> einzelne Chips
   const specChips=s=>String(s||"").split(/[·|•]/).map(x=>x.trim()).filter(Boolean);

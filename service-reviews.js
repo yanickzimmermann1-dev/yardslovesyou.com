@@ -1,4 +1,4 @@
-/* service-reviews.js – "What artists say": freigegebene Service-Bewertungen auf upload.html.
+/* service-reviews.js – "What artists say": freigegebene Service-Bewertungen auf /mixing.
    EIN REST-GET (Tabelle service_reviews, nur status=approved per RLS, neueste 6, Gesamtzahl aus Content-Range),
    10 Minuten in sessionStorage gecacht. Bei 0 Bewertungen oder Fehler bleibt der Bereich versteckt. Kein Inline-Code (strikte CSP). */
 (function () {

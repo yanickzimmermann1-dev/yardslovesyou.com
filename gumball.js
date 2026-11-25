@@ -738,7 +738,7 @@
     $("gb-done-meta").textContent = `${b.count} file${b.count === 1 ? "" : "s"} · ${fmtSize(b.size)} · ${b.zipName}`;
     $("gb-s3-intro").textContent = "";
   }
-  $("gb-next").addEventListener("click", e => { if (e.target.closest('a[href="upload.html"]')) track("gumball-cta-mixing"); });
+  $("gb-next").addEventListener("click", e => { if (e.target.closest('a[href="/mixing"]')) track("gumball-cta-mixing"); });
   $("gb-again").addEventListener("click", saveBuilt);
   $("gb-new").addEventListener("click", () => {
     stopPlay();

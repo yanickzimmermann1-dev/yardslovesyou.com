@@ -33,7 +33,7 @@ body::before{
   z-index:-1;
   background:
     linear-gradient(rgba(13,11,18,.55),rgba(13,11,18,.80)),
-    url("bg-clean-1920.jpg") center / cover no-repeat;
+    url("bg-clean-v2-1920.jpg") center / cover no-repeat;
   pointer-events:none;
 }
 
@@ -695,13 +695,13 @@ body::before{
   background:
     radial-gradient(ellipse 70% 60% at 25% 35%, rgba(13,11,18,.55), rgba(13,11,18,0) 70%),
     linear-gradient(rgba(13,11,18,.68),rgba(13,11,18,.88)),
-    url("bg-clean-1920.jpg") center / cover no-repeat;
+    url("bg-clean-v2-1920.jpg") center / cover no-repeat;
 }
 @media(max-width:760px){
   body::before{
     background:
       linear-gradient(rgba(13,11,18,.80),rgba(13,11,18,.92)),
-      url("bg-clean-1920.jpg") center / cover no-repeat;
+      url("bg-clean-v2-1920.jpg") center / cover no-repeat;
   }
 }
 
@@ -1572,7 +1572,7 @@ html{scroll-behavior:smooth}
   position:fixed;inset:-40px;z-index:-1;pointer-events:none;opacity:0;
   background:
     linear-gradient(rgba(13,11,18,.62),rgba(13,11,18,.86)),
-    url("bg-clean-960.jpg") center / cover no-repeat;
+    url("bg-clean-v2-960.jpg") center / cover no-repeat;
   filter:blur(22px) saturate(1.15);
   will-change:opacity;
 }
@@ -2013,3 +2013,13 @@ html body .cart-btn:hover{background:#241c31;border-color:rgba(255,255,255,.32)}
 }
 /* Produktbild mit transparentem PNG (z.B. Bundle): ohne Rahmen und Hintergrund */
 html body .pd-main.pd-clear{background:none !important;border:0 !important;box-shadow:none !important}
+
+/* Honeypot-Feld (Spamschutz) unsichtbar, aber fuer Bots im Formular */
+.up-hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+
+/* Mixing-Seite: Preise direkt im Hero (Klick waehlt den Service vor) */
+.up-prices{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:4px 0 14px}
+.up-prices a{display:inline-flex;align-items:baseline;gap:6px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:13px;color:var(--muted);transition:border-color .2s,color .2s}
+.up-prices a:hover,.up-prices a:focus-visible{border-color:var(--purple);color:var(--text)}
+.up-prices b{color:var(--text);font:600 14px 'Space Grotesk',sans-serif}
+#upload-form{scroll-margin-top:100px}

@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function refresh(resetFile) { applyService(resetFile); renderSummary(); }
 
-  // Service aus dem Link vorauswählen, z. B. upload.html?service=mixing
+  // Service aus dem Link vorauswählen, z. B. /mixing?service=mixing
   const preset = new URLSearchParams(location.search).get("service");
   const presetRadio = serviceRadios.find(r => r.value === preset);
   if (presetRadio) presetRadio.checked = true;

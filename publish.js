@@ -45,7 +45,7 @@
       if (error) throw new Error(/limit/i.test(error.message) ? "You've reached today's post limit. Please try again tomorrow." : error.message);
       $("pub-form").classList.add("hidden");
       $("pub-done").classList.remove("hidden");
-      $("pub-link").href = `community.html?post=${data.id}`;
+      $("pub-link").href = `/lab?post=${data.id}`;
     } catch (err) {
       st.textContent = err.message || "Something went wrong."; st.classList.add("danger");
     } finally { go.disabled = false; go.textContent = "Publish"; }
