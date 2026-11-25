@@ -28,12 +28,7 @@
       { type: 'audio', title: 'Flowing.mp<3', file: 'flowing158bpm.m4a', cover: 'Flowing.jpg?v=3', date: '2026-11-18', tags: ['track'], bpm: 158 },
       { type: 'audio', title: 'TwoDays.mp<3', file: 'twodays132bpm.m4a', cover: 'TwoDays.jpg?v=3', date: '2026-11-16', tags: ['track'], bpm: 132 },
       { type: 'audio', title: 'MyFace.mp<3', file: 'myface130bpm.m4a?v=2', cover: 'MyFace.jpg?v=3', date: '', tags: ['track'], bpm: 130 },
-      { type: 'audio', title: 'AngelsHell.mp<3', file: 'angelshell148bpm.m4a', cover: 'AngelsHell.jpg?v=3', date: '', tags: ['track'], bpm: 148 },
-      // --- studio ---
-      { type: 'image', title: 'Console', file: 'about-img/console.jpg', date: '', tags: ['studio'], alt: 'Mixing console in the studio' },
-      { type: 'image', title: 'Drum session', file: 'about-img/drum-session.jpg', date: '', tags: ['studio'], alt: 'Drum session in the live room' },
-      { type: 'image', title: 'Home studio', file: 'about-img/home-studio.jpg', date: '', tags: ['studio'], alt: 'The home studio setup' },
-      { type: 'image', title: 'Live room', file: 'about-img/live-room.jpg', date: '', tags: ['studio'], alt: 'The live room' }
+      { type: 'audio', title: 'AngelsHell.mp<3', file: 'angelshell148bpm.m4a', cover: 'AngelsHell.jpg?v=3', date: '', tags: ['track'], bpm: 148 }
     ]
   };
 })();
