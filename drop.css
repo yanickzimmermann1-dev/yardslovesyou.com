@@ -1,0 +1,81 @@
+/* =====================================================================
+   drop.css - "Drop": 1 Track pro Account mit eigenem Look (Karte, Cover, Dialog, Profil-Showcase).
+   Regeln wie unslop.css: flache Flaechen, 1px-Linien, keine Glows, keine Verlaeufe.
+   Jede Drop-Farbe setzt --accent nur innerhalb der Karte (Play-Button, Wellenform, Rahmen).
+   ===================================================================== */
+.dr-c-violet{--dr:#b68aff;--dr-ink:#180e23}
+.dr-c-ice{--dr:#8fd3ff;--dr-ink:#06202e}
+.dr-c-mint{--dr:#5fe0b0;--dr-ink:#062a1e}
+.dr-c-gold{--dr:#d4b46e;--dr-ink:#1c1608}
+.dr-c-rose{--dr:#ff8fb1;--dr-ink:#2e0a16}
+.dr-c-mono{--dr:#e9e4ef;--dr-ink:#141118}
+.dr{--accent:var(--dr);--accent-hi:var(--dr);--accent-ink:var(--dr-ink)}
+
+/* ---------- Generiertes Cover ---------- */
+.dr-cover{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:10px;
+  aspect-ratio:2/1;padding:16px 18px;border-radius:8px;overflow:hidden;min-width:0;
+  background:var(--dr);color:var(--dr-ink)}
+.dr-cover-k{font:700 11px 'DM Sans',sans-serif;letter-spacing:3px}
+.dr-cover-t{font:600 clamp(22px,3.2vw,34px)/1.02 'Space Grotesk',sans-serif;letter-spacing:-.03em;
+  overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.dr-cover-h{font:500 13px 'DM Sans',sans-serif;opacity:.8}
+/* Outline: dunkel, Farbe nur als Rahmen + Schrift */
+.dr-cover.dr-s-outline{background:#0f0c15;color:var(--dr);border:2px solid var(--dr)}
+/* Tape: Kassetten-Etikett, Farbband in der Mitte */
+.dr-cover.dr-s-tape{background:#0f0c15;color:var(--text);border:1px solid var(--line-strong)}
+.dr-cover.dr-s-tape::before{content:"";position:absolute;left:0;right:0;top:34%;height:40%;background:var(--dr)}
+.dr-cover.dr-s-tape>*{position:relative}
+.dr-cover.dr-s-tape .dr-cover-t{color:var(--dr-ink);align-self:flex-start;margin-top:auto;margin-bottom:auto;padding:0 2px}
+
+/* ---------- Karte im Feed ---------- */
+.dr{gap:12px}
+.dr .dr-body{display:flex;flex-direction:column;gap:8px;min-width:0}
+.dr .cp-type.t-drop{background:var(--dr);color:var(--dr-ink)}
+.dr.dr-s-outline,.dr.dr-s-tape{border-color:var(--line-strong)}
+.dr-desc{margin:2px 0 0;color:var(--text);font-size:15px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-line}
+.dr-credits{margin:0;color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.dr-credits span{font-weight:700;letter-spacing:1px;text-transform:uppercase;font-size:11px;margin-right:6px;color:var(--text)}
+.dr-link{margin:0}
+.dr-link a{color:var(--dr);font-size:14px;font-weight:600;text-decoration:none}
+.dr-link a:hover{text-decoration:underline}
+
+/* ---------- Grosse Variante (Profil) ---------- */
+.dr-showcase{margin:0 0 22px}
+.dr-showcase>h2{font:600 13px 'DM Sans',sans-serif;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.dr.dr-big{display:grid;grid-template-columns:minmax(220px,320px) minmax(0,1fr);gap:20px;align-items:start;padding:18px}
+.dr.dr-big .dr-cover{aspect-ratio:1/1}
+.dr.dr-big .dr-cover-t{font-size:clamp(28px,3.6vw,42px);-webkit-line-clamp:4}
+.dr.dr-big h3{font-size:24px}
+.dr-empty{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px;border:2px dashed var(--line-strong);border-radius:12px;background:var(--surface)}
+.dr-empty p{margin:0;color:var(--muted);max-width:52ch}
+.dr-empty strong{display:block;color:var(--text);font:600 18px 'Space Grotesk',sans-serif;margin-bottom:4px}
+
+/* ---------- Dialog ---------- */
+.dr-dialog{width:min(640px,calc(100% - 24px))}
+.dr-rule,.dr-wait{margin:0 0 14px;color:var(--muted);font-size:14px}
+.dr-wait{color:var(--text);font-size:16px}
+.dr-swap{background:none;border:0;padding:10px 4px;cursor:pointer;font:inherit;font-size:14px;text-decoration:underline;color:var(--muted)}
+.dr-design{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start;margin:8px 0 4px}
+.dr-live .dr-cover{aspect-ratio:1/1}
+.dr-opts{display:flex;flex-direction:column;gap:14px}
+.dr-set{border:0;margin:0;padding:0;min-width:0}
+.dr-set legend{font-size:13px;font-weight:600;margin-bottom:8px;padding:0}
+.dr-swatches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dr-sw,.dr-st{position:relative;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;border:1px solid var(--line-strong);border-radius:10px;cursor:pointer;font-size:14px}
+.dr-sw::before{content:"";width:16px;height:16px;border-radius:50%;background:var(--dr);flex:none}
+.dr-sw input,.dr-st input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.dr-sw:has(input:checked),.dr-st:has(input:checked){border-color:var(--text);background:var(--surface-hi)}
+.dr-sw:has(input:focus-visible),.dr-st:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.dr-styles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dr-st{justify-content:center}
+.dr-dialog textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:400 15px/1.5 'DM Sans',sans-serif;resize:vertical}
+.dr-dialog input[type=url]{width:100%;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:400 15px 'DM Sans',sans-serif}
+.dr-dialog .field>span em{font-style:normal;font-weight:400;color:var(--muted)}
+
+@media (max-width:720px){
+  .dr.dr-big{grid-template-columns:1fr}
+  .dr.dr-big .dr-cover{aspect-ratio:2/1}
+  .dr-design{grid-template-columns:1fr}
+  .dr-live .dr-cover{aspect-ratio:2/1}
+  .dr-empty{flex-direction:column;align-items:flex-start}
+}

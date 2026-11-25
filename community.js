@@ -18,7 +18,7 @@
     const u = new URLSearchParams(location.search);
     const t = cleanTag(u.get("tag") || ""), q = cleanText(u.get("q") || ""), ty = u.get("type");
     if (t) { qIn.value = "#" + t; } else if (q) { qIn.value = q; }
-    if (["audio", "chords", "gumball"].includes(ty)) { filter = ty; syncPills(); }
+    if (["drop", "audio", "chords", "gumball"].includes(ty)) { filter = ty; syncPills(); }
     parseInput();
   }
   function parseInput() {

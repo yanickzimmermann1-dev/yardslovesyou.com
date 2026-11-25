@@ -47,9 +47,9 @@ window.M4A = (() => {
     return out.map(v => Math.round(Math.min(1, v / max) * 255));
   }
 
-  async function encode(buf, start, dur, onProgress) {
+  async function encode(buf, start, dur, onProgress, maxSec) {
     if (!(await supported())) throw new Error(NO_SUPPORT);
-    dur = Math.min(dur, MAX_SEC);
+    dur = Math.min(dur, maxSec || MAX_SEC);   // Loops: 30 s, Drops geben 240 mit
     const { L, R, n, sr } = slice(buf, start, dur);
     if (sr !== RATE) throw new Error("Unexpected sample rate.");
     const target = new Mp4Muxer.ArrayBufferTarget();

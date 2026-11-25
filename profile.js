@@ -1,7 +1,7 @@
 (() => {
   const { db, $, esc, me, loginUrl, renderAuthChip, postCard, likedSet, bindActions, toast, POST_SELECT, LINKS } = window.YLY;
   const handle = (new URLSearchParams(location.search).get("u") || "").toLowerCase();
-  const box = $("pf-box"), list = $("pf-posts");
+  const box = $("pf-box"), list = $("pf-posts"), dropBox = $("pf-drop");
   let profile = null;
   const S = (el, o) => { if (window.YLYState) window.YLYState.render(el, o); else if (el) el.textContent = (o.title || "") + " " + (o.text || ""); };
   const notFound = () => { S(box, { icon: "users", title: "Profile not found", text: "We couldn't find anyone with that handle. Check the link or browse the community.", actions: [{ label: "Explore the community", href: "/lab" }, { label: "Back to home", href: "index.html" }] }); list.innerHTML = ""; };
@@ -57,10 +57,19 @@
       </div>`;
 
     const liked = await likedSet((posts.data || []).map(x => x.id));
-    list.innerHTML = (posts.data || []).length
-      ? posts.data.map(x => postCard(x, { me: m, liked })).join("")
+    // Drop (max. 1) gross oben, der Rest in der Liste
+    const drop = (posts.data || []).find(x => x.type === "drop");
+    const rest = (posts.data || []).filter(x => x.type !== "drop");
+    if (dropBox) {
+      dropBox.innerHTML = drop
+        ? `<h2>Drop</h2>${postCard(drop, { me: m, liked, big: true })}`
+        : mine ? `<h2>Drop</h2><div class="dr-empty"><p><strong>Set your drop</strong>One track that shows who you are. Pick a colour and style, add a story, and it lands on your profile and in the Lab.</p><button type="button" class="button" data-drop-edit>Upload your drop</button></div>` : "";
+      dropBox.classList.toggle("hidden", !drop && !mine);
+    }
+    list.innerHTML = rest.length
+      ? rest.map(x => postCard(x, { me: m, liked })).join("")
       : "";
-    if (!(posts.data || []).length) S(list, mine
+    if (!rest.length && !drop) S(list, mine
       ? { icon: "wave", title: "No posts yet", text: "Make a chord progression and hit Publish to share your first post.", actions: [{ label: "Write chords", href: "chords.html" }, { label: "Open Gumball", href: "gumball.html" }] }
       : { icon: "wave", title: "No posts yet", text: "This producer hasn't published anything yet. See what the community is making.", actions: [{ label: "Explore the community", href: "/lab" }] });
 
@@ -99,6 +108,9 @@
   }
 
   bindActions(list, load, toast);
+  if (dropBox) bindActions(dropBox, load, toast);
+  window.addEventListener("drop:posted", () => load());
+  if (location.hash === "#drop") me().then(m => { if (m && m.profile && m.profile.handle === handle && window.DropUpload) window.DropUpload.open(); });
   renderAuthChip($("cm-auth"));
   load();
 })();

@@ -97,8 +97,12 @@ window.YLY = (() => {
   }
 
   // ---------- Audio-Beitraege (Loops / Gumball) ----------
-  const TYPE_LABEL = { audio: "Loop", chords: "Chords", gumball: "Gumball", beat: "Beat" };
-  const AUDIO_RE = /^https:\/\/audio\.yardslovesyou\.com\/lab\/[0-9a-f-]{36}\/[0-9a-f-]{36}\.m4a$/i;
+  const TYPE_LABEL = { audio: "Loop", chords: "Chords", gumball: "Gumball", beat: "Beat", drop: "Drop" };
+  const AUDIO_RE = /^https:\/\/audio\.yardslovesyou\.com\/(lab|drop)\/[0-9a-f-]{36}\/[0-9a-f-]{36}\.m4a$/i;
+  // Drop-Design: nur diese Presets (gleiche Liste wie in tools/32-drops.sql)
+  const DROP_COLORS = ["violet", "ice", "mint", "gold", "rose", "mono"], DROP_STYLES = ["solid", "outline", "tape"];
+  const LINK_RE = /^https:\/\/[^\s<>"]{4,300}$/;
+  const linkHost = u => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (_) { return ""; } };
   const TAG_RE = /^[a-z0-9][a-z0-9 -]{0,18}[a-z0-9]$/;
   // data kann Text oder jsonb sein: immer als Objekt lesen (oder null)
   const pdata = p => {
@@ -182,11 +186,12 @@ window.YLY = (() => {
     const liked = ctx.liked && ctx.liked.has(p.id);
     const by = p.author ? `<a href="profile.html?u=${encodeURIComponent(p.author.handle)}">@${esc(p.author.handle)}</a>` : "unknown";
     const parent = p.parent ? ` \u00b7 remix of <a href="/lab?post=${encodeURIComponent(p.parent.id)}">${esc(p.parent.title)}</a>${p.parent.author ? ` by @${esc(p.parent.author.handle)}` : ""}` : "";
-    const isAudio = p.type === "audio" || p.type === "gumball";
+    const isAudio = p.type === "audio" || p.type === "gumball" || p.type === "drop";
     const ad = isAudio ? pdata(p) : null;
     const body = isAudio ? audioBlock(p) : preview(p);
     const open = p.type === "chords"
       ? `<a class="button cp-btn" href="${esc(toolUrl(p))}">Open</a><a class="outline cp-btn" href="${esc(remixUrl(p))}">Remix</a>` : "";
+    if (p.type === "drop") return dropCard(p, ctx, { by, body, ad, liked, mine });
     return `
       <article class="cp lp lp-${esc(p.type)} ${p.hidden ? "is-hidden" : ""}" data-id="${esc(p.id)}" data-type="${esc(p.type)}"${ad && AUDIO_RE.test(String(ad.url || "")) ? ` data-audio="${esc(ad.url)}"` : ""}>
         <div class="cp-head">
@@ -207,6 +212,55 @@ window.YLY = (() => {
                  : `<button type="button" class="cp-icon" data-report="${esc(p.id)}">Report</button>`}
           ${ctx.me?.admin ? `<button type="button" class="cp-icon" data-feature="${esc(p.id)}" data-on="${!!p.featured}">${p.featured ? "Unfeature" : "Feature"}</button>
             <button type="button" class="cp-icon danger" data-hide="${esc(p.id)}" data-on="${!!p.hidden}">${p.hidden ? "Unhide" : "Hide"}</button>` : ""}
+        </div>
+      </article>`;
+  }
+
+  // ---------- Drop-Karte (1 Track pro Account, eigenes Design) ----------
+  const actionsHtml = (p, ctx, liked, mine) => `
+        <div class="cp-actions">
+          <button type="button" class="cp-like ${liked ? "liked" : ""}" data-like="${esc(p.id)}" aria-pressed="${!!liked}" aria-label="Like"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="vertical-align:-2px;margin-right:5px"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 3 4.8 6.6 4.8c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.6 0 5.7 3.7 4.2 7C19.5 16.4 12 21 12 21z"/></svg><span>${+p.like_count || 0}</span></button>
+          <button type="button" class="cp-icon" data-share="${esc(p.id)}" title="Copy link">Share</button>
+          ${mine ? `<button type="button" class="cp-icon" data-drop-edit>Change drop</button><button type="button" class="cp-icon danger" data-delete="${esc(p.id)}">Delete</button>`
+                 : `<button type="button" class="cp-icon" data-report="${esc(p.id)}">Report</button>`}
+          ${ctx.me?.admin ? `<button type="button" class="cp-icon" data-feature="${esc(p.id)}" data-on="${!!p.featured}">${p.featured ? "Unfeature" : "Feature"}</button>
+            <button type="button" class="cp-icon danger" data-hide="${esc(p.id)}" data-on="${!!p.hidden}">${p.hidden ? "Unhide" : "Hide"}</button>` : ""}
+        </div>`;
+  const dropTheme = d => {
+    const t = (d && d.theme) || {};
+    return { c: DROP_COLORS.includes(t.c) ? t.c : "violet", s: DROP_STYLES.includes(t.s) ? t.s : "solid" };
+  };
+  // Generiertes Cover: nur Typo + Farbe, kein Bild
+  const dropCover = (title, handle, th) => `
+        <div class="dr-cover dr-c-${th.c} dr-s-${th.s}" aria-hidden="true">
+          <span class="dr-cover-k">DROP</span>
+          <span class="dr-cover-t">${esc(title)}</span>
+          <span class="dr-cover-h">${handle ? "@" + esc(handle) : ""}</span>
+        </div>`;
+  function dropCard(p, ctx, o) {
+    const d = o.ad || {}, th = dropTheme(d);
+    const desc = typeof d.desc === "string" ? d.desc.slice(0, 280) : "";
+    const credits = typeof d.credits === "string" ? d.credits.slice(0, 120) : "";
+    const link = typeof d.link === "string" && LINK_RE.test(d.link) ? d.link : "";
+    const big = ctx.big ? " dr-big" : "";
+    return `
+      <article class="cp lp lp-drop dr dr-c-${th.c} dr-s-${th.s}${big} ${p.hidden ? "is-hidden" : ""}" data-id="${esc(p.id)}" data-type="drop"${AUDIO_RE.test(String(d.url || "")) ? ` data-audio="${esc(d.url)}"` : ""}>
+        ${dropCover(p.title, p.author && p.author.handle, th)}
+        <div class="dr-body">
+          <div class="cp-head">
+            <span class="cp-type t-drop">Drop</span>
+            ${p.featured ? `<span class="cp-feat">Featured</span>` : ""}
+            ${p.hidden ? `<span class="cp-hidden-tag">Hidden</span>` : ""}
+            <span class="cp-time">${timeAgo(p.created_at)}</span>
+          </div>
+          <h3><a href="/lab?post=${encodeURIComponent(p.id)}">${esc(p.title)}</a></h3>
+          <p class="cp-by">by ${o.by}</p>
+          ${o.body}
+          ${desc ? `<p class="dr-desc">${esc(desc)}</p>` : ""}
+          ${credits ? `<p class="dr-credits"><span>Credits</span> ${esc(credits)}</p>` : ""}
+          ${link ? `<p class="dr-link"><a href="${esc(link)}" target="_blank" rel="noopener noreferrer nofollow ugc">Listen on ${esc(linkHost(link))} &nearr;</a></p>` : ""}
+          ${tagsHtml(p)}
+          ${actionsHtml(p, ctx, o.liked, o.mine)}
         </div>
       </article>`;
   }
@@ -232,6 +286,7 @@ window.YLY = (() => {
         if (btn) { const r = wv.getBoundingClientRect(); togglePlay(btn, Math.max(0, Math.min(1, (e.clientX - r.left) / r.width))); }
         return;
       }
+      if (e.target.closest("button[data-drop-edit]")) { if (window.DropUpload) window.DropUpload.open(); else me().then(m => { location.href = m && m.profile ? "profile.html?u=" + encodeURIComponent(m.profile.handle) + "#drop" : loginUrl(); }); return; }
       const b = e.target.closest("button[data-like],button[data-share],button[data-report],button[data-delete],button[data-feature],button[data-hide]");
       if (!b) return;
       const m = await me();
@@ -291,6 +346,6 @@ window.YLY = (() => {
 
   const yearEl = $("year"); if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  const YLY_API = { db, $, esc, me, resetMe, loginUrl, renderAuthChip, timeAgo, postCard, likedSet, bindActions, toast, POST_SELECT, LINKS, toolUrl, remixUrl, labFn, pdata, fmtDur, tagsOf, TAG_RE, AUDIO_RE, onTag: null, stopPlayer };
+  const YLY_API = { db, $, esc, me, resetMe, loginUrl, renderAuthChip, timeAgo, postCard, likedSet, bindActions, toast, POST_SELECT, LINKS, toolUrl, remixUrl, labFn, pdata, fmtDur, tagsOf, TAG_RE, AUDIO_RE, onTag: null, stopPlayer, dropCover, dropTheme, DROP_COLORS, DROP_STYLES, LINK_RE };
   return YLY_API;
 })();
