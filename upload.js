@@ -316,6 +316,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 254) { invalid(emailInput, "Please enter a valid email address."); return; }
       if (wishes.length > 2000) { invalid(wishesInput, "Your notes are too long (max. 2000 characters)."); return; }
 
+      if (file.size > 52428800) { invalid(fileInput, "Your file is larger than 50 MB. Please compress it into a ZIP or send a download link via email."); return; }
+
       // Format validation
       const lower = file.name.toLowerCase();
       if (wavAllowed() ? !(lower.endsWith(".wav") || lower.endsWith(".zip")) : !lower.endsWith(".zip")) {
@@ -338,25 +340,42 @@ document.addEventListener("DOMContentLoaded", () => {
       if (window.YLYUploadFX) window.YLYUploadFX.open(file.name);
 
       try {
-        const requestId = crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-          const r = crypto.getRandomValues(new Uint8Array(1))[0] & 15;
-          return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
+        setProgress(10);
 
-        // Folder structure: email address as folder name
-        const cleanEmail = email.toLowerCase().replace(/[^a-z0-9@._-]/g, "_");
-        const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-        const filePath = `${cleanEmail}/${Date.now()}_${cleanFileName}`;
+        // 1. Upload starten: Server prueft Eingaben + Limits, legt die Anfrage an und gibt eine signierte Upload-URL zurueck
+        const { data: startData, error: startError } = await db.functions.invoke("submission-start", {
+          body: {
+            service_type: serviceType,
+            name: name,
+            email: email,
+            wishes: wishes,
+            songs: songs,
+            rush: rush,
+            file_name: file.name,
+            file_size: file.size
+          }
+        });
+        let startMsg = startData && startData.error;
+        if (!startMsg && startError) { try { startMsg = (await startError.context.json()).error; } catch (_) {} }
+        if (startError || !startData || !startData.request_id || !startData.path || !startData.token) {
+          // 429 (Limit) und Validierungsfehler des Servers dem Nutzer zeigen
+          if (startMsg && /too many uploads/i.test(startMsg)) {
+            if (window.YLYUploadFX) window.YLYUploadFX.close();
+            if (statusEl) statusEl.textContent = startMsg;
+            if (btn) { btn.disabled = false; btn.textContent = "Proceed to checkout"; }
+            if (progressContainer) progressContainer.classList.add("hidden");
+            return;
+          }
+          throw new Error(startMsg || (startError && startError.message) || "Upload could not be started.");
+        }
+        const requestId = startData.request_id;
 
         setProgress(30);
 
-        // 1. Storage upload
+        // 2. Datei direkt in den Bucket (signierte URL)
         const { error: storageError } = await db.storage
           .from("client-submissions")
-          .upload(filePath, file, {
-            cacheControl: '3600',
-            upsert: false
-          });
+          .uploadToSignedUrl(startData.path, startData.token, file);
 
         if (storageError) {
           throw new Error("Storage upload error: " + storageError.message);
@@ -364,33 +383,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setProgress(70);
 
-        // 2. Create database entry
-        const { error: dbError } = await db
-          .from("client_requests")
-          .insert([
-            {
-              id: requestId,
-              artist_name: name,
-              email: email,
-              service_type: serviceType,
-              wishes: wishes,
-              songs: songs,
-              rush: rush,
-              file_path: filePath,
-              status: "pending"
-            }
-          ]);
-
-        if (dbError) {
-          throw new Error("Database error: " + dbError.message);
-        }
-
         setProgress(100);
 
         if (statusEl) statusEl.textContent = "Redirecting to Stripe Checkout...";
         window.ylyTrack && ylyTrack("upload-checkout-click", { service: serviceType, songs: songs, rush: rush });
 
-        // 3. Call edge function
+        // 3. Checkout-Link holen (Server prueft, dass die Datei wirklich im Bucket liegt)
         const { data: checkoutData, error: checkoutError } = await db.functions.invoke("create-submission-checkout", {
           body: {
             service_type: serviceType,
