@@ -17,3 +17,16 @@
   .pf-grid{grid-template-columns:minmax(0,1fr)}
   .pf-featured .pf-card-lg{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Mobile: kompakte Liste statt bildschirmhoher Karten (kleines Cover links, Titel + Player rechts) */
+@media(max-width:600px){
+  .pf-grid{gap:10px}
+  .pf-grid .pf-card{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:center;padding:10px;border-radius:14px}
+  .pf-grid .pf-cover{width:76px;border-radius:8px}
+  .pf-grid .pf-body{padding:0}
+  .pf-grid .pf-title{font-size:16px}
+  .pf-grid .pf-meta{font-size:12px}
+  .pf-grid .pf-player.custom-player{margin-top:6px;gap:10px}
+  .pf-grid .pf-player .play-btn{width:38px;height:38px}
+  .pf-grid .pf-player .waveform-container{height:28px}
+}
