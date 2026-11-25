@@ -269,7 +269,8 @@
       }
       btn.disabled=true; btn.textContent="Sending …"; status.textContent="";
       try{
-        const {data,error}=await db.functions.invoke("free-kit",{body:{email,marketing_consent:$("free-kit-consent").checked}});
+        const consentTicked=$("free-kit-consent").checked;
+        const {data,error}=await db.functions.invoke("free-kit",{body:{email,marketing_consent:consentTicked}});
         if(error){
           let msg=error.message;
           try{ const j=await error.context.json(); if(j?.error) msg=j.error; }catch(_){}
@@ -279,7 +280,7 @@
         window.ylyTrack&&ylyTrack("freekit-signup");
         status.textContent=data.already_sent
           ? "We just sent it to you – please check your inbox (and spam folder)."
-          : "Done! Check your inbox for the download link (and your spam folder, just in case).";
+          : "Done! Check your inbox for the download link (and your spam folder, just in case)."+(consentTicked?" Please confirm your subscription in that email.":"");
         kitForm.reset();
       }catch(err){
         status.textContent=hint(err.message); status.classList.add("danger");

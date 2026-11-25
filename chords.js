@@ -697,12 +697,13 @@
     btn.disabled = true; btn.textContent = "Sending …";
     try {
       const db = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY);
-      const { data, error } = await db.functions.invoke("free-kit", { body: { email, marketing_consent: $("cm-consent").checked } });
+      const consentTicked = $("cm-consent").checked;
+      const { data, error } = await db.functions.invoke("free-kit", { body: { email, marketing_consent: consentTicked } });
       if (error) { let m = error.message; try { const j = await error.context.json(); if (j?.error) m = j.error; } catch (_) {} throw new Error(m); }
       if (!data?.ok) throw new Error(data?.error || "Something went wrong.");
       try { UNLOCK_KEYS.forEach(k => localStorage.setItem(k, "1")); } catch (_) {}
       showUnlocked();
-      setStatus("Unlocked! Essentials Lite is on its way to your inbox.");
+      setStatus("Unlocked! Essentials Lite is on its way to your inbox." + (consentTicked ? " Please confirm your subscription in that email." : ""));
       exportPack();
     } catch (err) {
       st.textContent = err.message || "Something went wrong. Please try again."; st.classList.add("danger");

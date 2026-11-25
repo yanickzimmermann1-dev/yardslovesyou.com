@@ -76,7 +76,7 @@
           track('sample-signup', { pack: pack });
           var card = document.getElementById('sg-card');
           card.innerHTML = '<h2>' + (res.j.already_sent ? 'Already on its way' : 'Check your inbox') + '</h2>' +
-            '<p class="muted sg-lead" role="status">' + (res.j.already_sent ? 'We just sent it to you. Please check your inbox (and your spam folder).' : 'Your free page is on its way. Check your inbox (and your spam folder, just in case).') + '</p>';
+            '<p class="muted sg-lead" role="status">' + (res.j.already_sent ? 'We just sent it to you. Please check your inbox (and your spam folder).' : 'Your free page is on its way. Check your inbox (and your spam folder, just in case).' + (consent.checked ? ' Please confirm your subscription in that email.' : '')) + '</p>';
         })
         .catch(function (err) {
           var m = String((err && err.message) || 'Something went wrong.');

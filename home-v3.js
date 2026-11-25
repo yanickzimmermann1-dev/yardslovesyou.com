@@ -112,7 +112,7 @@
         // monthly Sound Drop subscription; the kit mail is already out, so a failure here is not shown as an error
         return call('sound-drop', { email: addr, marketing_consent: true, action: 'subscribe' }).catch(function () {}).then(function () { return res; });
       }).then(function (res) {
-        status.textContent = res.j.already_sent ? 'We just sent it to you. Please check your inbox (and spam folder).' : 'You are in. Check your inbox (and spam folder) for the free kit.';
+        status.textContent = res.j.already_sent ? 'We just sent it to you. Please check your inbox (and spam folder).' : 'You are in. Check your inbox (and spam folder) for the free kit, and confirm your subscription in that email.';
         email.value = ''; consent.checked = false;
       }).catch(function (err) {
         var m = String(err && err.message || 'Something went wrong.');

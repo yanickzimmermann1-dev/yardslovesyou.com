@@ -652,11 +652,12 @@
     if (!EMAIL_RE.test(email)) { st.textContent = "Please enter a valid email address."; st.classList.add("danger"); $("gb-email").focus(); return; }
     const label = btn.textContent; btn.disabled = true; btn.textContent = "Unlocking …";
     try {
-      await registerEmail(email, $("gb-consent").checked);
+      const consentTicked = $("gb-consent").checked;
+      await registerEmail(email, consentTicked);
       try { localStorage.setItem(UNLOCK_KEY, "1"); } catch (_) {}
       track("gumball-unlock"); track("freekit-signup");
       S.unlocked = true; $("gb-email").value = ""; $("gb-consent").checked = false;
-      st.textContent = "Unlocked! Essentials Lite is on its way to your inbox. Building your pack …";
+      st.textContent = "Unlocked! Essentials Lite is on its way to your inbox." + (consentTicked ? " Please confirm your subscription in that email." : "") + " Building your pack …";
       btn.textContent = "Unlocked";
       await buildZip();
       return;

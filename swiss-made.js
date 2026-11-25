@@ -243,7 +243,7 @@
         .then(function (res) {
           if (!res.ok) throw new Error(res.j.error || 'Something went wrong.');
           try { if (window.ylyTrack) window.ylyTrack('swissmade-waitlist'); } catch (x) {}
-          status.textContent = 'You are on the list. We will email you when SWISS MADE is ready.';
+          status.textContent = res.j.confirm ? 'Almost there. Please confirm your email address with the link we just sent you (check your spam folder too).' : 'You are on the list. We will email you when SWISS MADE is ready.';
           email.value = ''; consent.checked = false;
         })
         .catch(function (err) {
