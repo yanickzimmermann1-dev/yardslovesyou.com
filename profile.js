@@ -65,6 +65,13 @@
         ? `<h2>Drop</h2>${postCard(drop, { me: m, liked, big: true })}`
         : mine ? `<h2>Drop</h2><div class="dr-empty"><p><strong>Set your drop</strong>One track that shows who you are. Pick a colour and style, add a story, and it lands on your profile and in the Lab.</p><button type="button" class="button" data-drop-edit>Upload your drop</button></div>` : "";
       dropBox.classList.toggle("hidden", !drop && !mine);
+      // Eigener Drop: Share-Seite einmal pro Drop im Hintergrund erzeugen (fuer Drops von vor dem Share-Update)
+      if (drop && mine && window.DropUpload) {
+        const k = "yly_share_" + drop.id;
+        let done = false;
+        try { done = localStorage.getItem(k) === "1"; } catch (_) {}
+        if (!done) window.DropUpload.share().then(() => { try { localStorage.setItem(k, "1"); } catch (_) {} }).catch(() => {});
+      }
     }
     list.innerHTML = rest.length
       ? rest.map(x => postCard(x, { me: m, liked })).join("")
