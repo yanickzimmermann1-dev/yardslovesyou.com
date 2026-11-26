@@ -292,6 +292,7 @@
         tState.textContent = ''; routeEls();
         ch.before.el.currentTime = offset; ch.after.el.currentTime = offset;
         playing = true; setPlayUi(); kick(); startSync();
+        try { window.dispatchEvent(new CustomEvent('yly:audio', { detail: { who: 'ba' } })); } catch (e) {}   // Hero-Track stoppen
         var p1 = ch.before.el.play(), p2 = ch.after.el.play();
         [p1, p2].forEach(function (p) { if (p && p.catch) p.catch(function () { if (playing) pause(); }); });
         track('beforeafter-play');
@@ -446,6 +447,7 @@
       else if (kl === 'a' || k === 'ArrowRight') { e.preventDefault(); setSide('after', true); }
     });
 
+    window.addEventListener('yly:audio', function (e) { if (playing && e.detail && e.detail.who !== 'ba') pause(); });   // anderer Player startet
     document.addEventListener('visibilitychange', function () { if (document.hidden && playing) pause(); });
     window.addEventListener('pagehide', function () { if (playing) pause(); });
     if (window.ResizeObserver) new ResizeObserver(function () { lastDraw = ''; repaint(); }).observe(wave);

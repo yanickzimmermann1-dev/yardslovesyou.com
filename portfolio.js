@@ -66,10 +66,14 @@
       function icons(on) { playI.style.display = on ? 'none' : 'block'; pauseI.style.display = on ? 'block' : 'none'; }
       function clear() { [].forEach.call(bars, function (b) { b.classList.remove('active'); }); }
       var me = { audio: audio, reset: function () { icons(false); } };
+      window.addEventListener('yly:audio', function (e) {   // Hero-Track oder Before/After startet: diese Karte anhalten
+        if (!audio.paused && e.detail && e.detail.who !== 'card') { audio.pause(); me.reset(); }
+      });
       btn.addEventListener('click', function () {
         if (current && current.audio !== audio) { current.audio.pause(); current.reset(); }
         if (audio.paused) {
           current = me; icons(true);
+          try { window.dispatchEvent(new CustomEvent('yly:audio', { detail: { who: 'card' } })); } catch (e) {}   // Hero-Track stoppen
           var p = audio.play();
           if (p && p.catch) p.catch(function () { icons(false); });
         } else { audio.pause(); icons(false); }

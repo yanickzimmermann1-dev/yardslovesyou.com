@@ -27,6 +27,7 @@
        ausgeschnittene Sprites (hero-chain.png, hero-gem.png) auf einem Hintergrund ohne Diamant (bg-clean-*.jpg).
        Sprite-Koordinaten = Pixel des 1920x1080-Hintergrunds, verschoben um (1237,0). */
     var hero = $('.hero'), dia = null, pend = null, chainEl = null, gemEl = null, gemBright = null, glowEl = null, spkHost = null;
+    var grabEl = null, dragging = false, grabbed = false, dragT = 0, dragOm = 0, lastDragT = 0, pivX = 0, pivY = 0, gemCX = 0, gemCY = 0, atClamp = false;
     var theta = 0, omega = 0, gemVisible = false, lastMoveT = 0, heroKey = '', heroHidden = false;
     var PX = 453, GX = 158, GY = 595, GBOX_Y = 448, GLX = 158, GLY = 147;   // Drehpunkt Kette, Mitte des Diamanten
     var SPK_COLS = ['#cae6de', '#92bfb5', '#67988e', '#ffffff', '#ffffff', '#ecf7f4'];
@@ -41,6 +42,58 @@
       doc.body.appendChild(dia);
       pend = dia.firstChild; chainEl = dia.querySelector('.hs-chain'); gemEl = dia.querySelector('.hs-gem');
       gemBright = dia.querySelector('.hs-bright'); glowEl = dia.querySelector('.hs-glow'); spkHost = dia.querySelector('.hs-spk-host');
+      if (!reduce) buildGrab();
+    }
+    /* Effekt: Diamant greifen. Eigener unsichtbarer Kreis ueber dem Inhalt, folgt dem Diamanten (er selbst liegt hinter dem Inhalt).
+       Pendelwinkel kommt aus der Zeigerposition relativ zum Aufhaenger; beim Loslassen bleibt die Winkelgeschwindigkeit erhalten. */
+    var GEM_ANG = Math.atan2(PX - GX, GY) * 180 / Math.PI;   // Ruhewinkel des Diamanten zur Senkrechten (CSS-Drehsinn), ~26.4 deg
+    function hit808(v) { try { window.YLYHeroAudio && window.YLYHeroAudio.hit(v); } catch (e) {} }
+    function pointerTheta(e) {
+      var dx = e.clientX - pivX, dy = e.clientY - pivY;
+      if (dy < 8) dy = 8;
+      return Math.atan2(-dx, dy) * 180 / Math.PI - GEM_ANG;
+    }
+    function buildGrab() {
+      grabEl = doc.createElement('div'); grabEl.className = 'hs-grab'; grabEl.setAttribute('aria-hidden', 'true'); grabEl.style.display = 'none';
+      doc.body.appendChild(grabEl);
+      grabEl.addEventListener('pointerdown', function (e) {
+        if (reduce || (e.pointerType === 'mouse' && e.button !== 0)) return;
+        e.preventDefault();
+        try { grabEl.setPointerCapture(e.pointerId); } catch (x) {}
+        try { window.YLYHeroAudio && window.YLYHeroAudio.unlock(); } catch (x) {}   // AudioContext in der Geste freigeben
+        dragging = true; grabbed = true; omega = 0; dragOm = 0; lastDragT = performance.now(); atClamp = false;
+        dragT = theta; grabEl.classList.add('is-grabbing');
+        dragMove(e); schedule();
+      });
+      grabEl.addEventListener('pointermove', function (e) { if (dragging) dragMove(e); });
+      var end = function () {
+        if (!dragging) return;
+        dragging = false; grabEl.classList.remove('is-grabbing');
+        omega = performance.now() - lastDragT < 90 ? clamp(dragOm, -520, 520) : 0;   // gehaltener Zeiger = kein Schwung
+        schedule();
+      };
+      grabEl.addEventListener('pointerup', end); grabEl.addEventListener('pointercancel', end); grabEl.addEventListener('lostpointercapture', end);
+    }
+    function dragMove(e) {
+      var raw = pointerTheta(e), nt = clamp(raw, -26, 26), now = performance.now(), dtm = (now - lastDragT) / 1000;
+      if (dtm > 0.004) { dragOm = dragOm * 0.5 + ((nt - theta) / dtm) * 0.5; lastDragT = now; }
+      theta = nt;
+      var over = Math.abs(raw) >= 26;
+      if (over && !atClamp) hit808(clamp(Math.abs(dragOm) / 300, 0.35, 1));   // Anschlag erreicht
+      atClamp = over;
+      schedule();
+    }
+    /* Position des Greifkreises (Bildschirm) aus Skalierung, Aufhaenger und Winkel, ohne Layout-Lesen */
+    function placeGrab(tx, ty, sc, th, show) {
+      if (!grabEl) return;
+      if (!show) { grabEl.style.display = 'none'; return; }
+      var a = th * Math.PI / 180, vx = (GX - PX) * sc, vy = GY * sc;
+      pivX = tx + PX * sc; pivY = ty;
+      gemCX = pivX + vx * Math.cos(a) - vy * Math.sin(a); gemCY = pivY + vx * Math.sin(a) + vy * Math.cos(a);
+      var r = Math.max(24, 90 * sc);
+      var st = grabEl.style;
+      st.display = 'block'; st.width = st.height = (r * 2).toFixed(0) + 'px';
+      st.transform = 'translate3d(' + (gemCX - r).toFixed(1) + 'px,' + (gemCY - r).toFixed(1) + 'px,0)';
     }
     /* Kein Landen mehr: Der Diamant schwingt, solange der Hero im Bild ist. Beim Hinausscrollen sinkt er ein Stück,
        blendet aus (Opacity -> 0), wird leicht unscharf und kleiner und ist komplett unsichtbar, bevor er die
@@ -53,13 +106,18 @@
     function heroFrame(dt, dy, force) {
       if (!dia || !G.s) return false;
       var fr = fadeRange(), u = clamp((y - fr[0]) / Math.max(1, fr[1] - fr[0]), 0, 1), us = smooth(u);
-      if (u >= 1) { if (!heroHidden) { heroHidden = true; dia.style.visibility = 'hidden'; dia.style.opacity = '0'; setLive(dia, false); } return false; }
+      if (u >= 1) { if (!heroHidden) { heroHidden = true; dia.style.visibility = 'hidden'; dia.style.opacity = '0'; setLive(dia, false); placeGrab(0, 0, 1, 0, false); if (dragging) { dragging = false; } } return false; }
       if (heroHidden) { heroHidden = false; dia.style.visibility = ''; heroKey = ''; }
       var k = 1 - 0.6 * us;
       var th0 = reduce ? 0 : 4 * Math.sin(y / 120) * k;
-      if (!reduce) {
+      if (!reduce && !dragging) {
+        var pOm = omega, pTh = theta;
         omega += (-40 * (theta - th0) - 2.4 * omega) * dt - dy * 1.0 * (0.3 + 0.7 * k);
         theta = clamp(theta + omega * dt, -26, 26);
+        if (grabbed) {   // 808 nur, nachdem der Diamant einmal gegriffen wurde: Umkehrpunkt mit genug Ausschlag oder Anschlag
+          if (pOm * omega < 0 && Math.abs(theta - th0) > 5) hit808(clamp(Math.abs(theta - th0) / 26, 0.25, 1));
+          else if (Math.abs(theta) >= 25.99 && Math.abs(pTh) < 25.99 && Math.abs(omega) > 30) hit808(clamp(Math.abs(omega) / 300, 0.35, 1));
+        }
       }
       var sc = G.s * (1 - 0.18 * us), gx = G.bx, gy = G.by + 60 * us;
       var ry = reduce ? 0 : 24 * Math.sin(y / 230) * k;
@@ -75,9 +133,10 @@
         chainEl.style.opacity = '1';
         gemBright.style.opacity = (0.35 * (0.5 + 0.5 * Math.sin(y / 160))).toFixed(2);
         glowEl.style.opacity = '0.55';
+        placeGrab(gx - GX * sc, gy - GY * sc, sc, theta * k, us < 0.5);
       }
       setLive(dia, !reduce);
-      return !reduce && (Math.abs(omega) > 0.08 || Math.abs(theta - th0) > 0.05);
+      return !reduce && (dragging || Math.abs(omega) > 0.08 || Math.abs(theta - th0) > 0.05);
     }
     function spawnSpark() {
       if (!gemEl || !spkHost || spkHost.childNodes.length > 7) return;

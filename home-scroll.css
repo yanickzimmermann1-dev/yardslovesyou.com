@@ -33,6 +33,9 @@ body::before{
   clip-path:polygon(50% 0,59% 41%,100% 50%,59% 59%,50% 100%,41% 59%,0 50%,41% 41%);animation:hsSpk .75s ease-out forwards;pointer-events:none}
 @keyframes hsSpk{0%{opacity:0;transform:scale(0) rotate(0)}35%{opacity:1;transform:scale(1) rotate(35deg)}100%{opacity:0;transform:scale(.1) rotate(90deg)}}
 .hs-dia.hs-live{will-change:transform}
+/* Greifflaeche fuer den Diamanten: .hs-dia liegt hinter dem Inhalt (z-index:-1), darum ein eigener, unsichtbarer Treffer-Kreis */
+.hs-grab{position:fixed;left:0;top:0;z-index:6;border-radius:50%;touch-action:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+@media(pointer:fine){.hs-grab{cursor:grab}.hs-grab.is-grabbing{cursor:grabbing}}
 .hs-dia.hs-live .hs-pend,.hs-dia.hs-live .hs-gem{will-change:transform}
 
 @media(prefers-reduced-motion:reduce){
