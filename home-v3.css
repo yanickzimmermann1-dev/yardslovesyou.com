@@ -20,14 +20,14 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 .hv3-more{display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;font-weight:600}
 
 /* ---------- four tiles ---------- */
-.hv3-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.6vw,16px)}
+.hv3-tiles{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,16px)}
 .hv3-tile{display:flex;flex-direction:column;gap:8px;padding:clamp(14px,2vw,20px);background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--t);border-radius:14px;min-width:0}
 .hv3-tile h3{font:600 clamp(15px,1.6vw,18px)/1.25 'Space Grotesk';margin:0;color:var(--t)}
 .hv3-tile p{margin:0 0 6px;font-size:13px;line-height:1.5;color:var(--muted);flex:1}
 .hv3-go{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 12px;border:1px solid var(--t);border-radius:10px;color:var(--t);font:600 13px 'DM Sans';text-align:center;background:transparent}
 .hv3-go:hover,.hv3-go:focus-visible{background:var(--t);color:var(--t-ink)}
 .hv3-go:focus-visible{outline:2px solid var(--t);outline-offset:2px}
-@media(max-width:860px){.hv3-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:860px){.hv3-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.hv3-tile:first-child{grid-column:1/-1}}
 
 /* ---------- featured release ---------- */
 .hv3-featured .pf-card-lg{border-radius:16px}
