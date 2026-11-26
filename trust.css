@@ -1,6 +1,6 @@
 /* Trust line component */
-.trust{display:flex;align-items:center;justify-content:center;gap:7px;margin:10px 0 0;font-size:12px;line-height:1.4;color:var(--muted,#aaa0b7);text-align:center}
-.trust svg{flex:none;width:14px;height:14px;color:var(--green,#9ef0ce)}
+.trust{display:flex;align-items:center;justify-content:center;gap:7px;margin:10px 0 0;font-size:12px;line-height:1.4;color:var(--muted,#aba4b3);text-align:center}
+.trust svg{flex:none;width:14px;height:14px;color:var(--green,#aee0cb)}
 .trust.left{justify-content:flex-start;text-align:left}
 .trust.compact{font-size:11px;margin:0}
 .pd-sticky .trust{display:none}

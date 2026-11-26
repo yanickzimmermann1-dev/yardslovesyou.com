@@ -3,12 +3,12 @@
    Regeln wie unslop.css: flache Flaechen, 1px-Linien, keine Glows, keine Verlaeufe.
    Jede Drop-Farbe setzt --accent nur innerhalb der Karte (Play-Button, Wellenform, Rahmen).
    ===================================================================== */
-.dr-c-violet{--dr:#b68aff;--dr-ink:#180e23}
-.dr-c-ice{--dr:#8fd3ff;--dr-ink:#06202e}
-.dr-c-mint{--dr:#5fe0b0;--dr-ink:#062a1e}
-.dr-c-gold{--dr:#d4b46e;--dr-ink:#1c1608}
-.dr-c-rose{--dr:#ff8fb1;--dr-ink:#2e0a16}
-.dr-c-mono{--dr:#e9e4ef;--dr-ink:#141118}
+.dr-c-violet{--dr:#bca0e9;--dr-ink:#231c2a}
+.dr-c-ice{--dr:#a4ceea;--dr-ink:#221d2b}
+.dr-c-mint{--dr:#78c7aa;--dr-ink:#1f1c29}
+.dr-c-gold{--dr:#c1ad81;--dr-ink:#221823}
+.dr-c-rose{--dr:#eaa4b9;--dr-ink:#281f2d}
+.dr-c-mono{--dr:#e9e6ed;--dr-ink:#201a26}
 .dr{--accent:var(--dr);--accent-hi:var(--dr);--accent-ink:var(--dr-ink)}
 
 /* ---------- Generiertes Cover ---------- */
@@ -20,9 +20,9 @@
   overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .dr-cover-h{font:500 13px 'DM Sans',sans-serif;opacity:.8}
 /* Outline: dunkel, Farbe nur als Rahmen + Schrift */
-.dr-cover.dr-s-outline{background:#0f0c15;color:var(--dr);border:2px solid var(--dr)}
+.dr-cover.dr-s-outline{background:#1c1722;color:var(--dr);border:2px solid var(--dr)}
 /* Tape: Kassetten-Etikett, Farbband in der Mitte */
-.dr-cover.dr-s-tape{background:#0f0c15;color:var(--text);border:1px solid var(--line-strong)}
+.dr-cover.dr-s-tape{background:#1c1722;color:var(--text);border:1px solid var(--line-strong)}
 .dr-cover.dr-s-tape::before{content:"";position:absolute;left:0;right:0;top:34%;height:40%;background:var(--dr)}
 .dr-cover.dr-s-tape>*{position:relative}
 .dr-cover.dr-s-tape .dr-cover-t{color:var(--dr-ink);align-self:flex-start;margin-top:auto;margin-bottom:auto;padding:0 2px}

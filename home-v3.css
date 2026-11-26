@@ -3,7 +3,7 @@
    Lab blue) are used only on tile borders, headings and buttons. */
 
 /* neutral "home" area = the default purple */
-body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--accent:#b68aff;--accent-ink:#180e23;--accent-hi:#c7a3ff;--accent-rgb:182,138,255}
+body[data-area="home"]{--area-hue:268;--area-c:#bca0e9;--area-rgb:188,160,233;--accent:#bca0e9;--accent-ink:#231c2a;--accent-hi:#cbb4ee;--accent-rgb:188,160,233}
 
 /* ---------- hero ---------- */
 .hero.hv3-hero{min-height:0;padding:clamp(32px,6vh,72px) 0 clamp(36px,6vh,64px)}
@@ -33,27 +33,27 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 .hv3-featured .pf-card-lg{border-radius:10px}
 
 /* ---------- Lab teaser (mini Chord Starter) ---------- */
-.hv3-lab-box{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(18px,3vw,32px);align-items:center;padding:clamp(18px,3vw,28px);background:var(--surface);border:1px solid var(--line);border-top:3px solid #8fa2ff;border-radius:10px}
-.hv3-lab-text .eyebrow{margin:0;color:#8fa2ff}
+.hv3-lab-box{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(18px,3vw,32px);align-items:center;padding:clamp(18px,3vw,28px);background:var(--surface);border:1px solid var(--line);border-top:3px solid #a4b0ea;border-radius:10px}
+.hv3-lab-text .eyebrow{margin:0;color:#a4b0ea}
 .hv3-lab-text h2{font:600 clamp(22px,3vw,30px)/1.15 'Archivo';letter-spacing:-.4px;margin:8px 0 10px}
 .hv3-lab-text .muted{margin:0 0 10px}
-.hv3-lab-text a{color:#8fa2ff;display:inline-flex;align-items:center;min-height:44px;font-weight:600}
+.hv3-lab-text a{color:#a4b0ea;display:inline-flex;align-items:center;min-height:44px;font-weight:600}
 .hv3-chords{display:flex;flex-direction:column;gap:14px;min-width:0}
 .hv3-chords-ctl{display:flex;flex-wrap:wrap;gap:10px}
 .hv3-key{flex:0 0 auto;width:auto;min-width:120px;min-height:44px}
 .hv3-chords-ctl .button,.hv3-chords-ctl .outline{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
-.hv3-chords{--accent:#8fa2ff;--accent-ink:#0e1330;--accent-hi:#a9b8ff;--accent-rgb:143,162,255}
-.hv3-chords .button{background:#8fa2ff;color:#0e1330}
-.hv3-chords .outline{border-color:#8fa2ff;color:#8fa2ff}
+.hv3-chords{--accent:#a4b0ea;--accent-ink:#272030;--accent-hi:#b9c3ef;--accent-rgb:164,176,234}
+.hv3-chords .button{background:#a4b0ea;color:#272030}
+.hv3-chords .outline{border-color:#a4b0ea;color:#a4b0ea}
 .hv3-chord-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .hv3-chord-list li{display:flex;align-items:center;justify-content:center;min-height:64px;padding:8px 4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;font:600 clamp(17px,3.2vw,22px) 'Archivo';color:var(--text);overflow-wrap:anywhere;text-align:center}
-.hv3-chord-list li.is-now{border-color:#8fa2ff;background:rgba(143,162,255,.14);color:#fff}
+.hv3-chord-list li.is-now{border-color:#a4b0ea;background:rgba(164,176,234,.14);color:#ffffff}
 @media(max-width:760px){.hv3-lab-box{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:380px){.hv3-chords-ctl>*{flex:1 1 100%}}
 
 /* ---------- newsletter (reuses .free-kit from free.html) ---------- */
-.hv3-news .free-kit{border-top:3px solid #5fe0d0}
-.hv3-news .free-kit .eyebrow{color:#5fe0d0}
+.hv3-news .free-kit{border-top:3px solid #78c7be}
+.hv3-news .free-kit .eyebrow{color:#78c7be}
 .hv3-news .free-kit-row .button{min-height:48px}
 .hv3-news .consent{min-height:44px;align-items:center}
 .hv3-news .consent input{margin-top:0}
@@ -71,11 +71,11 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 .hv3-allwork{margin:14px 0 0;text-align:right}
 
 /* Lab: nur noch ein schmaler Link */
-.hv3-lab-link{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;padding:16px 20px;background:var(--surface,var(--panel));border:1px solid var(--line);border-left:3px solid #8fa2ff;border-radius:10px;transition:border-color .2s}
-.hv3-lab-link:hover,.hv3-lab-link:focus-visible{border-color:#8fa2ff}
-.hv3-lab-link .eyebrow{margin:0;color:#8fa2ff}
+.hv3-lab-link{display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;padding:16px 20px;background:var(--surface,var(--panel));border:1px solid var(--line);border-left:3px solid #a4b0ea;border-radius:10px;transition:border-color .2s}
+.hv3-lab-link:hover,.hv3-lab-link:focus-visible{border-color:#a4b0ea}
+.hv3-lab-link .eyebrow{margin:0;color:#a4b0ea}
 .hv3-lab-link strong{font-weight:500;font-size:15px;flex:1 1 260px}
-.hv3-lab-go{color:#8fa2ff;font-weight:600;font-size:14px;white-space:nowrap}
+.hv3-lab-go{color:#a4b0ea;font-weight:600;font-size:14px;white-space:nowrap}
 
 /* Custom Beat auf der Startseite */
 .hv3-cb{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(18px,3vw,36px);align-items:start;margin:0}
@@ -84,6 +84,6 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 .hv3-cb .muted{margin:0 0 10px}
 .hv3-cb .button{align-self:flex-start}
 .hv3-cb .status{margin:0}
-.hv3-cb .status.danger{color:#ffb8c7}
+.hv3-cb .status.danger{color:#f2c5cf}
 .up-opts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
 @media(max-width:760px){.hv3-cb{grid-template-columns:1fr}.up-opts{grid-template-columns:1fr}}

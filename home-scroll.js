@@ -29,7 +29,7 @@
     var hero = $('.hero'), dia = null, pend = null, chainEl = null, gemEl = null, gemBright = null, glowEl = null, spkHost = null;
     var theta = 0, omega = 0, gemVisible = false, lastMoveT = 0, heroKey = '', heroHidden = false;
     var PX = 453, GX = 158, GY = 595, GBOX_Y = 448, GLX = 158, GLY = 147;   // Drehpunkt Kette, Mitte des Diamanten
-    var SPK_COLS = ['#c2eee2', '#84cdbd', '#58a797', '#ffffff', '#ffffff', '#e8fbf6'];
+    var SPK_COLS = ['#cae6de', '#92bfb5', '#67988e', '#ffffff', '#ffffff', '#ecf7f4'];
     var SPK_PTS = [[158, 107], [113, 112], [208, 112], [153, 152], [123, 142], [193, 147], [168, 192], [98, 127], [150, 130]];
 
     function buildHero() {

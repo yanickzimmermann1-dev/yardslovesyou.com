@@ -1,13 +1,13 @@
 /* skeleton.css – Platzhalter beim Laden (.sk) + Blur-up für Bilder (.bu). Kein Inline-Code (strikte CSP). */
-.sk{position:relative;overflow:hidden;background:rgba(182,138,255,.07);border-radius:8px;color:transparent!important;pointer-events:none;user-select:none}
-.sk::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(182,138,255,.16) 50%,transparent 80%);transform:translateX(-100%);animation:sk-shimmer 1.5s ease-in-out infinite}
+.sk{position:relative;overflow:hidden;background:rgba(188,160,233,.07);border-radius:8px;color:transparent!important;pointer-events:none;user-select:none}
+.sk::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(188,160,233,.16) 50%,transparent 80%);transform:translateX(-100%);animation:sk-shimmer 1.5s ease-in-out infinite}
 @keyframes sk-shimmer{to{transform:translateX(100%)}}
 .sk-line{display:block;height:12px;margin:0 0 10px;width:100%}
 .sk-line.w60{width:60%}.sk-line.w40{width:40%}.sk-line.w80{width:80%}
 .sk-title{height:22px;width:70%;margin:0 0 14px}
 .sk-h1{height:40px;width:80%;margin:0 0 18px}
 .sk-btn{display:inline-block;height:40px;width:110px;border-radius:8px}
-.sk-card{display:flex;flex-direction:column;background:linear-gradient(145deg,#1b1624,#131019);border:1px solid var(--line,rgba(255,255,255,.08));border-radius:10px;padding:18px;min-width:0;pointer-events:none}
+.sk-card{display:flex;flex-direction:column;background:linear-gradient(145deg,#261f2e,#201a26);border:1px solid var(--line,rgba(255,255,255,.08));border-radius:10px;padding:18px;min-width:0;pointer-events:none}
 .sk-card.product,.sk-card.track{min-height:420px}
 .sk-card .sk-cover{aspect-ratio:1/1;width:100%;border-radius:10px;margin:0 0 18px}
 .sk-card .sk-price{margin-top:auto;height:32px;width:50%;border-radius:8px}
@@ -27,10 +27,10 @@
 @media (prefers-reduced-motion:reduce){.sk::after{animation:none;transform:none;background:none}}
 
 /* Blur-up: nur aktiv, wenn reveal.js läuft (html.bu-on); ohne JS bleibt das Bild scharf */
-html.bu-on img.bu:not(.bu-in){filter:blur(14px);transform:scale(1.04);background:#150f1f}
+html.bu-on img.bu:not(.bu-in){filter:blur(14px);transform:scale(1.04);background:#221b28}
 html.bu-on img.bu{transition:filter .4s ease,transform .4s ease,opacity .4s ease}
 html.bu-on img.bu.bu-in{filter:none}
-html.bu-on :is(.cover,.pd-main,.pd-thumbs button):has(> img.bu:not(.bu-in)){background:#150f1f}
+html.bu-on :is(.cover,.pd-main,.pd-thumbs button):has(> img.bu:not(.bu-in)){background:#221b28}
 @media (prefers-reduced-motion:reduce){html.bu-on img.bu{transition:none}}
 
 /* Text-Reveal (reveal.js) */

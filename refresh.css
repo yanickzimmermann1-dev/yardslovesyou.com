@@ -2,8 +2,8 @@
    Overrides only; the original files stay untouched. */
 
 /* ---------- 1. Readability ---------- */
-/* Lighter grey text: ~10:1 contrast on the #0d0b12 background (was #aaa0b7). */
-:root{--muted:#c4bccf}
+/* Lighter grey text: ~10:1 contrast on the #1b1620 background (was #aba4b3). */
+:root{--muted:#c5c0cb}
 
 /* Body copy at least 16px with relaxed line height (styles.css used 15px on mobile). */
 body{font-size:16px;line-height:1.65}
@@ -14,20 +14,20 @@ body{font-size:16px;line-height:1.65}
 /* ---------- 2. One accent colour (purple) everywhere ---------- */
 /* Area tints from sections.css / home-areas.css / nextstep.css all fall back to the brand purple.
    body[data-area] stays in the HTML (JS still reads it). */
-body[data-area],.nl-section,.free-band{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255}
-.ar-mix,.ar-shop,.ar-lab,.ep-mix,.ep-shop,.ep-free,.ep-lab{--ep-rgb:182,138,255;--ep-c:#b68aff}
-[data-tone]{--t-rgb:182,138,255;--t-c:#b68aff;--t-c2:#c9a4ff;--t-ink:#180e23}
+body[data-area],.nl-section,.free-band{--area-hue:268;--area-c:#bca0e9;--area-rgb:188,160,233}
+.ar-mix,.ar-shop,.ar-lab,.ep-mix,.ep-shop,.ep-free,.ep-lab{--ep-rgb:188,160,233;--ep-c:#bca0e9}
+[data-tone]{--t-rgb:188,160,233;--t-c:#bca0e9;--t-c2:#ccb5ee;--t-ink:#231c2a}
 
 /* Primary buttons: the single purple style from styles.css (no gold / teal / blue / pink variants). */
 .ar-card .button,.free-band .button,.promo-band .button,.ab-actions .button.pink,
 body .next-step .ns-actions a.button[data-tone]{
-  background:linear-gradient(135deg,var(--purple),#c9a4ff);color:#180e23;
-  box-shadow:0 0 0 1px rgba(182,138,255,.25),0 8px 22px -8px rgba(182,138,255,.6),0 0 26px -8px rgba(229,165,255,.4);
+  background:linear-gradient(135deg,var(--purple),#ccb5ee);color:#231c2a;
+  box-shadow:0 0 0 1px rgba(188,160,233,.25),0 8px 22px -8px rgba(188,160,233,.6),0 0 26px -8px rgba(222,182,238,.4);
 }
 .ar-card .button:hover,.free-band .button:hover,.promo-band .button:hover,.ab-actions .button.pink:hover,
 body .next-step .ns-actions a.button[data-tone]:hover{
-  background:linear-gradient(135deg,#c39cff,#d9b8ff);filter:none;
-  box-shadow:0 0 0 1px rgba(229,165,255,.5),0 14px 34px -10px rgba(182,138,255,.85),0 0 40px -6px rgba(229,165,255,.6);
+  background:linear-gradient(135deg,#c7afec,#dac5f2);filter:none;
+  box-shadow:0 0 0 1px rgba(222,182,238,.5),0 14px 34px -10px rgba(188,160,233,.85),0 0 40px -6px rgba(222,182,238,.6);
 }
 
 /* ---------- 3. Less decoration ---------- */

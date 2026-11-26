@@ -7,13 +7,13 @@
    0. Tokens: one accent per area. Used ONLY for primary buttons, eyebrows, active nav, links, focus rings,
       prices and small markers. Legacy variables (--purple, --area-c, --ac …) follow it so old rules come along.
    ===================================================================== */
-:root{--accent:#b68aff;--accent-ink:#180e23;--accent-hi:#c7a3ff;--accent-rgb:182,138,255;
-  --surface:#17131f;--surface-hi:#1c1727;--line-strong:#463a57;--glow:none}
-body[data-area="mix"]{--accent:#b68aff;--accent-ink:#180e23;--accent-hi:#c7a3ff;--accent-rgb:182,138,255}
-body[data-area="shop"]{--accent:#D4B46E;--accent-ink:#1c1608;--accent-hi:#e2c581;--accent-rgb:212,180,110}
-body[data-area="service"]{--accent:#e292da;--accent-ink:#2a0d27;--accent-hi:#eaa9e3;--accent-rgb:226,146,218}
-body[data-area="free"]{--accent:#5fe0d0;--accent-ink:#062a26;--accent-hi:#86e9dc;--accent-rgb:95,224,208}
-body[data-area="lab"]{--accent:#8fa2ff;--accent-ink:#0e1330;--accent-hi:#a9b8ff;--accent-rgb:143,162,255}
+:root{--accent:#bca0e9;--accent-ink:#231c2a;--accent-hi:#cbb4ee;--accent-rgb:188,160,233;
+  --surface:#231d2a;--surface-hi:#282030;--line-strong:#493b57;--glow:none}
+body[data-area="mix"]{--accent:#bca0e9;--accent-ink:#231c2a;--accent-hi:#cbb4ee;--accent-rgb:188,160,233}
+body[data-area="shop"]{--accent:#C1AD81;--accent-ink:#221823;--accent-hi:#d0be93;--accent-rgb:193,173,129}
+body[data-area="service"]{--accent:#d3a1ce;--accent-ink:#271e2c;--accent-hi:#deb5d9;--accent-rgb:211,161,206}
+body[data-area="free"]{--accent:#78c7be;--accent-ink:#201c29;--accent-hi:#99d6ce;--accent-rgb:120,199,190}
+body[data-area="lab"]{--accent:#a4b0ea;--accent-ink:#272030;--accent-hi:#b9c3ef;--accent-rgb:164,176,234}
 /* legacy names → the accent (overrides the forced purple in refresh.css; same specificity, loaded later) */
 body[data-area],body[data-area] .nl-section,body[data-area] .free-band{
   --purple:var(--accent);--pink:var(--accent-hi);
@@ -92,7 +92,7 @@ body .next-step .ns-actions a.button[data-tone]:hover,
    3. No glassmorphism: opaque surfaces + 1px border
    ===================================================================== */
 *,*::before,*::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-.topbar,.topbar.scrolled{background:#0d0b12!important;box-shadow:none!important;border-bottom:1px solid var(--line)}
+.topbar,.topbar.scrolled{background:#1b1620!important;box-shadow:none!important;border-bottom:1px solid var(--line)}
 .topbar nav[aria-label="Main"],html body .topbar nav[aria-label="Main"],nav[aria-label="Main"]{background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:none!important}
 .topbar nav[aria-label="Main"] a:hover{background:var(--surface-hi)}
 nav[aria-label="Main"] a.active,nav[aria-label="Main"] a[aria-current="page"],
@@ -103,21 +103,21 @@ nav[aria-label="Main"] a.active,nav[aria-label="Main"] a[aria-current="page"],
 .cart-btn:hover,.uis-btn:hover{border-color:var(--accent)!important;color:var(--accent)}
 .cart-btn.pulse{animation:none!important}
 .cat-scroll{background:var(--surface)!important;border:1px solid var(--line)!important}
-.pd-sticky{background:#0d0b12!important;border-top:1px solid var(--line)}
-.up-stepper{background:#0d0b12!important}
-.live-pill{background:#0f0c15!important}
+.pd-sticky{background:#1b1620!important;border-top:1px solid var(--line)}
+.up-stepper{background:#1b1620!important}
+.live-pill{background:#1c1722!important}
 .qv-dlg{background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:0 30px 70px -24px rgba(0,0,0,.8)!important}
 .qv-stage{background:var(--bg)!important}
-.qv-eye,.sp-pill{background:#0d0b12!important;border:1px solid var(--line-strong)!important}
+.qv-eye,.sp-pill{background:#1b1620!important;border:1px solid var(--line-strong)!important}
 .qv-eye:hover,.sp-pill:hover,.sp-layer.sp-open .sp-pill{background:var(--surface-hi)!important;border-color:var(--accent)!important}
 .sp-pad{background:var(--surface-hi)!important;border:1px solid var(--line-strong)!important}
-.sp-pad:hover{background:#262033!important}
+.sp-pad:hover{background:#30273a!important}
 .sp-pad.sp-lit{background:rgba(var(--accent-rgb),.35)!important;box-shadow:none!important}
 .sp-ripple{display:none!important}
 #admin-toggle,#admin-panel{background:var(--surface)!important}
 /* scrims behind dialogs: plain dim, no blur */
-.cart-overlay,.qv-back,.gd-backdrop{background:rgba(7,5,11,.72)!important}
-.pub-dialog::backdrop{background:rgba(7,5,11,.72)}
+.cart-overlay,.qv-back,.gd-backdrop{background:rgba(22,18,26,.72)!important}
+.pub-dialog::backdrop{background:rgba(22,18,26,.72)}
 
 /* =====================================================================
    4. Cards: one opaque surface, 1px border, at most a neutral shadow. No gradients, spotlights, coloured glows.
@@ -152,7 +152,7 @@ nav[aria-label="Main"] a.active,nav[aria-label="Main"] a[aria-current="page"],
 .about-avatar,.about-avatar:hover,.about-avatar:focus-visible{box-shadow:0 0 0 1px var(--line)!important}
 footer.site-footer .footer-social a:hover,footer.site-footer .footer-social a:focus-visible{box-shadow:none!important;border-color:var(--accent)}
 .cm-pill.active,.cm-tab.active{background:var(--accent)!important;color:var(--accent-ink)!important;box-shadow:none!important}
-.cm-note.ed:hover{box-shadow:0 0 0 1px #fff6 inset!important}
+.cm-note.ed:hover{box-shadow:0 0 0 1px #ffffff66 inset!important}
 .skeleton .sk::after,.sk::after{background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.05) 50%,transparent 80%)} /* loading shimmer stays (functional), neutral */
 
 /* =====================================================================
@@ -209,9 +209,9 @@ main.wrap>.home-section:has(~ .home-section[hidden]):not(:has(~ .home-section:no
 .consent a,.hint a,.fineprint a,main p a:not(.button):not(.outline){color:var(--accent)}
 
 /* Inline errors (replace alert dialogs) */
-.field-error,.checkout-note{margin:6px 0 0;font-size:13px;line-height:1.5;color:#ffb8c7}
+.field-error,.checkout-note{margin:6px 0 0;font-size:13px;line-height:1.5;color:#f2c5cf}
 .field-error:empty{display:none}
-[aria-invalid="true"]{border-color:#ffb8c7!important}
+[aria-invalid="true"]{border-color:#f2c5cf!important}
 
 /* Hero ohne Einblendung: Text, Buttons und Wellenlinie stehen sofort da (kein Grau beim Laden) */
 .hero.hx .hx-tilt,.hero.hx .hx-wave,.hero.hx .hw,.hx-cta>*{animation:none!important}
@@ -230,14 +230,14 @@ html:not(.intro-on) .hero.hx .hx-tilt,html:not(.intro-on) .hero.hx .hx-wave{opac
   text-transform:none!important;letter-spacing:0!important;font-size:13px;font-weight:500}
 .eyebrow{font-size:13px;font-weight:500}
 .mc-eyebrow,.gd-kicker,.ar-tag,.qv-cat,.qv-lbl,.et-qtype,.gd-card-tag,.cp-type,.drop-next,.service-meta,.sm-dl dt{color:var(--muted)}
-.sm-cert-rows dt{color:rgba(35,28,16,.62)}
+.sm-cert-rows dt{color:rgba(40,29,42,.62)}
 .hv-tag{font-size:12px;font-weight:600}
 .et-badge{letter-spacing:.02em!important}
 .cm-chord span,.cart-promo-form input{letter-spacing:.02em!important}
 
 /* 11b Flat colour: leftover gradients, glows and gradient text */
 .ab-quote,.et-viz-wrap,.mc-dot,.free-kit,.sk-card,.sp-row{background-image:none!important}
-.et-viz-wrap{background:#0c0912!important}
+.et-viz-wrap{background:#1a151f!important}
 .product-free .free-cover,.pd-thumbs .pd-thumb-3d{background:var(--surface-hi)!important}
 .mc-dot.is-now,.gd-track::after,.et-env i,.et-bars i{background:var(--accent)!important;box-shadow:none!important}
 .et-bars>div:last-child i{background:var(--line-strong)!important}

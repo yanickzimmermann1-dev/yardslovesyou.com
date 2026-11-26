@@ -1,7 +1,7 @@
 /* orb3d.js - "Orb": schwebende Materie als interaktives 3D-Produktmodell (Canvas 2D, keine Bibliothek).
    Wird von Product3D.mount() aufgerufen, wenn model3d.type === "orb". Gleiche API: {destroy, show, hide, ready}.
    model3d (alle Felder ausser type optional, so laesst sich jedes Produkt anders einfaerben):
-     { type:"orb", seed:1, count:1000, puffs:14, palette:["#ffffff","#e8dcff","#b68aff","#8fd8ff"],
+     { type:"orb", seed:1, count:1000, puffs:14, palette:["#ffffff","#eae3f8","#bca0e9","#a4d2ea"],
        glow:"157,123,255", rings:2, notes:40, ring_color:"#ffffff", spin:1 }
    count 200..2000 Teilchen, puffs 4..30 Wolken, rings 0..4 Ringe aus MIDI-Noten, notes 8..80 pro Ring, spin = Drehtempo (0 = steht). */
 (function () {
@@ -29,7 +29,7 @@
 
   function build(model, small) {
     var r = rng(num(model.seed, 1, 0, 99999));
-    var pal = (Array.isArray(model.palette) && model.palette.length ? model.palette : ["#ffffff", "#e8dcff", "#b68aff", "#8fd8ff"]).slice(0, 6).map(function (c) { return hex(c, "#ffffff"); });
+    var pal = (Array.isArray(model.palette) && model.palette.length ? model.palette : ["#ffffff", "#eae3f8", "#bca0e9", "#a4d2ea"]).slice(0, 6).map(function (c) { return hex(c, "#ffffff"); });
     var n = Math.round(num(model.count, 1000, 200, 2000) * (small ? 0.55 : 1));
     var puffs = Math.round(num(model.puffs, 14, 4, 30));
     var centers = [];

@@ -11,12 +11,12 @@
 .hero.hx .hx-h1{font:600 clamp(48px,8.4vw,112px)/.98 'Archivo';letter-spacing:var(--ls);margin:22px 0 26px;transform-style:preserve-3d;
   scale:var(--sc);transform-origin:0 60%}
 .hero.hx .hx-h1 .hl{display:block;white-space:nowrap;transform-style:preserve-3d;color:inherit}
-.hero.hx .hx-h1 .hw{display:inline-block;--spot:#b68aff;--sx:-999px;--sy:-999px;--base:linear-gradient(#f5f0fb,#f5f0fb);
+.hero.hx .hx-h1 .hw{display:inline-block;--spot:#bca0e9;--sx:-999px;--sy:-999px;--base:linear-gradient(#f5f2f9,#f5f2f9);
   color:var(--text);
   translate:calc(var(--hp) * var(--dx) * 1px * var(--amp)) calc(var(--hp) * var(--dy) * 1px * var(--amp)) calc(var(--hp) * var(--dz) * 1px * var(--amp));
   animation:hxWord .95s var(--smooth,cubic-bezier(.22,1,.36,1)) backwards;animation-delay:calc(.12s + var(--i) * .085s)}
 .hero.hx .hx-h1 .hl-b .hw{--spot:#ffffff;
-  --base:linear-gradient(100deg,#9b6bff 0%,#b68aff 22%,#e5a5ff 45%,#b68aff 62%,#8f6cff 80%,#b68aff 100%)}
+  --base:linear-gradient(100deg,#a587e3 0%,#bca0e9 22%,#deb6ee 45%,#bca0e9 62%,#9e88e3 80%,#bca0e9 100%)}
 @supports ((-webkit-background-clip:text) or (background-clip:text)){
   .hero.hx .hx-h1 .hw{color:transparent;-webkit-background-clip:text;background-clip:text;
     background-image:radial-gradient(circle 150px at var(--sx) var(--sy),var(--spot),transparent 72%),var(--base);
@@ -33,15 +33,15 @@
 .hx-cta>*{animation:hxUp .8s var(--smooth,cubic-bezier(.22,1,.36,1)) backwards}
 .hx-cta>:nth-child(1){animation-delay:.55s}.hx-cta>:nth-child(2){animation-delay:.68s}.hx-cta>:nth-child(3){animation-delay:.81s}
 @keyframes hxUp{from{opacity:0;transform:translateY(18px) scale(.96)}}
-.hero.hx .hx-primary{padding:15px 28px;font-size:14px;color:#180e23;
-  box-shadow:0 0 0 1px rgba(229,165,255,.35),0 12px 34px -8px rgba(182,138,255,.75),0 0 38px -6px rgba(182,138,255,.45)}
+.hero.hx .hx-primary{padding:15px 28px;font-size:14px;color:#231c2a;
+  box-shadow:0 0 0 1px rgba(222,182,238,.35),0 12px 34px -8px rgba(188,160,233,.75),0 0 38px -6px rgba(188,160,233,.45)}
 .hx-primary::after{content:"";position:absolute;top:0;left:0;width:45%;height:100%;pointer-events:none;
   background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-140%) skewX(-18deg);animation:hxShine 5.2s 2.2s ease-in-out infinite}
 @keyframes hxShine{0%,62%{transform:translateX(-140%) skewX(-18deg)}100%{transform:translateX(330%) skewX(-18deg)}}
-.hero.hx .hx-ghost{padding:14px 24px;font-size:14px;background:rgba(255,255,255,.04);border-color:rgba(182,138,255,.35);
+.hero.hx .hx-ghost{padding:14px 24px;font-size:14px;background:rgba(255,255,255,.04);border-color:rgba(188,160,233,.35);
   -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .hx-ghost::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(100deg,transparent 35%,rgba(182,138,255,.16) 50%,transparent 65%);background-size:260% 100%;animation:hxGhost 6.5s 3s ease-in-out infinite}
+  background:linear-gradient(100deg,transparent 35%,rgba(188,160,233,.16) 50%,transparent 65%);background-size:260% 100%;animation:hxGhost 6.5s 3s ease-in-out infinite}
 @keyframes hxGhost{0%{background-position:130% 0}55%,100%{background-position:-60% 0}}
 .hx-hear{display:inline-flex;align-items:center;gap:8px;padding:10px 6px;font:600 14px 'DM Sans';color:var(--muted);transition:color .25s}
 .hx-hear:hover,.hx-hear:focus-visible{color:var(--text)}
@@ -52,7 +52,7 @@
 
 /* Sound-wave line (hero.js draws the path) */
 .hx-wave{position:absolute;left:0;right:0;top:50%;width:100%;height:200px;margin-top:-100px;z-index:0;pointer-events:none;overflow:visible;
-  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 62%,transparent 96%);mask-image:linear-gradient(90deg,#000 0,#000 62%,transparent 96%);
+  -webkit-mask-image:linear-gradient(90deg,#000000 0,#000000 62%,transparent 96%);mask-image:linear-gradient(90deg,#000000 0,#000000 62%,transparent 96%);
   animation:hxFade 1.6s .5s ease both}
 @keyframes hxFade{from{opacity:0}}
 /* same stroke/colour/glow as the thread (thread.css) so the wave's left end and the thread are one line */

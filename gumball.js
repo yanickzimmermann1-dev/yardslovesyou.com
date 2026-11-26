@@ -300,7 +300,7 @@
   // ---------------------------------------------------------------- Step 2: results
   const grid = $("gb-grid"); const cards = {};
   const peaksCache = {};   // "hitId|variantId" -> peaks
-  let ACCENT = "#8fa2ff", MUTED = "#c4bccf";
+  let ACCENT = "#a4b0ea", MUTED = "#c5c0cb";
   function readColors() { const cs = getComputedStyle(document.body); ACCENT = cs.getPropertyValue("--accent").trim() || ACCENT; MUTED = cs.getPropertyValue("--muted").trim() || MUTED; }
 
   function sortedHits() {

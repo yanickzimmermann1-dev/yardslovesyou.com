@@ -119,7 +119,7 @@ window.YLY = (() => {
     if (!pk.length) return "";
     const d = pk.map((v, i) => { const h = Math.max(1.5, v / 255 * 14); return `M${i + .5} ${(16 - h).toFixed(1)}V${(16 + h).toFixed(1)}`; }).join("");
     const id = "wc" + (++waveN);
-    return `<svg class="lp-wave" viewBox="0 0 ${pk.length} 32" preserveAspectRatio="none" width="100%" height="48" aria-hidden="true" style="color:var(--accent,#8fa2ff);display:block"><defs><clipPath id="${id}"><rect class="lp-clip" x="0" y="0" width="0" height="32"/></clipPath></defs><path d="${d}" stroke="currentColor" stroke-opacity=".3" stroke-width=".7" fill="none"/><path d="${d}" stroke="currentColor" stroke-width=".7" fill="none" clip-path="url(#${id})"/></svg>`;
+    return `<svg class="lp-wave" viewBox="0 0 ${pk.length} 32" preserveAspectRatio="none" width="100%" height="48" aria-hidden="true" style="color:var(--accent,#a4b0ea);display:block"><defs><clipPath id="${id}"><rect class="lp-clip" x="0" y="0" width="0" height="32"/></clipPath></defs><path d="${d}" stroke="currentColor" stroke-opacity=".3" stroke-width=".7" fill="none"/><path d="${d}" stroke="currentColor" stroke-width=".7" fill="none" clip-path="url(#${id})"/></svg>`;
   }
   const tagsOf = p => (Array.isArray(p.tags) ? p.tags : []).filter(t => typeof t === "string" && TAG_RE.test(t)).slice(0, 5);
   const tagsHtml = p => { const t = tagsOf(p); return t.length ? `<p class="lp-tags">${t.map(x => `<a class="lp-tag" href="/lab?tag=${encodeURIComponent(x)}" data-tag="${esc(x)}">#${esc(x)}</a>`).join("")}</p>` : ""; };

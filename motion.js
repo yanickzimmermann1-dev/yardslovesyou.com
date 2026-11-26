@@ -63,7 +63,7 @@
         _wc = null;
         try {
           var a = document.body && document.body.getAttribute('data-area');
-          if (a === 'service') _wc = { s: '#e292da', f: 'rgba(226,146,218,.18)', sh: '#c45cb9' };
+          if (a === 'service') _wc = { s: '#d3a1ce', f: 'rgba(211,161,206,.18)', sh: '#b070a9' };
           else if (a === 'shop' || a === 'free' || a === 'lab') {
             var v = getComputedStyle(document.body).getPropertyValue('--accent-rgb').trim().split(',').map(Number);
             if (v.length === 3 && v.every(isFinite)) _wc = { s: 'rgb(' + v.join(',') + ')', f: 'rgba(' + v.join(',') + ',.18)', sh: 'rgb(' + v.map(function (x) { return Math.round(x * 0.72); }).join(',') + ')' };
@@ -80,11 +80,11 @@
         ctx.lineJoin = 'round'; ctx.lineCap = 'round';
         ctx.shadowBlur = 0;
         var wc = waveCol();
-        ctx.strokeStyle = wc ? wc.f : 'rgba(182,138,255,.18)'; ctx.lineWidth = 1;
+        ctx.strokeStyle = wc ? wc.f : 'rgba(188,160,233,.18)'; ctx.lineWidth = 1;
         path(Math.max(0, headX - 1), W, T, amp * 0.35, null);
         if (headX > 1) {
-          ctx.strokeStyle = wc ? wc.s : '#b68aff'; ctx.lineWidth = 1.75;
-          ctx.shadowColor = wc ? wc.sh : '#8f1fe0'; ctx.shadowBlur = 6;
+          ctx.strokeStyle = wc ? wc.s : '#bca0e9'; ctx.lineWidth = 1.75;
+          ctx.shadowColor = wc ? wc.sh : '#8944bb'; ctx.shadowBlur = 6;
           path(0, headX, T, amp, headX);
           ctx.shadowBlur = 0;
         }
@@ -283,7 +283,7 @@
 
       /* ---------- Lila Partikel-Burst für Generate-Buttons (.gen-btn) ---------- */
       var fxLayer = null;
-      var P_COLORS = ['#b68aff', '#a374f5', '#c9a4ff', '#e5a5ff', '#d9c2ff'];
+      var P_COLORS = ['#bca0e9', '#aa8ddc', '#ccb5ee', '#deb6ee', '#dccef3'];
       doc.addEventListener('click', function (e) {
         try {
           return; /* particle burst + pop removed */

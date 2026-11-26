@@ -1,7 +1,7 @@
 /* shop-v2.css - free-kit strip under the shop hero */
-.free-strip{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;flex-wrap:wrap;margin:-8px 0 34px;padding:14px 18px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(135deg,rgba(182,138,255,.12),rgba(23,19,31,.9) 70%)}
+.free-strip{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;flex-wrap:wrap;margin:-8px 0 34px;padding:14px 18px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(135deg,rgba(188,160,233,.12),rgba(35,29,42,.9) 70%)}
 .free-strip p{margin:0;color:var(--muted);line-height:1.45;min-width:0}
-.free-strip strong{color:var(--text,#fff);font-weight:600}
+.free-strip strong{color:var(--text,#ffffff);font-weight:600}
 .free-strip .button{white-space:nowrap;flex-shrink:0}
 @media (max-width:560px){.free-strip{margin-top:0}.free-strip .button{width:100%;text-align:center;justify-content:center}}
 
@@ -10,9 +10,9 @@
 .product .p-rating-n{font-weight:600}
 
 /* Free-Karten (Essentials Lite + Guide-Samples) im Shop-Raster */
-.product-free .free-cover{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,rgba(182,138,255,.22),rgba(23,19,31,.95) 72%)!important}
+.product-free .free-cover{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,rgba(188,160,233,.22),rgba(35,29,42,.95) 72%)!important}
 .product-free .free-cover img{width:auto!important;height:86%!important;max-width:86%;object-fit:contain!important;filter:drop-shadow(0 14px 22px rgba(0,0,0,.55))}
-.product-free .free-cover-text span{display:flex;flex-direction:column;align-items:center;font:700 clamp(34px,9vw,56px)/1 'Archivo',sans-serif;letter-spacing:-.02em;color:var(--purple,#b68aff)}
+.product-free .free-cover-text span{display:flex;flex-direction:column;align-items:center;font:700 clamp(34px,9vw,56px)/1 'Archivo',sans-serif;letter-spacing:-.02em;color:var(--purple,#bca0e9)}
 .product-free .free-cover-text small{margin-top:8px;font:500 13px/1 'DM Sans',sans-serif;letter-spacing:.01em;color:var(--muted)}
 .product-free .row-actions .button{text-decoration:none}
 

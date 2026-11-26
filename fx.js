@@ -12,7 +12,7 @@
         return ['rgb(' + d.join(',') + ')', 'rgb(' + v.join(',') + ')', 'rgb(' + l.join(',') + ')'];
       }
     } catch (e) {}
-    return ['#8f1fe0', '#b33cff', '#d47bff'];
+    return ['#8944bb', '#ab61da', '#cb94e6'];
   })();
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}

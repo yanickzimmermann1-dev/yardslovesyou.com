@@ -12,7 +12,7 @@ window.DropUpload = (() => {
   const COLOR_NAMES = { violet: "Violet", ice: "Ice", mint: "Mint", gold: "Gold", rose: "Rose", mono: "Mono" };
   const STYLE_NAMES = { solid: "Solid", outline: "Outline", tape: "Tape" };
   // Farben wie in drop.css: [Farbe, Schrift auf Farbe]
-  const HEX = { violet: ["#b68aff", "#180e23"], ice: ["#8fd3ff", "#06202e"], mint: ["#5fe0b0", "#062a1e"], gold: ["#d4b46e", "#1c1608"], rose: ["#ff8fb1", "#2e0a16"], mono: ["#e9e4ef", "#141118"] };
+  const HEX = { violet: ["#bca0e9", "#231c2a"], ice: ["#a4ceea", "#221d2b"], mint: ["#78c7aa", "#1f1c29"], gold: ["#c1ad81", "#221823"], rose: ["#eaa4b9", "#281f2d"], mono: ["#e9e6ed", "#201a26"] };
   const Y = () => window.YLY, M = () => window.M4A;
   const $ = id => document.getElementById(id);
   const fmt = s => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
@@ -113,7 +113,7 @@ window.DropUpload = (() => {
     try { await Promise.all([document.fonts.load('600 100px "Archivo"'), document.fonts.load('700 24px "DM Sans"'), document.fonts.load('500 30px "DM Sans"')]); } catch (_) {}
     const W = 1200, H = 630, P = 72, cv = document.createElement("canvas");
     cv.width = W; cv.height = H;
-    const g = cv.getContext("2d"), [c, ink] = HEX[th.c] || HEX.violet, dark = "#0f0c15", light = "#f5f0fb";
+    const g = cv.getContext("2d"), [c, ink] = HEX[th.c] || HEX.violet, dark = "#1c1722", light = "#f5f2f9";
     let bg = c, fg = ink, tfg = ink;
     if (th.s === "outline") { bg = dark; fg = c; tfg = c; }
     if (th.s === "tape") { bg = dark; fg = light; tfg = ink; }

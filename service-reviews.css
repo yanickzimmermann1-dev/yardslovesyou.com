@@ -4,8 +4,8 @@
 .sr-section h2{margin:0 0 12px;font:600 clamp(22px,3vw,28px) 'Archivo',sans-serif;letter-spacing:-.5px}
 .sr-stars{position:relative;display:inline-block;line-height:0;vertical-align:middle;white-space:nowrap}
 .sr-stars-bg,.sr-stars-fg{display:inline-flex;gap:2px}
-.sr-stars-bg{color:rgba(170,160,183,.28)}
-.sr-stars-fg{position:absolute;left:0;top:0;overflow:hidden;color:var(--purple,#e292da)}
+.sr-stars-bg{color:rgba(171,164,179,.28)}
+.sr-stars-fg{position:absolute;left:0;top:0;overflow:hidden;color:var(--purple,#d3a1ce)}
 .sr-stars svg{display:block;flex:none}
 .sr-sum{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 18px;color:var(--muted)}
 .sr-avg{font-size:15px}
