@@ -274,3 +274,12 @@ html:not(.intro-on) .hero.hx .hx-tilt,html:not(.intro-on) .hero.hx .hx-wave{opac
 .pd-main,.pd-main img,.pd-thumbs button,.pd-thumbs img,.sk-cover,.sk-card .sk-cover,.ab-photo,.ab-photo img,.pf-card img,.pf-thumb,
 .track img,.cp img,.cp-cover,.xs-card img,.sm-beat img,.sg-card img,.sr-card img{border-radius:3px}
 .product .cover,.pd-main{overflow:hidden}
+
+/* =====================================================================
+   12. Display type (2026-11-26): Archivo, widened for headings only. Gear-label / record-sleeve feel.
+       UI text (nav, buttons, labels) stays at normal width; body stays DM Sans.
+   ===================================================================== */
+h1,h2,.hx-h1,.legal h1,.pd-info h1,.pf-main h1,.sm-hero h1,#sm-title{font-family:'Archivo','DM Sans',sans-serif;font-stretch:118%;font-weight:750;letter-spacing:-.025em!important}
+h3{font-family:'Archivo','DM Sans',sans-serif;font-stretch:108%;letter-spacing:-.01em}
+.hero.hx .hx-h1{letter-spacing:-.03em!important;line-height:.98}
+@media (max-width:520px){h1,h2,.hx-h1{font-stretch:106%}.hero.hx .hx-h1{font-size:clamp(34px,10vw,44px)}}

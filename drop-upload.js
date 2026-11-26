@@ -110,7 +110,7 @@ window.DropUpload = (() => {
     return lines;
   }
   async function ogImage(title, handle, th) {
-    try { await Promise.all([document.fonts.load('600 100px "Space Grotesk"'), document.fonts.load('700 24px "DM Sans"'), document.fonts.load('500 30px "DM Sans"')]); } catch (_) {}
+    try { await Promise.all([document.fonts.load('600 100px "Archivo"'), document.fonts.load('700 24px "DM Sans"'), document.fonts.load('500 30px "DM Sans"')]); } catch (_) {}
     const W = 1200, H = 630, P = 72, cv = document.createElement("canvas");
     cv.width = W; cv.height = H;
     const g = cv.getContext("2d"), [c, ink] = HEX[th.c] || HEX.violet, dark = "#0f0c15", light = "#f5f0fb";
@@ -129,7 +129,7 @@ window.DropUpload = (() => {
     // Titel: groesste Schrift, die in max. 3 Zeilen passt
     let size = 120, lines = [];
     for (; size >= 56; size -= 6) {
-      g.font = `600 ${size}px "Space Grotesk", sans-serif`;
+      g.font = `600 ${size}px "Archivo", sans-serif`;
       lines = wrap(g, title, W - P * 2);
       if (lines.length <= 3 && lines.every(l => g.measureText(l).width <= W - P * 2)) break;
     }

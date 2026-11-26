@@ -158,7 +158,7 @@
     var fonts = function () {
       try {
         var f = document.fonts; if (!f) return Promise.resolve();
-        var loads = ['400 16px "DM Sans"', '700 16px "DM Sans"', '700 16px "Space Grotesk"', '500 16px "Space Grotesk"'].map(function (x) { return f.load(x).catch(function () {}); });
+        var loads = ['400 16px "DM Sans"', '700 16px "DM Sans"', '700 16px "Archivo"', '500 16px "Archivo"'].map(function (x) { return f.load(x).catch(function () {}); });
         return Promise.all(loads).then(function () { return f.ready; });
       } catch (e) { return Promise.resolve(); }
     };

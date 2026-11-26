@@ -27,7 +27,7 @@
 .wk-item:nth-child(7n+3){transform:rotate(-.6deg)}
 .wk-item:nth-child(9n+5){transform:rotate(.5deg)}
 .wk-body{padding:12px 14px 14px}
-.wk-title{font:600 15px/1.25 'Space Grotesk',system-ui,sans-serif;margin:0 0 4px;overflow-wrap:anywhere}
+.wk-title{font:600 15px/1.25 'Archivo',system-ui,sans-serif;margin:0 0 4px;overflow-wrap:anywhere}
 .wk-meta,.wk-tags{font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);margin:0}
 .wk-tags{margin-top:6px}
 .wk-note{font-size:14.5px;line-height:1.55;margin:6px 0 0;color:var(--text,#f3effa)}

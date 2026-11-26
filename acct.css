@@ -32,6 +32,6 @@
 .adm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 .adm-tile{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;color:var(--text);text-decoration:none;min-height:44px}
 .adm-tile:hover,.adm-tile:focus-visible{border-color:var(--purple)}
-.adm-tile strong{font:600 16px 'Space Grotesk'}
+.adm-tile strong{font:600 16px 'Archivo'}
 .adm-tile span:not(.rv-count){font-size:13px;color:var(--muted)}
 .adm-tile .rv-count{display:inline-block;min-width:18px;margin-left:6px;padding:0 6px;border-radius:8px;background:var(--purple);color:#180e23;font-size:11px;font-weight:700;line-height:18px;text-align:center;vertical-align:middle}

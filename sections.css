@@ -43,9 +43,9 @@ body[data-area="lab"]{--area-hue:232;--area-c:#8fa2ff;--area-rgb:143,162,255;
 .hero.compact{padding:clamp(40px,6vw,56px) 0 clamp(24px,3.5vw,34px)}
 .hero.compact h1,.legal h1{font-size:var(--h1-size);letter-spacing:-2.5px;line-height:1.02;margin:14px 0 12px}
 .section-head h2,.home-section .section-head h2,.free-kit h2,.mc-head h2,.drop h2,.about-box h2,
-.bl-cta h2,.pd-section h2,.gd-sec h2{font:600 var(--h2-size)/1.15 'Space Grotesk';letter-spacing:-.5px;margin:8px 0 10px}
+.bl-cta h2,.pd-section h2,.gd-sec h2{font:600 var(--h2-size)/1.15 'Archivo';letter-spacing:-.5px;margin:8px 0 10px}
 .pd-section h2{margin:0 0 16px}
-.st-card h2,.tr-card h2,.acc-card h2,.et-mode h2{font:600 var(--h3-size)/1.2 'Space Grotesk';letter-spacing:-.3px}
+.st-card h2,.tr-card h2,.acc-card h2,.et-mode h2{font:600 var(--h3-size)/1.2 'Archivo';letter-spacing:-.3px}
 
 /* ---- lead (one sentence under the title) ---- */
 .hero.compact .muted,.mc-head .muted,.drop .muted,.free-kit .muted,.bl-cta .muted,.about-box .muted,.section-head .muted{

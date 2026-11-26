@@ -794,7 +794,7 @@
   }
   async function doCard() {
     const { rec, mode } = resCtx;
-    try { await Promise.all([document.fonts.load('700 120px "Space Grotesk"'), document.fonts.load('500 40px "DM Sans"')]); } catch (_) {}
+    try { await Promise.all([document.fonts.load('700 120px "Archivo"'), document.fonts.load('500 40px "DM Sans"')]); } catch (_) {}
     const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
     const c = cv.getContext("2d");
     const bg = c.createLinearGradient(0, 0, W, H); bg.addColorStop(0, AC.deep); bg.addColorStop(0.55, "#17102a"); bg.addColorStop(1, "#0d0b12");
@@ -804,7 +804,7 @@
     // Equalizer-Balken als Deko
     const r = rng("card" + rec.score + rec.day);
     for (let i = 0; i < 40; i++) { const h = 30 + r() * 90, x = 60 + i * 24; const g = c.createLinearGradient(0, H - 50, 0, H - 50 - h); g.addColorStop(0, `rgba(${AC.c},.15)`); g.addColorStop(1, `rgba(${AC.lt},.55)`); c.fillStyle = g; c.beginPath(); c.roundRect ? c.roundRect(x, H - 50 - h, 14, h, 7) : c.rect(x, H - 50 - h, 14, h); c.fill(); }
-    const F = "'Space Grotesk','DM Sans',Helvetica,Arial,sans-serif";
+    const F = "'Archivo','DM Sans',Helvetica,Arial,sans-serif";
     c.textAlign = "center"; c.fillStyle = "#f5f0fb";
     c.font = `700 150px ${F}`; c.fillText("Hear it?", W / 2, 250);
     c.fillStyle = AC.hex; c.font = `600 38px ${F}`;

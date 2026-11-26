@@ -1,6 +1,6 @@
 /* admin-extra.css - Order admin: Capacity box (Orders tab) + Places tab */
 .cap-box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
-.cap-box h2{margin:0 0 4px;font:600 17px 'Space Grotesk',system-ui,sans-serif}
+.cap-box h2{margin:0 0 4px;font:600 17px 'Archivo',system-ui,sans-serif}
 .cap-box .cap-used{margin:0 0 12px;color:var(--muted);font-size:14px}
 .cap-box .cap-used strong{color:var(--text)}
 .cap-grid{display:grid;grid-template-columns:1fr;gap:12px;align-items:end}

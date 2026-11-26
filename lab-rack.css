@@ -19,7 +19,7 @@
 .ear .screw:nth-child(2)::after{transform:rotate(-20deg)}
 .unit-face{display:grid;grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"label ctl go" "desc ctl go";column-gap:clamp(16px,3vw,32px);row-gap:8px;align-items:center;padding:clamp(16px,2vw,22px) clamp(16px,2.4vw,26px)}
 .unit-label{grid-area:label;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.unit-label h3{margin:0;font:600 clamp(20px,2.2vw,24px)/1.15 'Space Grotesk',sans-serif;letter-spacing:-.3px}
+.unit-label h3{margin:0;font:600 clamp(20px,2.2vw,24px)/1.15 'Archivo',sans-serif;letter-spacing:-.3px}
 .unit-io{padding:3px 9px;border:1px solid var(--line-strong);border-radius:4px;background:#0f0c15;color:var(--muted);font:500 12px 'DM Sans',sans-serif}
 .unit-desc{grid-area:desc;margin:0;max-width:56ch;color:var(--muted);font-size:15px;line-height:1.5}
 .unit-ctl{grid-area:ctl;display:flex;align-items:center;gap:18px}
@@ -40,7 +40,7 @@
 .pt-drop{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:0 0 22px;padding:clamp(18px,2.4vw,26px);border:2px dashed var(--line-strong);border-radius:10px;background:var(--surface)}
 .pt-drop.over{border-color:var(--accent);background:var(--surface-hi)}
 .pt-drop-t{display:flex;flex-direction:column;gap:4px;min-width:0}
-.pt-drop-t strong{font:600 clamp(22px,2.6vw,28px)/1.15 'Space Grotesk',sans-serif;letter-spacing:-.3px}
+.pt-drop-t strong{font:600 clamp(22px,2.6vw,28px)/1.15 'Archivo',sans-serif;letter-spacing:-.3px}
 .pt-drop-t span{color:var(--muted);font-size:15px;max-width:60ch}
 .pt-drop .button{flex:none;min-height:48px}
 .pt-tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 14px}
@@ -54,7 +54,7 @@
 
 /* leerer Rack-Slot */
 .pt-empty{position:relative;padding:clamp(36px,6vw,64px) 24px;text-align:center;border:1px solid var(--line-strong);border-radius:6px;background:#0d0a13;box-shadow:inset 0 0 0 8px var(--surface)}
-.pt-empty h3{margin:0 0 6px;font:600 clamp(20px,2.4vw,26px) 'Space Grotesk',sans-serif}
+.pt-empty h3{margin:0 0 6px;font:600 clamp(20px,2.4vw,26px) 'Archivo',sans-serif}
 .pt-empty p{margin:0 0 18px;color:var(--muted)}
 .pt-empty .hero-actions{justify-content:center}
 .pt-slot{position:absolute;inset:16px;pointer-events:none}
@@ -87,7 +87,7 @@
 .lu-drop{position:relative;display:grid;gap:6px;justify-items:center;text-align:center;padding:34px 18px;border:2px dashed var(--line-strong);border-radius:10px;background:var(--surface);cursor:pointer}
 .lu-drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
 .lu-drop:focus-within,.lu-drop.over{border-color:var(--accent)}
-.lu-drop strong{font:600 20px 'Space Grotesk',sans-serif}
+.lu-drop strong{font:600 20px 'Archivo',sans-serif}
 .lu-drop span{color:var(--muted);font-size:14px;max-width:42ch}
 .lu-drop.busy{opacity:.7;pointer-events:none}
 .lu-note{margin:12px 0 0;color:var(--muted);font-size:13px}

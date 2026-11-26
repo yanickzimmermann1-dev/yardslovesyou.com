@@ -28,7 +28,7 @@
 .ab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 16px}
 .ab-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:var(--sec-pad,28px)}
 .ab-card.wide{grid-column:1/-1}
-.ab-card h2{font:600 clamp(22px,3vw,28px)/1.15 'Space Grotesk';letter-spacing:-.4px;margin:8px 0 14px}
+.ab-card h2{font:600 clamp(22px,3vw,28px)/1.15 'Archivo';letter-spacing:-.4px;margin:8px 0 14px}
 .ab-card p{margin:0 0 12px}
 .ab-card p:last-child{margin-bottom:0}
 .ab-chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
@@ -36,9 +36,9 @@
 .ab-tools{display:grid;gap:14px}
 .ab-tools h3{margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.01em;text-transform:uppercase;color:var(--muted)}
 .ab-quote{margin:0 0 16px;padding:clamp(26px,4vw,40px) var(--sec-pad,28px);border:1px solid rgba(var(--area-rgb,182,138,255),.45);border-radius:10px;background:linear-gradient(135deg,rgba(var(--area-rgb,182,138,255),.12),rgba(23,19,31,.95) 70%);text-align:center}
-.ab-quote p{margin:0;font:600 clamp(24px,4vw,38px)/1.15 'Space Grotesk';letter-spacing:-.8px}
+.ab-quote p{margin:0;font:600 clamp(24px,4vw,38px)/1.15 'Archivo';letter-spacing:-.8px}
 .ab-cta{display:flex;flex-direction:column;gap:18px;align-items:flex-start;margin:0 0 40px}
-.ab-cta h2{font:600 clamp(22px,3vw,28px)/1.15 'Space Grotesk';letter-spacing:-.4px;margin:8px 0 0}
+.ab-cta h2{font:600 clamp(22px,3vw,28px)/1.15 'Archivo';letter-spacing:-.4px;margin:8px 0 0}
 .ab-actions{display:flex;flex-wrap:wrap;gap:10px}
 .ab-actions .button,.ab-actions .outline,.ab-social a{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px}
 .ab-actions .button.pink{background:#e292da;color:#2a0f27;box-shadow:0 10px 30px -10px rgba(226,146,218,.55)}

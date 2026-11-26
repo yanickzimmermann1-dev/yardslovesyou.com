@@ -22,7 +22,7 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 /* ---------- four tiles ---------- */
 .hv3-tiles{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,16px)}
 .hv3-tile{display:flex;flex-direction:column;gap:8px;padding:clamp(14px,2vw,20px);background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--t);border-radius:10px;min-width:0}
-.hv3-tile h3{font:600 clamp(15px,1.6vw,18px)/1.25 'Space Grotesk';margin:0;color:var(--t)}
+.hv3-tile h3{font:600 clamp(15px,1.6vw,18px)/1.25 'Archivo';margin:0;color:var(--t)}
 .hv3-tile p{margin:0 0 6px;font-size:13px;line-height:1.5;color:var(--muted);flex:1}
 .hv3-go{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 12px;border:1px solid var(--t);border-radius:10px;color:var(--t);font:600 13px 'DM Sans';text-align:center;background:transparent}
 .hv3-go:hover,.hv3-go:focus-visible{background:var(--t);color:var(--t-ink)}
@@ -35,7 +35,7 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 /* ---------- Lab teaser (mini Chord Starter) ---------- */
 .hv3-lab-box{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(18px,3vw,32px);align-items:center;padding:clamp(18px,3vw,28px);background:var(--surface);border:1px solid var(--line);border-top:3px solid #8fa2ff;border-radius:10px}
 .hv3-lab-text .eyebrow{margin:0;color:#8fa2ff}
-.hv3-lab-text h2{font:600 clamp(22px,3vw,30px)/1.15 'Space Grotesk';letter-spacing:-.4px;margin:8px 0 10px}
+.hv3-lab-text h2{font:600 clamp(22px,3vw,30px)/1.15 'Archivo';letter-spacing:-.4px;margin:8px 0 10px}
 .hv3-lab-text .muted{margin:0 0 10px}
 .hv3-lab-text a{color:#8fa2ff;display:inline-flex;align-items:center;min-height:44px;font-weight:600}
 .hv3-chords{display:flex;flex-direction:column;gap:14px;min-width:0}
@@ -46,7 +46,7 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 .hv3-chords .button{background:#8fa2ff;color:#0e1330}
 .hv3-chords .outline{border-color:#8fa2ff;color:#8fa2ff}
 .hv3-chord-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.hv3-chord-list li{display:flex;align-items:center;justify-content:center;min-height:64px;padding:8px 4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;font:600 clamp(17px,3.2vw,22px) 'Space Grotesk';color:var(--text);overflow-wrap:anywhere;text-align:center}
+.hv3-chord-list li{display:flex;align-items:center;justify-content:center;min-height:64px;padding:8px 4px;background:var(--bg);border:1px solid var(--line);border-radius:10px;font:600 clamp(17px,3.2vw,22px) 'Archivo';color:var(--text);overflow-wrap:anywhere;text-align:center}
 .hv3-chord-list li.is-now{border-color:#8fa2ff;background:rgba(143,162,255,.14);color:#fff}
 @media(max-width:760px){.hv3-lab-box{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:380px){.hv3-chords-ctl>*{flex:1 1 100%}}
@@ -79,7 +79,7 @@ body[data-area="home"]{--area-hue:268;--area-c:#b68aff;--area-rgb:182,138,255;--
 
 /* Custom Beat auf der Startseite */
 .hv3-cb{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(18px,3vw,36px);align-items:start;margin:0}
-.hv3-cb h2{font:600 clamp(24px,3vw,30px)/1.15 'Space Grotesk';letter-spacing:-.4px;margin:8px 0 10px}
+.hv3-cb h2{font:600 clamp(24px,3vw,30px)/1.15 'Archivo';letter-spacing:-.4px;margin:8px 0 10px}
 .hv3-cb .eyebrow{margin:0}
 .hv3-cb .muted{margin:0 0 10px}
 .hv3-cb .button{align-self:flex-start}

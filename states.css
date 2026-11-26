@@ -22,7 +22,7 @@
 .yly-state-ic svg{width:26px;height:26px;display:block}
 .yly-state.is-error .yly-state-ic{color:#ff9db0;background:rgba(255,120,150,.1);border-color:rgba(255,120,150,.3)}
 .yly-state h3{
-  margin:0;font:600 18px/1.25 'Space Grotesk',system-ui,sans-serif;
+  margin:0;font:600 18px/1.25 'Archivo',system-ui,sans-serif;
   color:var(--text,#f5f0fb);letter-spacing:-.2px;
 }
 .yly-state p{margin:0;font-size:14.5px;line-height:1.55;max-width:42ch}

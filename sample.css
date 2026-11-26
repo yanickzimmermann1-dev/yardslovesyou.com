@@ -1,7 +1,7 @@
 /* sample.css - "Free sample page" auf Guide-Seiten (sample.js laedt diese Datei selbst) */
 .sg{margin:40px auto 8px}
 .sg-card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:22px}
-.sg-card h2{margin:0 0 6px;font:600 clamp(20px,2.6vw,24px)/1.2 'Space Grotesk',sans-serif}
+.sg-card h2{margin:0 0 6px;font:600 clamp(20px,2.6vw,24px)/1.2 'Archivo',sans-serif}
 .sg-lead{margin:0 0 16px;max-width:520px}
 .sg-row{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px}
 .sg-row input{flex:1 1 220px;min-width:0;box-sizing:border-box;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:15px 'DM Sans',sans-serif}

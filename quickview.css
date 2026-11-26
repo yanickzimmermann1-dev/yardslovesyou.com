@@ -23,10 +23,10 @@
 .qv-3d{position:relative;width:100%;height:380px}
 .qv-info{padding:30px 28px 26px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .qv-cat{margin:0;font:700 11px 'DM Sans',sans-serif;letter-spacing:.01em;text-transform:uppercase;color:var(--purple,#b68aff)}
-.qv-title{margin:0;font:700 24px/1.2 'Space Grotesk','DM Sans',sans-serif;overflow-wrap:anywhere;padding-right:36px}
+.qv-title{margin:0;font:700 24px/1.2 'Archivo','DM Sans',sans-serif;overflow-wrap:anywhere;padding-right:36px}
 .qv-rate{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted,#aaa0b7);color:#aaa0b7}
 .qv-rate .rv-stars{color:#ffd37a}
-.qv-price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font:700 22px 'Space Grotesk','DM Sans',sans-serif}
+.qv-price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font:700 22px 'Archivo','DM Sans',sans-serif}
 .qv-price s{font-size:14px;font-weight:500;color:#aaa0b7}
 .qv-hint{font-size:12px;color:#9ef0ce;margin:-6px 0 0}
 .qv-desc{margin:0;font-size:14px;line-height:1.65;color:#cfc6dc}

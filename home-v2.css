@@ -9,7 +9,7 @@ main > #artists-say{max-width:none;margin:0 0 var(--sec-gap,90px)}
 /* ---- How it works ---- */
 .hv-steps{list-style:none;margin:0 0 22px;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .hv-steps li{display:flex;align-items:center;gap:12px;min-width:0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025)}
-.hv-steps strong{font:600 15px/1.3 'Space Grotesk';color:var(--text)}
+.hv-steps strong{font:600 15px/1.3 'Archivo';color:var(--text)}
 .hv-n{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font:700 13px 'DM Sans';color:#180e23;background:linear-gradient(135deg,var(--purple),#c9a4ff)}
 
 /* ---- Prices ---- */
@@ -19,9 +19,9 @@ main > #artists-say{max-width:none;margin:0 0 var(--sec-gap,90px)}
   transition:border-color .25s ease,transform .3s var(--smooth,ease)}
 .hv-price:hover,.hv-price:focus-visible{border-color:rgba(182,138,255,.6);transform:translateY(-3px)}
 .hv-price:focus-visible{outline:2px solid var(--purple);outline-offset:3px}
-.hv-price h3{margin:0;font:600 19px/1.2 'Space Grotesk';letter-spacing:-.2px}
+.hv-price h3{margin:0;font:600 19px/1.2 'Archivo';letter-spacing:-.2px}
 .hv-amt{margin:0;color:var(--muted);font-size:13px}
-.hv-amt strong{color:var(--purple);font:600 24px 'Space Grotesk'}
+.hv-amt strong{color:var(--purple);font:600 24px 'Archivo'}
 .hv-meta{margin:0 0 8px;color:var(--muted);font-size:13.5px;line-height:1.5;flex-grow:1}
 .hv-go{font:600 13px 'DM Sans';color:var(--purple)}
 .hv-price:hover .hv-go{text-decoration:underline;text-underline-offset:3px}
@@ -36,7 +36,7 @@ main > #artists-say{max-width:none;margin:0 0 var(--sec-gap,90px)}
 .hv-prod-box{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:center;padding:clamp(22px,3vw,32px);
   border:1px solid var(--line);border-radius:10px;background:var(--panel)}
 .hv-prod-box:has(.ar-prods[hidden]){grid-template-columns:1fr}
-.hv-prod-text h2{font:600 clamp(26px,3.4vw,34px)/1.15 'Space Grotesk';letter-spacing:-.5px;margin:8px 0 10px}
+.hv-prod-text h2{font:600 clamp(26px,3.4vw,34px)/1.15 'Archivo';letter-spacing:-.5px;margin:8px 0 10px}
 .hv-prod-text .muted{margin:0 0 20px;max-width:440px}
 .hv-prod-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
 .hv-link{font:600 14px 'DM Sans';color:var(--purple);padding:6px 2px}
