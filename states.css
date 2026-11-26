@@ -7,7 +7,7 @@
   margin:12px auto;
   padding:28px 22px 24px;
   border:1px solid rgba(var(--area-rgb,182,138,255),.45);
-  border-radius:18px;
+  border-radius:10px;
   background:linear-gradient(180deg,var(--panel,#17131f),rgba(23,19,31,.6));
   color:var(--muted,#aaa0b7);
 }
@@ -36,6 +36,6 @@
 .yly-state.is-compact .yly-state-ic svg{width:20px;height:20px}
 .yly-state.is-compact h3{font-size:16px}
 @media (max-width:420px){
-  .yly-state{padding:24px 16px 20px;border-radius:16px}
+  .yly-state{padding:24px 16px 20px;border-radius:10px}
   .yly-state-acts>*{flex:1 1 100%;text-align:center;justify-content:center}
 }

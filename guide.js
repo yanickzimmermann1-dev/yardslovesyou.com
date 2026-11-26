@@ -41,7 +41,7 @@
     }).join("");
 
     var path = g.path || [];
-    var pathHtml = path.length ? '<section class="gd-sec gd-rv gd-path" aria-labelledby="gd-h-path"><p class="eyebrow">The journey</p><h2 id="gd-h-path">From first listen to release day</h2>' +
+    var pathHtml = path.length ? '<section class="gd-sec gd-rv gd-path" aria-labelledby="gd-h-path"><p class="eyebrow">The path</p><h2 id="gd-h-path">From first listen to release day</h2>' +
       '<ol class="gd-track" style="--n:' + path.length + '">' + path.map(function (s, i) {
         return '<li class="gd-stop"><span class="gd-dot" aria-hidden="true">' + (i + 1) + '</span><span class="gd-stop-name">' + esc(s) + "</span></li>";
       }).join("") + "</ol></section>" : "";
@@ -218,7 +218,7 @@
       if (showTip) q("p", elTip).textContent = c.tip;
       elLock.hidden = !!c.free;
       unlock.dataset.t = "";
-      unlock.innerHTML = c.free ? "Get the full guide · " + esc(ctx.price) : I.lock + " Unlock the full chapter · " + esc(ctx.price);
+      unlock.innerHTML = c.free ? "Get the full guide · " + esc(ctx.price) : I.lock + " Get the full chapter · " + esc(ctx.price);
       elCount.textContent = (i + 1) + " / " + chapters.length;
       btnPrev.disabled = i === 0; btnNext.disabled = i === chapters.length - 1;
       var pg = q("#gd-page");

@@ -16,7 +16,7 @@ html.intro-on .hero .muted,html.intro-on .hero .hero-actions{animation:none!impo
 .yi-word{position:relative;display:flex;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,8.6vw,120px);
   line-height:1;white-space:nowrap;color:#fff;transform-style:preserve-3d;
   animation:yiTrack 1.1s cubic-bezier(.2,.8,.2,1) both}
-@keyframes yiTrack{from{letter-spacing:.09em}to{letter-spacing:.02em}}
+@keyframes yiTrack{from{letter-spacing:.01em}to{letter-spacing:.02em}}
 .yi-l{position:relative;display:inline-block;opacity:0;
   animation:yiRise .7s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i)*35ms)}
 .yi-l.v{color:var(--purple,#b68aff);background:linear-gradient(100deg,#8f1fe0,#d47bff 55%,#b33cff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
@@ -26,7 +26,7 @@ html.intro-on .hero .muted,html.intro-on .hero .hero-actions{animation:none!impo
   transform:translateX(-120%);animation:yiSweep .7s .45s ease-in-out forwards}
 @keyframes yiSweep{to{transform:translateX(120%)}}
 .yi-skip{position:absolute;right:16px;bottom:16px;z-index:2;background:none;border:0;color:#aaa0b7;font:500 13px 'DM Sans',sans-serif;
-  padding:10px 12px;cursor:pointer;letter-spacing:.04em}
+  padding:10px 12px;cursor:pointer;letter-spacing:.01em}
 .yi-skip:hover,.yi-skip:focus-visible{color:#fff;outline:1px solid rgba(182,138,255,.6);outline-offset:2px;border-radius:8px}
 @media (prefers-reduced-motion:reduce){
   .yi-l{animation:none;opacity:1}.yi-word{animation:none}.yi-sweep,.yi-p{display:none}

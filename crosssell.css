@@ -2,13 +2,13 @@
 .xs{margin:48px auto 24px}
 .xs h2{margin:0 0 8px;font:600 clamp(22px,3vw,28px)/1.2 'Space Grotesk',sans-serif}
 .xs-intro{margin:0 0 20px;max-width:560px}
-.xs-bundle{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 20px;padding:16px 20px;margin:0 0 20px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.xs-bundle{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 20px;padding:16px 20px;margin:0 0 20px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
 .xs-bundle > div:first-child{display:grid;gap:2px}
 .xs-bundle strong{font:600 17px 'Space Grotesk',sans-serif}
 .xs-bundle span{color:var(--muted);font-size:14px}
 .xs-actions{display:flex;flex-wrap:wrap;gap:10px}
 .xs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-.xs-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;background:var(--panel);overflow:hidden}
+.xs-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
 .xs-img{display:block;position:relative;aspect-ratio:1/1;background:none}
 .xs-img img{display:block;width:100%;height:100%;object-fit:cover}
 .xs-img.xs-png img{object-fit:contain}

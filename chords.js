@@ -703,11 +703,11 @@
       if (!data?.ok) throw new Error(data?.error || "Something went wrong.");
       try { UNLOCK_KEYS.forEach(k => localStorage.setItem(k, "1")); } catch (_) {}
       showUnlocked();
-      setStatus("Unlocked! Essentials Lite is on its way to your inbox." + (consentTicked ? " Please confirm your subscription in that email." : ""));
+      setStatus("Done. Essentials Lite is on its way to your inbox." + (consentTicked ? " Please confirm your subscription in that email." : ""));
       exportPack();
     } catch (err) {
       st.textContent = err.message || "Something went wrong. Please try again."; st.classList.add("danger");
-    } finally { btn.disabled = false; btn.textContent = "Unlock & download"; }
+    } finally { btn.disabled = false; btn.textContent = "Get free download"; }
   };
 
   // ---------- Start ----------

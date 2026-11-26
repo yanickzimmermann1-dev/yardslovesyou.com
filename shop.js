@@ -76,7 +76,7 @@
         <div class="p-under"><span class="badge">Free</span></div>
         <a class="product-link" href="#free-kit" data-free="kit">
           <h3>Essentials Lite</h3>
-          <p>20 hand-crafted percussion one-shots. The download link lands in your inbox.</p>
+          <p>20 percussion one-shots. The download link lands in your inbox.</p>
           <p class="tag-line"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="m5 12.5 4.5 4.5L19 7"/></svg> Royalty-free</p>
         </a>
         <div class="price-row">

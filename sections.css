@@ -5,7 +5,7 @@
   --max-w:1120px;
   --sec-gap:clamp(56px,8vw,96px);
   --sec-pad:28px;
-  --sec-radius:16px;
+  --sec-radius:10px;
   --sec-head-gap:clamp(18px,2.4vw,28px);
   --h1-size:clamp(38px,5.6vw,60px);
   --h2-size:clamp(26px,3.2vw,34px);
@@ -31,8 +31,8 @@ body[data-area="lab"]{--area-hue:232;--area-c:#8fa2ff;--area-rgb:143,162,255;
 .wrap{max-width:var(--max-w)}
 
 /* ---- eyebrow ---- */
-.eyebrow{color:var(--area-c);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin:0}
-.eyebrow .badge-inline{letter-spacing:.5px}
+.eyebrow{color:var(--area-c);font-size:11px;font-weight:700;letter-spacing:.01em;text-transform:uppercase;display:flex;align-items:center;gap:8px;margin:0}
+.eyebrow .badge-inline{letter-spacing:.01em}
 .area-ico{display:inline-block;flex:none;width:16px;height:16px;background:currentColor;
   -webkit-mask:var(--area-icon) center/contain no-repeat;mask:var(--area-icon) center/contain no-repeat}
 #product-root .eyebrow::before{content:"";flex:none;width:16px;height:16px;background:currentColor;

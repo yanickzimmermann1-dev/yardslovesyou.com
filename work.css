@@ -11,7 +11,7 @@
 .wk-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:0 0 12px}
 .wk-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0}
 .wk-chips[hidden]{display:none}
-.wk-chip,.wk-shuffle{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text,#f3effa);font:500 14px/1 'DM Sans',system-ui,sans-serif;cursor:pointer}
+.wk-chip,.wk-shuffle{min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--line-strong);background:transparent;color:var(--text,#f3effa);font:500 14px/1 'DM Sans',system-ui,sans-serif;cursor:pointer}
 .wk-chip:hover,.wk-shuffle:hover{border-color:var(--accent)}
 .wk-chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .wk-tagbar .wk-chip{min-height:36px;padding:0 12px;font:500 12.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}

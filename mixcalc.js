@@ -44,7 +44,7 @@
       inc: ["Mixing of up to 30 stems plus mastering", "3 revisions, save CHF 20 vs. booking both", "Delivered in 7 business days"]
     },
     "custom-beat": {
-      desc: "A beat produced from scratch for you. Send an inquiry with your vibe and references and get a quote by email.",
+      desc: "A beat produced from scratch for you. Send an inquiry with a short description and references and get a quote by email.",
       inc: ["Made for you, from scratch", "Simple inquiry form, no payment up front", "Quote by email, from CHF 300"]
     }
   };

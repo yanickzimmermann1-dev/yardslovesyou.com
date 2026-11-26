@@ -90,7 +90,7 @@
 
     root.innerHTML =
       '<div class="section-head"><div>' +
-      '<p class="eyebrow">BEFORE / AFTER</p>' +
+      '<p class="eyebrow">Before / After</p>' +
       '<h2 id="' + tid + '">Hear the difference</h2>' +
       '<p class="ba-sub">Press play, then flip between Before and After.</p>' +
       '</div></div>' +

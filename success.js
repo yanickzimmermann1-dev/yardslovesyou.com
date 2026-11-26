@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>` : "";
       const dlIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>';
       box.innerHTML = `
-        <p class="eyebrow">ORDER CONFIRMED</p>
+        <p class="eyebrow">Order confirmed</p>
         <h1>Thank <span>you!</span></h1>
         <p class="muted">
           ${multi
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (t.data?.token) statusUrl = `${location.origin}/status.html?t=${encodeURIComponent(t.data.token)}`;
     } catch (_) {}
     box.innerHTML = `
-      <p class="eyebrow">ORDER CONFIRMED</p>
+      <p class="eyebrow">Order confirmed</p>
       <h1>Thank <span>you!</span></h1>
       <p class="muted">
         You booked <strong style="color:var(--text)">${esc(data.product)}</strong> for

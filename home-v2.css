@@ -8,13 +8,13 @@ main > #artists-say{max-width:none;margin:0 0 var(--sec-gap,90px)}
 
 /* ---- How it works ---- */
 .hv-steps{list-style:none;margin:0 0 22px;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.hv-steps li{display:flex;align-items:center;gap:12px;min-width:0;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}
+.hv-steps li{display:flex;align-items:center;gap:12px;min-width:0;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025)}
 .hv-steps strong{font:600 15px/1.3 'Space Grotesk';color:var(--text)}
 .hv-n{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font:700 13px 'DM Sans';color:#180e23;background:linear-gradient(135deg,var(--purple),#c9a4ff)}
 
 /* ---- Prices ---- */
 .hv-prices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.hv-price{position:relative;display:flex;flex-direction:column;gap:6px;min-width:0;padding:22px 20px 18px;border-radius:16px;color:var(--text);text-decoration:none;
+.hv-price{position:relative;display:flex;flex-direction:column;gap:6px;min-width:0;padding:22px 20px 18px;border-radius:10px;color:var(--text);text-decoration:none;
   background:linear-gradient(160deg,rgba(182,138,255,.1),var(--panel,#17131f) 62%);border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(182,138,255,.35);
   transition:border-color .25s ease,transform .3s var(--smooth,ease)}
 .hv-price:hover,.hv-price:focus-visible{border-color:rgba(182,138,255,.6);transform:translateY(-3px)}
@@ -26,7 +26,7 @@ main > #artists-say{max-width:none;margin:0 0 var(--sec-gap,90px)}
 .hv-go{font:600 13px 'DM Sans';color:var(--purple)}
 .hv-price:hover .hv-go{text-decoration:underline;text-underline-offset:3px}
 .hv-best{border-color:rgba(182,138,255,.55);background:linear-gradient(160deg,rgba(182,138,255,.2),var(--panel,#17131f) 66%)}
-.hv-tag{position:absolute;top:-10px;right:16px;padding:3px 10px;border-radius:999px;font:700 10.5px 'DM Sans';letter-spacing:1.4px;text-transform:uppercase;color:#180e23;background:linear-gradient(135deg,var(--purple),#c9a4ff)}
+.hv-tag{position:absolute;top:-10px;right:16px;padding:3px 10px;border-radius:8px;font:700 10.5px 'DM Sans';letter-spacing:.01em;text-transform:uppercase;color:#180e23;background:linear-gradient(135deg,var(--purple),#c9a4ff)}
 .hv-extra{margin:18px 0 0;font-size:14px}
 .hv-extra a{color:var(--purple);font-weight:600}
 .hv-extra a:hover{text-decoration:underline;text-underline-offset:3px}
@@ -34,7 +34,7 @@ main > #artists-say{max-width:none;margin:0 0 var(--sec-gap,90px)}
 /* ---- For producers ---- */
 .hv-prod{--ep-rgb:182,138,255;--ep-c:#b68aff}
 .hv-prod-box{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:center;padding:clamp(22px,3vw,32px);
-  border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+  border:1px solid var(--line);border-radius:10px;background:var(--panel)}
 .hv-prod-box:has(.ar-prods[hidden]){grid-template-columns:1fr}
 .hv-prod-text h2{font:600 clamp(26px,3.4vw,34px)/1.15 'Space Grotesk';letter-spacing:-.5px;margin:8px 0 10px}
 .hv-prod-text .muted{margin:0 0 20px;max-width:440px}

@@ -650,21 +650,21 @@
     const st = $("gb-mail-status"), btn = $("gb-send"), email = $("gb-email").value.trim();
     st.classList.remove("danger"); st.textContent = "";
     if (!EMAIL_RE.test(email)) { st.textContent = "Please enter a valid email address."; st.classList.add("danger"); $("gb-email").focus(); return; }
-    const label = btn.textContent; btn.disabled = true; btn.textContent = "Unlocking …";
+    const label = btn.textContent; btn.disabled = true; btn.textContent = "Sending …";
     try {
       const consentTicked = $("gb-consent").checked;
       await registerEmail(email, consentTicked);
       try { localStorage.setItem(UNLOCK_KEY, "1"); } catch (_) {}
       track("gumball-unlock"); track("freekit-signup");
       S.unlocked = true; $("gb-email").value = ""; $("gb-consent").checked = false;
-      st.textContent = "Unlocked! Essentials Lite is on its way to your inbox." + (consentTicked ? " Please confirm your subscription in that email." : "") + " Building your pack …";
-      btn.textContent = "Unlocked";
+      st.textContent = "Done. Essentials Lite is on its way to your inbox." + (consentTicked ? " Please confirm your subscription in that email." : "") + " Building your pack …";
+      btn.textContent = "Done";
       await buildZip();
       return;
     } catch (err) {
       track("gumball-error", { kind: "email" });
       st.textContent = ((err && err.message) || "Something went wrong") .replace(/[.!?\s]*$/, "") + ". Please try again."; st.classList.add("danger");
-    } finally { btn.disabled = false; if (btn.textContent !== "Unlocked") btn.textContent = label; else btn.textContent = label; }
+    } finally { btn.disabled = false; if (btn.textContent !== "Done") btn.textContent = label; else btn.textContent = label; }
   });
 
   // Same call as the other free tools: the free-kit function also emails the free Essentials Lite kit, so the card copy says so.

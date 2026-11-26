@@ -161,7 +161,7 @@ footer.site-footer .footer-social a:hover,footer.site-footer .footer-social a:fo
 .area-ico,#product-root .eyebrow::before{display:none!important}
 .eyebrow{gap:0}
 /* one calm tracking; no animated letter-spacing reveal (reveal.js .rvl-eb) */
-.eyebrow,.rvl-eb,.rvl-eb.rvl-go{letter-spacing:1.6px!important}
+.eyebrow,.rvl-eb,.rvl-eb.rvl-go{letter-spacing:0!important}
 
 /* =====================================================================
    6. Text effects: no gradient-clipped text anywhere
@@ -216,3 +216,61 @@ main.wrap>.home-section:has(~ .home-section[hidden]):not(:has(~ .home-section:no
 /* Hero ohne Einblendung: Text, Buttons und Wellenlinie stehen sofort da (kein Grau beim Laden) */
 .hero.hx .hx-tilt,.hero.hx .hx-wave,.hero.hx .hw,.hx-cta>*{animation:none!important}
 html:not(.intro-on) .hero.hx .hx-tilt,html:not(.intro-on) .hero.hx .hx-wave{opacity:1}
+
+
+/* =====================================================================
+   11. Second pass (2026-11-26): sentence-case labels, flat colour, small radius scale, no looping motion.
+       Radius scale: images 3px / cards, panels, inputs 10px (inputs 8px via --r-ctl) / buttons, chips 8px / 999px only for round things.
+   ===================================================================== */
+/* 11a Eyebrows and tracked labels: sentence case, no tracking, smaller + muted. Keycaps / promo-code input / status badge stay uppercase. */
+.eyebrow,.rvl-eb,.mc-eyebrow,.gd-kicker,.ar-tag,.qv-cat,.qv-sounds .qv-lbl,.et-qtype,.gd-card-tag,.gd-tip strong,
+.dr-showcase>h2,.ab-tools h3,.dr-credits span,.et-score span,.et-ab button small,.hv-tag,
+.service-card .service-meta,.drop-next,.cp-type,
+.sm-edition,.sm-panel-canton,.sm-dl dt,.sm-cert-sub,.sm-cert-rows dt,.sm-sig-l{
+  text-transform:none!important;letter-spacing:0!important;font-size:13px;font-weight:500}
+.eyebrow{font-size:13px;font-weight:500}
+.mc-eyebrow,.gd-kicker,.ar-tag,.qv-cat,.qv-lbl,.et-qtype,.gd-card-tag,.cp-type,.drop-next,.service-meta,.sm-dl dt{color:var(--muted)}
+.sm-cert-rows dt{color:rgba(35,28,16,.62)}
+.hv-tag{font-size:12px;font-weight:600}
+.et-badge{letter-spacing:.02em!important}
+.cm-chord span,.cart-promo-form input{letter-spacing:.02em!important}
+
+/* 11b Flat colour: leftover gradients, glows and gradient text */
+.ab-quote,.et-viz-wrap,.mc-dot,.free-kit,.sk-card,.sp-row{background-image:none!important}
+.et-viz-wrap{background:#0c0912!important}
+.product-free .free-cover,.pd-thumbs .pd-thumb-3d{background:var(--surface-hi)!important}
+.mc-dot.is-now,.gd-track::after,.et-env i,.et-bars i{background:var(--accent)!important;box-shadow:none!important}
+.et-bars>div:last-child i{background:var(--line-strong)!important}
+.et-rail::before,.et-strip.pan .et-rail::before{background:var(--line-strong)!important}
+.upfx-fill,.et-prog.dots i.cur{background:var(--accent)!important}
+.hs-glow,.yi-glow,.yi-p,.sk::after{display:none!important}
+.hs-glow,.yi-glow,.yi-p{animation:none!important}
+.fw-p,body .fw-p,body[data-area] .fw-p,.yi-l.v,.et-hero h1 span,.et-res-score span{
+  background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;
+  -webkit-text-fill-color:currentColor!important;color:var(--accent)!important;filter:none!important}
+.et-hero h1 span,.et-res-score span{filter:none!important}
+.et-eq .curve,.et-prog.hearts span.full,nav a.active svg,.et-streak.hot .et-flame{filter:none!important}
+.cart-fly,.cart-flyer,.about-avatar{box-shadow:none!important}
+.et-node.hot i,.et-pan-dot,.sp-pad.sp-lit,.ba-card,.ba-card:focus-visible,.mc-card,.mc-rec,.qv-dlg,#et-setup,#et-game,#et-result,.et-opt:hover,.mc-opt:hover,.et-mode:hover,.product:hover,.cp:hover{box-shadow:none!important}
+.ba-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sp-pad.sp-lit{box-shadow:0 0 0 2px var(--accent)!important}
+.cm-note.ed:hover,.mc-flash{box-shadow:none!important}
+.ba-switch>span,.ba-switch .ba-knob,.ba-switch-thumb{box-shadow:none!important}
+
+/* 11c Motion only on interaction: no looping pulses, shine or breathing (spinners while loading stay) */
+.ba-play.playing,.bl-play.playing,.et-play.is-playing,.sm-pin.on .ring,.live-dot,.hx-hear svg,.gd-float,
+.tk li.now .dot,li.current.busy .up-step .n,.thread .th-halo,.et-streak.hot .et-flame,.skeleton .sk::after{animation:none!important}
+.sm-pin.on .ring{opacity:.35}
+.is-loading .et-qtext{animation:none!important;opacity:.6}
+
+/* 11d Radius scale. Round things stay round; everything else was normalised at source (cards 10, controls 8). */
+.cart-badge,.ba-box,.mc-dot,.rv-bar,.rv-bar i,.upfx-bar,.upfx-fill,.cp-like,.cp-icon,.live-dot,.et-n,.hv-n{border-radius:999px}
+.ba-box::after,.ba-box i{border-radius:50%}
+.button,.outline,a.button,a.outline,button.button,button.outline,.mc-go,.et-play.button,.cart-checkout,.hero.hx .hx-primary,.hero.hx .hx-ghost{border-radius:8px}
+.et-play,.play-btn,.bl-play,.ba-play{border-radius:50%}
+.rv-count,.adm-tile .rv-count,.cat-n{border-radius:6px}
+/* images, covers, artwork: 3px */
+.cover,.cover img,.product .cover,.ar-cover,.ba-cover,.cart-thumb,.fp-thumb,.free-cover,.gd-gallery img,.qv-stage img,.pd-video,
+.pd-main,.pd-main img,.pd-thumbs button,.pd-thumbs img,.sk-cover,.sk-card .sk-cover,.ab-photo,.ab-photo img,.pf-card img,.pf-thumb,
+.track img,.cp img,.cp-cover,.xs-card img,.sm-beat img,.sg-card img,.sr-card img{border-radius:3px}
+.product .cover,.pd-main{overflow:hidden}

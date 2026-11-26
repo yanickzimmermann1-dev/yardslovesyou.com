@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const fail = m => { if (statusEl) statusEl.textContent = m; };
       if (!body.name || body.name.length > 100) return fail("Please enter your name (max. 100 characters).");
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(body.email) || body.email.length > 254) return fail("Please enter a valid email address.");
-      if (body.description.length < 10) return fail("Please describe the vibe you are looking for (at least 10 characters).");
+      if (body.description.length < 10) return fail("Please describe what you are looking for (at least 10 characters).");
       if (body.description.length > 3000 || body.links.length > 1000 || body.budget.length > 60 || body.deadline.length > 100) return fail("One of your entries is too long.");
       if (btn) { btn.disabled = true; btn.textContent = "Sending..."; }
       if (statusEl) statusEl.textContent = "";

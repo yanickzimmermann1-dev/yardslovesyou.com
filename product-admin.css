@@ -2,15 +2,15 @@
 .pa-layout{display:grid;grid-template-columns:1fr;gap:20px;align-items:start}
 @media(min-width:900px){.pa-layout{grid-template-columns:340px minmax(0,1fr)}}
 .pa-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.pa-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.pa-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
 .pa-row.active{border-color:var(--purple)}
 .pa-pick{display:grid;gap:2px;text-align:left;background:none;border:0;color:var(--text);cursor:pointer;padding:6px;font:inherit;min-width:0}
 .pa-pick strong{font:600 14px 'Space Grotesk',sans-serif;overflow-wrap:anywhere}
 .pa-pick span{color:var(--muted);font-size:13px}
-.pa-badge{font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.pa-badge{font-size:12px;padding:3px 8px;border-radius:8px;border:1px solid var(--line);color:var(--muted)}
 .pa-badge.on{color:var(--green);border-color:currentColor}
 .pa-tog{padding:6px 12px;min-height:34px;font-size:12.5px}
-.pa-edit{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:20px}
+.pa-edit{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:20px}
 .pa-edit h2{margin:0 0 4px;font:600 20px 'Space Grotesk',sans-serif;overflow-wrap:anywhere}
 .pa-links{margin:0 0 16px;font-size:13px}
 .pa-f{display:grid;gap:6px;margin:0 0 14px}

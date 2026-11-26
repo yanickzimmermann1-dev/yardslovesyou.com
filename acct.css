@@ -1,6 +1,6 @@
 /* acct.css - account link in the top bar (.acct-link, nav.js fills in "Sign in" / "@handle").
    Desktop: compact pill (icon + text) just left of the cart button. Phone: round icon button next to the sound toggle. */
-.acct-link{position:relative;flex:none;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px 0 13px;border-radius:999px;
+.acct-link{position:relative;flex:none;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px 0 13px;border-radius:8px;
   color:var(--muted,#c4bccf);font:500 13.5px 'DM Sans',system-ui,sans-serif;white-space:nowrap;text-decoration:none;
   background:#1a1424;border:1px solid rgba(255,255,255,.22);transition:border-color .2s,color .2s,background .2s}
 .acct-link svg{display:block;width:19px;height:19px;flex:none}
@@ -30,8 +30,8 @@
 /* Admin-Bereich im Konto (account.html#admin) */
 .adm-hub{scroll-margin-top:80px}
 .adm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
-.adm-tile{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;color:var(--text);text-decoration:none;min-height:44px}
+.adm-tile{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;color:var(--text);text-decoration:none;min-height:44px}
 .adm-tile:hover,.adm-tile:focus-visible{border-color:var(--purple)}
 .adm-tile strong{font:600 16px 'Space Grotesk'}
 .adm-tile span:not(.rv-count){font-size:13px;color:var(--muted)}
-.adm-tile .rv-count{display:inline-block;min-width:18px;margin-left:6px;padding:0 6px;border-radius:99px;background:var(--purple);color:#180e23;font-size:11px;font-weight:700;line-height:18px;text-align:center;vertical-align:middle}
+.adm-tile .rv-count{display:inline-block;min-width:18px;margin-left:6px;padding:0 6px;border-radius:8px;background:var(--purple);color:#180e23;font-size:11px;font-weight:700;line-height:18px;text-align:center;vertical-align:middle}

@@ -231,7 +231,7 @@
   .service-picker{grid-template-columns:minmax(0,1fr);gap:8px}
   body[data-area="service"] .service-option .opt{
     display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:1px;
-    align-items:baseline;height:auto;min-height:44px;padding:10px 14px;border-radius:12px}
+    align-items:baseline;height:auto;min-height:44px;padding:10px 14px;border-radius:10px}
   body[data-area="service"] .service-option .opt strong{grid-column:1;grid-row:1;font-size:15px;line-height:1.3}
   /* price moves up to the first line (overrides margin-top:auto / padding-top from upload-pink.css) */
   body[data-area="service"] .service-option .opt .opt-price{grid-column:2;grid-row:1;margin:0;padding:0;font-size:15px;line-height:1.3;white-space:nowrap;text-align:right}
@@ -247,8 +247,8 @@
 
   /* ---- Mix-check questionnaire: compact option rows (JS builds .mc-opt > .mc-ico + .mc-t > strong + .mc-d) ---- */
   .mc-opts,.mc-opts.is-3{gap:8px}
-  .mc-opt{gap:12px;padding:10px 12px;border-radius:14px;min-height:56px}
-  .mc-opt .mc-ico{width:36px;height:36px;border-radius:11px}
+  .mc-opt{gap:12px;padding:10px 12px;border-radius:10px;min-height:56px}
+  .mc-opt .mc-ico{width:36px;height:36px;border-radius:10px}
   .mc-opt .mc-ico svg{width:20px;height:20px}
   .mc-opt strong{font-size:15px;line-height:1.25}
   .mc-opt>span.mc-t{gap:1px}
@@ -346,7 +346,7 @@
   .et-deck{margin:10px 0 4px}
   .et-ab{height:60px}
   .et-opts{gap:10px}
-  .et-opt{min-height:64px;border-radius:16px}
+  .et-opt{min-height:64px;border-radius:10px}
   .et-opt b{font-size:26px}
   .is-btn .et-opt b{font-size:18px}
   .et-res-actions{gap:8px;margin-bottom:14px}

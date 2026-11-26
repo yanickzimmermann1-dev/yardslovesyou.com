@@ -1,7 +1,7 @@
 /* home-areas.css – home page: "three areas" cards (#paths), 4 process steps, New in the Lab, free sounds band.
    Area colours: mix pink, shop brass, lab lilac-blue, free teal. Uses the shared tokens (--panel, --line, --muted, --sec-radius). */
 .ar-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,22px);align-items:stretch}
-.ar-card{position:relative;display:flex;flex-direction:column;gap:12px;min-width:0;padding:clamp(20px,2.4vw,28px);border-radius:var(--sec-radius,16px);
+.ar-card{position:relative;display:flex;flex-direction:column;gap:12px;min-width:0;padding:clamp(20px,2.4vw,28px);border-radius:var(--sec-radius,10px);
   background:linear-gradient(160deg,rgba(var(--ep-rgb),.14),var(--panel,#17131f) 62%);border:1px solid var(--line,#2a2336);
   box-shadow:inset 0 1px 0 rgba(var(--ep-rgb),.55);color:var(--text,#f3edff);transition:border-color .25s ease,background-color .25s ease}
 .ar-card[data-href]{cursor:pointer}
@@ -11,7 +11,7 @@
 .ar-shop{--ep-rgb:212,180,110;--ep-c:#D4B46E}
 .ar-lab{--ep-rgb:143,162,255;--ep-c:#8fa2ff}
 .ar-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.ar-tag{font:700 11px 'DM Sans';letter-spacing:2px;text-transform:uppercase;color:var(--ep-c)}
+.ar-tag{font:700 11px 'DM Sans';letter-spacing:.01em;text-transform:uppercase;color:var(--ep-c)}
 .ar-card h3{margin:2px 0 0;font:600 var(--h3-size,22px)/1.2 'Space Grotesk';letter-spacing:-.3px}
 .ar-lead{margin:0;color:var(--muted,#a89fbb);font-size:15px;line-height:1.55}
 .ar-price{margin:-4px 0 0;color:var(--muted,#a89fbb);font-size:14px}
@@ -40,9 +40,9 @@
 /* ---- shop products ---- */
 .ar-prods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .ar-prods[hidden]{display:none}
-.ar-p{display:flex;flex-direction:column;gap:2px;min-width:0;text-decoration:none;color:inherit;border-radius:12px}
+.ar-p{display:flex;flex-direction:column;gap:2px;min-width:0;text-decoration:none;color:inherit;border-radius:10px}
 .ar-p:focus-visible{outline:2px solid var(--ep-c);outline-offset:3px}
-.ar-cover{position:relative;display:block;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:rgba(var(--ep-rgb),.08);border:1px solid rgba(var(--ep-rgb),.22);margin-bottom:6px}
+.ar-cover{position:relative;display:block;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:rgba(var(--ep-rgb),.08);border:1px solid rgba(var(--ep-rgb),.22);margin-bottom:6px}
 .ar-cover img{display:block;width:100%;height:100%;object-fit:cover}
 .ar-p-t{font:600 14px/1.25 'Space Grotesk';overflow-wrap:anywhere}
 .ar-p-price{font-size:13px;color:var(--ep-c)}
@@ -52,7 +52,7 @@
 
 /* ---- lab tools + counter ---- */
 .ar-tools{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.ar-tools a,.ar-st{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;color:var(--text,#f3edff);text-decoration:none;font:600 14px 'DM Sans';
+.ar-tools a,.ar-st{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;color:var(--text,#f3edff);text-decoration:none;font:600 14px 'DM Sans';
   background:rgba(13,11,18,.45);border:1px solid rgba(var(--ep-rgb),.22);transition:border-color .2s,background .2s}
 .ar-tools a:hover,.ar-tools a:focus-visible{border-color:rgba(var(--ep-rgb),.7);background:rgba(var(--ep-rgb),.12)}
 .ar-tools a:focus-visible{outline:2px solid var(--ep-c);outline-offset:2px}
@@ -74,7 +74,7 @@
 /* ---- Free sounds band ---- */
 .free-band{--area-c:#5fe0d0;--area-rgb:95,224,208;
   --area-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='9' width='16' height='11' rx='1.5'/%3E%3Cpath d='M3 9h18V6H3zM12 6v14'/%3E%3Cpath d='M12 6c-1-3-5-3.5-5-1.2C7 6.2 9 6 12 6Zm0 0c1-3 5-3.5 5-1.2 0 1.4-2 1.2-5 1.2Z'/%3E%3C/svg%3E");
-  display:flex;align-items:center;justify-content:space-between;gap:18px 28px;flex-wrap:wrap;padding:clamp(18px,2.4vw,26px) clamp(20px,2.8vw,32px);border-radius:var(--sec-radius,16px);
+  display:flex;align-items:center;justify-content:space-between;gap:18px 28px;flex-wrap:wrap;padding:clamp(18px,2.4vw,26px) clamp(20px,2.8vw,32px);border-radius:var(--sec-radius,10px);
   background:linear-gradient(135deg,rgba(95,224,208,.14),rgba(23,19,31,.95) 65%);border:1px solid var(--line,#2a2336);box-shadow:inset 0 1px 0 rgba(95,224,208,.55)}
 .free-band .fb-text{min-width:0;flex:1 1 320px}
 .free-band h2{font:600 clamp(20px,2.4vw,26px)/1.2 'Space Grotesk';letter-spacing:-.4px;margin:6px 0 4px}
@@ -107,7 +107,7 @@
 .free-band .button:active{box-shadow:0 0 0 1px rgba(95,224,208,.4),0 3px 10px -4px rgba(95,224,208,.6)}
 
 /* ---- Promo band (mixing prices) ---- */
-.promo-band{display:flex;align-items:center;gap:14px 20px;flex-wrap:wrap;padding:14px clamp(16px,2.4vw,24px);margin:clamp(14px,2vw,22px) 0;border-radius:var(--sec-radius,16px);background:linear-gradient(135deg,rgba(226,146,218,.14),rgba(23,19,31,.95) 65%);border:1px solid var(--line,#2a2336);box-shadow:inset 0 1px 0 rgba(226,146,218,.55)}
+.promo-band{display:flex;align-items:center;gap:14px 20px;flex-wrap:wrap;padding:14px clamp(16px,2.4vw,24px);margin:clamp(14px,2vw,22px) 0;border-radius:var(--sec-radius,10px);background:linear-gradient(135deg,rgba(226,146,218,.14),rgba(23,19,31,.95) 65%);border:1px solid var(--line,#2a2336);box-shadow:inset 0 1px 0 rgba(226,146,218,.55)}
 .promo-band .pb-ico{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#e292da;background:rgba(226,146,218,.14)}
 .promo-band .pb-ico svg{width:20px;height:20px}
 .promo-band .pb-list{list-style:none;margin:0;padding:0;flex:1 1 320px;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 0;font:500 14.5px/1.4 'DM Sans';color:var(--muted,#a89fbb)}

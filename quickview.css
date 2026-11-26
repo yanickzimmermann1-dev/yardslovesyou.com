@@ -14,15 +14,15 @@
 .qv-back{position:absolute;inset:0;background:rgba(8,6,12,.66);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .3s}
 .qv-root.qv-open .qv-back{opacity:1}
 .qv-dlg{position:relative;width:min(880px,100%);max-height:min(640px,calc(100vh - 32px));max-height:min(640px,calc(100dvh - 32px));overflow:auto;overscroll-behavior:contain;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  border-radius:24px;background:linear-gradient(145deg,rgba(33,26,44,.92),rgba(19,16,25,.94));border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 80px -20px rgba(0,0,0,.8),0 0 60px -20px rgba(182,138,255,.4);
+  border-radius:10px;background:linear-gradient(145deg,rgba(33,26,44,.92),rgba(19,16,25,.94));border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 80px -20px rgba(0,0,0,.8),0 0 60px -20px rgba(182,138,255,.4);
   -webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);color:var(--text,#f5f0fb);will-change:transform,opacity;opacity:0}
 .qv-root.qv-open .qv-dlg{opacity:1}
-.qv-stage{position:relative;min-height:340px;display:flex;align-items:center;justify-content:center;padding:20px;border-radius:24px 0 0 24px;background:radial-gradient(circle at 50% 40%,rgba(182,138,255,.18),rgba(0,0,0,0) 70%);overflow:hidden}
-.qv-stage img{max-width:100%;max-height:420px;border-radius:14px;object-fit:contain;display:block}
+.qv-stage{position:relative;min-height:340px;display:flex;align-items:center;justify-content:center;padding:20px;border-radius:10px 0 0 10px;background:radial-gradient(circle at 50% 40%,rgba(182,138,255,.18),rgba(0,0,0,0) 70%);overflow:hidden}
+.qv-stage img{max-width:100%;max-height:420px;border-radius:10px;object-fit:contain;display:block}
 .qv-stage .qv-emoji{font-size:90px}
 .qv-3d{position:relative;width:100%;height:380px}
 .qv-info{padding:30px 28px 26px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.qv-cat{margin:0;font:700 11px 'DM Sans',sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:var(--purple,#b68aff)}
+.qv-cat{margin:0;font:700 11px 'DM Sans',sans-serif;letter-spacing:.01em;text-transform:uppercase;color:var(--purple,#b68aff)}
 .qv-title{margin:0;font:700 24px/1.2 'Space Grotesk','DM Sans',sans-serif;overflow-wrap:anywhere;padding-right:36px}
 .qv-rate{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted,#aaa0b7);color:#aaa0b7}
 .qv-rate .rv-stars{color:#ffd37a}
@@ -32,9 +32,9 @@
 .qv-desc{margin:0;font-size:14px;line-height:1.65;color:#cfc6dc}
 .qv-sounds .sp-pads{flex-wrap:wrap;justify-content:flex-start;gap:8px}
 .qv-sounds .sp-pad{flex:0 0 auto;width:42px;max-width:none}
-.qv-sounds .qv-lbl{margin:0 0 8px;font:700 11px 'DM Sans',sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#aaa0b7}
+.qv-sounds .qv-lbl{margin:0 0 8px;font:700 11px 'DM Sans',sans-serif;letter-spacing:.01em;text-transform:uppercase;color:#aaa0b7}
 .qv-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
-.qv-actions .button,.qv-actions .outline{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:46px;padding:0 18px;border-radius:14px;font:700 14px 'DM Sans',sans-serif;cursor:pointer;text-decoration:none;border:1px solid transparent}
+.qv-actions .button,.qv-actions .outline{flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:46px;padding:0 18px;border-radius:10px;font:700 14px 'DM Sans',sans-serif;cursor:pointer;text-decoration:none;border:1px solid transparent}
 .qv-actions .outline{border-color:#30263d;background:transparent;color:#f5f0fb}
 .qv-actions .outline:hover{border-color:#b68aff}
 .qv-actions .button{background:#b68aff;color:#180e23}
@@ -52,8 +52,8 @@
 .qv-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:720px){
   .qv-root{align-items:flex-end;padding:0}
-  .qv-dlg{width:100%;max-height:92vh;max-height:92dvh;grid-template-columns:minmax(0,1fr);border-radius:24px 24px 0 0;border-bottom:0}
-  .qv-stage{min-height:0;border-radius:24px 24px 0 0;padding:16px 16px 4px}
+  .qv-dlg{width:100%;max-height:92vh;max-height:92dvh;grid-template-columns:minmax(0,1fr);border-radius:10px 10px 0 0;border-bottom:0}
+  .qv-stage{min-height:0;border-radius:10px 10px 0 0;padding:16px 16px 4px}
   .qv-3d{height:260px}
   .qv-stage img{max-height:240px}
   .qv-info{padding:14px 18px calc(22px + env(safe-area-inset-bottom,0px))}
