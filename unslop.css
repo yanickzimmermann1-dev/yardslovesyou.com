@@ -283,3 +283,20 @@ h1,h2,.hx-h1,.legal h1,.pd-info h1,.pf-main h1,.sm-hero h1,#sm-title{font-family
 h3{font-family:'Archivo','DM Sans',sans-serif;font-stretch:108%;letter-spacing:-.01em}
 .hero.hx .hx-h1{letter-spacing:-.03em!important;line-height:.98}
 @media (max-width:520px){h1,h2,.hx-h1{font-stretch:106%}.hero.hx .hx-h1{font-size:clamp(34px,10vw,44px)}}
+
+/* =====================================================================
+   13. Pass 3 (2026-11-26)
+   ===================================================================== */
+/* 13a Single-colour headings. Only the homepage hero (.hx-h1) keeps its accent line. */
+html body h1:not(.hx-h1) span:not(.hl):not(.hw),
+html body h2:not(.hx-h1) span:not(.hl):not(.hw),
+html body .hero h1:not(.hx-h1) span,
+html body .hero.compact h1 span,
+html body .ab-hero h1 span,
+html body .et-hero h1 span,
+html body .et-hero h1 span:not(.hl){
+  color:inherit!important;background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;
+  -webkit-text-fill-color:currentColor!important;filter:none!important;text-shadow:none!important}
+
+/* 13b Giant footer wordmark removed (script no longer loaded; hide any leftover markup) */
+.fw-wrap,.fw-word,.fw-l{display:none!important}
