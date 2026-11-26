@@ -158,7 +158,7 @@
       if (was && !inView) resetWave();
     }
 
-    btn.setAttribute('role', 'button');
+    btn.setAttribute('role', 'button'); btn.textContent = 'Play a beat';
     btn.setAttribute('aria-pressed', 'false');
     btn.addEventListener('click', function (e) {
       if (!tracks().length) return;   // ohne Daten: normaler Link nach #work
