@@ -121,7 +121,7 @@
   };
 
   // ================================================================ WasmEngine
-  var ASSET_V = "20261127a";
+  var ASSET_V = "20261127c";
   var WORKER_URL = "gumball/gumball-worker.js?v=" + ASSET_V;
   var STAGES = ["Reading", "Listening for hits", "Cutting out hits", "Sorting hits"];
   var MAX_IN_FLIGHT = 2;      // tracks decoded / queued for the worker at the same time (keeps memory low)
