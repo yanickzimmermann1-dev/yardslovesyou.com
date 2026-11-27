@@ -10,12 +10,18 @@
   const EXT_RE = /\.(wav|mp3|aiff?|m4a)$/i;
   const UNLOCK_KEY = "yly_gumball_unlocked";
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  const TYPES = [
-    ["kick", "Kicks", "Kick", "Kick"], ["snare", "Snares", "Snare", "Snare"], ["clap", "Claps", "Clap", "Clap"],
-    ["hat", "Hats", "Hat", "Hat"], ["openhat", "Open Hats", "OpenHat", "Open hat"], ["perc", "Percs", "Perc", "Perc"],
-    ["808", "808s", "808", "808"], ["vocal", "Vocals", "Vocal", "Vocal"], ["fx", "FX", "FX", "FX"]
+  // pack folders: numbered so DAW browsers keep the order. Fine types (what a card says) map onto them.
+  const GROUPS = [
+    ["kicks", "01 Kicks", "Kicks"], ["808s", "02 808s", "808s"], ["snaresclaps", "03 Snares & Claps", "Snares & Claps"],
+    ["hats", "04 Hats", "Hats"], ["percsfx", "05 Percs & FX", "Percs & FX"], ["vocals", "06 Vocals", "Vocals"]
   ];
-  const T = {}; TYPES.forEach(([id, folder, sing, label], i) => { T[id] = { id, folder, sing, label, order: i }; });
+  const G = {}; GROUPS.forEach(([id, folder, label], i) => { G[id] = { id, folder, label, order: i }; });
+  const TYPES = [   // [id, group, filename word, card label]; array order = sort order
+    ["kick", "kicks", "Kick", "Kick"], ["808", "808s", "808", "808"], ["snare", "snaresclaps", "Snare", "Snare"], ["clap", "snaresclaps", "Clap", "Clap"],
+    ["hat", "hats", "Hat", "Hat"], ["openhat", "hats", "OpenHat", "Open hat"], ["perc", "percsfx", "Perc", "Perc"], ["fx", "percsfx", "FX", "FX"],
+    ["vocal", "vocals", "Vocal", "Vocal"]
+  ];
+  const T = {}; TYPES.forEach(([id, group, sing, label], i) => { T[id] = { id, group, folder: G[group].folder, sing, label, order: i }; });
   const RARITY = { common: "Common", rare: "Rare", epic: "Epic", legendary: "Legendary" };
   const ICON = {
     play: '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>',
@@ -41,6 +47,7 @@
     cur: {},              // hitId -> variantId|null currently shown on the card
     variants: {},         // hitId -> {variantId: variant}
     filter: "all",
+    typeOverride: {},     // hitId -> type id the user corrected on the card
     unlocked: false, built: null, building: false
   };
   try { S.unlocked = localStorage.getItem(UNLOCK_KEY) === "1"; } catch (_) {}
@@ -69,20 +76,21 @@
   const stemOf = name => name.replace(/[^A-Za-z0-9 ]/g, "-").replace(/ /g, "_");
   function packName() { return sanitizeName($("gb-pname").value, S.session ? sanitizeName(S.session.suggestedName, "Gumball Pack") : "Gumball Pack"); }
   const hitById = id => S.session.hits.find(h => h.id === id);
+  const typeOf = h => S.typeOverride[h.id] || h.type;   // current type: engine guess unless the user corrected it
 
-  /* file plan: numbering per type in pick order, note suffix only for tonal hits. */
+  /* file plan: folder per group (see GROUPS), numbering per fine type in pick order, note suffix only for tonal hits. */
   function buildPlan() {
     const name = packName(), stem = stemOf(name), counter = {}, entries = [];
     for (const p of S.picks) {
       const h = hitById(p.hitId); if (!h) continue;
-      const num = (counter[h.type] = (counter[h.type] || 0) + 1), nn = String(num).padStart(2, "0");
-      let fn = stem + "_" + T[h.type].sing + "_" + nn;
+      const ty = typeOf(h), num = (counter[ty] = (counter[ty] || 0) + 1), nn = String(num).padStart(2, "0");
+      let fn = stem + "_" + T[ty].sing + "_" + nn;
       if (h.tonal && h.note) fn += "_" + h.note.replace(/[0-9\-]+$/, "");
       fn += ".wav";
       const v = p.variantId ? (S.variants[p.hitId] || {})[p.variantId] : null;
-      entries.push({ key: p.key, hitId: p.hitId, variantId: p.variantId, type: h.type, folder: T[h.type].folder, file: fn, path: T[h.type].folder + "/" + fn, variant: v });
+      entries.push({ key: p.key, hitId: p.hitId, variantId: p.variantId, type: ty, folder: T[ty].folder, file: fn, path: T[ty].folder + "/" + fn, variant: v });
     }
-    entries.sort((a, b) => T[a.type].order - T[b.type].order);   // stable: keeps pick order inside a folder
+    entries.sort((a, b) => (G[T[a.type].group].order - G[T[b.type].group].order) || (T[a.type].order - T[b.type].order));   // stable: keeps pick order inside a folder
     return { name, zipName: name + ".zip", entries };
   }
   let CRC = null;
@@ -283,7 +291,7 @@
       });
       S.files.forEach(f => { f.status = "done"; f.progress = 1; });
       Object.keys(bufCache).forEach(k => { delete bufCache[k]; }); Object.keys(peaksCache).forEach(k => { delete peaksCache[k]; }); // hit ids repeat between scans
-      S.session = session; S.dirty = false; S.picks = []; S.cur = {}; S.variants = {}; S.built = null; S.filter = "all";
+      S.session = session; S.dirty = false; S.picks = []; S.cur = {}; S.variants = {}; S.typeOverride = {}; S.built = null; S.filter = "all";
       S.scanning = false;
       scanBox.classList.add("hidden");
       renderSlots(); buildResults();
@@ -304,7 +312,7 @@
   function readColors() { const cs = getComputedStyle(document.body); ACCENT = cs.getPropertyValue("--accent").trim() || ACCENT; MUTED = cs.getPropertyValue("--muted").trim() || MUTED; }
 
   function sortedHits() {
-    return S.session.hits.slice().sort((a, b) => (T[a.type].order - T[b.type].order) || (b.quality - a.quality) || (b.merged - a.merged));
+    return S.session.hits.slice().sort((a, b) => (G[T[typeOf(a)].group].order - G[T[typeOf(b)].group].order) || (T[typeOf(a)].order - T[typeOf(b)].order) || (b.quality - a.quality) || (b.merged - a.merged));
   }
   function buildResults() {
     readColors();
@@ -322,9 +330,9 @@
       const el = document.createElement("article");
       el.className = "gb-card"; el.tabIndex = 0; el.setAttribute("role", "listitem"); el.dataset.id = h.id;
       el.innerHTML = `
-        <div class="gb-card-top"><span class="gb-type">${esc(T[h.type].label)}</span><span class="gb-meta">${h.tonal && h.note ? esc(h.note) + " · " : ""}${h.dur.toFixed(2)} s</span></div>
+        <div class="gb-card-top">${typeSelect(h)}<span class="gb-meta">${h.tonal && h.note ? esc(h.note) + " · " : ""}${h.dur.toFixed(2)} s</span></div>
         <div class="gb-wave">
-          <button type="button" class="gb-play" tabindex="-1" aria-label="Play ${esc(T[h.type].label)} from ${esc(h.trackName)}">${ICON.play}</button>
+          <button type="button" class="gb-play" tabindex="-1" aria-label="Play ${esc(T[typeOf(h)].label)} from ${esc(h.trackName)}">${ICON.play}</button>
           <div class="gb-canvas"><canvas width="240" height="64" aria-hidden="true"></canvas><i class="gb-playhead" aria-hidden="true"></i></div>
         </div>
         <p class="gb-src" title="${esc(h.trackName)}">${esc(h.trackName)}</p>
@@ -335,7 +343,7 @@
         </div>
         <p class="gb-also hidden"></p>
         <div class="gb-card-foot">
-          <button type="button" class="gb-dice" tabindex="-1" aria-label="Roll a flavour for this ${esc(T[h.type].label)}">${ICON.dice}<span>Roll flavour</span></button>
+          <button type="button" class="gb-dice" tabindex="-1" aria-label="Roll a flavour for this ${esc(T[typeOf(h)].label)}">${ICON.dice}<span>Roll flavour</span></button>
           <button type="button" class="gb-orig hidden" tabindex="-1">Original</button>
           <button type="button" class="gb-pick" tabindex="-1" aria-pressed="false">${ICON.plus}<span>Add to pack</span></button>
         </div>`;
@@ -383,6 +391,30 @@
   const isPicked = (hitId, vid) => S.picks.some(p => p.key === keyOf(hitId, vid));
   const anyPicked = hitId => S.picks.some(p => p.hitId === hitId);
 
+  const typeSelect = h => `<select class="gb-type" aria-label="Sound type. Change it if Gumball got it wrong">${TYPES.map(t => `<option value="${t[0]}"${t[0] === typeOf(h) ? " selected" : ""}>${esc(t[3])}</option>`).join("")}</select>`;
+  function retype(hitId, to) {
+    const h = hitById(hitId); if (!h || !T[to]) return;
+    const from = typeOf(h); if (from === to) return;
+    if (to === h.type) delete S.typeOverride[hitId]; else S.typeOverride[hitId] = to;
+    const sel = cards[hitId].querySelector(".gb-type");
+    refreshCardLabels(hitId);
+    // cards follow the group order; moving a node drops focus, so put it back on the select
+    const hadFocus = document.activeElement === sel;
+    sortedHits().forEach(x => grid.appendChild(cards[x.id]));
+    buildChips(); applyFilter(); packChanged(); updateCard(hitId);
+    const moved = T[from].group !== T[to].group;
+    if (cards[hitId].hidden) { const next = grid.querySelector(".gb-card:not([hidden])"); if (next) next.focus({ preventScroll: true }); }
+    else if (hadFocus) sel.focus({ preventScroll: true });
+    track("gumball-retype", { from, to });
+    say(`Set to ${T[to].label}.` + (moved ? ` Now in ${G[T[to].group].label}.` : ""));
+  }
+  function refreshCardLabels(hitId) {
+    const el = cards[hitId], h = hitById(hitId), lb = T[typeOf(h)].label;
+    el.querySelector(".gb-type").value = typeOf(h);
+    el.querySelector(".gb-dice").setAttribute("aria-label", "Roll a flavour for this " + lb);
+    el.querySelector(".gb-play").setAttribute("aria-label", (el.classList.contains("is-playing") ? "Stop " : "Play ") + lb + " from " + h.trackName);
+  }
+
   function updateCard(hitId) {
     const el = cards[hitId]; if (!el) return;
     const h = hitById(hitId), vid = S.cur[hitId], v = vid ? S.variants[hitId][vid] : null;
@@ -391,7 +423,7 @@
     const pk = el.querySelector(".gb-pick");
     pk.setAttribute("aria-pressed", picked ? "true" : "false");
     pk.innerHTML = (picked ? ICON.check : ICON.plus) + `<span>${picked ? "In pack" : "Add to pack"}</span>`;
-    pk.setAttribute("aria-label", (picked ? "Remove from pack: " : "Add to pack: ") + (v ? v.flavour + " " : "Original ") + T[h.type].label);
+    pk.setAttribute("aria-label", (picked ? "Remove from pack: " : "Add to pack: ") + (v ? v.flavour + " " : "Original ") + T[typeOf(h)].label);
     const fl = el.querySelector(".gb-flav"); fl.classList.toggle("hidden", !v);
     el.querySelector(".gb-orig").classList.toggle("hidden", !v);
     if (v) {
@@ -410,9 +442,9 @@
   }
 
   function buildChips() {
-    const counts = {}; S.session.hits.forEach(h => { counts[h.type] = (counts[h.type] || 0) + 1; });
+    const counts = {}; S.session.hits.forEach(h => { const g = T[typeOf(h)].group; counts[g] = (counts[g] || 0) + 1; });
     const total = S.session.hits.length;
-    const chips = [["all", "All", total]].concat(TYPES.filter(t => counts[t[0]]).map(t => [t[0], t[1], counts[t[0]]]));
+    const chips = [["all", "All", total]].concat(GROUPS.filter(g => counts[g[0]]).map(g => [g[0], g[2], counts[g[0]]]));
     if (S.filter !== "all" && !counts[S.filter]) S.filter = "all";
     $("gb-chips").innerHTML = chips.map(([id, label, n]) => `<button type="button" class="cm-pill gb-chip${S.filter === id ? " active" : ""}" data-f="${id}" aria-pressed="${S.filter === id}">${esc(label)} <span>${n}</span></button>`).join("");
   }
@@ -424,11 +456,11 @@
   function applyFilter() {
     let visible = 0;
     Object.keys(cards).forEach(id => {
-      const h = hitById(id), show = S.filter === "all" || h.type === S.filter;
+      const h = hitById(id), show = S.filter === "all" || T[typeOf(h)].group === S.filter;
       cards[id].hidden = !show; if (show) visible++;
     });
     $("gb-empty").classList.toggle("hidden", visible > 0 || !S.session.hits.length);
-    if (!visible && S.session.hits.length) $("gb-empty").textContent = "No sounds of this type. Try another filter.";
+    if (!visible && S.session.hits.length) $("gb-empty").textContent = "No sounds in this group. Try another filter.";
   }
 
   // ---- audio playback (one sound at a time)
@@ -463,7 +495,7 @@
     const b = el.querySelector(".gb-play");
     b.innerHTML = on ? ICON.stop : ICON.play;
     const h = hitById(hitId);
-    b.setAttribute("aria-label", (on ? "Stop " : "Play ") + T[h.type].label + " from " + h.trackName);
+    b.setAttribute("aria-label", (on ? "Stop " : "Play ") + T[typeOf(h)].label + " from " + h.trackName);
     const ph = el.querySelector(".gb-playhead");
     ph.style.animation = "none"; void ph.offsetWidth;
     if (on && dur) ph.style.animation = `gb-sweep ${dur}s linear forwards`;
@@ -513,9 +545,9 @@
 
   function togglePick(hitId) {
     const vid = S.cur[hitId], k = keyOf(hitId, vid), i = S.picks.findIndex(p => p.key === k), h = hitById(hitId);
-    const label = (vid ? S.variants[hitId][vid].flavour + " " : "") + T[h.type].label;
+    const label = (vid ? S.variants[hitId][vid].flavour + " " : "") + T[typeOf(h)].label;
     if (i >= 0) { S.picks.splice(i, 1); say(`${label} removed. ${S.picks.length} in pack.`); }
-    else { S.picks.push({ key: k, hitId, variantId: vid }); say(`${label} added. ${S.picks.length} in pack.`); track("gumball-pick", { type: h.type, flavoured: !!vid }); }
+    else { S.picks.push({ key: k, hitId, variantId: vid }); say(`${label} added. ${S.picks.length} in pack.`); track("gumball-pick", { type: typeOf(h), flavoured: !!vid }); }
     packChanged(); updateCard(hitId);
   }
   function removePick(key) {
@@ -528,11 +560,11 @@
 
   $("gb-best").addEventListener("click", () => {
     const best = {};
-    sortedHits().forEach(h => { if (!best[h.type]) best[h.type] = h; });
+    sortedHits().forEach(h => { const g = T[typeOf(h)].group; if (!best[g]) best[g] = h; });
     let added = 0;
     Object.values(best).forEach(h => { if (!isPicked(h.id, null)) { S.picks.push({ key: keyOf(h.id, null), hitId: h.id, variantId: null }); added++; } });
     Object.keys(cards).forEach(updateCard); packChanged();
-    say(added ? `Picked the best sound of each type. ${S.picks.length} in pack.` : "The best of each type are already in your pack.");
+    say(added ? `Picked the best sound of each group. ${S.picks.length} in pack.` : "The best of each group are already in your pack.");
   });
   $("gb-clear").addEventListener("click", () => {
     if (!S.picks.length) return;
@@ -545,6 +577,7 @@
   grid.addEventListener("click", e => {
     const card = e.target.closest(".gb-card"); if (!card) return;
     const id = card.dataset.id;
+    if (e.target.closest(".gb-type")) return;   // the type select handles itself
     if (e.target.closest(".gb-pick")) { togglePick(id); return; }
     if (e.target.closest(".gb-dice")) { roll(id); return; }
     if (e.target.closest(".gb-orig")) { backToOriginal(id); return; }
@@ -553,6 +586,7 @@
   });
   grid.addEventListener("keydown", e => {
     const card = e.target.closest(".gb-card"); if (!card) return;
+    if (e.target.closest(".gb-type")) return;   // arrows, space, enter and d belong to the select
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const id = card.dataset.id, onBtn = e.target.closest("button");
     const vis = Array.from(grid.querySelectorAll(".gb-card:not([hidden])")), i = vis.indexOf(card);
@@ -566,6 +600,7 @@
     else if (e.key === "Enter" && !onBtn) { togglePick(id); e.preventDefault(); }
     else if ((e.key === "d" || e.key === "D") && !e.shiftKey) { roll(id); e.preventDefault(); }
   });
+  grid.addEventListener("change", e => { const sel = e.target.closest(".gb-type"); if (sel) retype(sel.closest(".gb-card").dataset.id, sel.value); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && playing.hitId) stopPlay(); });
 
   // ---------------------------------------------------------------- Pack bar
@@ -604,9 +639,9 @@
     const plan = buildPlan();
     if (!plan.entries.length) { el.innerHTML = `<p class="gb-tree-empty muted">Nothing picked yet. Add sounds with the Add to pack button.</p>`; return; }
     const by = {}; plan.entries.forEach(en => { (by[en.folder] = by[en.folder] || []).push(en); });
-    el.innerHTML = `<p class="gb-tree-root">${esc(plan.name)}/</p>` + TYPES.filter(t => by[t[1]]).map(t => `
-      <div class="gb-folder"><p class="gb-folder-name">${esc(t[1])}/ <span>${by[t[1]].length}</span></p>
-      <ul>${by[t[1]].map(en => `<li><span class="gb-file"><span class="gb-fn">${esc(en.file)}</span><span class="gb-fv">${en.variant ? esc(en.variant.flavour) : "Original"}</span></span>${removable ? `<button type="button" class="gb-icon-btn" data-rm="${esc(en.key)}" aria-label="Remove ${esc(en.file)} from pack">${ICON.x}</button>` : ""}</li>`).join("")}</ul></div>`).join("");
+    el.innerHTML = `<p class="gb-tree-root">${esc(plan.name)}/</p>` + GROUPS.filter(g => by[g[1]]).map(g => `
+      <div class="gb-folder"><p class="gb-folder-name">${esc(g[1])}/ <span>${by[g[1]].length}</span></p>
+      <ul>${by[g[1]].map(en => `<li><span class="gb-file"><span class="gb-fn">${esc(en.file)}</span><span class="gb-fv">${en.variant ? esc(en.variant.flavour) : "Original"}</span></span>${removable ? `<button type="button" class="gb-icon-btn" data-rm="${esc(en.key)}" aria-label="Remove ${esc(en.file)} from pack">${ICON.x}</button>` : ""}</li>`).join("")}</ul></div>`).join("");
   }
   $("gb-panel").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (b) removePick(b.dataset.rm); });
 
@@ -702,7 +737,7 @@
       }
       const manifest = {
         pack_name: plan.name, preview_demo_sounds: !!(S.session && S.session.demo), key: S.session.key,
-        files: plan.entries.map(en => { const o = { file: en.path, hit: en.hitId, type: en.type, variant: en.variantId ? en.variant.flavour : "Original" }; if (en.variant) { o.rarity = en.variant.rarity; o.seed = en.variant.seed; } return o; })
+        files: plan.entries.map(en => { const o = { file: en.path, folder: en.folder, hit: en.hitId, type: en.type, variant: en.variantId ? en.variant.flavour : "Original" }; if (en.variant) { o.rarity = en.variant.rarity; o.seed = en.variant.seed; } return o; })
       };
       files.push({ name: plan.name + "/pack_manifest.json", data: enc.encode(JSON.stringify(manifest, null, 2)) });
       const parts = makeZip(files);
@@ -742,7 +777,7 @@
   $("gb-again").addEventListener("click", saveBuilt);
   $("gb-new").addEventListener("click", () => {
     stopPlay();
-    S.files = []; S.session = null; S.dirty = true; S.picks = []; S.cur = {}; S.variants = {}; S.built = null; S.building = false; S.filter = "all";
+    S.files = []; S.session = null; S.dirty = true; S.picks = []; S.cur = {}; S.variants = {}; S.typeOverride = {}; S.built = null; S.building = false; S.filter = "all";
     Object.keys(cards).forEach(k => delete cards[k]); grid.innerHTML = "";
     nameIn.value = ""; clearErrors(); setPanel(false);
     renderSlots(); setStep(1);

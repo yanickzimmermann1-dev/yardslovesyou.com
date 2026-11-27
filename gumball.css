@@ -68,7 +68,10 @@
 .gb-card.is-picked{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 .gb-card.has-error{border-color:#62434d}
 .gb-card-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
-.gb-type{font:700 13px 'Archivo',sans-serif;text-transform:none;letter-spacing:.2px;color:var(--text)}
+.gb-type{font:700 13px 'Archivo',sans-serif;text-transform:none;letter-spacing:.2px;color:var(--text);-webkit-appearance:none;appearance:none;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none' stroke='%23c5c0cb' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 6px center;border:1px solid transparent;border-radius:8px;margin:-4px 0 -4px -7px;padding:3px 24px 3px 6px;min-height:28px;cursor:pointer;max-width:70%}
+.gb-type:hover{border-color:var(--line-strong)}
+.gb-type:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.gb-type option{font-weight:500;color:#111;background:#fff}
 .gb-meta{font-size:13px;color:var(--muted)}
 .gb-wave{display:flex;align-items:center;gap:12px}
 .gb-play{flex:0 0 52px;width:52px;height:52px;display:grid;place-items:center;border-radius:50%;border:1.5px solid var(--line-strong);background:var(--bg);color:var(--text);cursor:pointer;padding:0}
