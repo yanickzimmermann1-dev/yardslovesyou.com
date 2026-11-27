@@ -13,11 +13,11 @@
   // pack folders: numbered so DAW browsers keep the order. Fine types (what a card says) map onto them.
   const GROUPS = [
     ["kicks", "01 Kicks", "Kicks"], ["808s", "02 808s", "808s"], ["snaresclaps", "03 Snares & Claps", "Snares & Claps"],
-    ["hats", "04 Hats", "Hats"], ["percsfx", "05 Percs & FX", "Percs & FX"], ["vocals", "06 Vocals", "Vocals"]
+    ["hats", "04 Hats", "Hats"], ["percsfx", "05 Percs & FX", "Percs & FX"], ["melodies", "06 Melodies", "Melodies"], ["vocals", "07 Vocals", "Vocals"]
   ];
   const G = {}; GROUPS.forEach(([id, folder, label], i) => { G[id] = { id, folder, label, order: i }; });
   const TYPES = [   // [id, group, filename word, card label]; array order = sort order
-    ["kick", "kicks", "Kick", "Kick"], ["808", "808s", "808", "808"], ["snare", "snaresclaps", "Snare", "Snare"], ["clap", "snaresclaps", "Clap", "Clap"],
+    ["kick", "kicks", "Kick", "Kick"], ["808", "808s", "808", "808"], ["melody", "melodies", "Melody", "Melody"], ["snare", "snaresclaps", "Snare", "Snare"], ["clap", "snaresclaps", "Clap", "Clap"],
     ["hat", "hats", "Hat", "Hat"], ["openhat", "hats", "OpenHat", "Open hat"], ["perc", "percsfx", "Perc", "Perc"], ["fx", "percsfx", "FX", "FX"],
     ["vocal", "vocals", "Vocal", "Vocal"]
   ];
